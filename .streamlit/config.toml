@@ -1,0 +1,10 @@
+# Theme matched to the dashboard's chart palette (light surface #fcfcfb).
+[theme]
+base = "light"
+primaryColor = "#2a78d6"
+backgroundColor = "#fcfcfb"
+secondaryBackgroundColor = "#f9f9f7"
+textColor = "#0b0b0b"
+
+[browser]
+gatherUsageStats = false
