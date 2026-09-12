@@ -1,0 +1,981 @@
+{
+  "schemaVersion": 1,
+  "sizes": [
+    {
+      "key": "small",
+      "columnsCompact": 1,
+      "columnsRegular": 1,
+      "height": 148,
+      "name": "Small",
+      "summary": "One column, headline value only."
+    },
+    {
+      "key": "medium",
+      "columnsCompact": 2,
+      "columnsRegular": 2,
+      "height": 232,
+      "name": "Medium",
+      "summary": "Full width on iPhone, half width on iPad."
+    },
+    {
+      "key": "large",
+      "columnsCompact": 2,
+      "columnsRegular": 4,
+      "height": 360,
+      "name": "Large",
+      "summary": "Full width, tall enough for tables and charts."
+    }
+  ],
+  "gridColumns": {
+    "compact": 2,
+    "regular": 4
+  },
+  "configFieldTypes": [
+    "season",
+    "enum",
+    "enumList",
+    "metric",
+    "metricList",
+    "player",
+    "playerList",
+    "team",
+    "teamList",
+    "subject",
+    "subjectList",
+    "int",
+    "double",
+    "bool",
+    "date"
+  ],
+  "widgets": [
+    {
+      "kind": "stat_tile",
+      "name": "Stat Tile",
+      "summary": "One headline metric for a player or team, with optional supporting metrics and a sparkline.",
+      "icon": "number.square",
+      "sizes": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "defaultSize": "small",
+      "minRefreshSeconds": 300,
+      "config": [
+        {
+          "key": "subjectType",
+          "type": "enum",
+          "label": "Subject",
+          "required": true,
+          "default": "player",
+          "options": [
+            "player",
+            "team"
+          ]
+        },
+        {
+          "key": "subjectId",
+          "type": "subject",
+          "label": "Player or Team",
+          "required": true,
+          "default": null,
+          "dependsOn": "subjectType"
+        },
+        {
+          "key": "metric",
+          "type": "metric",
+          "label": "Metric",
+          "required": true,
+          "default": "ts_pct",
+          "metricScope": "any"
+        },
+        {
+          "key": "secondaryMetrics",
+          "type": "metricList",
+          "label": "Supporting Metrics",
+          "required": false,
+          "default": [
+            "pts",
+            "usg_pct"
+          ],
+          "maxItems": 4
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "perMode",
+          "type": "enum",
+          "label": "Per Mode",
+          "required": false,
+          "default": "PerGame",
+          "options": [
+            "PerGame",
+            "Totals",
+            "Per36",
+            "Per100"
+          ]
+        },
+        {
+          "key": "showSparkline",
+          "type": "bool",
+          "label": "Show Sparkline",
+          "required": false,
+          "default": true
+        },
+        {
+          "key": "sparklineWindow",
+          "type": "int",
+          "label": "Sparkline Games",
+          "required": false,
+          "default": 15,
+          "min": 5,
+          "max": 82
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "player_snapshot",
+      "name": "Player Snapshot",
+      "summary": "A player's full advanced slate for a season, with league percentile bars.",
+      "icon": "person.crop.square",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 300,
+      "config": [
+        {
+          "key": "playerId",
+          "type": "player",
+          "label": "Player",
+          "required": true,
+          "default": null
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "metrics",
+          "type": "metricList",
+          "label": "Metrics",
+          "required": true,
+          "default": [
+            "ts_pct",
+            "usg_pct",
+            "ast_pct",
+            "reb_pct",
+            "off_rtg",
+            "def_rtg",
+            "net_rtg",
+            "pie"
+          ],
+          "metricScope": "player",
+          "maxItems": 12
+        },
+        {
+          "key": "showPercentiles",
+          "type": "bool",
+          "label": "Show League Percentiles",
+          "required": false,
+          "default": true
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "leaderboard",
+      "name": "Leaderboard",
+      "summary": "Top players or teams ranked by any metric, with qualifier filters.",
+      "icon": "list.number",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "config": [
+        {
+          "key": "subjectType",
+          "type": "enum",
+          "label": "Subject",
+          "required": true,
+          "default": "player",
+          "options": [
+            "player",
+            "team"
+          ]
+        },
+        {
+          "key": "metric",
+          "type": "metric",
+          "label": "Metric",
+          "required": true,
+          "default": "pie",
+          "metricScope": "any"
+        },
+        {
+          "key": "scope",
+          "type": "enum",
+          "label": "Scope",
+          "required": false,
+          "default": "season",
+          "options": [
+            "season",
+            "all_time"
+          ],
+          "help": "'all_time' ranks the best single seasons in league history."
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "perMode",
+          "type": "enum",
+          "label": "Per Mode",
+          "required": false,
+          "default": "PerGame",
+          "options": [
+            "PerGame",
+            "Totals",
+            "Per36",
+            "Per100"
+          ]
+        },
+        {
+          "key": "limit",
+          "type": "int",
+          "label": "Rows",
+          "required": false,
+          "default": 10,
+          "min": 3,
+          "max": 50
+        },
+        {
+          "key": "minGames",
+          "type": "int",
+          "label": "Minimum Games",
+          "required": false,
+          "default": 15,
+          "min": 0,
+          "max": 82
+        },
+        {
+          "key": "minMinutesPerGame",
+          "type": "double",
+          "label": "Minimum MPG",
+          "required": false,
+          "default": 20.0,
+          "min": 0.0,
+          "max": 48.0
+        },
+        {
+          "key": "positions",
+          "type": "enumList",
+          "label": "Positions",
+          "required": false,
+          "default": [],
+          "options": [
+            "G",
+            "F",
+            "C"
+          ]
+        },
+        {
+          "key": "teamIds",
+          "type": "teamList",
+          "label": "Teams",
+          "required": false,
+          "default": []
+        },
+        {
+          "key": "secondaryMetrics",
+          "type": "metricList",
+          "label": "Extra Columns",
+          "required": false,
+          "default": [
+            "pts",
+            "min"
+          ],
+          "maxItems": 3
+        },
+        {
+          "key": "ascending",
+          "type": "bool",
+          "label": "Reverse Order",
+          "required": false,
+          "default": false,
+          "help": "Off means best-first using the metric's own direction."
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "game_log",
+      "name": "Game Log",
+      "summary": "Recent games for a player, with configurable basic and advanced columns.",
+      "icon": "tablecells",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 300,
+      "config": [
+        {
+          "key": "playerId",
+          "type": "player",
+          "label": "Player",
+          "required": true,
+          "default": null
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "columns",
+          "type": "metricList",
+          "label": "Columns",
+          "required": true,
+          "default": [
+            "min",
+            "pts",
+            "reb",
+            "ast",
+            "ts_pct",
+            "usg_pct",
+            "plus_minus",
+            "game_score"
+          ],
+          "maxItems": 14
+        },
+        {
+          "key": "limit",
+          "type": "int",
+          "label": "Games",
+          "required": false,
+          "default": 10,
+          "min": 5,
+          "max": 82
+        },
+        {
+          "key": "highlightSeasonBest",
+          "type": "bool",
+          "label": "Highlight Season Bests",
+          "required": false,
+          "default": true
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "trend_chart",
+      "name": "Trend",
+      "summary": "A metric game by game, with a rolling average and an optional league baseline.",
+      "icon": "chart.xyaxis.line",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 300,
+      "config": [
+        {
+          "key": "subjectType",
+          "type": "enum",
+          "label": "Subject",
+          "required": true,
+          "default": "player",
+          "options": [
+            "player",
+            "team"
+          ]
+        },
+        {
+          "key": "subjectIds",
+          "type": "subjectList",
+          "label": "Players or Teams",
+          "required": true,
+          "default": null,
+          "maxItems": 4,
+          "dependsOn": "subjectType"
+        },
+        {
+          "key": "metric",
+          "type": "metric",
+          "label": "Metric",
+          "required": true,
+          "default": "ts_pct",
+          "metricScope": "any"
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "rollingWindow",
+          "type": "int",
+          "label": "Rolling Average Games",
+          "required": false,
+          "default": 5,
+          "min": 1,
+          "max": 25
+        },
+        {
+          "key": "showLeagueAverage",
+          "type": "bool",
+          "label": "Show League Average",
+          "required": false,
+          "default": true
+        },
+        {
+          "key": "showRawPoints",
+          "type": "bool",
+          "label": "Show Individual Games",
+          "required": false,
+          "default": true
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "four_factors",
+      "name": "Four Factors",
+      "summary": "Dean Oliver's four factors for a team, against the league average and the opponent.",
+      "icon": "square.grid.2x2",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "medium",
+      "minRefreshSeconds": 600,
+      "config": [
+        {
+          "key": "teamId",
+          "type": "team",
+          "label": "Team",
+          "required": true,
+          "default": null
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "showOpponent",
+          "type": "bool",
+          "label": "Show Defensive Four Factors",
+          "required": false,
+          "default": true
+        },
+        {
+          "key": "comparison",
+          "type": "enum",
+          "label": "Compare Against",
+          "required": false,
+          "default": "league",
+          "options": [
+            "league",
+            "none"
+          ]
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "shot_profile",
+      "name": "Shot Profile",
+      "summary": "Where the shots come from and how they fall, by court zone.",
+      "icon": "scope",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "availableFrom": "1996-97",
+      "config": [
+        {
+          "key": "subjectType",
+          "type": "enum",
+          "label": "Subject",
+          "required": true,
+          "default": "player",
+          "options": [
+            "player",
+            "team"
+          ]
+        },
+        {
+          "key": "subjectId",
+          "type": "subject",
+          "label": "Player or Team",
+          "required": true,
+          "default": null,
+          "dependsOn": "subjectType"
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "compareToLeague",
+          "type": "bool",
+          "label": "Compare to League",
+          "required": false,
+          "default": true
+        }
+      ]
+    },
+    {
+      "kind": "comparison",
+      "name": "Comparison",
+      "summary": "Two to four players side by side on the metrics you choose, normalized to league percentiles.",
+      "icon": "person.2",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "config": [
+        {
+          "key": "playerIds",
+          "type": "playerList",
+          "label": "Players",
+          "required": true,
+          "default": null,
+          "minItems": 2,
+          "maxItems": 4
+        },
+        {
+          "key": "metrics",
+          "type": "metricList",
+          "label": "Metrics",
+          "required": true,
+          "default": [
+            "pts",
+            "ts_pct",
+            "usg_pct",
+            "ast_pct",
+            "reb_pct",
+            "net_rtg"
+          ],
+          "metricScope": "player",
+          "maxItems": 10
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "normalization",
+          "type": "enum",
+          "label": "Scale",
+          "required": false,
+          "default": "percentile",
+          "options": [
+            "percentile",
+            "raw"
+          ]
+        },
+        {
+          "key": "style",
+          "type": "enum",
+          "label": "Style",
+          "required": false,
+          "default": "bars",
+          "options": [
+            "bars",
+            "radar",
+            "table"
+          ]
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "scoreboard",
+      "name": "Scoreboard",
+      "summary": "Every game on a slate with final scores and the best advanced line from each side.",
+      "icon": "sportscourt",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 60,
+      "config": [
+        {
+          "key": "date",
+          "type": "date",
+          "label": "Date",
+          "required": true,
+          "default": "latest",
+          "help": "An ISO date, or 'latest' for the most recent completed slate."
+        },
+        {
+          "key": "showTopPerformers",
+          "type": "bool",
+          "label": "Show Top Performers",
+          "required": false,
+          "default": true
+        },
+        {
+          "key": "teamIds",
+          "type": "teamList",
+          "label": "Only These Teams",
+          "required": false,
+          "default": []
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "daily_movers",
+      "name": "Daily Movers",
+      "summary": "The biggest single-game performances from the last completed slate, versus each player's own season baseline.",
+      "icon": "arrow.up.right",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 60,
+      "config": [
+        {
+          "key": "date",
+          "type": "date",
+          "label": "Date",
+          "required": true,
+          "default": "latest"
+        },
+        {
+          "key": "metric",
+          "type": "metric",
+          "label": "Metric",
+          "required": true,
+          "default": "game_score",
+          "metricScope": "player"
+        },
+        {
+          "key": "limit",
+          "type": "int",
+          "label": "Rows",
+          "required": false,
+          "default": 8,
+          "min": 3,
+          "max": 25
+        },
+        {
+          "key": "minMinutes",
+          "type": "double",
+          "label": "Minimum Minutes",
+          "required": false,
+          "default": 12.0,
+          "min": 0.0,
+          "max": 48.0
+        },
+        {
+          "key": "direction",
+          "type": "enum",
+          "label": "Direction",
+          "required": false,
+          "default": "best",
+          "options": [
+            "best",
+            "worst",
+            "surprise"
+          ],
+          "help": "'surprise' ranks by the largest gap against the player's own season average."
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "team_efficiency",
+      "name": "Team Efficiency",
+      "summary": "League-wide offensive, defensive and net rating with pace.",
+      "icon": "chart.bar.xaxis",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "config": [
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        },
+        {
+          "key": "sortBy",
+          "type": "metric",
+          "label": "Sort By",
+          "required": false,
+          "default": "net_rtg",
+          "metricScope": "team"
+        },
+        {
+          "key": "conference",
+          "type": "enum",
+          "label": "Conference",
+          "required": false,
+          "default": "all",
+          "options": [
+            "all",
+            "East",
+            "West"
+          ]
+        },
+        {
+          "key": "limit",
+          "type": "int",
+          "label": "Rows",
+          "required": false,
+          "default": 30,
+          "min": 5,
+          "max": 30
+        },
+        {
+          "key": "style",
+          "type": "enum",
+          "label": "Style",
+          "required": false,
+          "default": "table",
+          "options": [
+            "table",
+            "scatter"
+          ]
+        }
+      ],
+      "availableFrom": null
+    },
+    {
+      "kind": "career_arc",
+      "name": "Career Arc",
+      "summary": "A metric season by season across a whole career, with era availability marked.",
+      "icon": "waveform.path.ecg",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 3600,
+      "config": [
+        {
+          "key": "playerId",
+          "type": "player",
+          "label": "Player",
+          "required": true,
+          "default": null
+        },
+        {
+          "key": "metric",
+          "type": "metric",
+          "label": "Metric",
+          "required": true,
+          "default": "per",
+          "metricScope": "player"
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": false,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs"
+          ]
+        },
+        {
+          "key": "includePlayoffs",
+          "type": "bool",
+          "label": "Overlay Playoffs",
+          "required": false,
+          "default": true
+        },
+        {
+          "key": "xAxis",
+          "type": "enum",
+          "label": "X Axis",
+          "required": false,
+          "default": "season",
+          "options": [
+            "season",
+            "age"
+          ]
+        }
+      ],
+      "availableFrom": null
+    }
+  ]
+}

@@ -1,0 +1,1410 @@
+{
+  "schemaVersion": 1,
+  "categories": [
+    {
+      "key": "volume",
+      "name": "Volume"
+    },
+    {
+      "key": "shooting",
+      "name": "Shooting"
+    },
+    {
+      "key": "efficiency",
+      "name": "Efficiency"
+    },
+    {
+      "key": "usage",
+      "name": "Usage"
+    },
+    {
+      "key": "playmaking",
+      "name": "Playmaking"
+    },
+    {
+      "key": "rebounding",
+      "name": "Rebounding"
+    },
+    {
+      "key": "defense",
+      "name": "Defense"
+    },
+    {
+      "key": "impact",
+      "name": "Impact"
+    }
+  ],
+  "formats": [
+    {
+      "key": "integer",
+      "decimals": 0,
+      "suffix": null,
+      "multiplier": 1
+    },
+    {
+      "key": "decimal1",
+      "decimals": 1,
+      "suffix": null,
+      "multiplier": 1
+    },
+    {
+      "key": "decimal2",
+      "decimals": 2,
+      "suffix": null,
+      "multiplier": 1
+    },
+    {
+      "key": "percent1",
+      "decimals": 1,
+      "suffix": "%",
+      "multiplier": 100
+    },
+    {
+      "key": "percent2",
+      "decimals": 2,
+      "suffix": "%",
+      "multiplier": 100
+    },
+    {
+      "key": "rating1",
+      "decimals": 1,
+      "suffix": null,
+      "multiplier": 1
+    },
+    {
+      "key": "plusMinus1",
+      "decimals": 1,
+      "suffix": null,
+      "multiplier": 1,
+      "signed": true
+    },
+    {
+      "key": "minutes",
+      "decimals": 1,
+      "suffix": null,
+      "multiplier": 1
+    }
+  ],
+  "eraBoundaries": [
+    {
+      "season": "1946-47",
+      "label": "BAA begins",
+      "detail": "Basic box score: FG, FT, PTS, PF, AST."
+    },
+    {
+      "season": "1950-51",
+      "label": "Rebounds tracked",
+      "detail": "Total rebounds only; no offensive/defensive split."
+    },
+    {
+      "season": "1951-52",
+      "label": "Minutes played tracked",
+      "detail": "Enables per-minute metrics such as PER and WS/48."
+    },
+    {
+      "season": "1973-74",
+      "label": "Steals, blocks, OREB/DREB split",
+      "detail": "First season BPM and VORP can be computed."
+    },
+    {
+      "season": "1977-78",
+      "label": "Individual turnovers tracked",
+      "detail": "Enables USG% and TOV%."
+    },
+    {
+      "season": "1979-80",
+      "label": "Three point line introduced",
+      "detail": "3PM/3PA and 3PAr begin."
+    },
+    {
+      "season": "1996-97",
+      "label": "Advanced box scores and play-by-play",
+      "detail": "First season with true per-game ratings, plus/minus and shot charts."
+    },
+    {
+      "season": "2013-14",
+      "label": "Player tracking league-wide",
+      "detail": "SportVU, then Sony Hawk-Eye from 2023-24."
+    },
+    {
+      "season": "2016-17",
+      "label": "Hustle stats",
+      "detail": "Box outs added around 2019-20."
+    }
+  ],
+  "metrics": [
+    {
+      "key": "min",
+      "name": "Minutes",
+      "shortName": "MIN",
+      "category": "volume",
+      "format": "minutes",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1951-52",
+        "perGameFrom": "1951-52",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Minutes played."
+    },
+    {
+      "key": "pts",
+      "name": "Points",
+      "shortName": "PTS",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Points scored."
+    },
+    {
+      "key": "reb",
+      "name": "Rebounds",
+      "shortName": "REB",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1950-51",
+        "perGameFrom": "1950-51",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+    },
+    {
+      "key": "oreb",
+      "name": "Offensive Rebounds",
+      "shortName": "OREB",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Offensive rebounds."
+    },
+    {
+      "key": "dreb",
+      "name": "Defensive Rebounds",
+      "shortName": "DREB",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Defensive rebounds."
+    },
+    {
+      "key": "ast",
+      "name": "Assists",
+      "shortName": "AST",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Assists."
+    },
+    {
+      "key": "stl",
+      "name": "Steals",
+      "shortName": "STL",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Steals. Officially tracked from 1973-74."
+    },
+    {
+      "key": "blk",
+      "name": "Blocks",
+      "shortName": "BLK",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Blocked shots. Officially tracked from 1973-74."
+    },
+    {
+      "key": "tov",
+      "name": "Turnovers",
+      "shortName": "TOV",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": false,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1977-78",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Individual turnovers. Officially tracked from 1977-78."
+    },
+    {
+      "key": "pf",
+      "name": "Personal Fouls",
+      "shortName": "PF",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": false,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Personal fouls."
+    },
+    {
+      "key": "fgm",
+      "name": "Field Goals Made",
+      "shortName": "FGM",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Field goals made."
+    },
+    {
+      "key": "fga",
+      "name": "Field Goals Attempted",
+      "shortName": "FGA",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Field goals attempted."
+    },
+    {
+      "key": "fg3m",
+      "name": "Three Pointers Made",
+      "shortName": "3PM",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1979-80",
+        "perGameFrom": "1979-80",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Three-point field goals made. The three-point line arrived in 1979-80."
+    },
+    {
+      "key": "fg3a",
+      "name": "Three Pointers Attempted",
+      "shortName": "3PA",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1979-80",
+        "perGameFrom": "1979-80",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Three-point field goals attempted."
+    },
+    {
+      "key": "ftm",
+      "name": "Free Throws Made",
+      "shortName": "FTM",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Free throws made."
+    },
+    {
+      "key": "fta",
+      "name": "Free Throws Attempted",
+      "shortName": "FTA",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Free throws attempted."
+    },
+    {
+      "key": "plus_minus",
+      "name": "Plus/Minus",
+      "shortName": "+/-",
+      "category": "impact",
+      "format": "plusMinus1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Team point differential while the player is on the floor."
+    },
+    {
+      "key": "gp",
+      "name": "Games Played",
+      "shortName": "GP",
+      "category": "volume",
+      "format": "integer",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Games played."
+    },
+    {
+      "key": "gs",
+      "name": "Games Started",
+      "shortName": "GS",
+      "category": "volume",
+      "format": "integer",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1970-71",
+        "perGameFrom": "1970-71",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Games started."
+    },
+    {
+      "key": "fantasy_pts",
+      "name": "Fantasy Points",
+      "shortName": "FP",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1977-78",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "NBA fantasy points: PTS + 1.2*REB + 1.5*AST + 3*STL + 3*BLK - TOV."
+    },
+    {
+      "key": "fg_pct",
+      "name": "Field Goal %",
+      "shortName": "FG%",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.3,
+        "max": 0.7
+      },
+      "glossary": "FGM / FGA."
+    },
+    {
+      "key": "fg3_pct",
+      "name": "Three Point %",
+      "shortName": "3P%",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1979-80",
+        "perGameFrom": "1979-80",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.15,
+        "max": 0.5
+      },
+      "glossary": "3PM / 3PA."
+    },
+    {
+      "key": "ft_pct",
+      "name": "Free Throw %",
+      "shortName": "FT%",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.4,
+        "max": 1.0
+      },
+      "glossary": "FTM / FTA."
+    },
+    {
+      "key": "efg_pct",
+      "name": "Effective FG %",
+      "shortName": "eFG%",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.35,
+        "max": 0.72
+      },
+      "glossary": "(FGM + 0.5*3PM) / FGA. Adjusts field goal percentage for the extra value of a three."
+    },
+    {
+      "key": "ts_pct",
+      "name": "True Shooting %",
+      "shortName": "TS%",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.35,
+        "max": 0.75
+      },
+      "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+    },
+    {
+      "key": "fg3a_rate",
+      "name": "Three Point Attempt Rate",
+      "shortName": "3PAr",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1979-80",
+        "perGameFrom": "1979-80",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.85
+      },
+      "glossary": "3PA / FGA. Share of field goal attempts taken from three."
+    },
+    {
+      "key": "ftr",
+      "name": "Free Throw Rate",
+      "shortName": "FTr",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.8
+      },
+      "glossary": "FTA / FGA. Free throws drawn per field goal attempt."
+    },
+    {
+      "key": "pps",
+      "name": "Points Per Shot",
+      "shortName": "PPS",
+      "category": "shooting",
+      "format": "decimal2",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "PTS / FGA."
+    },
+    {
+      "key": "off_rtg",
+      "name": "Offensive Rating",
+      "shortName": "ORtg",
+      "category": "efficiency",
+      "format": "rating1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 85.0,
+        "max": 135.0
+      },
+      "glossary": "Points produced per 100 possessions (Dean Oliver)."
+    },
+    {
+      "key": "def_rtg",
+      "name": "Defensive Rating",
+      "shortName": "DRtg",
+      "category": "efficiency",
+      "format": "rating1",
+      "higherIsBetter": false,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 85.0,
+        "max": 135.0
+      },
+      "glossary": "Points allowed per 100 possessions (Dean Oliver)."
+    },
+    {
+      "key": "net_rtg",
+      "name": "Net Rating",
+      "shortName": "NetRtg",
+      "category": "efficiency",
+      "format": "rating1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": -25.0,
+        "max": 25.0
+      },
+      "glossary": "Offensive Rating minus Defensive Rating."
+    },
+    {
+      "key": "usg_pct",
+      "name": "Usage %",
+      "shortName": "USG%",
+      "category": "usage",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.05,
+        "max": 0.42
+      },
+      "glossary": "Share of team possessions a player ends while on the floor."
+    },
+    {
+      "key": "ast_pct",
+      "name": "Assist %",
+      "shortName": "AST%",
+      "category": "playmaking",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.55
+      },
+      "glossary": "Share of teammate field goals a player assists while on the floor."
+    },
+    {
+      "key": "ast_tov",
+      "name": "Assist to Turnover",
+      "shortName": "AST/TO",
+      "category": "playmaking",
+      "format": "decimal2",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Assists divided by turnovers."
+    },
+    {
+      "key": "ast_ratio",
+      "name": "Assist Ratio",
+      "shortName": "ASTr",
+      "category": "playmaking",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Assists per 100 possessions used."
+    },
+    {
+      "key": "oreb_pct",
+      "name": "Offensive Rebound %",
+      "shortName": "OREB%",
+      "category": "rebounding",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.2
+      },
+      "glossary": "Share of available offensive rebounds grabbed while on the floor."
+    },
+    {
+      "key": "dreb_pct",
+      "name": "Defensive Rebound %",
+      "shortName": "DREB%",
+      "category": "rebounding",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.4
+      },
+      "glossary": "Share of available defensive rebounds grabbed while on the floor."
+    },
+    {
+      "key": "reb_pct",
+      "name": "Rebound %",
+      "shortName": "REB%",
+      "category": "rebounding",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.3
+      },
+      "glossary": "Share of available rebounds grabbed while on the floor."
+    },
+    {
+      "key": "tov_pct",
+      "name": "Turnover %",
+      "shortName": "TOV%",
+      "category": "usage",
+      "format": "percent1",
+      "higherIsBetter": false,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.3
+      },
+      "glossary": "Turnovers per 100 possessions used."
+    },
+    {
+      "key": "stl_pct",
+      "name": "Steal %",
+      "shortName": "STL%",
+      "category": "defense",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.05
+      },
+      "glossary": "Share of opponent possessions ending in a steal by the player."
+    },
+    {
+      "key": "blk_pct",
+      "name": "Block %",
+      "shortName": "BLK%",
+      "category": "defense",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.1
+      },
+      "glossary": "Share of opponent two-point attempts blocked by the player."
+    },
+    {
+      "key": "pace",
+      "name": "Pace",
+      "shortName": "PACE",
+      "category": "efficiency",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 85.0,
+        "max": 110.0
+      },
+      "glossary": "Possessions per 48 minutes."
+    },
+    {
+      "key": "poss",
+      "name": "Possessions",
+      "shortName": "POSS",
+      "category": "efficiency",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Possessions played."
+    },
+    {
+      "key": "pie",
+      "name": "Player Impact Estimate",
+      "shortName": "PIE",
+      "category": "impact",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.3
+      },
+      "glossary": "A player's share of the box-score events generated in the games they played (NBA.com)."
+    },
+    {
+      "key": "game_score",
+      "name": "Game Score",
+      "shortName": "GmSc",
+      "category": "impact",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
+    },
+    {
+      "key": "per",
+      "name": "Player Efficiency Rating",
+      "shortName": "PER",
+      "category": "impact",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1951-52",
+        "perGameFrom": "1951-52",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 35.0
+      },
+      "glossary": "Hollinger's per-minute rating, pace and league adjusted so that the league average is 15.00 every season."
+    },
+    {
+      "key": "ws",
+      "name": "Win Shares",
+      "shortName": "WS",
+      "category": "impact",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1951-52",
+        "perGameFrom": "1951-52",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": null,
+      "glossary": "Estimated wins contributed. OWS + DWS."
+    },
+    {
+      "key": "ows",
+      "name": "Offensive Win Shares",
+      "shortName": "OWS",
+      "category": "impact",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1951-52",
+        "perGameFrom": "1951-52",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": null,
+      "glossary": "Wins contributed by offense."
+    },
+    {
+      "key": "dws",
+      "name": "Defensive Win Shares",
+      "shortName": "DWS",
+      "category": "impact",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1951-52",
+        "perGameFrom": "1951-52",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": null,
+      "glossary": "Wins contributed by defense."
+    },
+    {
+      "key": "ws48",
+      "name": "Win Shares per 48",
+      "shortName": "WS/48",
+      "category": "impact",
+      "format": "decimal2",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1951-52",
+        "perGameFrom": "1951-52",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": -0.05,
+        "max": 0.32
+      },
+      "glossary": "Win Shares per 48 minutes. League average is about 0.100."
+    },
+    {
+      "key": "bpm",
+      "name": "Box Plus/Minus",
+      "shortName": "BPM",
+      "category": "impact",
+      "format": "plusMinus1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": -8.0,
+        "max": 14.0
+      },
+      "glossary": "Box-score estimate of points per 100 possessions above a league-average player. Needs steals, blocks and turnovers, so it starts in 1973-74."
+    },
+    {
+      "key": "obpm",
+      "name": "Offensive Box Plus/Minus",
+      "shortName": "OBPM",
+      "category": "impact",
+      "format": "plusMinus1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": null,
+      "glossary": "Offensive component of BPM."
+    },
+    {
+      "key": "dbpm",
+      "name": "Defensive Box Plus/Minus",
+      "shortName": "DBPM",
+      "category": "impact",
+      "format": "plusMinus1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": null,
+      "glossary": "Defensive component of BPM."
+    },
+    {
+      "key": "vorp",
+      "name": "Value Over Replacement",
+      "shortName": "VORP",
+      "category": "impact",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": true,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": null,
+      "glossary": "(BPM + 2.0) * (share of team minutes) * (team games / 82)."
+    },
+    {
+      "key": "opp_efg_pct",
+      "name": "Opponent eFG %",
+      "shortName": "Opp eFG%",
+      "category": "defense",
+      "format": "percent1",
+      "higherIsBetter": false,
+      "scope": [
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Opponent effective field goal percentage."
+    },
+    {
+      "key": "opp_tov_pct",
+      "name": "Opponent Turnover %",
+      "shortName": "Opp TOV%",
+      "category": "defense",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Opponent turnovers per 100 possessions."
+    },
+    {
+      "key": "opp_oreb_pct",
+      "name": "Opponent OREB %",
+      "shortName": "Opp OREB%",
+      "category": "defense",
+      "format": "percent1",
+      "higherIsBetter": false,
+      "scope": [
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Opponent offensive rebound percentage."
+    },
+    {
+      "key": "opp_ftr",
+      "name": "Opponent Free Throw Rate",
+      "shortName": "Opp FTr",
+      "category": "defense",
+      "format": "percent1",
+      "higherIsBetter": false,
+      "scope": [
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Opponent FTA / FGA."
+    },
+    {
+      "key": "wins",
+      "name": "Wins",
+      "shortName": "W",
+      "category": "volume",
+      "format": "integer",
+      "higherIsBetter": true,
+      "scope": [
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": true,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Team wins."
+    },
+    {
+      "key": "losses",
+      "name": "Losses",
+      "shortName": "L",
+      "category": "volume",
+      "format": "integer",
+      "higherIsBetter": false,
+      "scope": [
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": true,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Team losses."
+    },
+    {
+      "key": "win_pct",
+      "name": "Win Percentage",
+      "shortName": "W%",
+      "category": "efficiency",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": true,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "glossary": "Wins / (Wins + Losses)."
+    }
+  ]
+}
