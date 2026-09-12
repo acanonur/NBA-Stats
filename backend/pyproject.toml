@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hardwood-backend"
+version = "1.0.0"
+description = "Hardwood: NBA advanced-stats service for the Hardwood iOS dashboard."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+# Runtime dependencies, deliberately short. nba_api is optional and imported behind a
+# try/except by the live ingest path only; there is no BigQuery client anywhere.
+dependencies = [
+    "fastapi>=0.110",
+    "pydantic>=2.6",
+    "sqlalchemy>=2.0",
+    "httpx>=0.27",
+    "python-dateutil>=2.9",
+]
+
+[project.optional-dependencies]
+# The live ingest path. Everything else — including the whole demo league — runs without it.
+live = ["nba_api>=1.4.1"]
+test = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+serve = ["uvicorn>=0.27"]
+
+[project.scripts]
+hardwood-seed = "nbastats.seed:main"
+
+[tool.setuptools.packages.find]
+include = ["nbastats*"]
+
+[tool.setuptools.package-data]
+nbastats = ["schema.sql"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-ra"
+filterwarnings = ["error::DeprecationWarning:nbastats.*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]

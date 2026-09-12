@@ -92,7 +92,11 @@ def get_session() -> Iterator[Session]:
 @contextmanager
 def session_scope(engine: Engine | None = None) -> Iterator[Session]:
     """Context manager that commits on success and rolls back on failure."""
-    factory = sessionmaker(bind=engine, expire_on_commit=False, future=True) if engine else get_sessionmaker()
+    factory = (
+        sessionmaker(bind=engine, expire_on_commit=False, future=True)
+        if engine is not None
+        else get_sessionmaker()
+    )
     session = factory()
     try:
         yield session
@@ -138,7 +142,10 @@ def bump_sync_version(
     now = utcnow()
     state.last_run_at = now
     state.last_success_at = now
-    if data_through is not None and (state.data_through is None or data_through > state.data_through):
+    moves_forward = state.data_through is None or (
+        data_through is not None and data_through > state.data_through
+    )
+    if data_through is not None and moves_forward:
         state.data_through = data_through
     if games_ingested is not None:
         state.games_ingested = games_ingested

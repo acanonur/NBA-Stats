@@ -276,11 +276,12 @@ def usage_pct(
     Returned on the 0-100 scale of the source formula; :func:`compute_metric`
     divides by 100 for the API's fractional convention.
     """
-    values = _all(fga, fta, tov, team_minutes, team_fga, team_fta, team_tov)
+    values = _all(fga, fta, tov, team_fga, team_fta, team_tov)
     played = _positive(minutes)
-    if values is None or played is None:
+    tm_minutes = _positive(team_minutes)
+    if values is None or played is None or tm_minutes is None:
         return None
-    attempts, free_throws, turnovers, tm_minutes, tm_fga, tm_fta, tm_tov = values
+    attempts, free_throws, turnovers, tm_fga, tm_fta, tm_tov = values
     player_plays = attempts + FT_POSSESSION_WEIGHT * free_throws + turnovers
     team_plays = tm_fga + FT_POSSESSION_WEIGHT * tm_fta + tm_tov
     return _div(100.0 * player_plays * (tm_minutes / 5.0), played * team_plays)
@@ -298,13 +299,12 @@ def assist_pct(
     The share of teammate field goals a player assisted while on the floor.
     Returned on the 0-100 scale.
     """
-    values = _all(ast, team_minutes, team_fgm, fgm)
+    values = _all(ast, team_fgm, fgm)
     played = _positive(minutes)
-    if values is None or played is None:
+    tm_minutes = _positive(team_minutes)
+    if values is None or played is None or tm_minutes is None:
         return None
-    assists, tm_minutes, tm_fgm, own_fgm = values
-    if tm_minutes <= 0:
-        return None
+    assists, tm_fgm, own_fgm = values
     teammate_fgm = (played / (tm_minutes / 5.0)) * tm_fgm - own_fgm
     return _div(100.0 * assists, teammate_fgm)
 
@@ -336,11 +336,12 @@ def rebound_pct(
     opp_reb: Optional[float] = None,
 ) -> Optional[float]:
     """TRB% = 100 * (TRB * (TmMP/5)) / (MP * (TmTRB + OppTRB)). 0-100 scale."""
-    values = _all(reb, team_minutes, team_reb, opp_reb)
+    values = _all(reb, team_reb, opp_reb)
     played = _positive(minutes)
-    if values is None or played is None:
+    tm_minutes = _positive(team_minutes)
+    if values is None or played is None or tm_minutes is None:
         return None
-    rebounds, tm_minutes, tm_reb, opponent_reb = values
+    rebounds, tm_reb, opponent_reb = values
     return _div(100.0 * rebounds * (tm_minutes / 5.0), played * (tm_reb + opponent_reb))
 
 
@@ -393,11 +394,12 @@ def steal_pct(
     The share of opponent possessions that ended in a steal by this player while
     he was on the floor.
     """
-    values = _all(stl, team_minutes, opp_poss)
+    values = _all(stl, opp_poss)
     played = _positive(minutes)
-    if values is None or played is None:
+    tm_minutes = _positive(team_minutes)
+    if values is None or played is None or tm_minutes is None:
         return None
-    steals, tm_minutes, opponent_possessions = values
+    steals, opponent_possessions = values
     return _div(100.0 * steals * (tm_minutes / 5.0), played * opponent_possessions)
 
 
@@ -412,11 +414,12 @@ def block_pct(
 
     Only two-point attempts are blockable in the denominator, per the glossary.
     """
-    values = _all(blk, team_minutes, opp_fga, opp_fg3a)
+    values = _all(blk, opp_fga, opp_fg3a)
     played = _positive(minutes)
-    if values is None or played is None:
+    tm_minutes = _positive(team_minutes)
+    if values is None or played is None or tm_minutes is None:
         return None
-    blocks, tm_minutes, opponent_fga, opponent_fg3a = values
+    blocks, opponent_fga, opponent_fg3a = values
     return _div(100.0 * blocks * (tm_minutes / 5.0), played * (opponent_fga - opponent_fg3a))
 
 
@@ -552,7 +555,8 @@ def q_assist(
     second_term = _div(teammate_assists, teammate_fgm)
     if second_term is None:
         return None
-    return minute_share * (1.14 * ((tm_ast - assists) / tm_fgm)) + second_term * (1.0 - minute_share)
+    team_rate = 1.14 * ((tm_ast - assists) / tm_fgm)
+    return minute_share * team_rate + second_term * (1.0 - minute_share)
 
 
 def fg_part(
@@ -1057,7 +1061,8 @@ def stops2(
     throws, prorated by the player's share of the team's fouls.
     """
     values = _all(
-        pf, fm_weight, dor_pct, team_blk, team_stl, team_pf, opp_fga, opp_fgm, opp_ftm, opp_fta, opp_tov
+        pf, fm_weight, dor_pct, team_blk, team_stl, team_pf,
+        opp_fga, opp_fgm, opp_ftm, opp_fta, opp_tov,
     )
     played = _positive(minutes)
     tm_minutes = _positive(team_minutes)
@@ -1366,7 +1371,12 @@ def four_factors(
     """
     turnover_fraction = turnover_pct(tov, fga, fta)
     return [
-        FourFactor("efg_pct", "eFG%", FOUR_FACTOR_WEIGHTS["efg_pct"], effective_fg_pct(fgm, fg3m, fga)),
+        FourFactor(
+            "efg_pct",
+            "eFG%",
+            FOUR_FACTOR_WEIGHTS["efg_pct"],
+            effective_fg_pct(fgm, fg3m, fga),
+        ),
         FourFactor(
             "tov_pct",
             "TOV%",
@@ -1520,7 +1530,9 @@ def _column(row: Optional[Mapping[str, Any]], name: str) -> Optional[float]:
     return None
 
 
-def _prefixed(row: Optional[Mapping[str, Any]], prefixes: Sequence[str], name: str) -> Optional[float]:
+def _prefixed(
+    row: Optional[Mapping[str, Any]], prefixes: Sequence[str], name: str
+) -> Optional[float]:
     """Read ``<prefix><column>`` from a flattened row, e.g. ``team_fga``."""
     if row is None:
         return None
@@ -1894,7 +1906,9 @@ def _m_win_pct(ctx: _Ctx) -> Optional[float]:
     return _div(values[0], values[0] + values[1])
 
 
-def _stored_or(name: str, compute: Callable[[_Ctx], Optional[float]]) -> Callable[[_Ctx], Optional[float]]:
+def _stored_or(
+    name: str, compute: Callable[[_Ctx], Optional[float]]
+) -> Callable[[_Ctx], Optional[float]]:
     """Compute from components, falling back to a stored column of the same key.
 
     Ingested rows may already carry a precomputed advanced column (the NBA's own
@@ -1940,7 +1954,9 @@ _METRIC_COMPUTERS: dict[str, Callable[[_Ctx], Optional[float]]] = {
     "ft_pct": _stored_or("ft_pct", lambda c: _div(c.v("ftm"), c.v("fta"))),
     "efg_pct": _stored_or("efg_pct", _m_efg_pct),
     "ts_pct": _stored_or("ts_pct", _m_ts_pct),
-    "fg3a_rate": _stored_or("fg3a_rate", lambda c: three_point_attempt_rate(c.v("fg3a"), c.v("fga"))),
+    "fg3a_rate": _stored_or(
+        "fg3a_rate", lambda c: three_point_attempt_rate(c.v("fg3a"), c.v("fga"))
+    ),
     "ftr": _stored_or("ftr", lambda c: free_throw_rate(c.v("fta"), c.v("fga"))),
     "pps": _stored_or("pps", lambda c: points_per_shot(c.v("pts"), c.v("fga"))),
     # Efficiency and usage.
@@ -1956,7 +1972,9 @@ _METRIC_COMPUTERS: dict[str, Callable[[_Ctx], Optional[float]]] = {
     "oreb_pct": _stored_or("oreb_pct", _m_oreb_pct),
     "dreb_pct": _stored_or("dreb_pct", _m_dreb_pct),
     "reb_pct": _stored_or("reb_pct", _m_reb_pct),
-    "tov_pct": _stored_or("tov_pct", lambda c: _pct(turnover_pct(c.v("tov"), c.v("fga"), c.v("fta")))),
+    "tov_pct": _stored_or(
+        "tov_pct", lambda c: _pct(turnover_pct(c.v("tov"), c.v("fga"), c.v("fta")))
+    ),
     "stl_pct": _stored_or("stl_pct", _m_stl_pct),
     "blk_pct": _stored_or("blk_pct", _m_blk_pct),
     "pace": _stored_or("pace", _m_pace),
@@ -2054,4 +2072,6 @@ def compute_metric(
     computer = _METRIC_COMPUTERS.get(key)
     if computer is None:
         return None
-    return computer(_Ctx(row=row, team_row=team_row, opponent_row=opponent_row, league_row=league_row))
+    return computer(
+        _Ctx(row=row, team_row=team_row, opponent_row=opponent_row, league_row=league_row)
+    )

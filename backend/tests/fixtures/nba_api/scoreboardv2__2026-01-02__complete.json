@@ -1,0 +1,117 @@
+{
+  "resource": "scoreboardv2",
+  "parameters": {
+    "GameDate": "2026-01-02",
+    "LeagueID": "00",
+    "DayOffset": 0
+  },
+  "resultSets": [
+    {
+      "name": "GameHeader",
+      "headers": [
+        "GAME_DATE_EST",
+        "GAME_SEQUENCE",
+        "GAME_ID",
+        "GAME_STATUS_ID",
+        "GAME_STATUS_TEXT",
+        "GAMECODE",
+        "HOME_TEAM_ID",
+        "VISITOR_TEAM_ID",
+        "SEASON",
+        "LIVE_PERIOD",
+        "LIVE_PC_TIME",
+        "NATL_TV_BROADCASTER_ABBREVIATION"
+      ],
+      "rowSet": [
+        [
+          "2026-01-02T00:00:00",
+          1,
+          "0022500512",
+          3,
+          "Final",
+          "20260102/BOSLAL",
+          1610612747,
+          1610612738,
+          "2025",
+          4,
+          "     ",
+          "ESPN"
+        ],
+        [
+          "2026-01-02T00:00:00",
+          2,
+          "0022500513",
+          3,
+          "Final",
+          "20260102/NYKMIA",
+          1610612748,
+          1610612752,
+          "2025",
+          4,
+          "     ",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "LineScore",
+      "headers": [
+        "GAME_DATE_EST",
+        "GAME_SEQUENCE",
+        "GAME_ID",
+        "TEAM_ID",
+        "TEAM_ABBREVIATION",
+        "TEAM_CITY_NAME",
+        "TEAM_NAME",
+        "TEAM_WINS_LOSSES",
+        "PTS"
+      ],
+      "rowSet": [
+        [
+          "2026-01-02T00:00:00",
+          1,
+          "0022500512",
+          1610612747,
+          "LAL",
+          "Los Angeles",
+          "Lakers",
+          "27-14",
+          118
+        ],
+        [
+          "2026-01-02T00:00:00",
+          1,
+          "0022500512",
+          1610612738,
+          "BOS",
+          "Boston",
+          "Celtics",
+          "26-15",
+          112
+        ],
+        [
+          "2026-01-02T00:00:00",
+          2,
+          "0022500513",
+          1610612752,
+          "NYK",
+          "New York",
+          "Knicks",
+          "22-19",
+          103
+        ],
+        [
+          "2026-01-02T00:00:00",
+          2,
+          "0022500513",
+          1610612748,
+          "MIA",
+          "Miami",
+          "Heat",
+          "21-20",
+          99
+        ]
+      ]
+    }
+  ]
+}
