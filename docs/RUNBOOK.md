@@ -126,6 +126,8 @@ sqlite3 hardwood.db 'select job, status, started_at, games_written, error from i
 | A widget tile shows an error but the rest render | Per-widget failure isolation | Read `requestId` in the result and grep the server log |
 | Numbers changed for a game played two days ago | League stat correction | Expected — the three-day re-pull window exists for this |
 | `check_contracts.py` fails after editing a catalog | Generated files not regenerated, or the app's bundled copies drifted | Re-run the `contracts/tools/gen_*.py` generator, then `scripts/sync_contracts.sh` |
+| `git pull` aborts with "local changes to ios/NBAStats.xcodeproj/project.pbxproj" | Xcode rewrites the project file on its own — opening the project is enough | Quit Xcode, then `git checkout -- ios/NBAStats.xcodeproj/project.pbxproj` and pull again. That edit is Xcode's bookkeeping, not your work. **Check `git log --oneline -1` before concluding a fix did not work**: a silently aborted pull looks exactly like a failed fix. |
+| Xcode still reports a build error a fix was supposed to clear | The pull may not have landed, or DerivedData is stale | `git log --oneline -1` first, then `rm -rf ~/Library/Developer/Xcode/DerivedData/NBAStats-*` and Clean Build Folder |
 
 ---
 
