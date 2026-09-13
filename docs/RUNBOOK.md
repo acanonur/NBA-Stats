@@ -61,7 +61,7 @@ between them.
 
 ```bash
 pip install nba_api          # optional dependency, only needed for the live path
-python3 -m nbastats.ingest.runner --watch
+python3 -m nbastats.ingest.runner --watch     # or: backend/scripts/ingest_watch.sh
 ```
 
 `--watch` polls the scoreboard every `INGEST_POLL_SECONDS` during the game window, ingests each
@@ -72,7 +72,7 @@ Nightly, run the correction pass — the league revises box scores after the fac
 
 ```cron
 # 05:30 US Eastern: re-pull the last three days and re-aggregate
-30 5 * * *  cd /srv/hardwood/backend && python3 -m nbastats.ingest.runner --nightly >> /var/log/hardwood-ingest.log 2>&1
+30 5 * * *  /srv/hardwood/backend/scripts/ingest_daily.sh >> /var/log/hardwood-ingest.log 2>&1
 ```
 
 ### ⚠ The deployment constraint that catches everyone

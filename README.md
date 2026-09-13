@@ -134,9 +134,19 @@ every shipped preset**.
 ### One honesty note
 
 This repository was developed on Linux, where **no Swift toolchain exists**. The backend is
-verified by running its tests; the iOS app is not — it has never been through a Swift compiler
-here. It was written against a locked type surface (`ios/ARCHITECTURE.md`), reviewed
-symbol-by-symbol for consistency, and CI (`.github/workflows/ios.yml`) builds and tests it on a
-macOS runner, which is the first place the compiler actually sees it. Expect to fix a small
-number of compile errors on the first real build; the structure, contracts and behaviour are
-what the work went into.
+verified by actually running its 416 tests. The iOS app is not — it has never been through a
+Swift compiler here.
+
+What it did get instead: a locked type surface (`ios/ARCHITECTURE.md`) that every file was
+written against, a mechanical sweep checking argument labels against all 241 initializers plus
+switch exhaustiveness over nine enums, and then an adversarial review pass by independent
+reviewers told to treat that clean sweep as a hypothesis to falsify. They found **no compile
+errors** and 43 semantic defects, 33 of which are fixed — including a path that destroyed the
+user's saved layouts on any read failure, and a comparison chart that could rank players
+backwards.
+
+That is real evidence, but it is not a compiler. `.github/workflows/ios.yml` builds and tests
+the app on a macOS runner, which is the first place the compiler genuinely sees it. Expect to
+fix a few things on the first real build. The known risks are listed in `ios/README.md`; the
+largest is that `@MainActor` inference from SwiftUI's protocol conformances requires the
+iOS 18 SDK, so Xcode 16+ is a hard requirement rather than a preference.
