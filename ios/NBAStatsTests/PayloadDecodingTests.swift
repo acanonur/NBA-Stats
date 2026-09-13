@@ -383,6 +383,39 @@ final class PayloadDecodingTests: XCTestCase {
         XCTAssertEqual(response.resultsByWidgetID.count, response.results.count)
     }
 
+    /// The failure branch of `ResolveResult.init(from:)` — the app's most intricate decoder.
+    ///
+    /// `contracts/CONTRACT.md` §3 documents a per-widget failure as `status: "error"` with a
+    /// populated `error` body and a `null` payload. The resolve fixture carries one on purpose
+    /// (`ERROR_WIDGET_CONFIGS` in `nbastats.fixtures_export`: a leaderboard on a metric the era
+    /// never recorded, which the service answers with `metric_unavailable`). Without it every
+    /// result in every fixture was `ok` or `partial` and this branch had no golden coverage.
+    func testDashboardResolveFixtureCarriesAFailedWidget() throws {
+        try requireFixtures()
+        let response = try decoder.decode(DashboardResolveResponse.self,
+                                          from: try fixture("dashboard_resolve"))
+
+        let failures = response.results.filter { $0.effectiveStatus == .error }
+        XCTAssertEqual(failures.count, 1,
+                       "The resolve fixture must exercise exactly one failed widget")
+        let failure = try XCTUnwrap(failures.first)
+
+        XCTAssertNil(failure.payload, "An error result must not carry a payload")
+        XCTAssertNil(failure.decodeError, "A well-formed error result is not a decoding failure")
+        XCTAssertNotNil(failure.failureMessage)
+
+        let body = try XCTUnwrap(failure.error, "An error result must carry the §7 error body")
+        XCTAssertEqual(body.code, APIError.Code.metricUnavailable.rawValue)
+        XCTAssertFalse(body.message.isEmpty, "An error body must say something a reader can act on")
+        XCTAssertEqual(body.field, "metric")
+
+        // And what the tile becomes: a metric the era never had reads as "unavailable", not as a
+        // failure the reader should retry (ARCHITECTURE.md §3 rule 1).
+        let error = APIError(body: body, status: 200)
+        XCTAssertEqual(error.contractCode, .metricUnavailable)
+        XCTAssertFalse(error.userMessage.isEmpty)
+    }
+
     /// The era-honest half of the resolve fixture: results that carry notes, an estimate, or a
     /// stat the season never had.
     func testResolveFixtureCarriesTheEraCases() throws {

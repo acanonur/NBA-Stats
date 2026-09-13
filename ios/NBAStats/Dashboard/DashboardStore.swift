@@ -89,9 +89,11 @@ public final class DashboardStore: ObservableObject {
 
     private func loadFromDisk() {
         var loaded = LayoutLoadResult()
+        var loadFailed = false
         do {
             loaded = try persistence.loadAllWithNotes()
         } catch {
+            loadFailed = true
             lastErrorMessage = (error as? LayoutPersistenceError)?.userMessage
                 ?? "Your saved dashboards could not be opened."
         }
@@ -118,8 +120,12 @@ public final class DashboardStore: ObservableObject {
             selectedLayoutID = restored.first?.id
         }
 
-        // Seeded or repaired documents are written straight back, so the next launch is clean.
-        if needsSeed || !notes.isEmpty {
+        // Seeded or repaired documents are written straight back, so the next launch is clean —
+        // but only when the file on disk was read in full. Writing after a failed or partial read
+        // replaces a document this build merely could not open (one written by a newer build, a
+        // file the system refused) with the seed, and the next launch then finds the seed instead
+        // of retrying the real thing. The seeded layouts still stand for this launch.
+        if (needsSeed || !notes.isEmpty) && !loadFailed && loaded.failures.isEmpty {
             persist()
         }
     }
@@ -214,16 +220,18 @@ public final class DashboardStore: ObservableObject {
     }
 
     /// Replaces a layout wholesale, bumping `updatedAt` and persisting.
+    ///
+    /// Like every other mutator this goes through `edit`, so a preset is forked into an editable
+    /// copy first and the replacement lands on the copy — carrying the copy's id and `presetKey` —
+    /// rather than overwriting the preset in place.
     public func update(_ layout: DashboardLayout) {
-        guard let index = layouts.firstIndex(where: { $0.id == layout.id }) else { return }
-        if isEditing {
-            undoSnapshot = EditSnapshot(currentID: layout.id, previous: layouts[index])
+        edit(layout.id) { working, _ in
+            var replacement = layout
+            replacement.id = working.id
+            replacement.isPreset = false
+            replacement.presetKey = working.presetKey ?? layout.presetKey
+            working = replacement
         }
-        var updated = layout
-        updated.updatedAt = Date()
-        if updated.createdAt == nil { updated.createdAt = updated.updatedAt }
-        layouts[index] = updated
-        persist()
     }
 
     public func moveLayouts(fromOffsets: IndexSet, toOffset: Int) {

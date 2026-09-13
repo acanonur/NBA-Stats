@@ -25,7 +25,14 @@ from typing import Any, Optional, Sequence
 
 from .. import catalog
 from . import queries as q
-from .base import ResolveContext, attach_availability, resolve_season, resolve_subject_token
+from .base import (
+    ResolveContext,
+    WidgetError,
+    attach_availability,
+    availability_note,
+    resolve_season,
+    resolve_subject_token,
+)
 
 __all__ = ["resolve", "resolve_leaderboard", "qualifier_text", "DEFAULT_LIMIT"]
 
@@ -66,6 +73,25 @@ def resolve_leaderboard(
     ]
     team_ids = _team_ids(config, ctx)
 
+    era_season = None if scope == "all_time" else season
+    if era_season is not None:
+        board_availability, era_note = availability_note(metric_key, era_season, "season")
+        if board_availability == "unavailable":
+            # A leaderboard *is* its metric: with no value for any subject there is nothing to
+            # rank, so an empty table would make the reader diagnose the era gap themselves.
+            # ``contracts/CONTRACT.md`` §7 reserves ``metric_unavailable`` (422) for exactly
+            # this, and §3's worked resolve example is this case. An ``all_time`` board still
+            # ranks per row, so the gate only applies to a single season.
+            raise WidgetError(
+                "metric_unavailable",
+                era_note
+                or (
+                    f"{catalog.metric(metric_key).get('name', metric_key)} is not available "
+                    f"for the {era_season} season."
+                ),
+                field="metric",
+            )
+
     ranked = q.leaders(
         ctx,
         metric_key,
@@ -96,7 +122,6 @@ def resolve_leaderboard(
         secondary_keys, scope,
     )
 
-    era_season = None if scope == "all_time" else season
     availability = attach_availability(notes, [metric_key], era_season, "season")
 
     payload: dict[str, Any] = {

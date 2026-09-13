@@ -7,7 +7,7 @@ import SwiftUI
 /// `presetKey`, so the copy can still be reset back to the original later.
 public struct PresetGallery: View {
 
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
     private let onUse: ((DashboardLayout) -> Void)?
 
     @ObservedObject private var store: DashboardStore
@@ -16,7 +16,7 @@ public struct PresetGallery: View {
     public init(catalog: Catalog,
                 store: DashboardStore,
                 onUse: ((DashboardLayout) -> Void)? = nil) {
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
         _store = ObservedObject(wrappedValue: store)
         self.onUse = onUse
     }

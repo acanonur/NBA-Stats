@@ -2057,6 +2057,15 @@ def _possessions(line: dict[str, int], opponent: dict[str, int]) -> float:
 
     :data:`POSSESSION_CALIBRATION` then trims the couple of percent by which the box-score
     estimate exceeds the league's play-by-play possession count.
+
+    This is deliberately **not** :func:`nbastats.metrics.possessions`, which is the standard
+    single-team Basketball-Reference estimate (``FGA + 0.44*FTA - ORB + TOV``) that the ingest
+    aggregator and every metric adapter use for real data. The two differ by roughly 2-2.5%, so
+    running :func:`nbastats.ingest.aggregate.recompute_season` over a seeded demo database
+    rewrites every team rating it wrote here — once, and then idempotently. That is expected:
+    the aggregator is canonical for ingested data, and this one exists so the synthetic league
+    is internally consistent. Do not "reconcile" them by pointing the aggregator at this
+    function; real NBA data has to use the standard estimate.
     """
     own = line["fga"] + 0.44 * line["fta"] - line["oreb"] + line["tov"]
     theirs = opponent["fga"] + 0.44 * opponent["fta"] - opponent["oreb"] + opponent["tov"]

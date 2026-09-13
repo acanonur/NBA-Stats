@@ -506,12 +506,15 @@ class ResolveContext(ContractModel):
 
 
 class ResolvedContext(ContractModel):
-    """What the server actually resolved the context to, echoed back to the client."""
+    """What the server actually resolved the context to, echoed back to the client.
+
+    The keys here are exactly the three ``contracts/CONTRACT.md`` §3 defines for
+    ``resolvedContext``; the client has no home for anything else.
+    """
 
     favorite_player_id: Optional[int] = None
     favorite_team_id: Optional[int] = None
     season: Optional[str] = None
-    season_type: Optional[str] = None
 
 
 class ResolveWidgetRequest(ContractModel):

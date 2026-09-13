@@ -28,6 +28,17 @@ TABLE_METRICS: tuple[str, ...] = ("off_rtg", "def_rtg", "net_rtg", "pace")
 LEAGUE_AVERAGE_METRICS: tuple[str, ...] = TABLE_METRICS
 
 
+def _win_pct(row: Any) -> float:
+    """Win percentage from the stored column, else from the record. Every era recorded both."""
+    stored = getattr(row, "win_pct", None)
+    if stored is not None:
+        return float(stored)
+    wins = row.wins or 0
+    losses = row.losses or 0
+    played = wins + losses
+    return (wins / played) if played else 0.0
+
+
 def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any], str, list[str]]:
     """Resolve one ``team_efficiency``."""
     notes: list[str] = []
@@ -70,6 +81,20 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
         )
     )
 
+    # When *no* team has the sort metric, the sort key above is identical for every entry and the
+    # order that survives is whatever the database returned. Handing that out as ranks 1..N
+    # produced a "league table" where a 13-7 team sat below a 7-13 team with every value an em
+    # dash. Win percentage is recorded in every era, so order by that instead and say so; the
+    # ranks themselves are left unset below, because there is genuinely no ranking to report.
+    sort_metric_is_rankable = any(value is not None for value in (entry[0] for entry in entries))
+    if entries and not sort_metric_is_rankable:
+        entries.sort(key=lambda entry: -_win_pct(entry[2]))
+        name = catalog.metric(sort_by).get("name", sort_by)
+        notes.append(
+            f"{name} was not recorded in {season}, so this table is ordered by win "
+            "percentage rather than by it."
+        )
+
     rows: list[dict[str, Any]] = []
     for _, team_id, row in entries[:limit]:
         values = {
@@ -78,7 +103,9 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
         ranks = {key: spreads[key].for_subject(team_id)[0] for key in keys}
         rows.append(
             {
-                "rank": ranks.get(sort_by) or (len(rows) + 1),
+                # 0, not a made-up position: the client renders a non-positive rank as an em
+                # dash (`contracts/CONTRACT.md` §6 — never a number the data does not support).
+                "rank": ranks.get(sort_by) or 0,
                 "team": q.team_ref_dict(ctx, team_id),
                 "wins": row.wins,
                 "losses": row.losses,

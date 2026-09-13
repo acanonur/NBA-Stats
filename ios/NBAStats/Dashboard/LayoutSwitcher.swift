@@ -10,7 +10,7 @@ import SwiftUI
 public struct LayoutSwitcher: View {
 
     @ObservedObject private var store: DashboardStore
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
     private let onSelect: ((DashboardLayout) -> Void)?
 
     @Environment(\.dismiss) private var dismiss
@@ -22,7 +22,7 @@ public struct LayoutSwitcher: View {
                 catalog: Catalog,
                 onSelect: ((DashboardLayout) -> Void)? = nil) {
         _store = ObservedObject(wrappedValue: store)
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
         self.onSelect = onSelect
     }
 
@@ -209,7 +209,7 @@ struct LayoutSettingsView: View {
     ]
 
     @ObservedObject private var store: DashboardStore
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
     private let layoutID: String
     private let onShow: (DashboardLayout) -> Void
 
@@ -224,7 +224,7 @@ struct LayoutSettingsView: View {
          catalog: Catalog,
          onShow: @escaping (DashboardLayout) -> Void) {
         _store = ObservedObject(wrappedValue: store)
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
         self.layoutID = layout.id
         self.onShow = onShow
         _name = State(initialValue: layout.name)

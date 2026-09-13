@@ -240,6 +240,11 @@ public enum APIError: Error, Hashable, Sendable {
              .internationalRoamingOff, .dataNotAllowed, .callIsActive:
             // From the reader's point of view these are all "the server is not there".
             return .offline
+        case .cancelled:
+            // Callers are expected to drop cancellations via `isCancellation` before mapping.
+            // Naming the case anyway keeps a stray one out of the `default` branch, where it
+            // would surface to the reader as a `network_error` that never happened.
+            return .offline
         default:
             return .server(code: "network_error",
                            message: urlError.localizedDescription,

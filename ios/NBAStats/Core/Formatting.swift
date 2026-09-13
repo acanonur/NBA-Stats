@@ -65,8 +65,11 @@ public enum Formatting {
     /// A percentile in `[0, 1]` rendered as a rank-like string: `0.93` becomes `"93rd"`.
     public static func percentile(_ value: Double?) -> String {
         guard let value = value, value.isFinite else { return emDash }
-        let scaled = Int((value * 100).rounded())
-        return FormatterBox.shared.ordinalString(min(100, max(0, scaled)))
+        // Clamp in `Double` space, *before* the conversion: `Int(_: Double)` traps on anything
+        // outside `Int`'s range, and this number comes straight off the wire as an untyped
+        // `Double`. Clamping afterwards is too late — the trap has already happened.
+        let scaled = min(max(value * 100, 0), 100)
+        return FormatterBox.shared.ordinalString(Int(scaled.rounded()))
     }
 
     // MARK: - Dates

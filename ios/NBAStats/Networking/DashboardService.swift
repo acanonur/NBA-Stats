@@ -66,6 +66,9 @@ private struct ResolveChunk: Sendable {
 private struct ResolveChunkOutcome: Sendable {
     let widgets: [DashboardWidget]
     let outcome: Result<DashboardResolveResponse, APIError>
+    /// The chunk was called off — a superseded refresh, a screen that went away. Never a
+    /// failure the reader should see, so these outcomes are dropped rather than painted on.
+    var cancelled: Bool = false
 }
 
 /// What one cached tile is written as: the payload plus the labels the tile needs to redraw
@@ -99,6 +102,14 @@ public final class DashboardService: ObservableObject {
 
     /// Widget states keyed by widget id.
     @Published public private(set) var results: [String: WidgetState] = [:]
+
+    /// The cache key each published payload was built for, keyed by widget id.
+    ///
+    /// A tile keeps its id when the reader reconfigures it, so the id alone cannot say whether
+    /// the numbers on screen belong to the config now being shown. `unchanged` is a claim about
+    /// the sync version and nothing else, so without this a reconfigured tile would go on
+    /// showing the previous metric's numbers for as long as no game finalized.
+    private var resultKeys: [String: String] = [:]
     @Published public private(set) var lastUpdated: Date?
     @Published public private(set) var dataThrough: String?
     @Published public private(set) var isRefreshing: Bool = false
@@ -143,6 +154,7 @@ public final class DashboardService: ObservableObject {
         // A widget that is no longer in the layout keeps no state.
         let liveIDs = Set(layout.widgets.map { $0.id })
         results = results.filter { liveIDs.contains($0.key) }
+        resultKeys = resultKeys.filter { liveIDs.contains($0.key) }
 
         guard !layout.widgets.isEmpty else {
             isRefreshing = false
@@ -154,8 +166,16 @@ public final class DashboardService: ObservableObject {
         var everythingIsFresh = true
         for widget in layout.widgets {
             let key = cacheKey(for: widget)
+            // Whatever is already in `results` was fetched under the config it carried then. A
+            // reconfigured tile keeps its id but changes its key, and those old numbers must
+            // not stand in for the new config.
+            if resultKeys[widget.id] != key {
+                published[widget.id] = nil
+                resultKeys[widget.id] = nil
+            }
             if let entry = await cache.entry(forKey: key), let state = cachedState(from: entry, widget: widget) {
                 published[widget.id] = state
+                resultKeys[widget.id] = key
                 if entry.isExpired() { everythingIsFresh = false }
             } else {
                 everythingIsFresh = false
@@ -302,7 +322,7 @@ public final class DashboardService: ObservableObject {
 
         var pending: Set<String> = []
         var sawSuccess = false
-        for outcome in outcomes {
+        for outcome in outcomes where !outcome.cancelled {
             switch outcome.outcome {
             case .success(let response):
                 sawSuccess = true
@@ -323,7 +343,11 @@ public final class DashboardService: ObservableObject {
         }
         if sawSuccess {
             lastUpdated = Date()
-            if outcomes.allSatisfy({ if case .success = $0.outcome { return true } else { return false } }) {
+            if outcomes.allSatisfy({ outcome in
+                if outcome.cancelled { return true }
+                if case .success = outcome.outcome { return true }
+                return false
+            }) {
                 lastError = nil
             }
         }
@@ -339,6 +363,14 @@ public final class DashboardService: ObservableObject {
                         let response = try await client.resolve(chunk.request)
                         return ResolveChunkOutcome(widgets: chunk.widgets, outcome: .success(response))
                     } catch {
+                        // Every other network call site in the app guards on this first; without
+                        // it a cancelled resolve becomes a bogus `network_error` and is painted
+                        // onto every tile in the chunk.
+                        if APIError.isCancellation(error) {
+                            return ResolveChunkOutcome(widgets: chunk.widgets,
+                                                       outcome: .failure(.offline),
+                                                       cancelled: true)
+                        }
                         return ResolveChunkOutcome(widgets: chunk.widgets,
                                                    outcome: .failure(APIError.from(error)))
                     }
@@ -371,14 +403,22 @@ public final class DashboardService: ObservableObject {
                 results[widget.id] = .failed(.decoding(result.failureMessage ?? "This widget arrived with no data."))
                 return false
             }
-            let availability = result.availability ?? .full
+            // Never default *upward*: a result the server called `partial` is qualified even
+            // when it did not spell out how, and `.full` is the one answer that would render it
+            // as fully trustworthy — no caret, no footnote (ARCHITECTURE.md §3 rule 1).
+            let availability = result.availability ?? (result.effectiveStatus == .partial ? .partial : .full)
             results[widget.id] = .loaded(payload, availability: availability, notes: result.notes, stale: false)
+            resultKeys[widget.id] = cacheKey(for: widget)
             persist(payload: payload, result: result, widget: widget)
             return false
 
         case .unchanged:
-            // The cached copy is still the truth; it just stopped being stale.
-            if let existing = results[widget.id], existing.payload != nil {
+            // The cached copy is still the truth; it just stopped being stale — but only when it
+            // was built for the config this tile shows now. The server compared sync versions,
+            // not configs, so a tile the reader just reconfigured is still waiting and the
+            // caller re-asks for it without a `knownSyncVersion`.
+            if let existing = results[widget.id], existing.payload != nil,
+               resultKeys[widget.id] == cacheKey(for: widget) {
                 results[widget.id] = existing.markedStale(false)
                 return false
             }

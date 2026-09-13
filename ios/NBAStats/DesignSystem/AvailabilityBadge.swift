@@ -146,25 +146,37 @@ public struct AvailabilityBadge: View {
                     .frame(width: 7, height: 7)
             }
         case .partial:
-            Text(verbatim: "^")
-                .font(Typography.tableHeader)
-                .foregroundStyle(Palette.warning)
-                .padding(.horizontal, Spacing.xxs)
-                .background(
-                    RoundedRectangle(cornerRadius: Radius.chip, style: .continuous)
-                        .fill(Palette.warning.opacity(0.15))
-                )
+            if showsText {
+                Text(verbatim: "^")
+                    .font(Typography.tableHeader)
+                    .foregroundStyle(Palette.warning)
+                    .padding(.horizontal, Spacing.xxs)
+                    .background(
+                        RoundedRectangle(cornerRadius: Radius.chip, style: .continuous)
+                            .fill(Palette.warning.opacity(0.15))
+                    )
+            } else {
+                Circle()
+                    .strokeBorder(Palette.warning, lineWidth: 1.5)
+                    .frame(width: 6, height: 6)
+            }
         case .unavailable:
-            Text(verbatim: "\u{2014}")
-                .font(Typography.tableHeader)
-                .foregroundStyle(Palette.textTertiary)
-                .padding(.horizontal, Spacing.xs)
-                .padding(.vertical, 1)
-                .overlay(
-                    Capsule(style: .continuous)
-                        .strokeBorder(Palette.separator,
-                                      style: StrokeStyle(lineWidth: 1, dash: [2, 2]))
-                )
+            // Compact call sites sit beside a value that is *already* the em dash, so the full
+            // glyph would draw a second one right next to it. Nothing to add here.
+            if showsText {
+                Text(verbatim: "\u{2014}")
+                    .font(Typography.tableHeader)
+                    .foregroundStyle(Palette.textTertiary)
+                    .padding(.horizontal, Spacing.xs)
+                    .padding(.vertical, 1)
+                    .overlay(
+                        Capsule(style: .continuous)
+                            .strokeBorder(Palette.separator,
+                                          style: StrokeStyle(lineWidth: 1, dash: [2, 2]))
+                    )
+            } else {
+                EmptyView()
+            }
         }
     }
 

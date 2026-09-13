@@ -305,7 +305,12 @@ def assist_pct(
     if values is None or played is None or tm_minutes is None:
         return None
     assists, tm_fgm, own_fgm = values
-    teammate_fgm = (played / (tm_minutes / 5.0)) * tm_fgm - own_fgm
+    # The denominator is an *estimate* of the field goals teammates made while this player was
+    # on the floor, and the estimate goes to zero or below whenever a player made more field
+    # goals than his minutes-share of the team's — an ordinary short high-usage stint. A
+    # non-positive estimate carries no information about assist share, so the honest answer is
+    # "unavailable", not the -600% or +14400% a bare zero-check lets through.
+    teammate_fgm = _positive((played / (tm_minutes / 5.0)) * tm_fgm - own_fgm)
     return _div(100.0 * assists, teammate_fgm)
 
 
@@ -420,7 +425,12 @@ def block_pct(
     if values is None or played is None or tm_minutes is None:
         return None
     blocks, opponent_fga, opponent_fg3a = values
-    return _div(100.0 * blocks * (tm_minutes / 5.0), played * (opponent_fga - opponent_fg3a))
+    # Two-point attempts are what can be blocked. A non-positive count is not "zero blocks
+    # allowed", it is data that cannot support the rate at all.
+    blockable = _positive(opponent_fga - opponent_fg3a)
+    if blockable is None:
+        return None
+    return _div(100.0 * blocks * (tm_minutes / 5.0), played * blockable)
 
 
 def pace(
@@ -1613,6 +1623,24 @@ class _Ctx(NamedTuple):
             return 0.0
         return None
 
+    def threes_attempted(self, scope: str) -> Optional[float]:
+        """3PA for a scope, treating a missing value as a true zero before 1979-80.
+
+        The mirror of :meth:`threes_made`, and needed for the same reason: BLK%'s denominator
+        is ``OppFGA - OppFG3A`` because only two-pointers are blockable, and before the line
+        existed a NULL 3PA is a certainty rather than an unknown. Without this the catalog
+        advertises BLK% from 1973-74 as "estimated" while the engine can only ever return
+        ``None`` for it.
+        """
+        getter = {"self": self.v, "team": self.t, "opp": self.o}[scope]
+        attempted = getter("fg3a")
+        if attempted is not None:
+            return attempted
+        year = _season_start_year(self.row)
+        if year is not None and year < THREE_POINT_ERA_START_YEAR:
+            return 0.0
+        return None
+
     def team_possessions(self) -> Optional[float]:
         """The team's possessions: the stored column if present, else the estimate."""
         stored = self.t("poss")
@@ -1714,7 +1742,13 @@ def _m_stl_pct(ctx: _Ctx) -> Optional[float]:
 
 def _m_blk_pct(ctx: _Ctx) -> Optional[float]:
     return _pct(
-        block_pct(ctx.v("blk"), ctx.v("min"), ctx.t("min"), ctx.o("fga"), ctx.o("fg3a"))
+        block_pct(
+            ctx.v("blk"),
+            ctx.v("min"),
+            ctx.t("min"),
+            ctx.o("fga"),
+            ctx.threes_attempted("opp"),
+        )
     )
 
 
@@ -1739,7 +1773,14 @@ def _m_poss(ctx: _Ctx) -> Optional[float]:
     team_poss = ctx.team_possessions()
     if team_poss is None:
         return possessions(ctx.v("fga"), ctx.v("fta"), ctx.v("oreb"), ctx.v("tov"))
-    minutes = _positive(ctx.v("min"))
+    raw_minutes = _f(ctx.v("min"))
+    if raw_minutes is not None and raw_minutes <= 0:
+        # A subject that did not take the floor used no possessions. That is a measured zero,
+        # and the team's whole possession count is the one answer it cannot be. Without this
+        # the `_positive` below folds "played 0:00" into "minutes unknown" and falls through
+        # to `team_poss`, which is how a DNP leads the league in possessions.
+        return 0.0
+    minutes = _positive(raw_minutes)
     team_minutes = _positive(ctx.t("min"))
     if minutes is None or team_minutes is None:
         return team_poss

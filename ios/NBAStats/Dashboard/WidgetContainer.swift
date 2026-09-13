@@ -38,7 +38,7 @@ public struct WidgetContainer: View {
 
     private let widget: DashboardWidget
     private let state: WidgetState
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
     private let accent: AccentName
     private let isEditing: Bool
     private let isDragging: Bool
@@ -65,7 +65,7 @@ public struct WidgetContainer: View {
                 onRemove: @escaping () -> Void) {
         self.widget = widget
         self.state = state
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
         self.accent = accent
         self.isEditing = isEditing
         self.isDragging = isDragging

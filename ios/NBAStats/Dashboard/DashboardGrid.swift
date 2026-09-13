@@ -148,7 +148,7 @@ public struct DashboardGrid: View {
     private let layout: DashboardLayout
     private let results: [String: WidgetState]
     private let isEditing: Bool
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
     private let onConfigure: (DashboardWidget) -> Void
 
     @ObservedObject private var store: DashboardStore
@@ -169,7 +169,7 @@ public struct DashboardGrid: View {
         self.layout = layout
         self.results = results
         self.isEditing = isEditing
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
         _store = ObservedObject(wrappedValue: store)
         self.onConfigure = onConfigure
     }
@@ -276,8 +276,11 @@ public struct DashboardGrid: View {
             }
     }
 
-    /// The index of the tile the finger is currently over, or `nil` when it is over a gap or over
-    /// the tile being dragged.
+    /// The index of the tile nearest the finger, or `nil` when there is no other tile to land on.
+    ///
+    /// "Nearest by centre", not "contains the point": a grid of two or four columns leaves gaps
+    /// between tiles, an unfilled half-row at the end, and open space below the last row, and a
+    /// finger lifted in any of those is still asking for a move.
     private func targetIndex(for point: CGPoint, excluding widgetID: String) -> Int? {
         var best: (index: Int, distance: CGFloat)?
         for (index, widget) in layout.widgets.enumerated() {
@@ -294,11 +297,14 @@ public struct DashboardGrid: View {
             }
         }
         guard let best = best, best.index < layout.widgets.count else { return nil }
-        let candidate = layout.widgets[best.index]
-        guard let frame = dragFrames[candidate.id],
-              frame.insetBy(dx: -Spacing.sm, dy: -Spacing.sm).contains(point) else {
-            return nil
+        if let frame = dragFrames[layout.widgets[best.index].id],
+           frame.insetBy(dx: -Spacing.md, dy: -Spacing.md).contains(point) {
+            return best.index
         }
+        // Released over empty space — the unfilled half of a short last row, the gutter between
+        // two tiles, the area below the grid. Requiring containment here abandoned the move
+        // silently, which reads as "drag and drop does not work"; the nearest tile by centre is
+        // the answer the reader was reaching for.
         return best.index
     }
 

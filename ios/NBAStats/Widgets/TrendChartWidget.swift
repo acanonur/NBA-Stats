@@ -355,6 +355,13 @@ public struct TrendChartWidget: View {
             let label = line.label.isEmpty ? "Series \(index + 1)" : line.label
             model.series.append(SeriesInfo(id: line.id, label: label, color: color))
 
+            // Decided per series, not across all of them. A subject with fewer games than the
+            // rolling window carries no rolling values at all; asking for its rolling points
+            // because *another* subject has them yields zero line marks, and at `.small` and
+            // `.medium` (where `showsRawPoints` is false) that subject disappears from the chart
+            // while its legend swatch stays behind.
+            let seriesUsesRolling = line.points.contains { $0.rolling != nil }
+
             // A run is an unbroken stretch of readable values; a gap starts a new one so the
             // drawn line breaks rather than leaping across a missed game.
             var runIndex = 0
@@ -383,7 +390,7 @@ public struct TrendChartWidget: View {
                                                opponentAbbr: point.opponentAbbr))
                 }
 
-                let emphasized = usesRolling ? point.rolling : point.y
+                let emphasized = seriesUsesRolling ? point.rolling : point.y
                 if let emphasized, emphasized.isFinite {
                     lineValues.append(emphasized)
                     model.lineMarks.append(Mark(id: "line|\(line.id)|\(pointIndex)|\(point.id)",

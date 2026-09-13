@@ -10,9 +10,7 @@ answers ``503`` with a readable body instead of a stack trace.
 """
 from __future__ import annotations
 
-import json
 import logging
-import zlib
 from typing import Any
 
 from fastapi import APIRouter, Response
@@ -54,16 +52,18 @@ ADVANCED_FROM = "1996-97"
 
 
 def presets_version() -> int:
-    """A version number for the preset catalog that changes when its content changes.
+    """The preset catalog's content version.
 
-    ``contracts/presets.json`` carries no counter, so this is a CRC-32 fingerprint of the
-    canonical document rather than a monotonic sequence. It satisfies what the client needs
-    it for — noticing that a preset it copied has since been edited — without inventing a
-    counter nobody increments.
+    ``contracts/presets.json`` carries a ``version`` counter that
+    ``contracts/tools/gen_presets.py`` bumps in the same commit that edits the presets, so this
+    increments the way ``contracts/CONTRACT.md`` §3 promises: a client stores the last version
+    it saw and tests ``server > mine`` to offer "this preset was updated". A fingerprint would
+    not support that test — it can decrease, and it can collide.
     """
-    document = catalog.presets_document()
-    canonical = json.dumps(document, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return zlib.crc32(canonical) % 1_000_000
+    raw = catalog.presets_document().get("version")
+    if isinstance(raw, int) and not isinstance(raw, bool) and raw >= 0:
+        return raw
+    return 0
 
 
 def _has_synthetic_data(session: Any) -> bool:

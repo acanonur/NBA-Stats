@@ -226,7 +226,8 @@ public struct DailyMoversWidget: View {
 
     private func deltaText(_ delta: Double?) -> String {
         guard let delta = delta else { return Formatting.emDash }
-        return HardwoodNumberFormat.string(abs(delta), format: payload.metric.format)
+        // The arrow and the tint beside this carry the direction, so only the size goes here.
+        return HardwoodNumberFormat.magnitude(delta, format: payload.metric.format)
     }
 
     private func accessibilityText(_ row: DailyMoverRow) -> String {
@@ -241,7 +242,7 @@ public struct DailyMoversWidget: View {
         parts.append("\(payload.metric.name) \(value)")
         if let delta = resolvedDelta(row) {
             let direction = delta > 0 ? "above" : "below"
-            let magnitude = HardwoodNumberFormat.string(abs(delta), format: payload.metric.format)
+            let magnitude = HardwoodNumberFormat.magnitude(delta, format: payload.metric.format)
             if let average = row.seasonAverage {
                 let averageText = Formatting.value(average, format: payload.metric.format)
                 parts.append("\(magnitude) \(direction) their season average of \(averageText)")

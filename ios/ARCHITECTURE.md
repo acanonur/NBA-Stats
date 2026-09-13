@@ -65,8 +65,11 @@ extension JSONValue: ExpressibleByStringLiteral, ExpressibleByIntegerLiteral,
                      ExpressibleByFloatLiteral, ExpressibleByBooleanLiteral {}
 ```
 
-Decoding note: `Int` is tried before `Double`, so `10` round-trips as `.int(10)` and the
-fixtures re-encode byte-identically.
+Decoding note: `Int` is tried before `Double`, so `10` round-trips as `.int(10)` and a decoded
+fixture re-encodes to an *equal* value — not necessarily to identical bytes. An integral JSON
+number normalises to `.int` however it was written, so the `"plus_minus": -5.0` in
+`contracts/fixtures/widget_game_log.json` comes back as `.int(-5)` and re-encodes as `-5`.
+Compare fixtures by decoded value, never by bytes.
 
 ### 2.3 `Core/Models.swift` — decoded straight from the API (`contracts/CONTRACT.md` §2)
 

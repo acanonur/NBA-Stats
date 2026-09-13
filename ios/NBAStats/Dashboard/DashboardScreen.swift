@@ -140,7 +140,7 @@ struct DashboardScreenContent: View {
     @ObservedObject private var store: DashboardStore
     @ObservedObject private var service: DashboardService
     @ObservedObject private var sync: SyncService
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
 
     init(environment: AppEnvironment,
          store: DashboardStore,
@@ -151,7 +151,7 @@ struct DashboardScreenContent: View {
         _store = ObservedObject(wrappedValue: store)
         _service = ObservedObject(wrappedValue: service)
         _sync = ObservedObject(wrappedValue: sync)
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
     }
 
     @Environment(\.scenePhase) private var scenePhase

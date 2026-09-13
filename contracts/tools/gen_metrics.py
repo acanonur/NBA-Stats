@@ -47,7 +47,11 @@ M = [
     ("dreb_pct", "DREB%","Defensive Rebound %",    "rebounding","percent1",True,  "1973-74", "pt", "Share of available defensive rebounds grabbed while on the floor."),
     ("reb_pct",  "REB%", "Rebound %",              "rebounding","percent1",True,  "1973-74", "pt", "Share of available rebounds grabbed while on the floor."),
     ("tov_pct",  "TOV%", "Turnover %",             "usage",    "percent1", False, "1977-78", "pt", "Turnovers per 100 possessions used."),
-    ("stl_pct",  "STL%", "Steal %",                "defense",  "percent1", True,  "1973-74", "pt", "Share of opponent possessions ending in a steal by the player."),
+    # 1977-78, not 1973-74 with the raw steal: STL% is steals over opponent *possessions*, and a
+    # possession estimate needs turnovers, which the league did not record until 1977-78. BLK%
+    # below genuinely does start with the raw block, because its denominator is opponent two-point
+    # attempts (FGA - 3PA) and the 3PA is a true zero before the line existed.
+    ("stl_pct",  "STL%", "Steal %",                "defense",  "percent1", True,  "1977-78", "pt", "Share of opponent possessions ending in a steal by the player."),
     ("blk_pct",  "BLK%", "Block %",                "defense",  "percent1", True,  "1973-74", "pt", "Share of opponent two-point attempts blocked by the player."),
     ("pace",     "PACE", "Pace",                   "efficiency","decimal1",True,  "1996-97", "pt", "Possessions per 48 minutes."),
     ("poss",     "POSS", "Possessions",            "efficiency","decimal1",True,  "1996-97", "pt", "Possessions played."),

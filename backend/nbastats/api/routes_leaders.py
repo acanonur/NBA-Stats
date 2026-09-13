@@ -23,13 +23,17 @@ from ..widgets.leaderboard import resolve_leaderboard
 from . import errors
 from .deps import SessionDep, decode_cursor, encode_cursor
 
-__all__ = ["router", "DEFAULT_LIMIT", "MAX_LIMIT"]
+__all__ = ["router", "DEFAULT_LIMIT", "MIN_LIMIT", "MAX_LIMIT"]
 
 router = APIRouter(tags=["leaders"])
 
 DEFAULT_LIMIT = 10
 
-#: The widget catalog's own ceiling on ``limit``; a bigger ask is clamped, not rejected.
+#: The widget catalog's own floor and ceiling on ``limit``. This route builds a ``leaderboard``
+#: config out of the query string, so the catalog's bounds are the real bounds — declaring wider
+#: ones and then silently clamping would answer a ``limit=200`` ask with 50 rows and no note.
+#: ``contracts/CONTRACT.md`` states these per-endpoint limits alongside the route.
+MIN_LIMIT = 3
 MAX_LIMIT = 50
 
 
@@ -43,7 +47,7 @@ def leaders(
     season: Optional[str] = Query(None),
     season_type: Optional[str] = Query(None, alias="seasonType"),
     per_mode: Optional[str] = Query(None, alias="perMode"),
-    limit: Optional[int] = Query(None, ge=1, le=200),
+    limit: Optional[int] = Query(None, ge=MIN_LIMIT, le=MAX_LIMIT),
     min_games: Optional[int] = Query(None, alias="minGames", ge=0),
     min_minutes_per_game: Optional[float] = Query(
         None, alias="minMinutesPerGame", ge=0.0, le=48.0
@@ -152,7 +156,7 @@ def _config(
     if per_mode is not None:
         config["perMode"] = per_mode
     if limit is not None:
-        config["limit"] = min(int(limit), MAX_LIMIT)
+        config["limit"] = int(limit)
     if min_games is not None:
         config["minGames"] = int(min_games)
     if min_minutes_per_game is not None:

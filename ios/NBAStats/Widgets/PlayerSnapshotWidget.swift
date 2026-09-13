@@ -17,7 +17,10 @@ public struct PlayerSnapshotWidget: View {
         var id: Int { index }
         var label: String { descriptor?.shortName ?? Entry.fallbackShortName(value.metric) }
         var name: String { descriptor?.name ?? value.metric }
-        var higherIsBetter: Bool { descriptor?.higherIsBetter ?? true }
+        /// `nil` when the catalog does not know this metric. The direction is genuinely unknown
+        /// then, and assuming "higher is better" paints a confident green bar on a
+        /// worse-than-league value for any inverted metric a newer server adds.
+        var higherIsBetter: Bool? { descriptor?.higherIsBetter }
 
         /// A readable label for a metric key the bundled catalog does not know: `"ts_pct"`
         /// becomes `"TS%"`, `"off_rtg"` becomes `"OFF RTG"`.
@@ -205,9 +208,11 @@ public struct PlayerSnapshotWidget: View {
 
     private func bar(_ entry: Entry) -> some View {
         PercentileBar(percentile: entry.value.percentile,
-                      tint: Palette.value(entry.value.value,
-                                          comparedTo: entry.value.leagueAverage,
-                                          higherIsBetter: entry.higherIsBetter),
+                      tint: entry.higherIsBetter.map { direction in
+                          Palette.value(entry.value.value,
+                                        comparedTo: entry.value.leagueAverage,
+                                        higherIsBetter: direction)
+                      } ?? Palette.neutral,
                       showsLabel: size == .large && !isStacked,
                       trackHeight: 7)
     }

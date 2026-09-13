@@ -125,9 +125,12 @@ public struct FileLayoutPersistence: LayoutPersisting {
 
         let migration = LayoutMigrator.migrateCollection(FileLayoutPersistence.layoutsPayload(from: data))
 
-        // Nothing survived *and* the bytes were not a layout document: keep a copy before the store
-        // re-seeds over it, so a reader who cares can still recover the file by hand.
-        if migration.results.isEmpty && migration.failures.contains(where: { $0.isCorruption }) {
+        // Nothing survived: keep a copy before anything re-seeds over it, so a reader who cares
+        // can still recover the file by hand. This deliberately does *not* ask whether the bytes
+        // were corrupt — a `.tooNew` document is the one case where the file is certainly still
+        // valuable, since the build that wrote it can read it and this one is about to say
+        // "Update the app to edit it".
+        if migration.results.isEmpty && !migration.failures.isEmpty {
             backUpCorruptFile()
         }
 
@@ -167,7 +170,12 @@ public struct FileLayoutPersistence: LayoutPersisting {
         try manager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
 
         let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        // `.sortedKeys` alone. This file is written on the main actor by every layout mutation
+        // (`DashboardStore` has no save button, and its tests read the file back the instant a
+        // mutation returns), so the encode is on the reader's interaction path. Nobody hand-edits
+        // Layouts.json; pretty-printing bought nothing and cost roughly a third more bytes to
+        // encode and write on every edit. Sorted keys still keep the on-disk diff stable.
+        encoder.outputFormatting = [.sortedKeys]
         let document = OutgoingDocument(schemaVersion: DashboardLayout.currentSchemaVersion,
                                         updatedAt: Formatting.timestampString(Date()),
                                         layouts: layouts)

@@ -326,19 +326,32 @@ public actor APIClient: APIClientProtocol {
         if let envelope = try? envelopeDecoder.decode(ErrorEnvelope.self, from: data) {
             return APIError(body: envelope.error, status: status)
         }
-        let code: APIError.Code
-        switch status {
-        case 401: code = .unauthorized
-        case 404: code = .playerNotFound
-        case 422: code = .metricUnavailable
-        case 429: code = .rateLimited
-        case 503: code = .upstreamUnavailable
-        case 500..<600: code = .internalError
-        default: code = .badRequest
-        }
         let text = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         // A 500 page of HTML is not a message; only a short plain answer is worth showing.
         let message = (text.isEmpty || text.count > 240 || text.hasPrefix("<")) ? "" : text
-        return .server(code: code.rawValue, message: message, status: status, recoverable: status >= 500)
+
+        // Reaching here means the body was *not* the documented envelope, so this did not come
+        // from Hardwood's API at all: a reverse proxy's HTML 404, a base URL pointing at the
+        // wrong host, a route this build calls that the server does not have. Only infer a
+        // contract code where the status alone determines it.
+        //
+        // A bare 404 is emphatically not `player_not_found`: that code names one missing id, so
+        // it renders as "That player is not in your stats server's database" and, because it is
+        // a configuration problem, turns the tile into "Check this widget" / "Edit widget" when
+        // the true answer is "fix the address" or "try again". 422 and `metric_unavailable` say
+        // an era does not have a stat, which is just as specific a claim. For those, keep the
+        // status and let `userMessage`'s unknown-code path say plainly what happened.
+        let code: String
+        switch status {
+        case 401: code = APIError.Code.unauthorized.rawValue
+        case 429: code = APIError.Code.rateLimited.rawValue
+        case 503: code = APIError.Code.upstreamUnavailable.rawValue
+        case 500..<600: code = APIError.Code.internalError.rawValue
+        default: code = "http_\(status)"
+        }
+        return .server(code: code,
+                       message: message,
+                       status: status,
+                       recoverable: status >= 500 || status == 429)
     }
 }

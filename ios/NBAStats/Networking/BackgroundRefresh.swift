@@ -92,6 +92,16 @@ public enum BackgroundRefresh {
 
     // MARK: - Internals
 
+    /// Lets exactly one of the two completion paths report. The first `claim()` wins.
+    private actor CompletionLatch {
+        private var claimed = false
+        func claim() -> Bool {
+            if claimed { return false }
+            claimed = true
+            return true
+        }
+    }
+
     /// Runs one task to completion, or to expiry, and reports exactly once either way.
     private static func execute(_ task: BGTask,
                                 kind: BackgroundRefreshKind,
@@ -100,18 +110,26 @@ public enum BackgroundRefresh {
         // is already on the system's calendar.
         schedule(kind)
 
+        let latch = CompletionLatch()
         let work = Task {
             await handler(kind)
         }
-        // The system gives a few seconds' notice before it stops the app. Cancelling lets the
-        // handler unwind; `setTaskCompleted` is still called once, below.
+        // The system gives a few seconds' notice before it stops the app, and expects to be told
+        // the task is over inside that window. Cancelling alone is not enough: a handler that
+        // does not unwind in time — the nightly pass swallows cancellation and then purges the
+        // cache, which is file removals plus an index write — gets the app *killed*, and a killed
+        // background task costs every future opportunity. So report from whichever path arrives
+        // first, and let the latch make sure that is exactly one of them.
         task.expirationHandler = {
             logger.notice("\(kind.identifier, privacy: .public) expired before it finished.")
             work.cancel()
+            Task { @MainActor in
+                if await latch.claim() { task.setTaskCompleted(success: false) }
+            }
         }
         Task { @MainActor in
             await work.value
-            task.setTaskCompleted(success: !work.isCancelled)
+            if await latch.claim() { task.setTaskCompleted(success: !work.isCancelled) }
         }
     }
 

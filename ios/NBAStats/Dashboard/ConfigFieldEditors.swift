@@ -218,6 +218,14 @@ public final class ConfigSubjectDirectory: ObservableObject {
                 knownPlayers[player.playerId] = player
             }
             lastErrorMessage = nil
+        } catch is CancellationError {
+            // `.task(id: query)` cancels the in-flight search on every keystroke, so this is the
+            // ordinary path for a fast typist, not a failure. Wiping the rows and claiming the
+            // search is unavailable would make every second keystroke look like an outage — and
+            // would leave the *previous* query's results replaced by nothing.
+            return
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            return
         } catch {
             searchResults = []
             lastErrorMessage = "Player search is unavailable right now."
@@ -522,6 +530,16 @@ struct IntFieldEditor: View {
                     .foregroundStyle(Palette.textSecondary)
             }
         }
+        .onAppear(perform: commitClamp)
+    }
+
+    /// `current` clamps for display only — the draft keeps whatever was stored. An out-of-range
+    /// config therefore shows a legal number beside an error naming an illegal one, with Save
+    /// disabled and nothing on screen explaining why. Committing the clamp once makes what the
+    /// reader sees and what the validator reads the same number.
+    private func commitClamp() {
+        let raw = value?.intValue ?? field.`default`?.intValue ?? lowerBound
+        if raw != current { value = .int(current) }
     }
 }
 
@@ -562,6 +580,13 @@ struct DoubleFieldEditor: View {
                 .accessibilityLabel(field.label)
                 .accessibilityValue(Formatting.decimal(current, places: 1))
         }
+        .onAppear(perform: commitClamp)
+    }
+
+    /// See `IntFieldEditor.commitClamp`: the slider clamps for display, the draft does not.
+    private func commitClamp() {
+        let raw = value?.doubleValue ?? field.`default`?.doubleValue ?? lowerBound
+        if raw != current { value = .double(current) }
     }
 }
 
@@ -673,7 +698,7 @@ struct EnumListFieldEditor: View {
 
 /// One metric, searchable and grouped by the catalog's own categories.
 struct MetricPickerView: View {
-    let catalog: Catalog
+    @ObservedObject var catalog: Catalog
     let scope: String
     let title: String
     /// Keys already used elsewhere in the same list, so they can be marked.
@@ -735,7 +760,7 @@ struct MetricPickerView: View {
 struct MetricFieldEditor: View {
     let field: WidgetSpec.ConfigField
     @Binding var value: JSONValue?
-    let catalog: Catalog
+    @ObservedObject var catalog: Catalog
 
     private var selectedKey: String? { value?.stringValue }
 
@@ -761,7 +786,7 @@ struct MetricFieldEditor: View {
 
 /// An ordered set of metrics: drag to reorder, swipe to remove, `+` to add another.
 struct OrderedMetricPickerView: View {
-    let catalog: Catalog
+    @ObservedObject var catalog: Catalog
     let field: WidgetSpec.ConfigField
     @Binding var keys: [String]
 
@@ -852,7 +877,7 @@ struct OrderedMetricPickerView: View {
 struct MetricListFieldEditor: View {
     let field: WidgetSpec.ConfigField
     @Binding var value: JSONValue?
-    let catalog: Catalog
+    @ObservedObject var catalog: Catalog
 
     private var keys: [String] {
         value?.stringArrayValue ?? field.`default`?.stringArrayValue ?? []
@@ -932,7 +957,12 @@ struct PlayerPickerView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                if results.isEmpty && !directory.isSearching {
+                if let message = directory.lastErrorMessage {
+                    // A real failure and an empty result read very differently to a reader; the
+                    // directory already distinguishes them, so say which one this is.
+                    Label(message, systemImage: "wifi.exclamationmark")
+                        .hardwoodText(.tableCell, color: Palette.warning)
+                } else if results.isEmpty && !directory.isSearching {
                     Text(query.count >= 2 ? "No player matches “\(query)”." : "Type at least two letters to search.")
                         .hardwoodText(.tableCell, color: Palette.textSecondary)
                 }
@@ -1221,7 +1251,7 @@ struct SubjectListFieldEditor: View {
 struct ConfigFieldEditor: View {
     let field: WidgetSpec.ConfigField
     @Binding var value: JSONValue?
-    let catalog: Catalog
+    @ObservedObject var catalog: Catalog
     @ObservedObject var directory: ConfigSubjectDirectory
     let seasons: [String]
     /// For `subject` / `subjectList`, resolved from the field named by `dependsOn`.

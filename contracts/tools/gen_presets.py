@@ -216,10 +216,17 @@ def validate(presets=None):
     return errors
 
 
+#: The preset catalog's content version, served as ``version`` by ``GET /v1/presets``.
+#: ``contracts/CONTRACT.md`` §3 promises this *increments* whenever the preset content
+#: changes, so bump it by hand in the same commit that edits PRESETS or subjectTokens. It is
+#: a counter, not a fingerprint: a client stores the last one it saw and tests ``server > mine``.
+VERSION = 1
+
 def document():
     """The contracts/presets.json document, as a dict."""
     return {
     "schemaVersion": 1,
+    "version": VERSION,
     "subjectTokens": [
         {"token": "$favorite_player", "summary": "The player the user pinned as a favorite."},
         {"token": "$favorite_team", "summary": "The team the user pinned as a favorite."},

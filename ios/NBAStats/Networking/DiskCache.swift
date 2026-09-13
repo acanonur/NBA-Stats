@@ -89,6 +89,11 @@ public actor DiskCache {
     private var totalBytes = 0
     private var isLoaded = false
 
+    /// The in-memory index has changes the file on disk does not.
+    private var indexIsDirty = false
+    /// The pending coalesced index write, if one is scheduled.
+    private var indexFlushTask: Task<Void, Never>?
+
     private static let logger = Logger(subsystem: "com.hardwood.nbastats", category: "cache")
 
     /// Defaults to `Caches/Hardwood/Widgets`, which iOS may reclaim under storage pressure —
@@ -162,6 +167,12 @@ public actor DiskCache {
         }
         record.lastAccess = now
         records[key] = record
+        // `lastAccess` is the only thing `evictIfNeeded` sorts on, and the read path is the only
+        // thing that moves it. Left in memory it never reaches `index.json`, so after a relaunch
+        // every record carries the timestamp it was *written* with and LRU degrades to eviction
+        // in write order — the most-read tiles go first. The write itself is coalesced, so a read
+        // still costs no disk I/O of its own.
+        scheduleIndexFlush()
         return CachedEntry(data: data,
                            kind: WidgetKind(rawValue: record.kind),
                            storedAt: record.storedAt,
@@ -206,7 +217,10 @@ public actor DiskCache {
         records[key] = record
         totalBytes += data.count
         evictIfNeeded()
-        flushIndex()
+        // One dashboard load stores up to 24 payloads, and rewriting the whole index after each
+        // one means 24 full atomic rewrites of a file that only needs to be right once the burst
+        // is over. Deletions still flush immediately — see `flushIndexNow`.
+        scheduleIndexFlush()
     }
 
     // MARK: - Invalidation
@@ -219,13 +233,13 @@ public actor DiskCache {
         let doomed = records.values.filter { raw.contains($0.kind) }.map { $0.key }
         guard !doomed.isEmpty else { return }
         for key in doomed { discard(key: key) }
-        flushIndex()
+        flushIndexNow()
     }
 
     public func remove(forKey key: String) {
         load()
         discard(key: key)
-        flushIndex()
+        flushIndexNow()
     }
 
     /// Drops entries that are past their TTL, for a housekeeping pass in the nightly task.
@@ -233,9 +247,9 @@ public actor DiskCache {
         load()
         let now = Date()
         let doomed = records.values.filter { $0.expiresAt <= now }.map { $0.key }
-        guard !doomed.isEmpty else { return }
         for key in doomed { discard(key: key) }
-        flushIndex()
+        removeOrphanedFiles()
+        if !doomed.isEmpty || indexIsDirty { flushIndexNow() }
     }
 
     public func removeAll() {
@@ -245,11 +259,19 @@ public actor DiskCache {
         }
         records = [:]
         totalBytes = 0
-        flushIndex()
+        flushIndexNow()
+    }
+
+    /// Writes the index now if a coalesced change is still pending.
+    public func flushPendingIndex() {
+        guard indexIsDirty else { return }
+        flushIndexNow()
     }
 
     public func statistics() -> Statistics {
         load()
+        // A natural coalescing point: the caller is already waiting on the actor.
+        if indexIsDirty { flushIndexNow() }
         return Statistics(entryCount: records.count, byteCount: totalBytes, byteLimit: byteLimit)
     }
 
@@ -303,6 +325,43 @@ public actor DiskCache {
         }
         records = index.records
         totalBytes = index.records.values.reduce(0) { $0 + $1.byteCount }
+    }
+
+    /// Marks the index dirty and makes sure exactly one write is queued behind it.
+    private func scheduleIndexFlush() {
+        indexIsDirty = true
+        guard indexFlushTask == nil else { return }
+        indexFlushTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            if Task.isCancelled { return }
+            await self?.performScheduledFlush()
+        }
+    }
+
+    private func performScheduledFlush() {
+        indexFlushTask = nil
+        if indexIsDirty { flushIndexNow() }
+    }
+
+    /// Writes the index immediately and drops any pending coalesced write.
+    private func flushIndexNow() {
+        indexFlushTask?.cancel()
+        indexFlushTask = nil
+        indexIsDirty = false
+        flushIndex()
+    }
+
+    /// Deletes payload files the index knows nothing about.
+    ///
+    /// Because the index write is coalesced, a process that dies inside that window can leave a
+    /// payload on disk with no record pointing at it: never read, never counted against the byte
+    /// limit, never evicted. The nightly housekeeping pass is where those get collected.
+    private func removeOrphanedFiles() {
+        guard let names = try? fileManager.contentsOfDirectory(atPath: directory.path) else { return }
+        let known = Set(records.keys.map { DiskCache.digest(of: $0) + ".payload" })
+        for name in names where name.hasSuffix(".payload") && !known.contains(name) {
+            try? fileManager.removeItem(at: directory.appendingPathComponent(name, isDirectory: false))
+        }
     }
 
     private func flushIndex() {

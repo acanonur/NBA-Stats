@@ -38,7 +38,9 @@ widget against the widget catalog and the metric catalog, and exits non-zero on 
 ### Pagination
 
 Collection endpoints that can exceed 200 rows take `limit` (default 50, max 200) and an opaque
-`cursor`. Responses carry `"nextCursor": string | null`.
+`cursor`. Responses carry `"nextCursor": string | null`. Endpoints whose rows are a widget
+payload bound their `limit` to that widget's config field instead, and each states its own
+range below; an out-of-range `limit` is a `bad_request`, never a silent clamp.
 
 ---
 
@@ -235,8 +237,9 @@ when `includeHistorical=true`).
 ### `GET /v1/leaders`
 
 Query: `metric` (required), `subjectType` (`player`|`team`, default `player`), `scope`
-(`season`|`all_time`), `season`, `seasonType`, `perMode`, `limit`, `minGames`,
-`minMinutesPerGame`, `positions`, `teamIds`, `secondaryMetrics`, `ascending`.
+(`season`|`all_time`), `season`, `seasonType`, `perMode`, `limit` (default 10, min 3, max 50 —
+the `leaderboard` widget's own range), `minGames`, `minMinutesPerGame`, `positions`, `teamIds`,
+`secondaryMetrics`, `ascending`.
 
 Response is the `leaderboard` widget payload (§4) plus `"nextCursor"`.
 

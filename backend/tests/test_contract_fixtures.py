@@ -367,8 +367,31 @@ def test_the_resolve_fixture_covers_every_widget_kind_and_every_availability(
         "where the widget_<kind>.json fixtures are cut from"
     )
 
-    statuses = {result["status"] for result in results}
-    assert statuses <= {"ok", "partial"}, f"a fixture widget failed to resolve: {statuses}"
+    # Every tile resolves, except the one the export *declares* should not. Checked per widget
+    # id rather than as a set of statuses, so an accidental failure anywhere else still fails
+    # this test — and so the declared failure is pinned to the shape §3 documents, which is the
+    # only fixture coverage the client's payload / error / decodeError branch gets.
+    expected_failures = {
+        widget_id for widget_id, _, _ in fixtures_export.ERROR_WIDGET_CONFIGS
+    }
+    assert expected_failures, "the resolve fixture must carry a declared per-widget failure"
+    seen_failures: set[str] = set()
+    statuses = set()
+    for result in results:
+        if result["widgetId"] in expected_failures:
+            seen_failures.add(result["widgetId"])
+            assert result["status"] == "error", result
+            assert result["payload"] is None, "an error result must not carry a payload"
+            error = result["error"]
+            assert error and error["code"] == "metric_unavailable", error
+            assert error["message"], "an error body must say something a reader can act on"
+            assert "recoverable" in error and "field" in error
+            continue
+        statuses.add(result["status"])
+        assert result["status"] in {"ok", "partial"}, (
+            f"{result['widgetId']} failed to resolve: {result['status']}"
+        )
+    assert seen_failures == expected_failures
     assert "partial" in statuses, "no widget in the fixture exercises a partial result"
 
     availabilities = {result["availability"] for result in results}

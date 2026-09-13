@@ -378,12 +378,20 @@ struct SettingsScreenContent: View {
     }
 
     private func testConnection() {
-        applyServerSettings()
-        if case .unreachable = connection { return }
-        connection = .testing
+        // The settings are applied and *awaited* inside the same task as the health check, for
+        // two reasons. `connection` is `@State` that nothing ever resets to `.idle`, so a guard
+        // on the leftover `.unreachable` from a previous attempt would make this button a
+        // permanent no-op after the first failure — the verdict has to come from this call.
+        // And `applyServerSettings` only enqueues the router update, so a health check started
+        // beside it can run against the server the reader just replaced.
         Task {
-            let result = await environment.testConnection()
-            switch result {
+            guard await environment.applyServerSettingsAndWait(baseURL: baseURLText,
+                                                               apiKey: apiKeyText) else {
+                connection = .unreachable("That is not an address Hardwood can use. Try something like http://192.168.1.10:8000/v1.")
+                return
+            }
+            connection = .testing
+            switch await environment.testConnection() {
             case .success(let health):
                 connection = .reachable(describe(health))
             case .failure(let error):

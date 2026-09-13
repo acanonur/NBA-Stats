@@ -1118,21 +1118,31 @@ def recompute_shot_zones(session: Session, season: str, season_type: str) -> Agg
     if not player_rows:
         return report
 
-    games_by_player = {
-        player_id: gp
-        for player_id, gp in session.execute(
-            select(PlayerSeason.player_id, PlayerSeason.gp).where(
-                PlayerSeason.season == season, PlayerSeason.season_type == season_type
-            )
-        ).all()
-    }
+    # ``shot_zone_season`` is keyed by (subject, season, zone) with no team, so a player's
+    # zone totals already span the whole season. ``player_season`` is keyed by (player, team),
+    # so a traded player has one row per stint. Folding those rows with a dict comprehension
+    # would let whichever stint the database returned last stand for the season: the per-game
+    # conversion below would then divide full-season attempts by one stint's games.
+    games_by_player: dict[int, float] = {}
+    games_by_stint: dict[int, dict[int, float]] = {}
+    for player_id, team_id, gp in session.execute(
+        select(PlayerSeason.player_id, PlayerSeason.team_id, PlayerSeason.gp).where(
+            PlayerSeason.season == season, PlayerSeason.season_type == season_type
+        )
+    ).all():
+        played = float(gp or 0)
+        games_by_player[player_id] = games_by_player.get(player_id, 0.0) + played
+        if team_id is not None:
+            stints = games_by_stint.setdefault(player_id, {})
+            stints[team_id] = stints.get(team_id, 0.0) + played
+
+    # The team rollup can only name one team per player, because the shot rows carry none.
+    # Crediting the stint the player actually played most of is at least deterministic and
+    # defensible; splitting a traded player's shots properly needs a team on the shot rows.
     team_by_player = {
-        player_id: team_id
-        for player_id, team_id in session.execute(
-            select(PlayerSeason.player_id, PlayerSeason.team_id).where(
-                PlayerSeason.season == season, PlayerSeason.season_type == season_type
-            )
-        ).all()
+        player_id: max(stints.items(), key=lambda item: item[1])[0]
+        for player_id, stints in games_by_stint.items()
+        if stints
     }
 
     totals_by_player: dict[int, float] = {}

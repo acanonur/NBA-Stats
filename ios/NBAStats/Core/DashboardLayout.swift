@@ -131,7 +131,13 @@ public struct DashboardWidget: Codable, Hashable, Sendable, Identifiable {
         id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
         kind = try container.decode(WidgetKind.self, forKey: .kind)
         title = try container.decodeIfPresent(String.self, forKey: .title)
-        size = try container.decodeIfPresent(WidgetSize.self, forKey: .size) ?? .medium
+        // Read as a raw string, not as `WidgetSize`. `decodeIfPresent` tolerates an absent key
+        // but still *throws* on a size this build does not know, and that throw propagates out of
+        // this widget — so `LayoutMigrator` drops it the way it drops an unknown *kind*, and the
+        // reader loses a widget they configured over a cosmetic field with an obvious default.
+        // The `?? .medium` below was always the intent; this makes it true for a bad value too.
+        let rawSize = (try? container.decodeIfPresent(String.self, forKey: .size)) ?? nil
+        size = rawSize.flatMap(WidgetSize.init(rawValue:)) ?? .medium
         config = try container.decodeIfPresent([String: JSONValue].self, forKey: .config) ?? [:]
     }
 

@@ -162,6 +162,36 @@ public enum MetricAvailability: String, Codable, Hashable, Sendable, CaseIterabl
     }
 }
 
+extension MetricAvailability {
+
+    /// Decodes an `availability` field leniently, and never upward.
+    ///
+    /// `decodeIfPresent(MetricAvailability.self, …)` is not lenient: it tolerates an *absent*
+    /// key but still throws on a raw value this build does not recognise, and that error
+    /// propagates out of the enclosing `init(from:)` and fails the whole response over one
+    /// field. Reading the raw string keeps the failure local.
+    ///
+    /// An unrecognised qualifier becomes `.partial`, never `.full`. Section 3 rule 1 of
+    /// `ios/ARCHITECTURE.md` lets the app claim *less* confidence than the server offered and
+    /// never more, and `.full` is the one answer that claims more — it would render a tile the
+    /// server qualified as fully trustworthy, with no caret and no footnote.
+    static func decodedIfPresent<K: CodingKey>(
+        from container: KeyedDecodingContainer<K>, forKey key: K
+    ) -> MetricAvailability? {
+        guard let raw = try? container.decodeIfPresent(String.self, forKey: key) else { return nil }
+        return MetricAvailability(rawValue: raw) ?? .partial
+    }
+
+    /// As `decodedIfPresent`, with the contract's meaning for an omitted key: nothing to qualify.
+    static func decoded<K: CodingKey>(
+        from container: KeyedDecodingContainer<K>,
+        forKey key: K,
+        default fallback: MetricAvailability = .full
+    ) -> MetricAvailability {
+        decodedIfPresent(from: container, forKey: key) ?? fallback
+    }
+}
+
 /// The atom every widget renders (`contracts/CONTRACT.md` §2).
 ///
 /// `value` is the raw number in the metric's native unit — percentages are fractions in `[0, 1]`,
@@ -217,7 +247,7 @@ public struct MetricValue: Codable, Hashable, Sendable, Identifiable {
         leagueAverage = try container.decodeIfPresent(Double.self, forKey: .leagueAverage)
         delta = try container.decodeIfPresent(Double.self, forKey: .delta)
         isEstimated = try container.decodeIfPresent(Bool.self, forKey: .isEstimated)
-        availability = try container.decodeIfPresent(MetricAvailability.self, forKey: .availability) ?? .full
+        availability = MetricAvailability.decoded(from: container, forKey: .availability)
     }
 
     public static let preview = MetricValue(
@@ -397,6 +427,10 @@ public struct GameRef: Codable, Hashable, Sendable, Identifiable {
     public let clock: String?
     public let finalizedAt: String?
 
+    /// Exactly what the server said `status` was, including a value this build cannot map.
+    /// `nil` when the key was absent. Not encoded — `status` is what goes back on the wire.
+    public let statusRaw: String?
+
     public var id: GameID { gameId }
 
     public init(gameId: GameID,
@@ -423,6 +457,38 @@ public struct GameRef: Codable, Hashable, Sendable, Identifiable {
         self.period = period
         self.clock = clock
         self.finalizedAt = finalizedAt
+        self.statusRaw = status.rawValue
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case gameId, date, season, seasonType, home, away, homePts, awayPts, status, period,
+             clock, finalizedAt
+    }
+
+    /// Decoded by hand for one reason: `status`.
+    ///
+    /// With the synthesised decoder, a status this build does not know — a league that starts
+    /// reporting `"postponed"` — throws, and that error propagates out of the enclosing array
+    /// and fails the whole response. For `GET /v1/sync` that means one odd game stops the app
+    /// noticing *any* new data, including from the background refresh task. An unknown status
+    /// becomes `.scheduled`, the one case that claims nothing about a game having been played,
+    /// and `statusRaw` keeps what the server actually said.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        gameId = try container.decode(GameID.self, forKey: .gameId)
+        date = try container.decodeIfPresent(String.self, forKey: .date) ?? ""
+        season = try container.decodeIfPresent(String.self, forKey: .season)
+        seasonType = try container.decodeIfPresent(String.self, forKey: .seasonType)
+        home = try container.decode(TeamRef.self, forKey: .home)
+        away = try container.decode(TeamRef.self, forKey: .away)
+        homePts = try container.decodeIfPresent(Int.self, forKey: .homePts)
+        awayPts = try container.decodeIfPresent(Int.self, forKey: .awayPts)
+        let rawStatus = (try? container.decodeIfPresent(String.self, forKey: .status)) ?? nil
+        statusRaw = rawStatus
+        status = rawStatus.flatMap(GameStatus.init(rawValue:)) ?? .scheduled
+        period = try container.decodeIfPresent(Int.self, forKey: .period)
+        clock = try container.decodeIfPresent(String.self, forKey: .clock)
+        finalizedAt = try container.decodeIfPresent(String.self, forKey: .finalizedAt)
     }
 
     /// `"118-112"` once there is a score, otherwise `nil`.
@@ -874,7 +940,7 @@ public struct SeasonRow: Codable, Hashable, Sendable, Identifiable {
         age = try container.decodeIfPresent(Int.self, forKey: .age)
         gp = try container.decodeIfPresent(Int.self, forKey: .gp)
         values = try container.decodeIfPresent([String: JSONValue].self, forKey: .values) ?? [:]
-        availability = try container.decodeIfPresent(MetricAvailability.self, forKey: .availability) ?? .full
+        availability = MetricAvailability.decoded(from: container, forKey: .availability)
     }
 }
 
@@ -967,7 +1033,7 @@ public struct GameLogRow: Codable, Hashable, Sendable, Identifiable {
         started = try container.decodeIfPresent(Bool.self, forKey: .started)
         minutes = try container.decodeIfPresent(Double.self, forKey: .minutes)
         values = try container.decodeIfPresent([String: JSONValue].self, forKey: .values) ?? [:]
-        availability = try container.decodeIfPresent(MetricAvailability.self, forKey: .availability) ?? .full
+        availability = MetricAvailability.decoded(from: container, forKey: .availability)
     }
 }
 
@@ -1179,7 +1245,7 @@ public struct BoxScorePlayer: Codable, Hashable, Sendable, Identifiable {
         started = try container.decodeIfPresent(Bool.self, forKey: .started)
         minutes = try container.decodeIfPresent(Double.self, forKey: .minutes)
         values = try container.decodeIfPresent([String: JSONValue].self, forKey: .values) ?? [:]
-        availability = try container.decodeIfPresent(MetricAvailability.self, forKey: .availability) ?? .full
+        availability = MetricAvailability.decoded(from: container, forKey: .availability)
     }
 }
 
@@ -1421,7 +1487,7 @@ public struct ResolveResult: Codable, Hashable, Sendable, Identifiable {
         error = try? container.decodeIfPresent(APIErrorBody.self, forKey: .error)
         generatedAt = try container.decodeIfPresent(String.self, forKey: .generatedAt)
         ttlSeconds = try container.decodeIfPresent(Int.self, forKey: .ttlSeconds)
-        availability = try? container.decodeIfPresent(MetricAvailability.self, forKey: .availability)
+        availability = MetricAvailability.decodedIfPresent(from: container, forKey: .availability)
         notes = try container.decodeIfPresent([String].self, forKey: .notes) ?? []
 
         var decodedPayload: WidgetPayload?

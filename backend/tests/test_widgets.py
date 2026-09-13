@@ -398,7 +398,12 @@ def test_exactly_twenty_four_widgets_is_allowed(app_client: TestClient) -> None:
 def test_known_sync_version_answers_unchanged(app_client: TestClient) -> None:
     """§3: a client already on the server's version keeps its cached payloads."""
     widgets = [
-        {"id": "w1", "kind": "scoreboard", "size": "large", "config": {"date": "latest"}}
+        {
+            "id": "w1",
+            "kind": "leaderboard",
+            "size": "large",
+            "config": {"metric": "pts", "season": "latest", "limit": 5},
+        }
     ]
     first = _resolve(app_client, widgets)
     assert first["results"][0]["status"] == "ok"
@@ -407,11 +412,32 @@ def test_known_sync_version_answers_unchanged(app_client: TestClient) -> None:
     result = again["results"][0]
     assert result["status"] == "unchanged"
     assert result["payload"] is None
-    assert result["ttlSeconds"] == 60
+    assert result["ttlSeconds"] == 600
 
     stale = _resolve(app_client, widgets, knownSyncVersion=first["syncVersion"] - 1)
     assert stale["results"][0]["status"] == "ok"
     assert stale["results"][0]["payload"] is not None
+
+
+def test_a_live_widget_is_never_answered_unchanged(app_client: TestClient) -> None:
+    """§3 licenses ``unchanged`` for data that has not changed, not for a matching version.
+
+    ``sync_version`` increments once per *finalized* game (§8), so it stands still all through
+    a live game while the scoreboard it feeds keeps moving, and ``date: "latest"`` re-reads the
+    wall clock. Answering ``unchanged`` for those would freeze the tile until the final buzzer.
+    """
+    for kind, config in (
+        ("scoreboard", {"date": "latest"}),
+        ("daily_movers", {"date": "latest", "metric": "game_score", "limit": 5}),
+    ):
+        widgets = [{"id": "w1", "kind": kind, "size": "large", "config": config}]
+        first = _resolve(app_client, widgets)
+        assert first["results"][0]["status"] == "ok", kind
+
+        again = _resolve(app_client, widgets, knownSyncVersion=first["syncVersion"])
+        result = again["results"][0]
+        assert result["status"] != "unchanged", kind
+        assert result["payload"] is not None, kind
 
 
 def test_the_response_envelope_is_camel_case(app_client: TestClient) -> None:
@@ -612,6 +638,43 @@ def test_a_pre_1997_trend_chart_is_unavailable_not_empty_of_meaning(
     assert result["availability"] == "unavailable"
     assert result["payload"]["series"] == []
     assert any("1996-97" in note for note in result["notes"])
+
+
+def test_a_league_table_is_never_ordered_by_a_metric_the_era_lacks(
+    app_client: TestClient, seeded_db: Session
+) -> None:
+    """A rank is a claim about the data; with no data there is no rank to claim.
+
+    Sorting by an era-unavailable metric leaves every entry with the same sort key, so the order
+    that survives is whatever the database returned. Handing that out as ranks 1..N produced a
+    league table where a losing team outranked a winning one beside a row of em dashes —
+    ``contracts/CONTRACT.md`` §6 in spirit: never render a number the data does not support.
+    """
+    seasons = sorted({season for (season,) in seeded_db.execute(
+        select(TeamSeason.season).distinct()
+    ).all()})
+    old = [season for season in seasons if season < "1996-97"]
+    assert old, "the seeded league needs a pre-1996-97 season for this test"
+    season = old[-1]
+
+    result = _one(
+        app_client,
+        "team_efficiency",
+        {"season": season, "sortBy": "net_rtg", "style": "table"},
+    )
+    rows = result["payload"]["rows"]
+    assert rows, f"no {season} team rows came back"
+
+    # No fabricated positions: the client renders a non-positive rank as an em dash.
+    assert all(row["rank"] == 0 for row in rows)
+    assert all(row["values"]["net_rtg"] is None for row in rows)
+
+    # Ordered by something the era did record, and the table says so.
+    records = [
+        (row["wins"] or 0) / max(1, (row["wins"] or 0) + (row["losses"] or 0)) for row in rows
+    ]
+    assert records == sorted(records, reverse=True), records
+    assert any("win percentage" in note for note in result["notes"])
 
 
 def test_a_pre_1997_shot_profile_explains_itself_rather_than_failing(

@@ -379,19 +379,26 @@ def player_game_values(
             value = None
         if value is None and basic is not None and key in _DERIVABLE_FROM_BOX:
             if box is None:
-                box = _box_row(basic)
+                box = _box_row(basic, season)
             value = compute_metric(key, row=box)
         out[key] = value
     return out
 
 
-def _box_row(basic: PlayerGameBasic) -> dict[str, Any]:
-    """A player's box line as the plain snake_case dict the metrics engine reads."""
+def _box_row(basic: PlayerGameBasic, season: str | None = None) -> dict[str, Any]:
+    """A player's box line as the plain snake_case dict the metrics engine reads.
+
+    ``season`` is carried on the row because the metrics engine needs it: ``_Ctx.threes_made``
+    reads it to apply the "a NULL 3PM before 1979-80 is a true zero" substitution, and without
+    it eFG% and TS% come back ``None`` for every pre-1980 box score the era did record.
+    """
     row: dict[str, Any] = {
         key: getattr(basic, column, None)
         for key, column in PLAYER_GAME_METRIC_COLUMNS.items()
     }
     row["reb"] = basic.reb
+    if season is not None:
+        row["season"] = season
     return row
 
 

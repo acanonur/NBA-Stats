@@ -175,7 +175,11 @@ def resolve_one(
             ctx.request_id,
         )
 
-    if known_sync_version is not None and known_sync_version == ctx.sync_version:
+    if (
+        known_sync_version is not None
+        and known_sync_version == ctx.sync_version
+        and kind not in _CLOCK_DEPENDENT_KINDS
+    ):
         # Nothing has been ingested since the client's copy was built, so nothing this
         # widget could show has moved. §3: the client keeps what it has.
         return ResolveResult(
@@ -228,6 +232,17 @@ def resolve_one(
     )
 
 
+#: Kinds whose payload moves without an ingest, so "the sync version has not changed" is not
+#: the same claim as "this widget's data has not changed".
+#:
+#: ``contracts/CONTRACT.md`` §8 increments ``sync_version`` once per *finalized* game, and §3
+#: only licenses ``"unchanged"`` for a widget "whose data has not changed". A scoreboard's
+#: scores move all through a live game and no game has finalized; ``date: "latest"`` re-reads
+#: the wall clock. Answering ``unchanged`` for these would freeze a live tile until the final
+#: buzzer, so they are always resolved.
+_CLOCK_DEPENDENT_KINDS = frozenset({"scoreboard", "daily_movers"})
+
+
 def _error(
     widget: ResolveWidgetRequest, ttl: int, failure: WidgetError, request_id: str | None
 ) -> ResolveResult:
@@ -260,5 +275,4 @@ def _resolved_context(ctx: ResolveContext) -> ResolvedContext:
         if ctx.used_team_id is not None
         else ctx.favorite_team_id,
         season=ctx.season,
-        season_type=None,
     )

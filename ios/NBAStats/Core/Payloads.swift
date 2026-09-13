@@ -387,7 +387,7 @@ public struct GameLogPayloadRow: Codable, Hashable, Sendable, Identifiable {
         started = try container.decodeIfPresent(Bool.self, forKey: .started)
         minutes = try container.decodeIfPresent(Double.self, forKey: .minutes)
         values = try container.decodeIfPresent([String: JSONValue].self, forKey: .values) ?? [:]
-        availability = try container.decodeIfPresent(MetricAvailability.self, forKey: .availability) ?? .full
+        availability = MetricAvailability.decoded(from: container, forKey: .availability)
     }
 }
 
@@ -447,19 +447,19 @@ public struct GameLogPayload: Codable, Hashable, Sendable {
                              domain: nil, glossary: "Points scored."),
             .preview
         ],
-        seasonBests: ["pts": .double(42), "ts_pct": .double(0.812)],
+        seasonBests: ["pts": .int(42), "ts_pct": .double(0.812)],
         rows: [
             GameLogPayloadRow(gameId: "0022500512", date: "2026-01-02", opponentAbbr: "BOS", isHome: true,
                               result: "W", score: "118-112", started: true, minutes: 34.5,
-                              values: ["min": .double(34.5), "pts": .double(32), "ts_pct": .double(0.641)],
+                              values: ["min": .double(34.5), "pts": .int(32), "ts_pct": .double(0.641)],
                               availability: .full),
             GameLogPayloadRow(gameId: "0022500505", date: "2026-01-01", opponentAbbr: "PHX", isHome: false,
                               result: "L", score: "104-111", started: true, minutes: 36.2,
-                              values: ["min": .double(36.2), "pts": .double(27), "ts_pct": .double(0.703)],
+                              values: ["min": .double(36.2), "pts": .int(27), "ts_pct": .double(0.703)],
                               availability: .full),
             GameLogPayloadRow(gameId: "0022500497", date: "2025-12-30", opponentAbbr: "GSW", isHome: true,
                               result: "W", score: "126-120", started: true, minutes: 31.8,
-                              values: ["min": .double(31.8), "pts": .double(19), "ts_pct": .double(0.515)],
+                              values: ["min": .double(31.8), "pts": .int(19), "ts_pct": .double(0.515)],
                               availability: .full)
         ]
     )
@@ -1257,7 +1257,7 @@ public struct CareerSeason: Codable, Hashable, Sendable, Identifiable {
         gp = try container.decodeIfPresent(Int.self, forKey: .gp)
         value = try container.decodeIfPresent(Double.self, forKey: .value)
         displayValue = try container.decodeIfPresent(String.self, forKey: .displayValue)
-        availability = try container.decodeIfPresent(MetricAvailability.self, forKey: .availability) ?? .full
+        availability = MetricAvailability.decoded(from: container, forKey: .availability)
     }
 }
 

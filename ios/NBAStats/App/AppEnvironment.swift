@@ -398,6 +398,20 @@ public final class AppEnvironment: ObservableObject {
         return accepted
     }
 
+    /// Applies a new base URL and API key, and does not return until the router is using them.
+    ///
+    /// `applyServerSettings` only *enqueues* the router update in an unstructured task, so a
+    /// caller that applies settings and then immediately asks the server whether it is reachable
+    /// races that update and can health-check the host it just replaced. Anything that talks to
+    /// the server right after changing it awaits this instead.
+    @discardableResult
+    public func applyServerSettingsAndWait(baseURL: String?, apiKey: String?) async -> Bool {
+        let accepted = APIConfiguration.setBaseURLOverride(baseURL, defaults: defaults)
+        APIConfiguration.setAPIKeyOverride(apiKey, defaults: defaults)
+        await router.updateConfiguration(APIConfiguration.resolved(defaults: defaults))
+        return accepted
+    }
+
     /// Asks the live server whether it is up, whatever demo mode is set to.
     public func testConnection() async -> Result<HealthResponse, APIError> {
         do {

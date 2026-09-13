@@ -8,49 +8,42 @@ import SwiftUI
 public enum HardwoodNumberFormat {
 
     /// The em dash Hardwood uses wherever a number does not exist. Never `0`.
-    public static let missing = "\u{2014}"
+    public static let missing = Formatting.emDash
 
     /// Formats a raw value in the metric's native unit. Percentages arrive as fractions.
+    ///
+    /// One rule set, not two. This forwards to `Formatting.value`, which every other layer
+    /// already uses. A second implementation here disagreed with it on grouping separators —
+    /// `Formatting` turns grouping off for ratings, minutes and plus/minus, while
+    /// `FloatingPointFormatStyle` groups by default, so season-total minutes read as `3,012.0`
+    /// on one path and `3012.0` on the other — and on the percent sign, where `Formatting`
+    /// appends an ASCII `%` and the `.Percent()` style emits the locale's own symbol and
+    /// spacing. The same metric rendered differently depending on which path a view took.
     public static func string(_ value: Double?,
                               format: MetricFormat,
                               signed: Bool = false,
                               placeholder: String = HardwoodNumberFormat.missing) -> String {
         guard let value, value.isFinite else { return placeholder }
-        switch format {
-        case .integer:    return decimal(value, fractionDigits: 0, signed: signed)
-        case .decimal1:   return decimal(value, fractionDigits: 1, signed: signed)
-        case .decimal2:   return decimal(value, fractionDigits: 2, signed: signed)
-        case .percent1:   return percent(value, fractionDigits: 1, signed: signed)
-        case .percent2:   return percent(value, fractionDigits: 2, signed: signed)
-        case .rating1:    return decimal(value, fractionDigits: 1, signed: signed)
-        case .plusMinus1: return decimal(value, fractionDigits: 1, signed: true)
-        case .minutes:    return decimal(value, fractionDigits: 1, signed: signed)
-        }
+        let text = Formatting.value(value, format: format)
+        // `.plusMinus1` signs itself; `signed` asks any other format for a leading `+` on a
+        // positive value. Zero is never signed — a sign there reads as noise.
+        guard signed, value > 0, !text.hasPrefix("+") else { return text }
+        return "+" + text
     }
-
-    private static func decimal(_ value: Double, fractionDigits: Int, signed: Bool) -> String {
-        let style = FloatingPointFormatStyle<Double>()
-            .precision(.fractionLength(fractionDigits))
-            .sign(strategy: signed ? .always(includingZero: false) : .automatic)
-        return value.formatted(style)
-    }
-
-    private static func percent(_ value: Double, fractionDigits: Int, signed: Bool) -> String {
-        let style = FloatingPointFormatStyle<Double>.Percent()
-            .precision(.fractionLength(fractionDigits))
-            .sign(strategy: signed ? .always(includingZero: false) : .automatic)
-        return value.formatted(style)
-    }
-
-    private static let ordinalFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .ordinal
-        return formatter
-    }()
 
     /// "1st", "12th" — used in accessibility labels and percentile captions.
     public static func ordinal(_ value: Int) -> String {
-        ordinalFormatter.string(from: NSNumber(value: value)) ?? String(value)
+        Formatting.ordinal(value)
+    }
+
+    /// A delta's *magnitude*, for a chip that already carries the direction in an arrow and a
+    /// tint.
+    ///
+    /// `.plusMinus1` signs every non-zero value, so the magnitude of a bad night on `net_rtg`
+    /// would render as `+19.6` beside a downward arrow — a red "▼ +19.6". The size of a
+    /// plus/minus is a plain decimal; only its own value carries a sign.
+    public static func magnitude(_ value: Double, format: MetricFormat) -> String {
+        string(abs(value), format: format == .plusMinus1 ? .decimal1 : format)
     }
 }
 
@@ -259,7 +252,7 @@ public struct DeltaChip: View {
     private var tint: Color { Palette.value(for: delta, higherIsBetter: higherIsBetter) }
 
     private func accessibilityText(for delta: Double) -> String {
-        let magnitude = HardwoodNumberFormat.string(abs(delta), format: format)
+        let magnitude = HardwoodNumberFormat.magnitude(delta, format: format)
         let direction = delta > 0 ? "up" : "down"
         let suffix = caption.map { " \($0)" } ?? ""
         return "\(direction) \(magnitude)\(suffix)"
@@ -270,7 +263,7 @@ public struct DeltaChip: View {
             HStack(spacing: 1) {
                 Image(systemName: delta > 0 ? "arrow.up.right" : "arrow.down.right")
                     .accessibilityHidden(true)
-                Text(HardwoodNumberFormat.string(abs(delta), format: format))
+                Text(HardwoodNumberFormat.magnitude(delta, format: format))
                 if let caption {
                     Text(caption)
                         .foregroundStyle(Palette.textTertiary)

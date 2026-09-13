@@ -75,6 +75,7 @@ __all__ = [
     "FIXTURE_ERA_SEASON",
     "WIDGET_CONFIGS",
     "ERA_WIDGET_CONFIGS",
+    "ERROR_WIDGET_CONFIGS",
     "Subjects",
     "fixture_names",
     "export_fixtures",
@@ -334,6 +335,31 @@ ERA_WIDGET_CONFIGS: tuple[tuple[str, str, dict[str, Any]], ...] = (
     ),
 )
 
+#: One tile that is *expected* to fail, so the resolve fixture carries a real per-widget error.
+#:
+#: ``contracts/CONTRACT.md`` §3 documents ``"status": "error"`` with a populated ``error`` body
+#: and a ``null`` payload, and `ResolveResult.init(from:)` is the most intricate hand-written
+#: decoder in the iOS app — the payload / error / decodeError branch. Without this, no golden
+#: fixture ever exercised it. A leaderboard is the honest way to produce one: the board *is* its
+#: metric, so an era that never recorded it leaves nothing to rank, and the service answers
+#: ``metric_unavailable`` (422) rather than an empty table. This is real service output, not a
+#: hand-written result pasted into the fixture.
+ERROR_WIDGET_CONFIGS: tuple[tuple[str, str, dict[str, Any]], ...] = (
+    (
+        "x01.leaderboard",
+        "leaderboard",
+        {
+            "metric": "off_rtg",
+            "subjectType": "player",
+            "scope": "season",
+            "season": FIXTURE_ERA_SEASON,
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "limit": 10,
+        },
+    ),
+)
+
 #: Stand-in resolved from the seeded league rather than from the request's ``context``. It is
 #: not a contract token — ``contracts/presets.json#/subjectTokens`` has no era token — so it
 #: is substituted here, before the request is sent, and never reaches the service.
@@ -559,7 +585,8 @@ def _resolve_request(subjects: Subjects) -> dict[str, Any]:
 
     One tile of every catalog kind first — those twelve results are what the
     ``widget_<kind>.json`` fixtures are cut from — then the era block from
-    :data:`ERA_WIDGET_CONFIGS`.
+    :data:`ERA_WIDGET_CONFIGS`, then the deliberately failing tile from
+    :data:`ERROR_WIDGET_CONFIGS`.
     """
     canonical = [
         {
@@ -584,6 +611,16 @@ def _resolve_request(subjects: Subjects) -> dict[str, Any]:
         }
         for widget_id, kind, config in ERA_WIDGET_CONFIGS
     ]
+    failing = [
+        {
+            "id": widget_id,
+            "kind": kind,
+            "size": catalog.widget(kind)["defaultSize"],
+            "title": f"{catalog.widget(kind)['name']} · {FIXTURE_ERA_SEASON}",
+            "config": dict(config),
+        }
+        for widget_id, kind, config in ERROR_WIDGET_CONFIGS
+    ]
     return {
         "layoutId": FIXTURE_LAYOUT_ID,
         "context": {
@@ -592,7 +629,7 @@ def _resolve_request(subjects: Subjects) -> dict[str, Any]:
             "timeZone": "America/New_York",
             "asOf": FIXTURE_AS_OF.isoformat(),
         },
-        "widgets": [*canonical, *era],
+        "widgets": [*canonical, *era, *failing],
     }
 
 
@@ -647,7 +684,18 @@ def build_fixtures(client: TestClient, session: Session) -> dict[str, Any]:
     # Each tile's payload, on its own, under its catalog kind — this is what demo mode reads.
     # The canonical block comes first, so the first result for a kind is the one to cut; the
     # era block that follows repeats three kinds deliberately and must not overwrite them.
+    expected_failures = {widget_id for widget_id, _, _ in ERROR_WIDGET_CONFIGS}
     for result in resolved["results"]:
+        if result["widgetId"] in expected_failures:
+            # Declared failure (see ERROR_WIDGET_CONFIGS): it has no payload to cut, and it is
+            # the only golden coverage the client's error branch gets. Still checked, because a
+            # tile that quietly *stopped* failing would take that coverage away silently.
+            if result["status"] != "error" or not result.get("error"):
+                raise RuntimeError(
+                    f"widget {result['widgetId']} is declared as a failing fixture but "
+                    f"resolved as {result['status']}"
+                )
+            continue
         if result["status"] not in ("ok", "partial"):
             raise RuntimeError(
                 f"widget {result['widgetId']} ({result['kind']}) resolved as "

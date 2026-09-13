@@ -404,7 +404,12 @@ public struct ComparisonWidget: View {
         guard let measurement = subject.value(metric.key), let raw = measurement.value, raw.isFinite else {
             return nil
         }
-        if usesPercentile, let percentile = measurement.percentile, percentile.isFinite {
+        // `usesPercentileAxis`, not `usesPercentile`: the same all-or-nothing rule the bars and
+        // the caption obey. Keyed off `usesPercentile` alone, a subject that happens to carry a
+        // percentile is plotted on the percentile scale while one that does not falls through to
+        // the row-relative scale below — and that branch orients itself by `higherIsBetter` while
+        // percentiles do not, so on a lower-is-better metric the shape can rank them backwards.
+        if usesPercentileAxis, let percentile = measurement.percentile, percentile.isFinite {
             let normalized = percentile > 1 ? percentile / 100 : percentile
             return min(max(normalized, 0.02), 1)
         }

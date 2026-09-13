@@ -10,7 +10,7 @@ public struct WidgetConfigSheet: View {
 
     private let widget: DashboardWidget
     private let layoutID: String
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
 
     @ObservedObject private var store: DashboardStore
     @StateObject private var directory: ConfigSubjectDirectory
@@ -31,7 +31,7 @@ public struct WidgetConfigSheet: View {
                 client: (any APIClientProtocol)? = nil) {
         self.widget = widget
         self.layoutID = layoutID
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
         _store = ObservedObject(wrappedValue: store)
         _directory = StateObject(wrappedValue: ConfigSubjectDirectory(client: client))
         _draft = State(initialValue: catalog.normalizedConfig(for: widget.kind, config: widget.config))

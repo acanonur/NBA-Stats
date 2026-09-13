@@ -187,7 +187,7 @@ struct WidgetThumbnail: View {
 /// "Add Widget": the whole catalog, grouped, with a sketch and a one-line summary each.
 public struct WidgetCatalogSheet: View {
 
-    private let catalog: Catalog
+    @ObservedObject private var catalog: Catalog
     private let accent: AccentName
     private let onSelect: (WidgetKind) -> Void
 
@@ -196,7 +196,7 @@ public struct WidgetCatalogSheet: View {
     public init(catalog: Catalog,
                 accent: AccentName = .orange,
                 onSelect: @escaping (WidgetKind) -> Void) {
-        self.catalog = catalog
+        _catalog = ObservedObject(wrappedValue: catalog)
         self.accent = accent
         self.onSelect = onSelect
     }

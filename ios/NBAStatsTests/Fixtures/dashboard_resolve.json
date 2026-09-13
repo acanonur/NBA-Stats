@@ -5,8 +5,7 @@
   "resolvedContext": {
     "favoritePlayerId": 1500819,
     "favoriteTeamId": 1610612741,
-    "season": "2025-26",
-    "seasonType": null
+    "season": "2025-26"
   },
   "results": [
     {
@@ -4482,6 +4481,23 @@
       "notes": [
         "Shot locations begin in 1996-97, with league-wide play-by-play; the 1985-86 season has box scores but no shot chart."
       ]
+    },
+    {
+      "widgetId": "x01.leaderboard",
+      "kind": "leaderboard",
+      "status": "error",
+      "payload": null,
+      "error": {
+        "code": "metric_unavailable",
+        "message": "Offensive Rating at season level begins in 1996-97; the 1985-86 season predates it.",
+        "recoverable": true,
+        "field": "metric",
+        "requestId": "0f1c4d2ba7e65930"
+      },
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": null,
+      "notes": []
     }
   ]
 }
