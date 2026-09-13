@@ -329,11 +329,12 @@ def check_xcode_project_is_sound() -> str:
     open — a worse outcome than a build error, and one with no useful diagnostic.
 
     *The Info.plist trap.* A file-system synchronized group makes every file in its folder a
-    target member automatically. ``Info.plist`` lives in that folder and is also processed via
-    ``INFOPLIST_FILE``, so without a ``membershipExceptions`` entry both the copy step and the
-    plist step produce ``Hardwood.app/Info.plist`` and the build stops with "Multiple commands
-    produce ...". Xcode writes that exception itself when you add the file through the UI; a
-    hand-written project has to remember.
+    target member automatically. A plist that lives in that folder is therefore copied into
+    ``Hardwood.app/Info.plist`` as a resource, while ``INFOPLIST_FILE`` is separately producing
+    that same path — "Multiple commands produce ..." and the build stops. A
+    ``membershipExceptions`` entry is supposed to prevent this and, in practice, did not: the
+    plist now lives at ``ios/Info.plist``, outside every synchronized folder, which removes the
+    mechanism rather than trying to opt one file out of it. This check keeps it there.
     """
     project = ROOT / "ios" / "NBAStats.xcodeproj" / "project.pbxproj"
     if not project.is_file():
@@ -355,29 +356,34 @@ def check_xcode_project_is_sound() -> str:
     if not root_object or root_object.group(1) not in known:
         problems.append("rootObject does not resolve to a defined object")
 
-    # Every folder mirrored into a target, and the files each target excludes from it.
-    synchronized = set(re.findall(r"isa = PBXFileSystemSynchronizedRootGroup;.*?path = ([^;]+);",
-                                  text, re.S))
-    excepted = {
-        name.strip().strip('",')
-        for block in re.findall(r"membershipExceptions\s*=\s*\(([^)]*)\)", text, re.S)
-        for name in block.split()
-        if name.strip(" ,")
+    # Every folder mirrored into a target. Paths in build settings are relative to the folder
+    # holding the .xcodeproj, which is ios/.
+    synchronized = {
+        name.strip().strip('"')
+        for name in re.findall(
+            r"isa = PBXFileSystemSynchronizedRootGroup;.*?path = ([^;]+);", text, re.S
+        )
     }
-    for setting in sorted(set(re.findall(r"INFOPLIST_FILE\s*=\s*([^;]+);", text))):
+    source_root = project.parent.parent
+    # The lookbehind matters: GENERATE_INFOPLIST_FILE ends in the same 14 characters, and
+    # matching it too made this check complain that "NO" was not a file.
+    for setting in sorted(set(re.findall(r"(?<![A-Z_])INFOPLIST_FILE\s*=\s*([^;]+);", text))):
         plist = Path(setting.strip().strip('"'))
-        if plist.parts and plist.parts[0] in synchronized and plist.name not in excepted:
+        if plist.parts and plist.parts[0] in synchronized:
             problems.append(
-                f"INFOPLIST_FILE is {plist}, inside synchronized folder {plist.parts[0]}/, "
-                f"but {plist.name} is not in any membershipExceptions — the copy step and the "
-                "plist step would both produce it"
+                f"INFOPLIST_FILE is {plist}, inside synchronized folder {plist.parts[0]}/. "
+                "Everything in that folder is mirrored into the target, so the copy step and "
+                "the plist step both produce Hardwood.app/Info.plist. Move it to "
+                f"ios/{plist.name} and set INFOPLIST_FILE = {plist.name}"
             )
+        if not (source_root / plist).is_file():
+            problems.append(f"INFOPLIST_FILE points at {plist}, which does not exist")
 
     if problems:
         raise CheckFailure(*problems)
     return (
         f"{len(known)} objects, all references resolve, "
-        f"{len(synchronized)} synchronized folder(s), Info.plist excluded"
+        f"{len(synchronized)} synchronized folder(s), Info.plist outside them"
     )
 
 

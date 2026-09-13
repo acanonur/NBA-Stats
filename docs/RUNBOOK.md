@@ -23,7 +23,7 @@ curl -s -X POST localhost:8000/v1/dashboard/resolve \
 ```
 
 Then open `ios/NBAStats.xcodeproj` in Xcode 16+, run on a simulator. The app points at
-`http://localhost:8000/v1` by default (`HardwoodAPIBaseURL` in `Info.plist`, overridable in
+`http://localhost:8000/v1` by default (`HardwoodAPIBaseURL` in `ios/Info.plist`, overridable in
 Settings). With no server running it falls back to the bundled fixtures and is still fully
 browsable.
 
