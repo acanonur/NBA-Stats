@@ -32,10 +32,6 @@ public struct WidgetContainer: View {
             case .unavailable(let reason):
                 availability = .unavailable
                 notes = [reason]
-            default:
-                // Defensive: a state this build does not know renders as plain chrome rather than
-                // failing to compile against a newer `WidgetState`.
-                break
             }
         }
     }
