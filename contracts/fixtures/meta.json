@@ -1,0 +1,2739 @@
+{
+  "syncVersion": 4864,
+  "dataThrough": "2026-01-02",
+  "currentSeason": "2025-26",
+  "seasons": [
+    {
+      "season": "2025-26",
+      "seasonTypes": [
+        "Regular Season"
+      ],
+      "isCurrent": true,
+      "hasAdvanced": true,
+      "gameCount": 870
+    },
+    {
+      "season": "2024-25",
+      "seasonTypes": [
+        "Play In",
+        "Playoffs",
+        "Regular Season"
+      ],
+      "isCurrent": false,
+      "hasAdvanced": true,
+      "gameCount": 962
+    },
+    {
+      "season": "2023-24",
+      "seasonTypes": [
+        "Play In",
+        "Playoffs",
+        "Regular Season"
+      ],
+      "isCurrent": false,
+      "hasAdvanced": true,
+      "gameCount": 961
+    },
+    {
+      "season": "2005-06",
+      "seasonTypes": [
+        "Playoffs",
+        "Regular Season"
+      ],
+      "isCurrent": false,
+      "hasAdvanced": true,
+      "gameCount": 958
+    },
+    {
+      "season": "1992-93",
+      "seasonTypes": [
+        "Playoffs",
+        "Regular Season"
+      ],
+      "isCurrent": false,
+      "hasAdvanced": false,
+      "gameCount": 865
+    },
+    {
+      "season": "1985-86",
+      "seasonTypes": [
+        "Playoffs",
+        "Regular Season"
+      ],
+      "isCurrent": false,
+      "hasAdvanced": false,
+      "gameCount": 750
+    }
+  ],
+  "metrics": {
+    "schemaVersion": 1,
+    "categories": [
+      {
+        "key": "volume",
+        "name": "Volume"
+      },
+      {
+        "key": "shooting",
+        "name": "Shooting"
+      },
+      {
+        "key": "efficiency",
+        "name": "Efficiency"
+      },
+      {
+        "key": "usage",
+        "name": "Usage"
+      },
+      {
+        "key": "playmaking",
+        "name": "Playmaking"
+      },
+      {
+        "key": "rebounding",
+        "name": "Rebounding"
+      },
+      {
+        "key": "defense",
+        "name": "Defense"
+      },
+      {
+        "key": "impact",
+        "name": "Impact"
+      }
+    ],
+    "formats": [
+      {
+        "key": "integer",
+        "decimals": 0,
+        "suffix": null,
+        "multiplier": 1
+      },
+      {
+        "key": "decimal1",
+        "decimals": 1,
+        "suffix": null,
+        "multiplier": 1
+      },
+      {
+        "key": "decimal2",
+        "decimals": 2,
+        "suffix": null,
+        "multiplier": 1
+      },
+      {
+        "key": "percent1",
+        "decimals": 1,
+        "suffix": "%",
+        "multiplier": 100
+      },
+      {
+        "key": "percent2",
+        "decimals": 2,
+        "suffix": "%",
+        "multiplier": 100
+      },
+      {
+        "key": "rating1",
+        "decimals": 1,
+        "suffix": null,
+        "multiplier": 1
+      },
+      {
+        "key": "plusMinus1",
+        "decimals": 1,
+        "suffix": null,
+        "multiplier": 1,
+        "signed": true
+      },
+      {
+        "key": "minutes",
+        "decimals": 1,
+        "suffix": null,
+        "multiplier": 1
+      }
+    ],
+    "eraBoundaries": [
+      {
+        "season": "1946-47",
+        "label": "BAA begins",
+        "detail": "Basic box score: FG, FT, PTS, PF, AST."
+      },
+      {
+        "season": "1950-51",
+        "label": "Rebounds tracked",
+        "detail": "Total rebounds only; no offensive/defensive split."
+      },
+      {
+        "season": "1951-52",
+        "label": "Minutes played tracked",
+        "detail": "Enables per-minute metrics such as PER and WS/48."
+      },
+      {
+        "season": "1973-74",
+        "label": "Steals, blocks, OREB/DREB split",
+        "detail": "First season BPM and VORP can be computed."
+      },
+      {
+        "season": "1977-78",
+        "label": "Individual turnovers tracked",
+        "detail": "Enables USG% and TOV%."
+      },
+      {
+        "season": "1979-80",
+        "label": "Three point line introduced",
+        "detail": "3PM/3PA and 3PAr begin."
+      },
+      {
+        "season": "1996-97",
+        "label": "Advanced box scores and play-by-play",
+        "detail": "First season with true per-game ratings, plus/minus and shot charts."
+      },
+      {
+        "season": "2013-14",
+        "label": "Player tracking league-wide",
+        "detail": "SportVU, then Sony Hawk-Eye from 2023-24."
+      },
+      {
+        "season": "2016-17",
+        "label": "Hustle stats",
+        "detail": "Box outs added around 2019-20."
+      }
+    ],
+    "metrics": [
+      {
+        "key": "min",
+        "name": "Minutes",
+        "shortName": "MIN",
+        "category": "volume",
+        "format": "minutes",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1951-52",
+          "perGameFrom": "1951-52",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Minutes played."
+      },
+      {
+        "key": "pts",
+        "name": "Points",
+        "shortName": "PTS",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Points scored."
+      },
+      {
+        "key": "reb",
+        "name": "Rebounds",
+        "shortName": "REB",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1950-51",
+          "perGameFrom": "1950-51",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+      },
+      {
+        "key": "oreb",
+        "name": "Offensive Rebounds",
+        "shortName": "OREB",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Offensive rebounds."
+      },
+      {
+        "key": "dreb",
+        "name": "Defensive Rebounds",
+        "shortName": "DREB",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Defensive rebounds."
+      },
+      {
+        "key": "ast",
+        "name": "Assists",
+        "shortName": "AST",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Assists."
+      },
+      {
+        "key": "stl",
+        "name": "Steals",
+        "shortName": "STL",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Steals. Officially tracked from 1973-74."
+      },
+      {
+        "key": "blk",
+        "name": "Blocks",
+        "shortName": "BLK",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Blocked shots. Officially tracked from 1973-74."
+      },
+      {
+        "key": "tov",
+        "name": "Turnovers",
+        "shortName": "TOV",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": false,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1977-78",
+          "perGameFrom": "1977-78",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Individual turnovers. Officially tracked from 1977-78."
+      },
+      {
+        "key": "pf",
+        "name": "Personal Fouls",
+        "shortName": "PF",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": false,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Personal fouls."
+      },
+      {
+        "key": "fgm",
+        "name": "Field Goals Made",
+        "shortName": "FGM",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Field goals made."
+      },
+      {
+        "key": "fga",
+        "name": "Field Goals Attempted",
+        "shortName": "FGA",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Field goals attempted."
+      },
+      {
+        "key": "fg3m",
+        "name": "Three Pointers Made",
+        "shortName": "3PM",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1979-80",
+          "perGameFrom": "1979-80",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Three-point field goals made. The three-point line arrived in 1979-80."
+      },
+      {
+        "key": "fg3a",
+        "name": "Three Pointers Attempted",
+        "shortName": "3PA",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1979-80",
+          "perGameFrom": "1979-80",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Three-point field goals attempted."
+      },
+      {
+        "key": "ftm",
+        "name": "Free Throws Made",
+        "shortName": "FTM",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Free throws made."
+      },
+      {
+        "key": "fta",
+        "name": "Free Throws Attempted",
+        "shortName": "FTA",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Free throws attempted."
+      },
+      {
+        "key": "plus_minus",
+        "name": "Plus/Minus",
+        "shortName": "+/-",
+        "category": "impact",
+        "format": "plusMinus1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Team point differential while the player is on the floor."
+      },
+      {
+        "key": "gp",
+        "name": "Games Played",
+        "shortName": "GP",
+        "category": "volume",
+        "format": "integer",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Games played."
+      },
+      {
+        "key": "gs",
+        "name": "Games Started",
+        "shortName": "GS",
+        "category": "volume",
+        "format": "integer",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1970-71",
+          "perGameFrom": "1970-71",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Games started."
+      },
+      {
+        "key": "fantasy_pts",
+        "name": "Fantasy Points",
+        "shortName": "FP",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1977-78",
+          "perGameFrom": "1977-78",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "NBA fantasy points: PTS + 1.2*REB + 1.5*AST + 3*STL + 3*BLK - TOV."
+      },
+      {
+        "key": "fg_pct",
+        "name": "Field Goal %",
+        "shortName": "FG%",
+        "category": "shooting",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.3,
+          "max": 0.7
+        },
+        "glossary": "FGM / FGA."
+      },
+      {
+        "key": "fg3_pct",
+        "name": "Three Point %",
+        "shortName": "3P%",
+        "category": "shooting",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1979-80",
+          "perGameFrom": "1979-80",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.15,
+          "max": 0.5
+        },
+        "glossary": "3PM / 3PA."
+      },
+      {
+        "key": "ft_pct",
+        "name": "Free Throw %",
+        "shortName": "FT%",
+        "category": "shooting",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.4,
+          "max": 1.0
+        },
+        "glossary": "FTM / FTA."
+      },
+      {
+        "key": "efg_pct",
+        "name": "Effective FG %",
+        "shortName": "eFG%",
+        "category": "shooting",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.35,
+          "max": 0.72
+        },
+        "glossary": "(FGM + 0.5*3PM) / FGA. Adjusts field goal percentage for the extra value of a three."
+      },
+      {
+        "key": "ts_pct",
+        "name": "True Shooting %",
+        "shortName": "TS%",
+        "category": "shooting",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.35,
+          "max": 0.75
+        },
+        "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+      },
+      {
+        "key": "fg3a_rate",
+        "name": "Three Point Attempt Rate",
+        "shortName": "3PAr",
+        "category": "shooting",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1979-80",
+          "perGameFrom": "1979-80",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.85
+        },
+        "glossary": "3PA / FGA. Share of field goal attempts taken from three."
+      },
+      {
+        "key": "ftr",
+        "name": "Free Throw Rate",
+        "shortName": "FTr",
+        "category": "shooting",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.8
+        },
+        "glossary": "FTA / FGA. Free throws drawn per field goal attempt."
+      },
+      {
+        "key": "pps",
+        "name": "Points Per Shot",
+        "shortName": "PPS",
+        "category": "shooting",
+        "format": "decimal2",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "PTS / FGA."
+      },
+      {
+        "key": "off_rtg",
+        "name": "Offensive Rating",
+        "shortName": "ORtg",
+        "category": "efficiency",
+        "format": "rating1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 85.0,
+          "max": 135.0
+        },
+        "glossary": "Points produced per 100 possessions (Dean Oliver)."
+      },
+      {
+        "key": "def_rtg",
+        "name": "Defensive Rating",
+        "shortName": "DRtg",
+        "category": "efficiency",
+        "format": "rating1",
+        "higherIsBetter": false,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 85.0,
+          "max": 135.0
+        },
+        "glossary": "Points allowed per 100 possessions (Dean Oliver)."
+      },
+      {
+        "key": "net_rtg",
+        "name": "Net Rating",
+        "shortName": "NetRtg",
+        "category": "efficiency",
+        "format": "rating1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": -25.0,
+          "max": 25.0
+        },
+        "glossary": "Offensive Rating minus Defensive Rating."
+      },
+      {
+        "key": "usg_pct",
+        "name": "Usage %",
+        "shortName": "USG%",
+        "category": "usage",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1977-78",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.05,
+          "max": 0.42
+        },
+        "glossary": "Share of team possessions a player ends while on the floor."
+      },
+      {
+        "key": "ast_pct",
+        "name": "Assist %",
+        "shortName": "AST%",
+        "category": "playmaking",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.55
+        },
+        "glossary": "Share of teammate field goals a player assists while on the floor."
+      },
+      {
+        "key": "ast_tov",
+        "name": "Assist to Turnover",
+        "shortName": "AST/TO",
+        "category": "playmaking",
+        "format": "decimal2",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1977-78",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Assists divided by turnovers."
+      },
+      {
+        "key": "ast_ratio",
+        "name": "Assist Ratio",
+        "shortName": "ASTr",
+        "category": "playmaking",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1977-78",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Assists per 100 possessions used."
+      },
+      {
+        "key": "oreb_pct",
+        "name": "Offensive Rebound %",
+        "shortName": "OREB%",
+        "category": "rebounding",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.2
+        },
+        "glossary": "Share of available offensive rebounds grabbed while on the floor."
+      },
+      {
+        "key": "dreb_pct",
+        "name": "Defensive Rebound %",
+        "shortName": "DREB%",
+        "category": "rebounding",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.4
+        },
+        "glossary": "Share of available defensive rebounds grabbed while on the floor."
+      },
+      {
+        "key": "reb_pct",
+        "name": "Rebound %",
+        "shortName": "REB%",
+        "category": "rebounding",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.3
+        },
+        "glossary": "Share of available rebounds grabbed while on the floor."
+      },
+      {
+        "key": "tov_pct",
+        "name": "Turnover %",
+        "shortName": "TOV%",
+        "category": "usage",
+        "format": "percent1",
+        "higherIsBetter": false,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1977-78",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.3
+        },
+        "glossary": "Turnovers per 100 possessions used."
+      },
+      {
+        "key": "stl_pct",
+        "name": "Steal %",
+        "shortName": "STL%",
+        "category": "defense",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.05
+        },
+        "glossary": "Share of opponent possessions ending in a steal by the player."
+      },
+      {
+        "key": "blk_pct",
+        "name": "Block %",
+        "shortName": "BLK%",
+        "category": "defense",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.1
+        },
+        "glossary": "Share of opponent two-point attempts blocked by the player."
+      },
+      {
+        "key": "pace",
+        "name": "Pace",
+        "shortName": "PACE",
+        "category": "efficiency",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 85.0,
+          "max": 110.0
+        },
+        "glossary": "Possessions per 48 minutes."
+      },
+      {
+        "key": "poss",
+        "name": "Possessions",
+        "shortName": "POSS",
+        "category": "efficiency",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Possessions played."
+      },
+      {
+        "key": "pie",
+        "name": "Player Impact Estimate",
+        "shortName": "PIE",
+        "category": "impact",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 0.3
+        },
+        "glossary": "A player's share of the box-score events generated in the games they played (NBA.com)."
+      },
+      {
+        "key": "game_score",
+        "name": "Game Score",
+        "shortName": "GmSc",
+        "category": "impact",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
+      },
+      {
+        "key": "per",
+        "name": "Player Efficiency Rating",
+        "shortName": "PER",
+        "category": "impact",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1951-52",
+          "perGameFrom": "1951-52",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 35.0
+        },
+        "glossary": "Hollinger's per-minute rating, pace and league adjusted so that the league average is 15.00 every season."
+      },
+      {
+        "key": "ws",
+        "name": "Win Shares",
+        "shortName": "WS",
+        "category": "impact",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1951-52",
+          "perGameFrom": "1951-52",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": null,
+        "glossary": "Estimated wins contributed. OWS + DWS."
+      },
+      {
+        "key": "ows",
+        "name": "Offensive Win Shares",
+        "shortName": "OWS",
+        "category": "impact",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1951-52",
+          "perGameFrom": "1951-52",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": null,
+        "glossary": "Wins contributed by offense."
+      },
+      {
+        "key": "dws",
+        "name": "Defensive Win Shares",
+        "shortName": "DWS",
+        "category": "impact",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1951-52",
+          "perGameFrom": "1951-52",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": null,
+        "glossary": "Wins contributed by defense."
+      },
+      {
+        "key": "ws48",
+        "name": "Win Shares per 48",
+        "shortName": "WS/48",
+        "category": "impact",
+        "format": "decimal2",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1951-52",
+          "perGameFrom": "1951-52",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": -0.05,
+          "max": 0.32
+        },
+        "glossary": "Win Shares per 48 minutes. League average is about 0.100."
+      },
+      {
+        "key": "bpm",
+        "name": "Box Plus/Minus",
+        "shortName": "BPM",
+        "category": "impact",
+        "format": "plusMinus1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": {
+          "min": -8.0,
+          "max": 14.0
+        },
+        "glossary": "Box-score estimate of points per 100 possessions above a league-average player. Needs steals, blocks and turnovers, so it starts in 1973-74."
+      },
+      {
+        "key": "obpm",
+        "name": "Offensive Box Plus/Minus",
+        "shortName": "OBPM",
+        "category": "impact",
+        "format": "plusMinus1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": null,
+        "glossary": "Offensive component of BPM."
+      },
+      {
+        "key": "dbpm",
+        "name": "Defensive Box Plus/Minus",
+        "shortName": "DBPM",
+        "category": "impact",
+        "format": "plusMinus1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": null,
+        "glossary": "Defensive component of BPM."
+      },
+      {
+        "key": "vorp",
+        "name": "Value Over Replacement",
+        "shortName": "VORP",
+        "category": "impact",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": true,
+          "estimatedBefore": "1996-97"
+        },
+        "domain": null,
+        "glossary": "(BPM + 2.0) * (share of team minutes) * (team games / 82)."
+      },
+      {
+        "key": "opp_efg_pct",
+        "name": "Opponent eFG %",
+        "shortName": "Opp eFG%",
+        "category": "defense",
+        "format": "percent1",
+        "higherIsBetter": false,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Opponent effective field goal percentage."
+      },
+      {
+        "key": "opp_tov_pct",
+        "name": "Opponent Turnover %",
+        "shortName": "Opp TOV%",
+        "category": "defense",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Opponent turnovers per 100 possessions."
+      },
+      {
+        "key": "opp_oreb_pct",
+        "name": "Opponent OREB %",
+        "shortName": "Opp OREB%",
+        "category": "defense",
+        "format": "percent1",
+        "higherIsBetter": false,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Opponent offensive rebound percentage."
+      },
+      {
+        "key": "opp_ftr",
+        "name": "Opponent Free Throw Rate",
+        "shortName": "Opp FTr",
+        "category": "defense",
+        "format": "percent1",
+        "higherIsBetter": false,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1996-97",
+          "perGameFrom": "1996-97",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Opponent FTA / FGA."
+      },
+      {
+        "key": "wins",
+        "name": "Wins",
+        "shortName": "W",
+        "category": "volume",
+        "format": "integer",
+        "higherIsBetter": true,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": true,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Team wins."
+      },
+      {
+        "key": "losses",
+        "name": "Losses",
+        "shortName": "L",
+        "category": "volume",
+        "format": "integer",
+        "higherIsBetter": false,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": true,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Team losses."
+      },
+      {
+        "key": "win_pct",
+        "name": "Win Percentage",
+        "shortName": "W%",
+        "category": "efficiency",
+        "format": "percent1",
+        "higherIsBetter": true,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": true,
+          "estimatedBefore": null
+        },
+        "domain": {
+          "min": 0.0,
+          "max": 1.0
+        },
+        "glossary": "Wins / (Wins + Losses)."
+      }
+    ]
+  },
+  "widgets": {
+    "schemaVersion": 1,
+    "sizes": [
+      {
+        "key": "small",
+        "columnsCompact": 1,
+        "columnsRegular": 1,
+        "height": 148,
+        "name": "Small",
+        "summary": "One column, headline value only."
+      },
+      {
+        "key": "medium",
+        "columnsCompact": 2,
+        "columnsRegular": 2,
+        "height": 232,
+        "name": "Medium",
+        "summary": "Full width on iPhone, half width on iPad."
+      },
+      {
+        "key": "large",
+        "columnsCompact": 2,
+        "columnsRegular": 4,
+        "height": 360,
+        "name": "Large",
+        "summary": "Full width, tall enough for tables and charts."
+      }
+    ],
+    "gridColumns": {
+      "compact": 2,
+      "regular": 4
+    },
+    "configFieldTypes": [
+      "season",
+      "enum",
+      "enumList",
+      "metric",
+      "metricList",
+      "player",
+      "playerList",
+      "team",
+      "teamList",
+      "subject",
+      "subjectList",
+      "int",
+      "double",
+      "bool",
+      "date"
+    ],
+    "widgets": [
+      {
+        "kind": "stat_tile",
+        "name": "Stat Tile",
+        "summary": "One headline metric for a player or team, with optional supporting metrics and a sparkline.",
+        "icon": "number.square",
+        "sizes": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "defaultSize": "small",
+        "minRefreshSeconds": 300,
+        "config": [
+          {
+            "key": "subjectType",
+            "type": "enum",
+            "label": "Subject",
+            "required": true,
+            "default": "player",
+            "options": [
+              "player",
+              "team"
+            ]
+          },
+          {
+            "key": "subjectId",
+            "type": "subject",
+            "label": "Player or Team",
+            "required": true,
+            "default": null,
+            "dependsOn": "subjectType"
+          },
+          {
+            "key": "metric",
+            "type": "metric",
+            "label": "Metric",
+            "required": true,
+            "default": "ts_pct",
+            "metricScope": "any"
+          },
+          {
+            "key": "secondaryMetrics",
+            "type": "metricList",
+            "label": "Supporting Metrics",
+            "required": false,
+            "default": [
+              "pts",
+              "usg_pct"
+            ],
+            "maxItems": 4
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "perMode",
+            "type": "enum",
+            "label": "Per Mode",
+            "required": false,
+            "default": "PerGame",
+            "options": [
+              "PerGame",
+              "Totals",
+              "Per36",
+              "Per100"
+            ]
+          },
+          {
+            "key": "showSparkline",
+            "type": "bool",
+            "label": "Show Sparkline",
+            "required": false,
+            "default": true
+          },
+          {
+            "key": "sparklineWindow",
+            "type": "int",
+            "label": "Sparkline Games",
+            "required": false,
+            "default": 15,
+            "min": 5,
+            "max": 82
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "player_snapshot",
+        "name": "Player Snapshot",
+        "summary": "A player's full advanced slate for a season, with league percentile bars.",
+        "icon": "person.crop.square",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 300,
+        "config": [
+          {
+            "key": "playerId",
+            "type": "player",
+            "label": "Player",
+            "required": true,
+            "default": null
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "metrics",
+            "type": "metricList",
+            "label": "Metrics",
+            "required": true,
+            "default": [
+              "ts_pct",
+              "usg_pct",
+              "ast_pct",
+              "reb_pct",
+              "off_rtg",
+              "def_rtg",
+              "net_rtg",
+              "pie"
+            ],
+            "metricScope": "player",
+            "maxItems": 12
+          },
+          {
+            "key": "showPercentiles",
+            "type": "bool",
+            "label": "Show League Percentiles",
+            "required": false,
+            "default": true
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "leaderboard",
+        "name": "Leaderboard",
+        "summary": "Top players or teams ranked by any metric, with qualifier filters.",
+        "icon": "list.number",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "config": [
+          {
+            "key": "subjectType",
+            "type": "enum",
+            "label": "Subject",
+            "required": true,
+            "default": "player",
+            "options": [
+              "player",
+              "team"
+            ]
+          },
+          {
+            "key": "metric",
+            "type": "metric",
+            "label": "Metric",
+            "required": true,
+            "default": "pie",
+            "metricScope": "any"
+          },
+          {
+            "key": "scope",
+            "type": "enum",
+            "label": "Scope",
+            "required": false,
+            "default": "season",
+            "options": [
+              "season",
+              "all_time"
+            ],
+            "help": "'all_time' ranks the best single seasons in league history."
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "perMode",
+            "type": "enum",
+            "label": "Per Mode",
+            "required": false,
+            "default": "PerGame",
+            "options": [
+              "PerGame",
+              "Totals",
+              "Per36",
+              "Per100"
+            ]
+          },
+          {
+            "key": "limit",
+            "type": "int",
+            "label": "Rows",
+            "required": false,
+            "default": 10,
+            "min": 3,
+            "max": 50
+          },
+          {
+            "key": "minGames",
+            "type": "int",
+            "label": "Minimum Games",
+            "required": false,
+            "default": 15,
+            "min": 0,
+            "max": 82
+          },
+          {
+            "key": "minMinutesPerGame",
+            "type": "double",
+            "label": "Minimum MPG",
+            "required": false,
+            "default": 20.0,
+            "min": 0.0,
+            "max": 48.0
+          },
+          {
+            "key": "positions",
+            "type": "enumList",
+            "label": "Positions",
+            "required": false,
+            "default": [],
+            "options": [
+              "G",
+              "F",
+              "C"
+            ]
+          },
+          {
+            "key": "teamIds",
+            "type": "teamList",
+            "label": "Teams",
+            "required": false,
+            "default": []
+          },
+          {
+            "key": "secondaryMetrics",
+            "type": "metricList",
+            "label": "Extra Columns",
+            "required": false,
+            "default": [
+              "pts",
+              "min"
+            ],
+            "maxItems": 3
+          },
+          {
+            "key": "ascending",
+            "type": "bool",
+            "label": "Reverse Order",
+            "required": false,
+            "default": false,
+            "help": "Off means best-first using the metric's own direction."
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "game_log",
+        "name": "Game Log",
+        "summary": "Recent games for a player, with configurable basic and advanced columns.",
+        "icon": "tablecells",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 300,
+        "config": [
+          {
+            "key": "playerId",
+            "type": "player",
+            "label": "Player",
+            "required": true,
+            "default": null
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "columns",
+            "type": "metricList",
+            "label": "Columns",
+            "required": true,
+            "default": [
+              "min",
+              "pts",
+              "reb",
+              "ast",
+              "ts_pct",
+              "usg_pct",
+              "plus_minus",
+              "game_score"
+            ],
+            "maxItems": 14
+          },
+          {
+            "key": "limit",
+            "type": "int",
+            "label": "Games",
+            "required": false,
+            "default": 10,
+            "min": 5,
+            "max": 82
+          },
+          {
+            "key": "highlightSeasonBest",
+            "type": "bool",
+            "label": "Highlight Season Bests",
+            "required": false,
+            "default": true
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "trend_chart",
+        "name": "Trend",
+        "summary": "A metric game by game, with a rolling average and an optional league baseline.",
+        "icon": "chart.xyaxis.line",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 300,
+        "config": [
+          {
+            "key": "subjectType",
+            "type": "enum",
+            "label": "Subject",
+            "required": true,
+            "default": "player",
+            "options": [
+              "player",
+              "team"
+            ]
+          },
+          {
+            "key": "subjectIds",
+            "type": "subjectList",
+            "label": "Players or Teams",
+            "required": true,
+            "default": null,
+            "maxItems": 4,
+            "dependsOn": "subjectType"
+          },
+          {
+            "key": "metric",
+            "type": "metric",
+            "label": "Metric",
+            "required": true,
+            "default": "ts_pct",
+            "metricScope": "any"
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "rollingWindow",
+            "type": "int",
+            "label": "Rolling Average Games",
+            "required": false,
+            "default": 5,
+            "min": 1,
+            "max": 25
+          },
+          {
+            "key": "showLeagueAverage",
+            "type": "bool",
+            "label": "Show League Average",
+            "required": false,
+            "default": true
+          },
+          {
+            "key": "showRawPoints",
+            "type": "bool",
+            "label": "Show Individual Games",
+            "required": false,
+            "default": true
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "four_factors",
+        "name": "Four Factors",
+        "summary": "Dean Oliver's four factors for a team, against the league average and the opponent.",
+        "icon": "square.grid.2x2",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "medium",
+        "minRefreshSeconds": 600,
+        "config": [
+          {
+            "key": "teamId",
+            "type": "team",
+            "label": "Team",
+            "required": true,
+            "default": null
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "showOpponent",
+            "type": "bool",
+            "label": "Show Defensive Four Factors",
+            "required": false,
+            "default": true
+          },
+          {
+            "key": "comparison",
+            "type": "enum",
+            "label": "Compare Against",
+            "required": false,
+            "default": "league",
+            "options": [
+              "league",
+              "none"
+            ]
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "shot_profile",
+        "name": "Shot Profile",
+        "summary": "Where the shots come from and how they fall, by court zone.",
+        "icon": "scope",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "availableFrom": "1996-97",
+        "config": [
+          {
+            "key": "subjectType",
+            "type": "enum",
+            "label": "Subject",
+            "required": true,
+            "default": "player",
+            "options": [
+              "player",
+              "team"
+            ]
+          },
+          {
+            "key": "subjectId",
+            "type": "subject",
+            "label": "Player or Team",
+            "required": true,
+            "default": null,
+            "dependsOn": "subjectType"
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "compareToLeague",
+            "type": "bool",
+            "label": "Compare to League",
+            "required": false,
+            "default": true
+          }
+        ]
+      },
+      {
+        "kind": "comparison",
+        "name": "Comparison",
+        "summary": "Two to four players side by side on the metrics you choose, normalized to league percentiles.",
+        "icon": "person.2",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "config": [
+          {
+            "key": "playerIds",
+            "type": "playerList",
+            "label": "Players",
+            "required": true,
+            "default": null,
+            "minItems": 2,
+            "maxItems": 4
+          },
+          {
+            "key": "metrics",
+            "type": "metricList",
+            "label": "Metrics",
+            "required": true,
+            "default": [
+              "pts",
+              "ts_pct",
+              "usg_pct",
+              "ast_pct",
+              "reb_pct",
+              "net_rtg"
+            ],
+            "metricScope": "player",
+            "maxItems": 10
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "normalization",
+            "type": "enum",
+            "label": "Scale",
+            "required": false,
+            "default": "percentile",
+            "options": [
+              "percentile",
+              "raw"
+            ]
+          },
+          {
+            "key": "style",
+            "type": "enum",
+            "label": "Style",
+            "required": false,
+            "default": "bars",
+            "options": [
+              "bars",
+              "radar",
+              "table"
+            ]
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "scoreboard",
+        "name": "Scoreboard",
+        "summary": "Every game on a slate with final scores and the best advanced line from each side.",
+        "icon": "sportscourt",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 60,
+        "config": [
+          {
+            "key": "date",
+            "type": "date",
+            "label": "Date",
+            "required": true,
+            "default": "latest",
+            "help": "An ISO date, or 'latest' for the most recent completed slate."
+          },
+          {
+            "key": "showTopPerformers",
+            "type": "bool",
+            "label": "Show Top Performers",
+            "required": false,
+            "default": true
+          },
+          {
+            "key": "teamIds",
+            "type": "teamList",
+            "label": "Only These Teams",
+            "required": false,
+            "default": []
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "daily_movers",
+        "name": "Daily Movers",
+        "summary": "The biggest single-game performances from the last completed slate, versus each player's own season baseline.",
+        "icon": "arrow.up.right",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 60,
+        "config": [
+          {
+            "key": "date",
+            "type": "date",
+            "label": "Date",
+            "required": true,
+            "default": "latest"
+          },
+          {
+            "key": "metric",
+            "type": "metric",
+            "label": "Metric",
+            "required": true,
+            "default": "game_score",
+            "metricScope": "player"
+          },
+          {
+            "key": "limit",
+            "type": "int",
+            "label": "Rows",
+            "required": false,
+            "default": 8,
+            "min": 3,
+            "max": 25
+          },
+          {
+            "key": "minMinutes",
+            "type": "double",
+            "label": "Minimum Minutes",
+            "required": false,
+            "default": 12.0,
+            "min": 0.0,
+            "max": 48.0
+          },
+          {
+            "key": "direction",
+            "type": "enum",
+            "label": "Direction",
+            "required": false,
+            "default": "best",
+            "options": [
+              "best",
+              "worst",
+              "surprise"
+            ],
+            "help": "'surprise' ranks by the largest gap against the player's own season average."
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "team_efficiency",
+        "name": "Team Efficiency",
+        "summary": "League-wide offensive, defensive and net rating with pace.",
+        "icon": "chart.bar.xaxis",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "config": [
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          },
+          {
+            "key": "sortBy",
+            "type": "metric",
+            "label": "Sort By",
+            "required": false,
+            "default": "net_rtg",
+            "metricScope": "team"
+          },
+          {
+            "key": "conference",
+            "type": "enum",
+            "label": "Conference",
+            "required": false,
+            "default": "all",
+            "options": [
+              "all",
+              "East",
+              "West"
+            ]
+          },
+          {
+            "key": "limit",
+            "type": "int",
+            "label": "Rows",
+            "required": false,
+            "default": 30,
+            "min": 5,
+            "max": 30
+          },
+          {
+            "key": "style",
+            "type": "enum",
+            "label": "Style",
+            "required": false,
+            "default": "table",
+            "options": [
+              "table",
+              "scatter"
+            ]
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "career_arc",
+        "name": "Career Arc",
+        "summary": "A metric season by season across a whole career, with era availability marked.",
+        "icon": "waveform.path.ecg",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 3600,
+        "config": [
+          {
+            "key": "playerId",
+            "type": "player",
+            "label": "Player",
+            "required": true,
+            "default": null
+          },
+          {
+            "key": "metric",
+            "type": "metric",
+            "label": "Metric",
+            "required": true,
+            "default": "per",
+            "metricScope": "player"
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": false,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs"
+            ]
+          },
+          {
+            "key": "includePlayoffs",
+            "type": "bool",
+            "label": "Overlay Playoffs",
+            "required": false,
+            "default": true
+          },
+          {
+            "key": "xAxis",
+            "type": "enum",
+            "label": "X Axis",
+            "required": false,
+            "default": "season",
+            "options": [
+              "season",
+              "age"
+            ]
+          }
+        ],
+        "availableFrom": null
+      }
+    ]
+  },
+  "teams": [
+    {
+      "teamId": 1610612737,
+      "abbr": "ATL",
+      "name": "Atlanta Hawks",
+      "city": "Atlanta",
+      "nickname": "Hawks",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612751,
+      "abbr": "BKN",
+      "name": "Brooklyn Nets",
+      "city": "Brooklyn",
+      "nickname": "Nets",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612738,
+      "abbr": "BOS",
+      "name": "Boston Celtics",
+      "city": "Boston",
+      "nickname": "Celtics",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612766,
+      "abbr": "CHA",
+      "name": "Charlotte Hornets",
+      "city": "Charlotte",
+      "nickname": "Hornets",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612741,
+      "abbr": "CHI",
+      "name": "Chicago Bulls",
+      "city": "Chicago",
+      "nickname": "Bulls",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612739,
+      "abbr": "CLE",
+      "name": "Cleveland Cavaliers",
+      "city": "Cleveland",
+      "nickname": "Cavaliers",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612742,
+      "abbr": "DAL",
+      "name": "Dallas Mavericks",
+      "city": "Dallas",
+      "nickname": "Mavericks",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612743,
+      "abbr": "DEN",
+      "name": "Denver Nuggets",
+      "city": "Denver",
+      "nickname": "Nuggets",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612765,
+      "abbr": "DET",
+      "name": "Detroit Pistons",
+      "city": "Detroit",
+      "nickname": "Pistons",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612744,
+      "abbr": "GSW",
+      "name": "Golden State Warriors",
+      "city": "Golden State",
+      "nickname": "Warriors",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612745,
+      "abbr": "HOU",
+      "name": "Houston Rockets",
+      "city": "Houston",
+      "nickname": "Rockets",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612754,
+      "abbr": "IND",
+      "name": "Indiana Pacers",
+      "city": "Indiana",
+      "nickname": "Pacers",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612746,
+      "abbr": "LAC",
+      "name": "Los Angeles Clippers",
+      "city": "Los Angeles",
+      "nickname": "Clippers",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612747,
+      "abbr": "LAL",
+      "name": "Los Angeles Lakers",
+      "city": "Los Angeles",
+      "nickname": "Lakers",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612763,
+      "abbr": "MEM",
+      "name": "Memphis Grizzlies",
+      "city": "Memphis",
+      "nickname": "Grizzlies",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612748,
+      "abbr": "MIA",
+      "name": "Miami Heat",
+      "city": "Miami",
+      "nickname": "Heat",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612749,
+      "abbr": "MIL",
+      "name": "Milwaukee Bucks",
+      "city": "Milwaukee",
+      "nickname": "Bucks",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612750,
+      "abbr": "MIN",
+      "name": "Minnesota Timberwolves",
+      "city": "Minnesota",
+      "nickname": "Timberwolves",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612740,
+      "abbr": "NOP",
+      "name": "New Orleans Pelicans",
+      "city": "New Orleans",
+      "nickname": "Pelicans",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612752,
+      "abbr": "NYK",
+      "name": "New York Knicks",
+      "city": "New York",
+      "nickname": "Knicks",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612760,
+      "abbr": "OKC",
+      "name": "Oklahoma City Thunder",
+      "city": "Oklahoma City",
+      "nickname": "Thunder",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612753,
+      "abbr": "ORL",
+      "name": "Orlando Magic",
+      "city": "Orlando",
+      "nickname": "Magic",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612755,
+      "abbr": "PHI",
+      "name": "Philadelphia 76ers",
+      "city": "Philadelphia",
+      "nickname": "76ers",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612756,
+      "abbr": "PHX",
+      "name": "Phoenix Suns",
+      "city": "Phoenix",
+      "nickname": "Suns",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612757,
+      "abbr": "POR",
+      "name": "Portland Trail Blazers",
+      "city": "Portland",
+      "nickname": "Trail Blazers",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612758,
+      "abbr": "SAC",
+      "name": "Sacramento Kings",
+      "city": "Sacramento",
+      "nickname": "Kings",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612759,
+      "abbr": "SAS",
+      "name": "San Antonio Spurs",
+      "city": "San Antonio",
+      "nickname": "Spurs",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612761,
+      "abbr": "TOR",
+      "name": "Toronto Raptors",
+      "city": "Toronto",
+      "nickname": "Raptors",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612762,
+      "abbr": "UTA",
+      "name": "Utah Jazz",
+      "city": "Utah",
+      "nickname": "Jazz",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612764,
+      "abbr": "WAS",
+      "name": "Washington Wizards",
+      "city": "Washington",
+      "nickname": "Wizards",
+      "conference": "East",
+      "division": "Southeast"
+    }
+  ],
+  "coverage": {
+    "seasonFrom": "1946-47",
+    "advancedFrom": "1996-97",
+    "shotChartsFrom": "1996-97",
+    "trackingFrom": "2013-14",
+    "hustleFrom": "2016-17"
+  },
+  "attribution": "Demo data: a synthetic league generated by nbastats.seed. Not NBA data, and not endorsed by or affiliated with the NBA."
+}

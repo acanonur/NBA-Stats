@@ -183,9 +183,24 @@ def _resolve(columns: Iterable[str], aliases: Mapping[str, Sequence[str]], conte
     return resolved
 
 
-def _pluck(row: Mapping[str, Any], resolved: Mapping[str, str], target: str) -> Any:
+def _field(row: Any, name: str) -> Any:
+    """One field of a source row, whatever shape that row happens to be.
+
+    The Kaggle loader reads through ``sqlite3.Row``, which indexes by column name
+    but is **not** a ``Mapping`` and has no ``.get()``; the CSV and parquet
+    loaders yield plain ``dict``. Subscripting and catching the miss covers both,
+    so no loader has to care which it was handed. ``sqlite3.Row`` raises
+    ``IndexError`` for an unknown name where a ``dict`` raises ``KeyError``.
+    """
+    try:
+        return row[name]
+    except (KeyError, IndexError, TypeError):
+        return None
+
+
+def _pluck(row: Any, resolved: Mapping[str, str], target: str) -> Any:
     source = resolved.get(target)
-    return row.get(source) if source else None
+    return _field(row, source) if source else None
 
 
 def normalize_name(value: Any) -> str:
@@ -545,11 +560,11 @@ def _kaggle_group_seasons(
     return grouped
 
 
-def _kaggle_side(row: Mapping[str, Any], side: str) -> dict[str, Any]:
+def _kaggle_side(row: Any, side: str) -> dict[str, Any]:
     """One team's half of a Kaggle ``game`` row, in our column vocabulary."""
     out: dict[str, Any] = {}
     for column in _KAGGLE_BOX_COLUMNS:
-        value = row.get(f"{column}_{side}")
+        value = _field(row, f"{column}_{side}")
         parser = normalize.parse_float if column.endswith("_pct") or column == "plus_minus" else normalize.parse_int
         out[column] = parser(value)
     return out
@@ -604,6 +619,10 @@ def _load_kaggle_season(
                 side["minutes"] = minutes
                 side["season"] = season
 
+            # ``ingested_at`` is a timestamp of the pass, not of the data, so it
+            # is written separately: folded into the comparison it would make
+            # every re-load report every game as changed, and the report is what
+            # an operator reads to decide whether a re-run did anything.
             if aggregate.upsert(
                 session,
                 Game,
@@ -618,10 +637,10 @@ def _load_kaggle_season(
                     "away_pts": away.get("pts"),
                     "status": "final",
                     "data_source": KAGGLE_SOURCE,
-                    "ingested_at": utcnow(),
                 },
             ):
                 changed += 1
+            aggregate.upsert(session, Game, {"game_id": game_id}, {"ingested_at": utcnow()})
             written += 1
             seen.append(game_id)
 

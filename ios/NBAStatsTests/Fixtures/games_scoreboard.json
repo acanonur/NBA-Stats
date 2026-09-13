@@ -1,0 +1,157 @@
+{
+  "date": "2026-01-02",
+  "isLatestCompleted": true,
+  "games": [
+    {
+      "gameId": "0022500368",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612760,
+        "abbr": "OKC",
+        "name": "Oklahoma City Thunder",
+        "city": "Oklahoma City",
+        "nickname": "Thunder",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "away": {
+        "teamId": 1610612740,
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "city": "New Orleans",
+        "nickname": "Pelicans",
+        "conference": "West",
+        "division": "Southwest"
+      },
+      "homePts": 108,
+      "awayPts": 110,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z"
+    },
+    {
+      "gameId": "0022500367",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612757,
+        "abbr": "POR",
+        "name": "Portland Trail Blazers",
+        "city": "Portland",
+        "nickname": "Trail Blazers",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "away": {
+        "teamId": 1610612750,
+        "abbr": "MIN",
+        "name": "Minnesota Timberwolves",
+        "city": "Minnesota",
+        "nickname": "Timberwolves",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "homePts": 109,
+      "awayPts": 112,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z"
+    },
+    {
+      "gameId": "0022500366",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612748,
+        "abbr": "MIA",
+        "name": "Miami Heat",
+        "city": "Miami",
+        "nickname": "Heat",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "away": {
+        "teamId": 1610612751,
+        "abbr": "BKN",
+        "name": "Brooklyn Nets",
+        "city": "Brooklyn",
+        "nickname": "Nets",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "homePts": 124,
+      "awayPts": 106,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z"
+    },
+    {
+      "gameId": "0022500365",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612738,
+        "abbr": "BOS",
+        "name": "Boston Celtics",
+        "city": "Boston",
+        "nickname": "Celtics",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "away": {
+        "teamId": 1610612741,
+        "abbr": "CHI",
+        "name": "Chicago Bulls",
+        "city": "Chicago",
+        "nickname": "Bulls",
+        "conference": "East",
+        "division": "Central"
+      },
+      "homePts": 113,
+      "awayPts": 107,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z"
+    },
+    {
+      "gameId": "0022500364",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612744,
+        "abbr": "GSW",
+        "name": "Golden State Warriors",
+        "city": "Golden State",
+        "nickname": "Warriors",
+        "conference": "West",
+        "division": "Pacific"
+      },
+      "away": {
+        "teamId": 1610612766,
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "city": "Charlotte",
+        "nickname": "Hornets",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "homePts": 119,
+      "awayPts": 100,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z"
+    }
+  ],
+  "nextCursor": null
+}

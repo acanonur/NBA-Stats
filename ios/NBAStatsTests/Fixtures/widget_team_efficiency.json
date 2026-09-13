@@ -1,0 +1,794 @@
+{
+  "season": "2025-26",
+  "seasonType": "Regular Season",
+  "sortBy": "net_rtg",
+  "style": "table",
+  "leagueAverage": {
+    "off_rtg": 113.98012134860024,
+    "def_rtg": 114.01525715252016,
+    "net_rtg": -0.03513580391992879,
+    "pace": 99.83775870222222
+  },
+  "rows": [
+    {
+      "rank": 1,
+      "team": {
+        "teamId": 1610612744,
+        "abbr": "GSW",
+        "name": "Golden State Warriors",
+        "city": "Golden State",
+        "nickname": "Warriors",
+        "conference": "West",
+        "division": "Pacific"
+      },
+      "wins": 17,
+      "losses": 8,
+      "values": {
+        "off_rtg": 118.82160987650305,
+        "def_rtg": 112.07038204261082,
+        "net_rtg": 6.75122783389223,
+        "pace": 100.7224192
+      },
+      "ranks": {
+        "off_rtg": 3,
+        "def_rtg": 5,
+        "net_rtg": 1,
+        "pace": 10
+      }
+    },
+    {
+      "rank": 2,
+      "team": {
+        "teamId": 1610612752,
+        "abbr": "NYK",
+        "name": "New York Knicks",
+        "city": "New York",
+        "nickname": "Knicks",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "wins": 17,
+      "losses": 8,
+      "values": {
+        "off_rtg": 119.67385502567942,
+        "def_rtg": 113.08959824700749,
+        "net_rtg": 6.584256778671929,
+        "pace": 100.23910399999998
+      },
+      "ranks": {
+        "off_rtg": 2,
+        "def_rtg": 11,
+        "net_rtg": 2,
+        "pace": 13
+      }
+    },
+    {
+      "rank": 3,
+      "team": {
+        "teamId": 1610612753,
+        "abbr": "ORL",
+        "name": "Orlando Magic",
+        "city": "Orlando",
+        "nickname": "Magic",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "wins": 18,
+      "losses": 6,
+      "values": {
+        "off_rtg": 120.53082086254277,
+        "def_rtg": 114.07013841958639,
+        "net_rtg": 6.460682442956383,
+        "pace": 101.25349333333332
+      },
+      "ranks": {
+        "off_rtg": 1,
+        "def_rtg": 16,
+        "net_rtg": 3,
+        "pace": 8
+      }
+    },
+    {
+      "rank": 4,
+      "team": {
+        "teamId": 1610612743,
+        "abbr": "DEN",
+        "name": "Denver Nuggets",
+        "city": "Denver",
+        "nickname": "Nuggets",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "wins": 16,
+      "losses": 8,
+      "values": {
+        "off_rtg": 116.63616809135965,
+        "def_rtg": 112.17954594813085,
+        "net_rtg": 4.456622143228799,
+        "pace": 98.16851999999999
+      },
+      "ranks": {
+        "off_rtg": 7,
+        "def_rtg": 6,
+        "net_rtg": 4,
+        "pace": 24
+      }
+    },
+    {
+      "rank": 5,
+      "team": {
+        "teamId": 1610612748,
+        "abbr": "MIA",
+        "name": "Miami Heat",
+        "city": "Miami",
+        "nickname": "Heat",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "wins": 17,
+      "losses": 8,
+      "values": {
+        "off_rtg": 113.64468142246608,
+        "def_rtg": 109.6981262206937,
+        "net_rtg": 3.9465552017723837,
+        "pace": 99.32712959999999
+      },
+      "ranks": {
+        "off_rtg": 18,
+        "def_rtg": 1,
+        "net_rtg": 5,
+        "pace": 18
+      }
+    },
+    {
+      "rank": 6,
+      "team": {
+        "teamId": 1610612764,
+        "abbr": "WAS",
+        "name": "Washington Wizards",
+        "city": "Washington",
+        "nickname": "Wizards",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "wins": 16,
+      "losses": 9,
+      "values": {
+        "off_rtg": 114.34276458260082,
+        "def_rtg": 110.43259750361032,
+        "net_rtg": 3.910167078990497,
+        "pace": 101.27444479999998
+      },
+      "ranks": {
+        "off_rtg": 14,
+        "def_rtg": 3,
+        "net_rtg": 6,
+        "pace": 7
+      }
+    },
+    {
+      "rank": 7,
+      "team": {
+        "teamId": 1610612760,
+        "abbr": "OKC",
+        "name": "Oklahoma City Thunder",
+        "city": "Oklahoma City",
+        "nickname": "Thunder",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "wins": 14,
+      "losses": 11,
+      "values": {
+        "off_rtg": 113.8506086684588,
+        "def_rtg": 110.17669157266774,
+        "net_rtg": 3.6739170957910687,
+        "pace": 97.98805759999999
+      },
+      "ranks": {
+        "off_rtg": 17,
+        "def_rtg": 2,
+        "net_rtg": 7,
+        "pace": 26
+      }
+    },
+    {
+      "rank": 8,
+      "team": {
+        "teamId": 1610612759,
+        "abbr": "SAS",
+        "name": "San Antonio Spurs",
+        "city": "San Antonio",
+        "nickname": "Spurs",
+        "conference": "West",
+        "division": "Southwest"
+      },
+      "wins": 15,
+      "losses": 10,
+      "values": {
+        "off_rtg": 117.18939298007146,
+        "def_rtg": 113.72322783559046,
+        "net_rtg": 3.466165144480996,
+        "pace": 96.93710080000001
+      },
+      "ranks": {
+        "off_rtg": 4,
+        "def_rtg": 13,
+        "net_rtg": 8,
+        "pace": 30
+      }
+    },
+    {
+      "rank": 9,
+      "team": {
+        "teamId": 1610612750,
+        "abbr": "MIN",
+        "name": "Minnesota Timberwolves",
+        "city": "Minnesota",
+        "nickname": "Timberwolves",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "wins": 15,
+      "losses": 10,
+      "values": {
+        "off_rtg": 116.07093528277,
+        "def_rtg": 113.04057077521571,
+        "net_rtg": 3.0303645075542818,
+        "pace": 100.31796480000001
+      },
+      "ranks": {
+        "off_rtg": 8,
+        "def_rtg": 10,
+        "net_rtg": 9,
+        "pace": 11
+      }
+    },
+    {
+      "rank": 10,
+      "team": {
+        "teamId": 1610612746,
+        "abbr": "LAC",
+        "name": "Los Angeles Clippers",
+        "city": "Los Angeles",
+        "nickname": "Clippers",
+        "conference": "West",
+        "division": "Pacific"
+      },
+      "wins": 13,
+      "losses": 11,
+      "values": {
+        "off_rtg": 115.23146236451674,
+        "def_rtg": 112.84792997609236,
+        "net_rtg": 2.383532388424385,
+        "pace": 101.39013333333332
+      },
+      "ranks": {
+        "off_rtg": 10,
+        "def_rtg": 9,
+        "net_rtg": 10,
+        "pace": 6
+      }
+    },
+    {
+      "rank": 11,
+      "team": {
+        "teamId": 1610612738,
+        "abbr": "BOS",
+        "name": "Boston Celtics",
+        "city": "Boston",
+        "nickname": "Celtics",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "wins": 15,
+      "losses": 10,
+      "values": {
+        "off_rtg": 116.88528590515962,
+        "def_rtg": 114.69759338821812,
+        "net_rtg": 2.187692516941496,
+        "pace": 102.39098880000003
+      },
+      "ranks": {
+        "off_rtg": 6,
+        "def_rtg": 22,
+        "net_rtg": 11,
+        "pace": 2
+      }
+    },
+    {
+      "rank": 12,
+      "team": {
+        "teamId": 1610612745,
+        "abbr": "HOU",
+        "name": "Houston Rockets",
+        "city": "Houston",
+        "nickname": "Rockets",
+        "conference": "West",
+        "division": "Southwest"
+      },
+      "wins": 15,
+      "losses": 10,
+      "values": {
+        "off_rtg": 114.87743156846847,
+        "def_rtg": 113.61251490455139,
+        "net_rtg": 1.2649166639170772,
+        "pace": 104.35470079999999
+      },
+      "ranks": {
+        "off_rtg": 11,
+        "def_rtg": 12,
+        "net_rtg": 12,
+        "pace": 1
+      }
+    },
+    {
+      "rank": 13,
+      "team": {
+        "teamId": 1610612758,
+        "abbr": "SAC",
+        "name": "Sacramento Kings",
+        "city": "Sacramento",
+        "nickname": "Kings",
+        "conference": "West",
+        "division": "Pacific"
+      },
+      "wins": 13,
+      "losses": 11,
+      "values": {
+        "off_rtg": 116.97887749577951,
+        "def_rtg": 115.92653063093803,
+        "net_rtg": 1.052346864841482,
+        "pace": 98.98510666666665
+      },
+      "ranks": {
+        "off_rtg": 5,
+        "def_rtg": 23,
+        "net_rtg": 13,
+        "pace": 21
+      }
+    },
+    {
+      "rank": 14,
+      "team": {
+        "teamId": 1610612761,
+        "abbr": "TOR",
+        "name": "Toronto Raptors",
+        "city": "Toronto",
+        "nickname": "Raptors",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "wins": 14,
+      "losses": 10,
+      "values": {
+        "off_rtg": 115.24432173355162,
+        "def_rtg": 114.25859492065771,
+        "net_rtg": 0.9857268128939012,
+        "pace": 97.22098666666669
+      },
+      "ranks": {
+        "off_rtg": 9,
+        "def_rtg": 17,
+        "net_rtg": 14,
+        "pace": 28
+      }
+    },
+    {
+      "rank": 15,
+      "team": {
+        "teamId": 1610612740,
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "city": "New Orleans",
+        "nickname": "Pelicans",
+        "conference": "West",
+        "division": "Southwest"
+      },
+      "wins": 12,
+      "losses": 13,
+      "values": {
+        "off_rtg": 111.32682924834681,
+        "def_rtg": 111.24696782133938,
+        "net_rtg": 0.0798614270074296,
+        "pace": 100.1735168
+      },
+      "ranks": {
+        "off_rtg": 24,
+        "def_rtg": 4,
+        "net_rtg": 15,
+        "pace": 14
+      }
+    },
+    {
+      "rank": 16,
+      "team": {
+        "teamId": 1610612747,
+        "abbr": "LAL",
+        "name": "Los Angeles Lakers",
+        "city": "Los Angeles",
+        "nickname": "Lakers",
+        "conference": "West",
+        "division": "Pacific"
+      },
+      "wins": 13,
+      "losses": 12,
+      "values": {
+        "off_rtg": 114.38683563287806,
+        "def_rtg": 114.46741811659265,
+        "net_rtg": -0.08058248371459342,
+        "pace": 99.2771584
+      },
+      "ranks": {
+        "off_rtg": 12,
+        "def_rtg": 19,
+        "net_rtg": 16,
+        "pace": 19
+      }
+    },
+    {
+      "rank": 17,
+      "team": {
+        "teamId": 1610612762,
+        "abbr": "UTA",
+        "name": "Utah Jazz",
+        "city": "Utah",
+        "nickname": "Jazz",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "wins": 10,
+      "losses": 14,
+      "values": {
+        "off_rtg": 114.34919190603324,
+        "def_rtg": 114.51384157040478,
+        "net_rtg": -0.16464966437153805,
+        "pace": 101.22502666666668
+      },
+      "ranks": {
+        "off_rtg": 13,
+        "def_rtg": 20,
+        "net_rtg": 17,
+        "pace": 9
+      }
+    },
+    {
+      "rank": 18,
+      "team": {
+        "teamId": 1610612755,
+        "abbr": "PHI",
+        "name": "Philadelphia 76ers",
+        "city": "Philadelphia",
+        "nickname": "76ers",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "wins": 11,
+      "losses": 13,
+      "values": {
+        "off_rtg": 113.98076726638158,
+        "def_rtg": 114.52393074675656,
+        "net_rtg": -0.5431634803749859,
+        "pace": 99.72442666666664
+      },
+      "ranks": {
+        "off_rtg": 16,
+        "def_rtg": 21,
+        "net_rtg": 18,
+        "pace": 16
+      }
+    },
+    {
+      "rank": 19,
+      "team": {
+        "teamId": 1610612749,
+        "abbr": "MIL",
+        "name": "Milwaukee Bucks",
+        "city": "Milwaukee",
+        "nickname": "Bucks",
+        "conference": "East",
+        "division": "Central"
+      },
+      "wins": 12,
+      "losses": 12,
+      "values": {
+        "off_rtg": 113.50740865558852,
+        "def_rtg": 114.26750290997863,
+        "net_rtg": -0.7600942543901112,
+        "pace": 98.67197333333333
+      },
+      "ranks": {
+        "off_rtg": 19,
+        "def_rtg": 18,
+        "net_rtg": 19,
+        "pace": 22
+      }
+    },
+    {
+      "rank": 20,
+      "team": {
+        "teamId": 1610612756,
+        "abbr": "PHX",
+        "name": "Phoenix Suns",
+        "city": "Phoenix",
+        "nickname": "Suns",
+        "conference": "West",
+        "division": "Pacific"
+      },
+      "wins": 11,
+      "losses": 13,
+      "values": {
+        "off_rtg": 110.83207203001288,
+        "def_rtg": 112.41063977256928,
+        "net_rtg": -1.5785677425564018,
+        "pace": 100.30189333333333
+      },
+      "ranks": {
+        "off_rtg": 26,
+        "def_rtg": 8,
+        "net_rtg": 20,
+        "pace": 12
+      }
+    },
+    {
+      "rank": 21,
+      "team": {
+        "teamId": 1610612763,
+        "abbr": "MEM",
+        "name": "Memphis Grizzlies",
+        "city": "Memphis",
+        "nickname": "Grizzlies",
+        "conference": "West",
+        "division": "Southwest"
+      },
+      "wins": 12,
+      "losses": 13,
+      "values": {
+        "off_rtg": 111.95052738452746,
+        "def_rtg": 113.95037275158609,
+        "net_rtg": -1.9998453670586258,
+        "pace": 98.0075776
+      },
+      "ranks": {
+        "off_rtg": 23,
+        "def_rtg": 15,
+        "net_rtg": 21,
+        "pace": 25
+      }
+    },
+    {
+      "rank": 22,
+      "team": {
+        "teamId": 1610612757,
+        "abbr": "POR",
+        "name": "Portland Trail Blazers",
+        "city": "Portland",
+        "nickname": "Trail Blazers",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "wins": 8,
+      "losses": 17,
+      "values": {
+        "off_rtg": 114.01688121875124,
+        "def_rtg": 116.50151059155696,
+        "net_rtg": -2.4846293728057276,
+        "pace": 101.4235776
+      },
+      "ranks": {
+        "off_rtg": 15,
+        "def_rtg": 25,
+        "net_rtg": 22,
+        "pace": 5
+      }
+    },
+    {
+      "rank": 23,
+      "team": {
+        "teamId": 1610612766,
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "city": "Charlotte",
+        "nickname": "Hornets",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "wins": 12,
+      "losses": 13,
+      "values": {
+        "off_rtg": 109.6679471406759,
+        "def_rtg": 112.23797592756836,
+        "net_rtg": -2.5700287868924505,
+        "pace": 99.6097792
+      },
+      "ranks": {
+        "off_rtg": 28,
+        "def_rtg": 7,
+        "net_rtg": 23,
+        "pace": 17
+      }
+    },
+    {
+      "rank": 24,
+      "team": {
+        "teamId": 1610612737,
+        "abbr": "ATL",
+        "name": "Atlanta Hawks",
+        "city": "Atlanta",
+        "nickname": "Hawks",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "wins": 11,
+      "losses": 13,
+      "values": {
+        "off_rtg": 113.33817778674705,
+        "def_rtg": 116.14922533070303,
+        "net_rtg": -2.8110475439559792,
+        "pace": 102.27504
+      },
+      "ranks": {
+        "off_rtg": 20,
+        "def_rtg": 24,
+        "net_rtg": 24,
+        "pace": 3
+      }
+    },
+    {
+      "rank": 25,
+      "team": {
+        "teamId": 1610612742,
+        "abbr": "DAL",
+        "name": "Dallas Mavericks",
+        "city": "Dallas",
+        "nickname": "Mavericks",
+        "conference": "West",
+        "division": "Southwest"
+      },
+      "wins": 9,
+      "losses": 15,
+      "values": {
+        "off_rtg": 109.92428737798907,
+        "def_rtg": 113.748106243202,
+        "net_rtg": -3.823818865212928,
+        "pace": 99.15916
+      },
+      "ranks": {
+        "off_rtg": 27,
+        "def_rtg": 14,
+        "net_rtg": 25,
+        "pace": 20
+      }
+    },
+    {
+      "rank": 26,
+      "team": {
+        "teamId": 1610612754,
+        "abbr": "IND",
+        "name": "Indiana Pacers",
+        "city": "Indiana",
+        "nickname": "Pacers",
+        "conference": "East",
+        "division": "Central"
+      },
+      "wins": 6,
+      "losses": 18,
+      "values": {
+        "off_rtg": 112.05934969305552,
+        "def_rtg": 116.59330259451917,
+        "net_rtg": -4.53395290146365,
+        "pace": 100.17013333333335
+      },
+      "ranks": {
+        "off_rtg": 22,
+        "def_rtg": 27,
+        "net_rtg": 26,
+        "pace": 15
+      }
+    },
+    {
+      "rank": 27,
+      "team": {
+        "teamId": 1610612739,
+        "abbr": "CLE",
+        "name": "Cleveland Cavaliers",
+        "city": "Cleveland",
+        "nickname": "Cavaliers",
+        "conference": "East",
+        "division": "Central"
+      },
+      "wins": 8,
+      "losses": 16,
+      "values": {
+        "off_rtg": 111.21417483814788,
+        "def_rtg": 116.79178543033463,
+        "net_rtg": -5.577610592186744,
+        "pace": 98.60853333333334
+      },
+      "ranks": {
+        "off_rtg": 25,
+        "def_rtg": 28,
+        "net_rtg": 27,
+        "pace": 23
+      }
+    },
+    {
+      "rank": 28,
+      "team": {
+        "teamId": 1610612751,
+        "abbr": "BKN",
+        "name": "Brooklyn Nets",
+        "city": "Brooklyn",
+        "nickname": "Nets",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "wins": 8,
+      "losses": 17,
+      "values": {
+        "off_rtg": 112.24095578530432,
+        "def_rtg": 118.71005639407554,
+        "net_rtg": -6.469100608771214,
+        "pace": 97.07686399999999
+      },
+      "ranks": {
+        "off_rtg": 21,
+        "def_rtg": 30,
+        "net_rtg": 28,
+        "pace": 29
+      }
+    },
+    {
+      "rank": 29,
+      "team": {
+        "teamId": 1610612741,
+        "abbr": "CHI",
+        "name": "Chicago Bulls",
+        "city": "Chicago",
+        "nickname": "Bulls",
+        "conference": "East",
+        "division": "Central"
+      },
+      "wins": 5,
+      "losses": 20,
+      "values": {
+        "off_rtg": 109.57804433488288,
+        "def_rtg": 116.54976031161698,
+        "net_rtg": -6.971715976734103,
+        "pace": 101.55319039999999
+      },
+      "ranks": {
+        "off_rtg": 29,
+        "def_rtg": 26,
+        "net_rtg": 29,
+        "pace": 4
+      }
+    },
+    {
+      "rank": 30,
+      "team": {
+        "teamId": 1610612765,
+        "abbr": "DET",
+        "name": "Detroit Pistons",
+        "city": "Detroit",
+        "nickname": "Pistons",
+        "conference": "East",
+        "division": "Central"
+      },
+      "wins": 5,
+      "losses": 19,
+      "values": {
+        "off_rtg": 107.05197429875649,
+        "def_rtg": 117.97127567722964,
+        "net_rtg": -10.91930137847315,
+        "pace": 97.30475999999999
+      },
+      "ranks": {
+        "off_rtg": 30,
+        "def_rtg": 29,
+        "net_rtg": 30,
+        "pace": 27
+      }
+    }
+  ]
+}

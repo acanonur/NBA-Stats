@@ -1,0 +1,289 @@
+{
+  "date": "2026-01-02",
+  "metric": {
+    "key": "game_score",
+    "name": "Game Score",
+    "shortName": "GmSc",
+    "category": "impact",
+    "format": "decimal1",
+    "higherIsBetter": true,
+    "scope": [
+      "player"
+    ],
+    "availability": {
+      "seasonFrom": "1973-74",
+      "perGameFrom": "1973-74",
+      "seasonLevelOnly": false,
+      "estimatedBefore": null
+    },
+    "domain": null,
+    "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
+  },
+  "direction": "best",
+  "rows": [
+    {
+      "rank": 1,
+      "player": {
+        "playerId": 1501059,
+        "name": "Rowan Kowalski",
+        "firstName": "Rowan",
+        "lastName": "Kowalski",
+        "teamId": 1610612740,
+        "teamAbbr": "NOP",
+        "position": "G",
+        "jersey": "36",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500368",
+      "opponentAbbr": "OKC",
+      "isHome": false,
+      "result": "W",
+      "line": "32 PTS · 5 REB · 9 AST",
+      "value": {
+        "metric": "game_score",
+        "value": 26.0,
+        "displayValue": "26.0",
+        "rank": 1,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 18.795238095238098,
+      "delta": 7.204761904761902
+    },
+    {
+      "rank": 2,
+      "player": {
+        "playerId": 1500788,
+        "name": "Zeke Kristof",
+        "firstName": "Zeke",
+        "lastName": "Kristof",
+        "teamId": 1610612738,
+        "teamAbbr": "BOS",
+        "position": "C",
+        "jersey": "45",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500365",
+      "opponentAbbr": "CHI",
+      "isHome": true,
+      "result": "W",
+      "line": "23 PTS · 13 REB",
+      "value": {
+        "metric": "game_score",
+        "value": 21.5,
+        "displayValue": "21.5",
+        "rank": 2,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 16.919047619047614,
+      "delta": 4.580952380952386
+    },
+    {
+      "rank": 3,
+      "player": {
+        "playerId": 1500893,
+        "name": "Simeon Castellanos",
+        "firstName": "Simeon",
+        "lastName": "Castellanos",
+        "teamId": 1610612744,
+        "teamAbbr": "GSW",
+        "position": "G",
+        "jersey": "2",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500364",
+      "opponentAbbr": "CHA",
+      "isHome": true,
+      "result": "W",
+      "line": "30 PTS · 6 AST",
+      "value": {
+        "metric": "game_score",
+        "value": 20.2,
+        "displayValue": "20.2",
+        "rank": 3,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 20.665217391304346,
+      "delta": -0.46521739130434625
+    },
+    {
+      "rank": 4,
+      "player": {
+        "playerId": 1500795,
+        "name": "Wyatt Xiong",
+        "firstName": "Wyatt",
+        "lastName": "Xiong",
+        "teamId": 1610612738,
+        "teamAbbr": "BOS",
+        "position": "C",
+        "jersey": "98",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500365",
+      "opponentAbbr": "CHI",
+      "isHome": true,
+      "result": "W",
+      "line": "23 PTS · 9 REB · 3 BLK",
+      "value": {
+        "metric": "game_score",
+        "value": 19.500000000000004,
+        "displayValue": "19.5",
+        "rank": 4,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 15.608333333333334,
+      "delta": 3.8916666666666693
+    },
+    {
+      "rank": 5,
+      "player": {
+        "playerId": 1500776,
+        "name": "Terrance Winslow",
+        "firstName": "Terrance",
+        "lastName": "Winslow",
+        "teamId": 1610612748,
+        "teamAbbr": "MIA",
+        "position": "F",
+        "jersey": "19",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500366",
+      "opponentAbbr": "BKN",
+      "isHome": true,
+      "result": "W",
+      "line": "21 PTS · 8 REB · 5 AST",
+      "value": {
+        "metric": "game_score",
+        "value": 19.200000000000003,
+        "displayValue": "19.2",
+        "rank": 5,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 15.124999999999998,
+      "delta": 4.075000000000005
+    },
+    {
+      "rank": 6,
+      "player": {
+        "playerId": 1500985,
+        "name": "Vaughn Sandoval",
+        "firstName": "Vaughn",
+        "lastName": "Sandoval",
+        "teamId": 1610612757,
+        "teamAbbr": "POR",
+        "position": "F",
+        "jersey": "19",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500367",
+      "opponentAbbr": "MIN",
+      "isHome": true,
+      "result": "L",
+      "line": "23 PTS · 7 REB",
+      "value": {
+        "metric": "game_score",
+        "value": 19.1,
+        "displayValue": "19.1",
+        "rank": 6,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 12.562499999999998,
+      "delta": 6.537500000000003
+    },
+    {
+      "rank": 7,
+      "player": {
+        "playerId": 1500820,
+        "name": "Felix Falcone",
+        "firstName": "Felix",
+        "lastName": "Falcone",
+        "teamId": 1610612741,
+        "teamAbbr": "CHI",
+        "position": "C",
+        "jersey": "0",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500365",
+      "opponentAbbr": "BOS",
+      "isHome": false,
+      "result": "L",
+      "line": "18 PTS · 12 REB",
+      "value": {
+        "metric": "game_score",
+        "value": 17.699999999999996,
+        "displayValue": "17.7",
+        "rank": 7,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 14.563636363636364,
+      "delta": 3.1363636363636314
+    },
+    {
+      "rank": 8,
+      "player": {
+        "playerId": 1500909,
+        "name": "Vaughn Zabala",
+        "firstName": "Vaughn",
+        "lastName": "Zabala",
+        "teamId": 1610612757,
+        "teamAbbr": "POR",
+        "position": "F",
+        "jersey": "44",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "gameId": "0022500367",
+      "opponentAbbr": "MIN",
+      "isHome": true,
+      "result": "L",
+      "line": "20 PTS · 7 REB",
+      "value": {
+        "metric": "game_score",
+        "value": 17.5,
+        "displayValue": "17.5",
+        "rank": 8,
+        "percentile": null,
+        "leagueAverage": null,
+        "delta": null,
+        "isEstimated": false,
+        "availability": "full"
+      },
+      "seasonAverage": 15.573913043478258,
+      "delta": 1.9260869565217416
+    }
+  ]
+}

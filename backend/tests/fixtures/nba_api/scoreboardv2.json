@@ -1,0 +1,43 @@
+{
+  "resource": "scoreboardv2",
+  "parameters": {
+    "GameDate": null,
+    "LeagueID": "00",
+    "DayOffset": 0
+  },
+  "resultSets": [
+    {
+      "name": "GameHeader",
+      "headers": [
+        "GAME_DATE_EST",
+        "GAME_SEQUENCE",
+        "GAME_ID",
+        "GAME_STATUS_ID",
+        "GAME_STATUS_TEXT",
+        "GAMECODE",
+        "HOME_TEAM_ID",
+        "VISITOR_TEAM_ID",
+        "SEASON",
+        "LIVE_PERIOD",
+        "LIVE_PC_TIME",
+        "NATL_TV_BROADCASTER_ABBREVIATION"
+      ],
+      "rowSet": []
+    },
+    {
+      "name": "LineScore",
+      "headers": [
+        "GAME_DATE_EST",
+        "GAME_SEQUENCE",
+        "GAME_ID",
+        "TEAM_ID",
+        "TEAM_ABBREVIATION",
+        "TEAM_CITY_NAME",
+        "TEAM_NAME",
+        "TEAM_WINS_LOSSES",
+        "PTS"
+      ],
+      "rowSet": []
+    }
+  ]
+}

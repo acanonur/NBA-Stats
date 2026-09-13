@@ -1,8 +1,21 @@
-"""Generate contracts/presets.json and validate every widget against contracts/widgets.json."""
-import json, sys
+"""Generate contracts/presets.json and validate every widget against contracts/widgets.json.
 
-CAT = json.load(open("contracts/widgets.json"))
-MET = json.load(open("contracts/metrics.json"))
+Run it to regenerate the catalog:
+
+    python3 contracts/tools/gen_presets.py > contracts/presets.json
+
+The validation below is also the definition of "a preset widget is valid", so
+scripts/check_contracts.py imports `validate()` from here rather than keeping a second copy
+that could drift. Printing the document is therefore guarded by __main__: importing this
+module loads the catalogs and defines PRESETS, and does nothing else.
+"""
+import json, os, sys
+
+_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_CONTRACTS = os.path.join(_ROOT, "contracts")
+
+CAT = json.load(open(os.path.join(_CONTRACTS, "widgets.json")))
+MET = json.load(open(os.path.join(_CONTRACTS, "metrics.json")))
 BY_KIND = {w["kind"]: w for w in CAT["widgets"]}
 METRIC_KEYS = {m["key"] for m in MET["metrics"]}
 METRIC_SCOPE = {m["key"]: m["scope"] for m in MET["metrics"]}
@@ -144,61 +157,68 @@ PRESETS = [
 ]
 
 # ---- validation -------------------------------------------------------------
-errors = []
-for p in PRESETS:
-    for item in p["widgets"]:
-        spec = BY_KIND.get(item["kind"])
-        if spec is None:
-            errors.append("%s: unknown widget kind %s" % (p["presetKey"], item["kind"])); continue
-        if item["size"] not in spec["sizes"]:
-            errors.append("%s/%s: size %s not in %s" % (p["presetKey"], item["kind"], item["size"], spec["sizes"]))
-        fields = {c["key"]: c for c in spec["config"]}
-        for c in spec["config"]:
-            if c["required"] and c["key"] not in item["config"]:
-                errors.append("%s/%s: missing required config %s" % (p["presetKey"], item["kind"], c["key"]))
-        for k, v in item["config"].items():
-            c = fields.get(k)
-            if c is None:
-                errors.append("%s/%s: unknown config key %s" % (p["presetKey"], item["kind"], k)); continue
-            t = c["type"]
-            if t == "enum" and v not in c["options"]:
-                errors.append("%s/%s.%s: %r not in %s" % (p["presetKey"], item["kind"], k, v, c["options"]))
-            if t == "enumList":
-                for x in v:
-                    if x not in c["options"]:
-                        errors.append("%s/%s.%s: %r not in %s" % (p["presetKey"], item["kind"], k, x, c["options"]))
-            if t == "metric" and v not in METRIC_KEYS:
-                errors.append("%s/%s.%s: unknown metric %r" % (p["presetKey"], item["kind"], k, v))
-            if t == "metricList":
-                for x in v:
-                    if x not in METRIC_KEYS:
-                        errors.append("%s/%s.%s: unknown metric %r" % (p["presetKey"], item["kind"], k, x))
-                    elif c.get("metricScope") == "player" and "player" not in METRIC_SCOPE[x]:
-                        errors.append("%s/%s.%s: metric %r is not a player metric" % (p["presetKey"], item["kind"], k, x))
-                if c.get("maxItems") and len(v) > c["maxItems"]:
-                    errors.append("%s/%s.%s: %d items exceeds max %d" % (p["presetKey"], item["kind"], k, len(v), c["maxItems"]))
-            if t in ("player", "team", "subject") and isinstance(v, str) and v not in TOKENS:
-                errors.append("%s/%s.%s: unknown subject token %r" % (p["presetKey"], item["kind"], k, v))
-            if t in ("playerList", "teamList", "subjectList"):
-                for x in v:
-                    if isinstance(x, str) and x not in TOKENS:
-                        errors.append("%s/%s.%s: unknown subject token %r" % (p["presetKey"], item["kind"], k, x))
-                if c.get("minItems") and len(v) < c["minItems"]:
-                    errors.append("%s/%s.%s: %d items below min %d" % (p["presetKey"], item["kind"], k, len(v), c["minItems"]))
-            if t == "int" and not isinstance(v, int):
-                errors.append("%s/%s.%s: expected int, got %r" % (p["presetKey"], item["kind"], k, v))
-            if t == "double" and not isinstance(v, float):
-                errors.append("%s/%s.%s: expected double, got %r" % (p["presetKey"], item["kind"], k, v))
-            if t == "bool" and not isinstance(v, bool):
-                errors.append("%s/%s.%s: expected bool, got %r" % (p["presetKey"], item["kind"], k, v))
+def validate(presets=None):
+    """Return a list of human-readable problems; empty means every widget is valid.
 
-if errors:
-    print("VALIDATION FAILED:", file=sys.stderr)
-    for e in errors:
-        print("  " + e, file=sys.stderr)
-    sys.exit(1)
+    Checks each preset widget against contracts/widgets.json (the kind exists, the size is
+    offered, required config keys are present, no unknown keys) and against
+    contracts/metrics.json (every metric key exists and is in scope), plus the subject tokens
+    and the per-field bounds the catalog declares.
+    """
+    errors = []
+    for p in PRESETS if presets is None else presets:
+        for item in p["widgets"]:
+            spec = BY_KIND.get(item["kind"])
+            if spec is None:
+                errors.append("%s: unknown widget kind %s" % (p["presetKey"], item["kind"])); continue
+            if item["size"] not in spec["sizes"]:
+                errors.append("%s/%s: size %s not in %s" % (p["presetKey"], item["kind"], item["size"], spec["sizes"]))
+            fields = {c["key"]: c for c in spec["config"]}
+            for c in spec["config"]:
+                if c["required"] and c["key"] not in item["config"]:
+                    errors.append("%s/%s: missing required config %s" % (p["presetKey"], item["kind"], c["key"]))
+            for k, v in item["config"].items():
+                c = fields.get(k)
+                if c is None:
+                    errors.append("%s/%s: unknown config key %s" % (p["presetKey"], item["kind"], k)); continue
+                t = c["type"]
+                if t == "enum" and v not in c["options"]:
+                    errors.append("%s/%s.%s: %r not in %s" % (p["presetKey"], item["kind"], k, v, c["options"]))
+                if t == "enumList":
+                    for x in v:
+                        if x not in c["options"]:
+                            errors.append("%s/%s.%s: %r not in %s" % (p["presetKey"], item["kind"], k, x, c["options"]))
+                if t == "metric" and v not in METRIC_KEYS:
+                    errors.append("%s/%s.%s: unknown metric %r" % (p["presetKey"], item["kind"], k, v))
+                if t == "metricList":
+                    for x in v:
+                        if x not in METRIC_KEYS:
+                            errors.append("%s/%s.%s: unknown metric %r" % (p["presetKey"], item["kind"], k, x))
+                        elif c.get("metricScope") == "player" and "player" not in METRIC_SCOPE[x]:
+                            errors.append("%s/%s.%s: metric %r is not a player metric" % (p["presetKey"], item["kind"], k, x))
+                    if c.get("maxItems") and len(v) > c["maxItems"]:
+                        errors.append("%s/%s.%s: %d items exceeds max %d" % (p["presetKey"], item["kind"], k, len(v), c["maxItems"]))
+                if t in ("player", "team", "subject") and isinstance(v, str) and v not in TOKENS:
+                    errors.append("%s/%s.%s: unknown subject token %r" % (p["presetKey"], item["kind"], k, v))
+                if t in ("playerList", "teamList", "subjectList"):
+                    for x in v:
+                        if isinstance(x, str) and x not in TOKENS:
+                            errors.append("%s/%s.%s: unknown subject token %r" % (p["presetKey"], item["kind"], k, x))
+                    if c.get("minItems") and len(v) < c["minItems"]:
+                        errors.append("%s/%s.%s: %d items below min %d" % (p["presetKey"], item["kind"], k, len(v), c["minItems"]))
+                if t == "int" and not isinstance(v, int):
+                    errors.append("%s/%s.%s: expected int, got %r" % (p["presetKey"], item["kind"], k, v))
+                if t == "double" and not isinstance(v, float):
+                    errors.append("%s/%s.%s: expected double, got %r" % (p["presetKey"], item["kind"], k, v))
+                if t == "bool" and not isinstance(v, bool):
+                    errors.append("%s/%s.%s: expected bool, got %r" % (p["presetKey"], item["kind"], k, v))
 
-print(json.dumps({
+    return errors
+
+
+def document():
+    """The contracts/presets.json document, as a dict."""
+    return {
     "schemaVersion": 1,
     "subjectTokens": [
         {"token": "$favorite_player", "summary": "The player the user pinned as a favorite."},
@@ -208,4 +228,19 @@ print(json.dumps({
         {"token": "$league_leader", "summary": "The season's scoring leader."},
     ],
     "presets": PRESETS,
-}, indent=2))
+    }
+
+
+def main():
+    errors = validate()
+    if errors:
+        print("VALIDATION FAILED:", file=sys.stderr)
+        for e in errors:
+            print("  " + e, file=sys.stderr)
+        return 1
+    print(json.dumps(document(), indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,274 @@
+{
+  "teams": [
+    {
+      "teamId": 1610612737,
+      "abbr": "ATL",
+      "name": "Atlanta Hawks",
+      "city": "Atlanta",
+      "nickname": "Hawks",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612751,
+      "abbr": "BKN",
+      "name": "Brooklyn Nets",
+      "city": "Brooklyn",
+      "nickname": "Nets",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612738,
+      "abbr": "BOS",
+      "name": "Boston Celtics",
+      "city": "Boston",
+      "nickname": "Celtics",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612766,
+      "abbr": "CHA",
+      "name": "Charlotte Hornets",
+      "city": "Charlotte",
+      "nickname": "Hornets",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612741,
+      "abbr": "CHI",
+      "name": "Chicago Bulls",
+      "city": "Chicago",
+      "nickname": "Bulls",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612739,
+      "abbr": "CLE",
+      "name": "Cleveland Cavaliers",
+      "city": "Cleveland",
+      "nickname": "Cavaliers",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612742,
+      "abbr": "DAL",
+      "name": "Dallas Mavericks",
+      "city": "Dallas",
+      "nickname": "Mavericks",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612743,
+      "abbr": "DEN",
+      "name": "Denver Nuggets",
+      "city": "Denver",
+      "nickname": "Nuggets",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612765,
+      "abbr": "DET",
+      "name": "Detroit Pistons",
+      "city": "Detroit",
+      "nickname": "Pistons",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612744,
+      "abbr": "GSW",
+      "name": "Golden State Warriors",
+      "city": "Golden State",
+      "nickname": "Warriors",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612745,
+      "abbr": "HOU",
+      "name": "Houston Rockets",
+      "city": "Houston",
+      "nickname": "Rockets",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612754,
+      "abbr": "IND",
+      "name": "Indiana Pacers",
+      "city": "Indiana",
+      "nickname": "Pacers",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612746,
+      "abbr": "LAC",
+      "name": "Los Angeles Clippers",
+      "city": "Los Angeles",
+      "nickname": "Clippers",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612747,
+      "abbr": "LAL",
+      "name": "Los Angeles Lakers",
+      "city": "Los Angeles",
+      "nickname": "Lakers",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612763,
+      "abbr": "MEM",
+      "name": "Memphis Grizzlies",
+      "city": "Memphis",
+      "nickname": "Grizzlies",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612748,
+      "abbr": "MIA",
+      "name": "Miami Heat",
+      "city": "Miami",
+      "nickname": "Heat",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612749,
+      "abbr": "MIL",
+      "name": "Milwaukee Bucks",
+      "city": "Milwaukee",
+      "nickname": "Bucks",
+      "conference": "East",
+      "division": "Central"
+    },
+    {
+      "teamId": 1610612750,
+      "abbr": "MIN",
+      "name": "Minnesota Timberwolves",
+      "city": "Minnesota",
+      "nickname": "Timberwolves",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612740,
+      "abbr": "NOP",
+      "name": "New Orleans Pelicans",
+      "city": "New Orleans",
+      "nickname": "Pelicans",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612752,
+      "abbr": "NYK",
+      "name": "New York Knicks",
+      "city": "New York",
+      "nickname": "Knicks",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612760,
+      "abbr": "OKC",
+      "name": "Oklahoma City Thunder",
+      "city": "Oklahoma City",
+      "nickname": "Thunder",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612753,
+      "abbr": "ORL",
+      "name": "Orlando Magic",
+      "city": "Orlando",
+      "nickname": "Magic",
+      "conference": "East",
+      "division": "Southeast"
+    },
+    {
+      "teamId": 1610612755,
+      "abbr": "PHI",
+      "name": "Philadelphia 76ers",
+      "city": "Philadelphia",
+      "nickname": "76ers",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612756,
+      "abbr": "PHX",
+      "name": "Phoenix Suns",
+      "city": "Phoenix",
+      "nickname": "Suns",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612757,
+      "abbr": "POR",
+      "name": "Portland Trail Blazers",
+      "city": "Portland",
+      "nickname": "Trail Blazers",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612758,
+      "abbr": "SAC",
+      "name": "Sacramento Kings",
+      "city": "Sacramento",
+      "nickname": "Kings",
+      "conference": "West",
+      "division": "Pacific"
+    },
+    {
+      "teamId": 1610612759,
+      "abbr": "SAS",
+      "name": "San Antonio Spurs",
+      "city": "San Antonio",
+      "nickname": "Spurs",
+      "conference": "West",
+      "division": "Southwest"
+    },
+    {
+      "teamId": 1610612761,
+      "abbr": "TOR",
+      "name": "Toronto Raptors",
+      "city": "Toronto",
+      "nickname": "Raptors",
+      "conference": "East",
+      "division": "Atlantic"
+    },
+    {
+      "teamId": 1610612762,
+      "abbr": "UTA",
+      "name": "Utah Jazz",
+      "city": "Utah",
+      "nickname": "Jazz",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    {
+      "teamId": 1610612764,
+      "abbr": "WAS",
+      "name": "Washington Wizards",
+      "city": "Washington",
+      "nickname": "Wizards",
+      "conference": "East",
+      "division": "Southeast"
+    }
+  ]
+}

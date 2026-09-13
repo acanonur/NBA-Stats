@@ -1,0 +1,4487 @@
+{
+  "syncVersion": 4864,
+  "dataThrough": "2026-01-02",
+  "generatedAt": "2026-01-03T07:12:44Z",
+  "resolvedContext": {
+    "favoritePlayerId": 1500819,
+    "favoriteTeamId": 1610612741,
+    "season": "2025-26",
+    "seasonType": null
+  },
+  "results": [
+    {
+      "widgetId": "w01.stat_tile",
+      "kind": "stat_tile",
+      "status": "ok",
+      "payload": {
+        "subject": {
+          "type": "player",
+          "player": {
+            "playerId": 1500819,
+            "name": "Desmond Quintero",
+            "firstName": "Desmond",
+            "lastName": "Quintero",
+            "teamId": 1610612741,
+            "teamAbbr": "CHI",
+            "position": "G",
+            "jersey": "25",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "team": null
+        },
+        "context": "2025-26 · Regular Season · Per Game",
+        "primary": {
+          "metric": "ts_pct",
+          "value": 0.547408258430763,
+          "displayValue": "54.7%",
+          "rank": 242,
+          "percentile": 0.195,
+          "leagueAverage": 0.576464387931087,
+          "delta": -0.02905612950032399,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        "secondary": [
+          {
+            "metric": "pts",
+            "value": 25.92,
+            "displayValue": "25.9",
+            "rank": 7,
+            "percentile": 0.9783333333333334,
+            "leagueAverage": 12.417536900420789,
+            "delta": 13.502463099579213,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "usg_pct",
+            "value": 0.29952189522227346,
+            "displayValue": "30.0%",
+            "rank": 20,
+            "percentile": 0.935,
+            "leagueAverage": 0.19782083378438103,
+            "delta": 0.10170106143789243,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        ],
+        "sparkline": [
+          {
+            "x": "2025-11-23",
+            "y": 0.5145797598627787,
+            "gameId": "0022500162"
+          },
+          {
+            "x": "2025-11-26",
+            "y": 0.5673758865248227,
+            "gameId": "0022500178"
+          },
+          {
+            "x": "2025-11-29",
+            "y": 0.5574614065180102,
+            "gameId": "0022500194"
+          },
+          {
+            "x": "2025-12-02",
+            "y": 0.5655226209048362,
+            "gameId": "0022500210"
+          },
+          {
+            "x": "2025-12-05",
+            "y": 0.5043227665706052,
+            "gameId": "0022500225"
+          },
+          {
+            "x": "2025-12-08",
+            "y": 0.5260942760942761,
+            "gameId": "0022500239"
+          },
+          {
+            "x": "2025-12-11",
+            "y": 0.484006734006734,
+            "gameId": "0022500253"
+          },
+          {
+            "x": "2025-12-13",
+            "y": 0.47520661157024796,
+            "gameId": "0022500267"
+          },
+          {
+            "x": "2025-12-16",
+            "y": 0.45691906005221933,
+            "gameId": "0022500281"
+          },
+          {
+            "x": "2025-12-19",
+            "y": 0.5357142857142857,
+            "gameId": "0022500295"
+          },
+          {
+            "x": "2025-12-22",
+            "y": 0.6260096930533118,
+            "gameId": "0022500309"
+          },
+          {
+            "x": "2025-12-25",
+            "y": 0.487012987012987,
+            "gameId": "0022500323"
+          },
+          {
+            "x": "2025-12-27",
+            "y": 0.6516587677725119,
+            "gameId": "0022500337"
+          },
+          {
+            "x": "2025-12-30",
+            "y": 0.5434782608695652,
+            "gameId": "0022500351"
+          },
+          {
+            "x": "2026-01-02",
+            "y": 0.4766949152542373,
+            "gameId": "0022500365"
+          }
+        ],
+        "sparklineMetric": "ts_pct"
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 300,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w02.player_snapshot",
+      "kind": "player_snapshot",
+      "status": "ok",
+      "payload": {
+        "player": {
+          "playerId": 1500819,
+          "name": "Desmond Quintero",
+          "firstName": "Desmond",
+          "lastName": "Quintero",
+          "teamId": 1610612741,
+          "teamAbbr": "CHI",
+          "position": "G",
+          "jersey": "25",
+          "headshotUrl": null,
+          "isActive": true
+        },
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "teamAbbr": "CHI",
+        "gp": 25,
+        "gs": 25,
+        "minutesPerGame": 37.96,
+        "metrics": [
+          {
+            "metric": "ts_pct",
+            "value": 0.547408258430763,
+            "displayValue": "54.7%",
+            "rank": 242,
+            "percentile": 0.195,
+            "leagueAverage": 0.576464387931087,
+            "delta": -0.02905612950032399,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "usg_pct",
+            "value": 0.29952189522227346,
+            "displayValue": "30.0%",
+            "rank": 20,
+            "percentile": 0.935,
+            "leagueAverage": 0.19782083378438103,
+            "delta": 0.10170106143789243,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "ast_pct",
+            "value": 0.30749542051463014,
+            "displayValue": "30.7%",
+            "rank": 33,
+            "percentile": 0.8916666666666667,
+            "leagueAverage": 0.1574655559764613,
+            "delta": 0.15002986453816883,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "reb_pct",
+            "value": 0.05666866056398281,
+            "displayValue": "5.7%",
+            "rank": 263,
+            "percentile": 0.125,
+            "leagueAverage": 0.0991886860228011,
+            "delta": -0.0425200254588183,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "off_rtg",
+            "value": 109.48015568427377,
+            "displayValue": "109.5",
+            "rank": 208,
+            "percentile": 0.30833333333333335,
+            "leagueAverage": 112.12754481658327,
+            "delta": -2.647389132309499,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "def_rtg",
+            "value": 115.28994726354796,
+            "displayValue": "115.3",
+            "rank": 265,
+            "percentile": 0.11833333333333333,
+            "leagueAverage": 112.26884421305905,
+            "delta": 3.021103050488904,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "net_rtg",
+            "value": -5.80979157927419,
+            "displayValue": "-5.8",
+            "rank": 252,
+            "percentile": 0.16166666666666665,
+            "leagueAverage": -0.14129939647576534,
+            "delta": -5.668492182798425,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "pie",
+            "value": 0.09497752589407857,
+            "displayValue": "9.5%",
+            "rank": 21,
+            "percentile": 0.9316666666666666,
+            "leagueAverage": 0.05447185737798859,
+            "delta": 0.04050566851608998,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        ],
+        "eraNote": null
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 300,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w03.leaderboard",
+      "kind": "leaderboard",
+      "status": "ok",
+      "payload": {
+        "metric": {
+          "key": "ts_pct",
+          "name": "True Shooting %",
+          "shortName": "TS%",
+          "category": "shooting",
+          "format": "percent1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "1946-47",
+            "perGameFrom": "1996-97",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": {
+            "min": 0.35,
+            "max": 0.75
+          },
+          "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+        },
+        "subjectType": "player",
+        "scope": "season",
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "perMode": "PerGame",
+        "qualifier": "Minimum 15 games and 20.0 minutes per game",
+        "secondaryMetrics": [
+          {
+            "key": "pts",
+            "name": "Points",
+            "shortName": "PTS",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1946-47",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Points scored."
+          },
+          {
+            "key": "min",
+            "name": "Minutes",
+            "shortName": "MIN",
+            "category": "volume",
+            "format": "minutes",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1951-52",
+              "perGameFrom": "1951-52",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Minutes played."
+          }
+        ],
+        "rows": [
+          {
+            "rank": 1,
+            "player": {
+              "playerId": 1500939,
+              "name": "Malik Jimenez",
+              "firstName": "Malik",
+              "lastName": "Jimenez",
+              "teamId": 1610612753,
+              "teamAbbr": "ORL",
+              "position": "C",
+              "jersey": "30",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.6892368769298632,
+              "displayValue": "68.9%",
+              "rank": 1,
+              "percentile": 0.9976190476190476,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.11277248899877623,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 20.833333333333332,
+                "displayValue": "20.8",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 38.3125,
+                "displayValue": "38.3",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 2,
+            "player": {
+              "playerId": 1501113,
+              "name": "Omar Schuster",
+              "firstName": "Omar",
+              "lastName": "Schuster",
+              "teamId": 1610612752,
+              "teamAbbr": "NYK",
+              "position": "C",
+              "jersey": "11",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.66749733001068,
+              "displayValue": "66.7%",
+              "rank": 2,
+              "percentile": 0.9928571428571429,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.091032942079593,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 19.565217391304348,
+                "displayValue": "19.6",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 31.434782608695652,
+                "displayValue": "31.4",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 3,
+            "player": {
+              "playerId": 1501048,
+              "name": "Kirby Winslow",
+              "firstName": "Kirby",
+              "lastName": "Winslow",
+              "teamId": 1610612744,
+              "teamAbbr": "GSW",
+              "position": "F",
+              "jersey": "49",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.6630983226510296,
+              "displayValue": "66.3%",
+              "rank": 3,
+              "percentile": 0.9880952380952381,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.08663393471994263,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 16.91304347826087,
+                "displayValue": "16.9",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 37.82608695652174,
+                "displayValue": "37.8",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 4,
+            "player": {
+              "playerId": 1500946,
+              "name": "Neville Ingram",
+              "firstName": "Neville",
+              "lastName": "Ingram",
+              "teamId": 1610612754,
+              "teamAbbr": "IND",
+              "position": "F",
+              "jersey": "53",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.6588647253962403,
+              "displayValue": "65.9%",
+              "rank": 4,
+              "percentile": 0.9833333333333333,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.0824003374651533,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 13.619047619047619,
+                "displayValue": "13.6",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 35.61904761904762,
+                "displayValue": "35.6",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 5,
+            "player": {
+              "playerId": 1501012,
+              "name": "Wesley Hargrove",
+              "firstName": "Wesley",
+              "lastName": "Hargrove",
+              "teamId": 1610612760,
+              "teamAbbr": "OKC",
+              "position": "C",
+              "jersey": "78",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.6512576008844666,
+              "displayValue": "65.1%",
+              "rank": 5,
+              "percentile": 0.9785714285714285,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.0747932129533796,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 15.708333333333334,
+                "displayValue": "15.7",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 32.520833333333336,
+                "displayValue": "32.5",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 6,
+            "player": {
+              "playerId": 1501161,
+              "name": "Ugo Alvarado",
+              "firstName": "Ugo",
+              "lastName": "Alvarado",
+              "teamId": 1610612749,
+              "teamAbbr": "MIL",
+              "position": "F",
+              "jersey": "43",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.6476545842217484,
+              "displayValue": "64.8%",
+              "rank": 6,
+              "percentile": 0.9738095238095238,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.07119019629066137,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 12.15,
+                "displayValue": "12.2",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 35.95,
+                "displayValue": "36.0",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 7,
+            "player": {
+              "playerId": 1501040,
+              "name": "Hollis Hargrove",
+              "firstName": "Hollis",
+              "lastName": "Hargrove",
+              "teamId": 1610612759,
+              "teamAbbr": "SAS",
+              "position": "F",
+              "jersey": "6",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.6463305106492173,
+              "displayValue": "64.6%",
+              "rank": 7,
+              "percentile": 0.969047619047619,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.06986612271813031,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 16.12,
+                "displayValue": "16.1",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 37.9,
+                "displayValue": "37.9",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 8,
+            "player": {
+              "playerId": 1500927,
+              "name": "Quentin Ndiaye",
+              "firstName": "Quentin",
+              "lastName": "Ndiaye",
+              "teamId": 1610612761,
+              "teamAbbr": "TOR",
+              "position": "F",
+              "jersey": "28",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.644515612489992,
+              "displayValue": "64.5%",
+              "rank": 8,
+              "percentile": 0.9642857142857143,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.068051224558905,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 14.0,
+                "displayValue": "14.0",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 33.608695652173914,
+                "displayValue": "33.6",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 9,
+            "player": {
+              "playerId": 1501073,
+              "name": "Dante Petrov",
+              "firstName": "Dante",
+              "lastName": "Petrov",
+              "teamId": 1610612761,
+              "teamAbbr": "TOR",
+              "position": "F",
+              "jersey": "30",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.6442663378545007,
+              "displayValue": "64.4%",
+              "rank": 9,
+              "percentile": 0.9595238095238096,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.0678019499234137,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 12.294117647058824,
+                "displayValue": "12.3",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 29.852941176470587,
+                "displayValue": "29.9",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          },
+          {
+            "rank": 10,
+            "player": {
+              "playerId": 1501192,
+              "name": "Marcus Sorensen",
+              "firstName": "Marcus",
+              "lastName": "Sorensen",
+              "teamId": 1610612764,
+              "teamAbbr": "WAS",
+              "position": "C",
+              "jersey": "1",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "team": null,
+            "value": {
+              "metric": "ts_pct",
+              "value": 0.642428664072633,
+              "displayValue": "64.2%",
+              "rank": 10,
+              "percentile": 0.9547619047619048,
+              "leagueAverage": 0.576464387931087,
+              "delta": 0.06596427614154599,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "secondary": [
+              {
+                "metric": "pts",
+                "value": 13.782608695652174,
+                "displayValue": "13.8",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "min",
+                "value": 29.304347826086957,
+                "displayValue": "29.3",
+                "rank": null,
+                "percentile": null,
+                "leagueAverage": null,
+                "delta": null,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ],
+            "season": "2025-26"
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w04.game_log",
+      "kind": "game_log",
+      "status": "ok",
+      "payload": {
+        "player": {
+          "playerId": 1500819,
+          "name": "Desmond Quintero",
+          "firstName": "Desmond",
+          "lastName": "Quintero",
+          "teamId": 1610612741,
+          "teamAbbr": "CHI",
+          "position": "G",
+          "jersey": "25",
+          "headshotUrl": null,
+          "isActive": true
+        },
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "columns": [
+          {
+            "key": "min",
+            "name": "Minutes",
+            "shortName": "MIN",
+            "category": "volume",
+            "format": "minutes",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1951-52",
+              "perGameFrom": "1951-52",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Minutes played."
+          },
+          {
+            "key": "pts",
+            "name": "Points",
+            "shortName": "PTS",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1946-47",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Points scored."
+          },
+          {
+            "key": "reb",
+            "name": "Rebounds",
+            "shortName": "REB",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1950-51",
+              "perGameFrom": "1950-51",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+          },
+          {
+            "key": "ast",
+            "name": "Assists",
+            "shortName": "AST",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1946-47",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Assists."
+          },
+          {
+            "key": "ts_pct",
+            "name": "True Shooting %",
+            "shortName": "TS%",
+            "category": "shooting",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": {
+              "min": 0.35,
+              "max": 0.75
+            },
+            "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+          },
+          {
+            "key": "usg_pct",
+            "name": "Usage %",
+            "shortName": "USG%",
+            "category": "usage",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1977-78",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": "1996-97"
+            },
+            "domain": {
+              "min": 0.05,
+              "max": 0.42
+            },
+            "glossary": "Share of team possessions a player ends while on the floor."
+          },
+          {
+            "key": "plus_minus",
+            "name": "Plus/Minus",
+            "shortName": "+/-",
+            "category": "impact",
+            "format": "plusMinus1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1996-97",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Team point differential while the player is on the floor."
+          },
+          {
+            "key": "game_score",
+            "name": "Game Score",
+            "shortName": "GmSc",
+            "category": "impact",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player"
+            ],
+            "availability": {
+              "seasonFrom": "1973-74",
+              "perGameFrom": "1973-74",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
+          }
+        ],
+        "seasonBests": {
+          "min": 44.5,
+          "pts": 33,
+          "reb": 6,
+          "ast": 9,
+          "ts_pct": 0.7614213197969544,
+          "usg_pct": 0.3411517689725251,
+          "plus_minus": 11.0,
+          "game_score": 23.3
+        },
+        "rows": [
+          {
+            "gameId": "0022500365",
+            "date": "2026-01-02",
+            "opponentAbbr": "BOS",
+            "isHome": false,
+            "result": "L",
+            "score": "107-113",
+            "started": true,
+            "minutes": 34.5,
+            "values": {
+              "min": 34.5,
+              "pts": 18,
+              "reb": 4,
+              "ast": 6,
+              "ts_pct": 0.4766949152542373,
+              "usg_pct": 0.27584033282380194,
+              "plus_minus": -5.0,
+              "game_score": 12.6
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500351",
+            "date": "2025-12-30",
+            "opponentAbbr": "POR",
+            "isHome": false,
+            "result": "L",
+            "score": "107-120",
+            "started": true,
+            "minutes": 33.0,
+            "values": {
+              "min": 33.0,
+              "pts": 21,
+              "reb": 3,
+              "ast": 7,
+              "ts_pct": 0.5434782608695652,
+              "usg_pct": 0.29875634962340164,
+              "plus_minus": -4.0,
+              "game_score": 16.4
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500337",
+            "date": "2025-12-27",
+            "opponentAbbr": "IND",
+            "isHome": false,
+            "result": "W",
+            "score": "113-110",
+            "started": true,
+            "minutes": 38.0,
+            "values": {
+              "min": 38.0,
+              "pts": 33,
+              "reb": 4,
+              "ast": 6,
+              "ts_pct": 0.6516587677725119,
+              "usg_pct": 0.3257898440682988,
+              "plus_minus": 3.0,
+              "game_score": 22.2
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500323",
+            "date": "2025-12-25",
+            "opponentAbbr": "PHX",
+            "isHome": false,
+            "result": "L",
+            "score": "110-124",
+            "started": true,
+            "minutes": 37.5,
+            "values": {
+              "min": 37.5,
+              "pts": 24,
+              "reb": 5,
+              "ast": 8,
+              "ts_pct": 0.487012987012987,
+              "usg_pct": 0.28923479398299545,
+              "plus_minus": -10.0,
+              "game_score": 16.099999999999998
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500309",
+            "date": "2025-12-22",
+            "opponentAbbr": "CLE",
+            "isHome": false,
+            "result": "L",
+            "score": "107-117",
+            "started": true,
+            "minutes": 43.0,
+            "values": {
+              "min": 43.0,
+              "pts": 31,
+              "reb": 4,
+              "ast": 8,
+              "ts_pct": 0.6260096930533118,
+              "usg_pct": 0.2843091219138472,
+              "plus_minus": -5.0,
+              "game_score": 23.3
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500295",
+            "date": "2025-12-19",
+            "opponentAbbr": "ORL",
+            "isHome": false,
+            "result": "L",
+            "score": "111-120",
+            "started": true,
+            "minutes": 44.5,
+            "values": {
+              "min": 44.5,
+              "pts": 27,
+              "reb": 4,
+              "ast": 5,
+              "ts_pct": 0.5357142857142857,
+              "usg_pct": 0.2733133392353622,
+              "plus_minus": -6.0,
+              "game_score": 15.400000000000002
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500281",
+            "date": "2025-12-16",
+            "opponentAbbr": "UTA",
+            "isHome": false,
+            "result": "L",
+            "score": "116-119",
+            "started": true,
+            "minutes": 42.5,
+            "values": {
+              "min": 42.5,
+              "pts": 28,
+              "reb": 4,
+              "ast": 8,
+              "ts_pct": 0.45691906005221933,
+              "usg_pct": 0.2994436614494474,
+              "plus_minus": -1.0,
+              "game_score": 16.400000000000002
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500267",
+            "date": "2025-12-13",
+            "opponentAbbr": "MIL",
+            "isHome": false,
+            "result": "L",
+            "score": "103-122",
+            "started": true,
+            "minutes": 38.5,
+            "values": {
+              "min": 38.5,
+              "pts": 23,
+              "reb": 5,
+              "ast": 5,
+              "ts_pct": 0.47520661157024796,
+              "usg_pct": 0.3032991852867629,
+              "plus_minus": -12.0,
+              "game_score": 12.999999999999996
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500253",
+            "date": "2025-12-11",
+            "opponentAbbr": "LAC",
+            "isHome": false,
+            "result": "L",
+            "score": "115-129",
+            "started": true,
+            "minutes": 38.0,
+            "values": {
+              "min": 38.0,
+              "pts": 23,
+              "reb": 4,
+              "ast": 9,
+              "ts_pct": 0.484006734006734,
+              "usg_pct": 0.27653993026730866,
+              "plus_minus": -6.0,
+              "game_score": 14.900000000000002
+            },
+            "availability": "full"
+          },
+          {
+            "gameId": "0022500239",
+            "date": "2025-12-08",
+            "opponentAbbr": "OKC",
+            "isHome": false,
+            "result": "L",
+            "score": "102-113",
+            "started": true,
+            "minutes": 39.0,
+            "values": {
+              "min": 39.0,
+              "pts": 25,
+              "reb": 4,
+              "ast": 6,
+              "ts_pct": 0.5260942760942761,
+              "usg_pct": 0.3018272050530115,
+              "plus_minus": -9.0,
+              "game_score": 17.5
+            },
+            "availability": "full"
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 300,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w05.trend_chart",
+      "kind": "trend_chart",
+      "status": "ok",
+      "payload": {
+        "metric": {
+          "key": "ts_pct",
+          "name": "True Shooting %",
+          "shortName": "TS%",
+          "category": "shooting",
+          "format": "percent1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "1946-47",
+            "perGameFrom": "1996-97",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": {
+            "min": 0.35,
+            "max": 0.75
+          },
+          "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+        },
+        "rollingWindow": 5,
+        "leagueAverage": 0.576464387931087,
+        "yDomain": {
+          "min": 0.43255887927264053,
+          "max": 0.7857815005765332
+        },
+        "series": [
+          {
+            "id": "1500819",
+            "label": "Desmond Quintero",
+            "colorIndex": 0,
+            "points": [
+              {
+                "x": "2025-10-22",
+                "y": 0.5529225908372828,
+                "rolling": null,
+                "gameId": "0022500002",
+                "opponentAbbr": "MIN"
+              },
+              {
+                "x": "2025-10-25",
+                "y": 0.5413385826771654,
+                "rolling": null,
+                "gameId": "0022500018",
+                "opponentAbbr": "PHI"
+              },
+              {
+                "x": "2025-10-28",
+                "y": 0.5272407732864675,
+                "rolling": null,
+                "gameId": "0022500034",
+                "opponentAbbr": "DET"
+              },
+              {
+                "x": "2025-10-31",
+                "y": 0.7614213197969544,
+                "rolling": null,
+                "gameId": "0022500050",
+                "opponentAbbr": "SAC"
+              },
+              {
+                "x": "2025-11-03",
+                "y": 0.5763688760806917,
+                "rolling": 0.5918584285357122,
+                "gameId": "0022500066",
+                "opponentAbbr": "TOR"
+              },
+              {
+                "x": "2025-11-07",
+                "y": 0.5387931034482759,
+                "rolling": 0.589032531057911,
+                "gameId": "0022500082",
+                "opponentAbbr": "ATL"
+              },
+              {
+                "x": "2025-11-10",
+                "y": 0.49603174603174605,
+                "rolling": 0.5799711637288271,
+                "gameId": "0022500098",
+                "opponentAbbr": "DAL"
+              },
+              {
+                "x": "2025-11-13",
+                "y": 0.6004366812227074,
+                "rolling": 0.594610345316075,
+                "gameId": "0022500114",
+                "opponentAbbr": "DEN"
+              },
+              {
+                "x": "2025-11-16",
+                "y": 0.5974264705882353,
+                "rolling": 0.5618113754743312,
+                "gameId": "0022500130",
+                "opponentAbbr": "NOP"
+              },
+              {
+                "x": "2025-11-19",
+                "y": 0.6151142355008787,
+                "rolling": 0.5695604473583685,
+                "gameId": "0022500146",
+                "opponentAbbr": "BKN"
+              },
+              {
+                "x": "2025-11-23",
+                "y": 0.5145797598627787,
+                "rolling": 0.5647177786412693,
+                "gameId": "0022500162",
+                "opponentAbbr": "CHA"
+              },
+              {
+                "x": "2025-11-26",
+                "y": 0.5673758865248227,
+                "rolling": 0.5789866067398846,
+                "gameId": "0022500178",
+                "opponentAbbr": "HOU"
+              },
+              {
+                "x": "2025-11-29",
+                "y": 0.5574614065180102,
+                "rolling": 0.5703915517989452,
+                "gameId": "0022500194",
+                "opponentAbbr": "WAS"
+              },
+              {
+                "x": "2025-12-02",
+                "y": 0.5655226209048362,
+                "rolling": 0.5640107818622653,
+                "gameId": "0022500210",
+                "opponentAbbr": "GSW"
+              },
+              {
+                "x": "2025-12-05",
+                "y": 0.5043227665706052,
+                "rolling": 0.5418524880762107,
+                "gameId": "0022500225",
+                "opponentAbbr": "MIA"
+              },
+              {
+                "x": "2025-12-08",
+                "y": 0.5260942760942761,
+                "rolling": 0.54415539132251,
+                "gameId": "0022500239",
+                "opponentAbbr": "OKC"
+              },
+              {
+                "x": "2025-12-11",
+                "y": 0.484006734006734,
+                "rolling": 0.5274815608188923,
+                "gameId": "0022500253",
+                "opponentAbbr": "LAC"
+              },
+              {
+                "x": "2025-12-13",
+                "y": 0.47520661157024796,
+                "rolling": 0.5110306018293398,
+                "gameId": "0022500267",
+                "opponentAbbr": "MIL"
+              },
+              {
+                "x": "2025-12-16",
+                "y": 0.45691906005221933,
+                "rolling": 0.48930988965881655,
+                "gameId": "0022500281",
+                "opponentAbbr": "UTA"
+              },
+              {
+                "x": "2025-12-19",
+                "y": 0.5357142857142857,
+                "rolling": 0.4955881934875526,
+                "gameId": "0022500295",
+                "opponentAbbr": "ORL"
+              },
+              {
+                "x": "2025-12-22",
+                "y": 0.6260096930533118,
+                "rolling": 0.5155712768793598,
+                "gameId": "0022500309",
+                "opponentAbbr": "CLE"
+              },
+              {
+                "x": "2025-12-25",
+                "y": 0.487012987012987,
+                "rolling": 0.5161725274806104,
+                "gameId": "0022500323",
+                "opponentAbbr": "PHX"
+              },
+              {
+                "x": "2025-12-27",
+                "y": 0.6516587677725119,
+                "rolling": 0.5514629587210631,
+                "gameId": "0022500337",
+                "opponentAbbr": "IND"
+              },
+              {
+                "x": "2025-12-30",
+                "y": 0.5434782608695652,
+                "rolling": 0.5687747988845324,
+                "gameId": "0022500351",
+                "opponentAbbr": "POR"
+              },
+              {
+                "x": "2026-01-02",
+                "y": 0.4766949152542373,
+                "rolling": 0.5569709247925226,
+                "gameId": "0022500365",
+                "opponentAbbr": "BOS"
+              }
+            ]
+          },
+          {
+            "id": "1500837",
+            "label": "Sterling Haddad",
+            "colorIndex": 1,
+            "points": [
+              {
+                "x": "2025-10-24",
+                "y": 0.6123919308357348,
+                "rolling": null,
+                "gameId": "0022500015",
+                "opponentAbbr": "PHX"
+              },
+              {
+                "x": "2025-10-27",
+                "y": 0.5555555555555556,
+                "rolling": null,
+                "gameId": "0022500030",
+                "opponentAbbr": "IND"
+              },
+              {
+                "x": "2025-10-30",
+                "y": 0.6014304291287386,
+                "rolling": null,
+                "gameId": "0022500044",
+                "opponentAbbr": "POR"
+              },
+              {
+                "x": "2025-11-05",
+                "y": 0.6039531478770132,
+                "rolling": null,
+                "gameId": "0022500072",
+                "opponentAbbr": "MEM"
+              },
+              {
+                "x": "2025-11-07",
+                "y": 0.55835734870317,
+                "rolling": 0.5863376824200424,
+                "gameId": "0022500086",
+                "opponentAbbr": "SAS"
+              },
+              {
+                "x": "2025-11-10",
+                "y": 0.648854961832061,
+                "rolling": 0.5936302886193077,
+                "gameId": "0022500100",
+                "opponentAbbr": "LAL"
+              },
+              {
+                "x": "2025-11-13",
+                "y": 0.5851063829787234,
+                "rolling": 0.5995404541039413,
+                "gameId": "0022500114",
+                "opponentAbbr": "CHI"
+              },
+              {
+                "x": "2025-11-16",
+                "y": 0.5237430167597765,
+                "rolling": 0.5840029716301489,
+                "gameId": "0022500128",
+                "opponentAbbr": "MIN"
+              },
+              {
+                "x": "2025-11-19",
+                "y": 0.6298449612403101,
+                "rolling": 0.5891813343028082,
+                "gameId": "0022500142",
+                "opponentAbbr": "PHI"
+              },
+              {
+                "x": "2025-11-21",
+                "y": 0.5610972568578554,
+                "rolling": 0.5897293159337453,
+                "gameId": "0022500156",
+                "opponentAbbr": "DET"
+              },
+              {
+                "x": "2025-11-24",
+                "y": 0.6183745583038869,
+                "rolling": 0.5836332352281104,
+                "gameId": "0022500170",
+                "opponentAbbr": "SAC"
+              },
+              {
+                "x": "2025-11-27",
+                "y": 0.5534351145038168,
+                "rolling": 0.5772989815331291,
+                "gameId": "0022500184",
+                "opponentAbbr": "TOR"
+              },
+              {
+                "x": "2025-11-30",
+                "y": 0.5910987482614742,
+                "rolling": 0.5907701278334687,
+                "gameId": "0022500198",
+                "opponentAbbr": "ATL"
+              },
+              {
+                "x": "2025-12-02",
+                "y": 0.565068493150685,
+                "rolling": 0.5778148342155436,
+                "gameId": "0022500212",
+                "opponentAbbr": "DAL"
+              },
+              {
+                "x": "2025-12-05",
+                "y": 0.6151574803149606,
+                "rolling": 0.5886268789069647,
+                "gameId": "0022500226",
+                "opponentAbbr": "NYK"
+              },
+              {
+                "x": "2025-12-08",
+                "y": 0.5850234009360374,
+                "rolling": 0.5819566474333948,
+                "gameId": "0022500242",
+                "opponentAbbr": "NOP"
+              },
+              {
+                "x": "2025-12-12",
+                "y": 0.6304034582132565,
+                "rolling": 0.5973503161752827,
+                "gameId": "0022500258",
+                "opponentAbbr": "BKN"
+              },
+              {
+                "x": "2025-12-15",
+                "y": 0.5729166666666667,
+                "rolling": 0.5937138998563212,
+                "gameId": "0022500274",
+                "opponentAbbr": "CHA"
+              },
+              {
+                "x": "2025-12-18",
+                "y": 0.6364562118126272,
+                "rolling": 0.6079914435887097,
+                "gameId": "0022500290",
+                "opponentAbbr": "HOU"
+              },
+              {
+                "x": "2025-12-21",
+                "y": 0.5460218408736349,
+                "rolling": 0.5941643157004445,
+                "gameId": "0022500306",
+                "opponentAbbr": "WAS"
+              },
+              {
+                "x": "2025-12-24",
+                "y": 0.5255941499085923,
+                "rolling": 0.5822784654949554,
+                "gameId": "0022500322",
+                "opponentAbbr": "GSW"
+              },
+              {
+                "x": "2025-12-28",
+                "y": 0.5434782608695652,
+                "rolling": 0.5648934260262173,
+                "gameId": "0022500338",
+                "opponentAbbr": "MIA"
+              },
+              {
+                "x": "2025-12-31",
+                "y": 0.5555555555555556,
+                "rolling": 0.561421203803995,
+                "gameId": "0022500354",
+                "opponentAbbr": "OKC"
+              }
+            ]
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 300,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w06.four_factors",
+      "kind": "four_factors",
+      "status": "ok",
+      "payload": {
+        "team": {
+          "teamId": 1610612741,
+          "abbr": "CHI",
+          "name": "Chicago Bulls",
+          "city": "Chicago",
+          "nickname": "Bulls",
+          "conference": "East",
+          "division": "Central"
+        },
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "offense": [
+          {
+            "key": "efg_pct",
+            "label": "eFG%",
+            "weight": 0.4,
+            "value": 0.5202132385606397,
+            "displayValue": "52.0%",
+            "leagueAverage": 0.5396099575555411,
+            "percentile": 0.05,
+            "rank": 29
+          },
+          {
+            "key": "tov_pct",
+            "label": "TOV%",
+            "weight": 0.25,
+            "value": 0.12963868893703262,
+            "displayValue": "13.0%",
+            "leagueAverage": 0.12565213947366055,
+            "percentile": 0.18333333333333332,
+            "rank": 25
+          },
+          {
+            "key": "oreb_pct",
+            "label": "OREB%",
+            "weight": 0.2,
+            "value": 0.2567215958369471,
+            "displayValue": "25.7%",
+            "leagueAverage": 0.23968112265503427,
+            "percentile": 0.95,
+            "rank": 2
+          },
+          {
+            "key": "ftr",
+            "label": "FTr",
+            "weight": 0.15,
+            "value": 0.24211461572634385,
+            "displayValue": "24.2%",
+            "leagueAverage": 0.24667551658676967,
+            "percentile": 0.31666666666666665,
+            "rank": 21
+          }
+        ],
+        "defense": [
+          {
+            "key": "opp_efg_pct",
+            "label": "Opp eFG%",
+            "weight": 0.4,
+            "value": 0.5471739130434783,
+            "displayValue": "54.7%",
+            "leagueAverage": 0.5396544936239362,
+            "percentile": 0.2833333333333333,
+            "rank": 22
+          },
+          {
+            "key": "opp_tov_pct",
+            "label": "Opp TOV%",
+            "weight": 0.25,
+            "value": 0.12681134584538614,
+            "displayValue": "12.7%",
+            "leagueAverage": 0.12558079815770198,
+            "percentile": 0.65,
+            "rank": 11
+          },
+          {
+            "key": "opp_oreb_pct",
+            "label": "Opp OREB%",
+            "weight": 0.2,
+            "value": 0.25022261798753337,
+            "displayValue": "25.0%",
+            "leagueAverage": 0.2396535523108244,
+            "percentile": 0.05,
+            "rank": 29
+          },
+          {
+            "key": "opp_ftr",
+            "label": "Opp FTr",
+            "weight": 0.15,
+            "value": 0.2447826086956522,
+            "displayValue": "24.5%",
+            "leagueAverage": 0.24646168200036117,
+            "percentile": 0.5833333333333334,
+            "rank": 13
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w07.shot_profile",
+      "kind": "shot_profile",
+      "status": "ok",
+      "payload": {
+        "subject": {
+          "type": "player",
+          "player": {
+            "playerId": 1500819,
+            "name": "Desmond Quintero",
+            "firstName": "Desmond",
+            "lastName": "Quintero",
+            "teamId": 1610612741,
+            "teamAbbr": "CHI",
+            "position": "G",
+            "jersey": "25",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "team": null
+        },
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "zones": [
+          {
+            "zone": "rim",
+            "label": "At Rim",
+            "fga": 4.4,
+            "fgPct": 0.6181818181818182,
+            "shareOfFga": 0.20109689213893966,
+            "pointsPerShot": 1.2363636363636363,
+            "leagueFgPct": 0.6458691910499139,
+            "leagueShareOfFga": 0.283397353819889
+          },
+          {
+            "zone": "paint_non_rim",
+            "label": "Paint (non-rim)",
+            "fga": 2.52,
+            "fgPct": 0.42857142857142855,
+            "shareOfFga": 0.11517367458866545,
+            "pointsPerShot": 0.8571428571428571,
+            "leagueFgPct": 0.43748433976447004,
+            "leagueShareOfFga": 0.12166941040180476
+          },
+          {
+            "zone": "mid_range",
+            "label": "Mid Range",
+            "fga": 4.6,
+            "fgPct": 0.391304347826087,
+            "shareOfFga": 0.21023765996343693,
+            "pointsPerShot": 0.782608695652174,
+            "leagueFgPct": 0.40180543551330067,
+            "leagueShareOfFga": 0.15872507773916225
+          },
+          {
+            "zone": "corner_three",
+            "label": "Corner 3",
+            "fga": 1.88,
+            "fgPct": 0.3829787234042553,
+            "shareOfFga": 0.08592321755027423,
+            "pointsPerShot": 1.148936170212766,
+            "leagueFgPct": 0.38818897637795274,
+            "leagueShareOfFga": 0.13551002987622707
+          },
+          {
+            "zone": "above_break_three",
+            "label": "Above the Break 3",
+            "fga": 8.48,
+            "fgPct": 0.3490566037735849,
+            "shareOfFga": 0.3875685557586837,
+            "pointsPerShot": 1.0471698113207548,
+            "leagueFgPct": 0.35626298981091903,
+            "leagueShareOfFga": 0.3006981281629169
+          }
+        ],
+        "threePointRate": 0.473491773308958,
+        "freeThrowRate": 0.18647166361974407,
+        "note": null
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w08.comparison",
+      "kind": "comparison",
+      "status": "ok",
+      "payload": {
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "normalization": "percentile",
+        "style": "bars",
+        "metrics": [
+          {
+            "key": "pts",
+            "name": "Points",
+            "shortName": "PTS",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1946-47",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Points scored."
+          },
+          {
+            "key": "ts_pct",
+            "name": "True Shooting %",
+            "shortName": "TS%",
+            "category": "shooting",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": {
+              "min": 0.35,
+              "max": 0.75
+            },
+            "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+          },
+          {
+            "key": "usg_pct",
+            "name": "Usage %",
+            "shortName": "USG%",
+            "category": "usage",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1977-78",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": "1996-97"
+            },
+            "domain": {
+              "min": 0.05,
+              "max": 0.42
+            },
+            "glossary": "Share of team possessions a player ends while on the floor."
+          },
+          {
+            "key": "ast_pct",
+            "name": "Assist %",
+            "shortName": "AST%",
+            "category": "playmaking",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": "1996-97"
+            },
+            "domain": {
+              "min": 0.0,
+              "max": 0.55
+            },
+            "glossary": "Share of teammate field goals a player assists while on the floor."
+          },
+          {
+            "key": "reb_pct",
+            "name": "Rebound %",
+            "shortName": "REB%",
+            "category": "rebounding",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1973-74",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": "1996-97"
+            },
+            "domain": {
+              "min": 0.0,
+              "max": 0.3
+            },
+            "glossary": "Share of available rebounds grabbed while on the floor."
+          },
+          {
+            "key": "net_rtg",
+            "name": "Net Rating",
+            "shortName": "NetRtg",
+            "category": "efficiency",
+            "format": "rating1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1996-97",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": {
+              "min": -25.0,
+              "max": 25.0
+            },
+            "glossary": "Offensive Rating minus Defensive Rating."
+          }
+        ],
+        "subjects": [
+          {
+            "player": {
+              "playerId": 1500819,
+              "name": "Desmond Quintero",
+              "firstName": "Desmond",
+              "lastName": "Quintero",
+              "teamId": 1610612741,
+              "teamAbbr": "CHI",
+              "position": "G",
+              "jersey": "25",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "colorIndex": 0,
+            "values": [
+              {
+                "metric": "pts",
+                "value": 25.92,
+                "displayValue": "25.9",
+                "rank": 7,
+                "percentile": 0.9783333333333334,
+                "leagueAverage": 12.417536900420789,
+                "delta": 13.502463099579213,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "ts_pct",
+                "value": 0.547408258430763,
+                "displayValue": "54.7%",
+                "rank": 242,
+                "percentile": 0.195,
+                "leagueAverage": 0.576464387931087,
+                "delta": -0.02905612950032399,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "usg_pct",
+                "value": 0.29952189522227346,
+                "displayValue": "30.0%",
+                "rank": 20,
+                "percentile": 0.935,
+                "leagueAverage": 0.19782083378438103,
+                "delta": 0.10170106143789243,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "ast_pct",
+                "value": 0.30749542051463014,
+                "displayValue": "30.7%",
+                "rank": 33,
+                "percentile": 0.8916666666666667,
+                "leagueAverage": 0.1574655559764613,
+                "delta": 0.15002986453816883,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "reb_pct",
+                "value": 0.05666866056398281,
+                "displayValue": "5.7%",
+                "rank": 263,
+                "percentile": 0.125,
+                "leagueAverage": 0.0991886860228011,
+                "delta": -0.0425200254588183,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "net_rtg",
+                "value": -5.80979157927419,
+                "displayValue": "-5.8",
+                "rank": 252,
+                "percentile": 0.16166666666666665,
+                "leagueAverage": -0.14129939647576534,
+                "delta": -5.668492182798425,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ]
+          },
+          {
+            "player": {
+              "playerId": 1500837,
+              "name": "Sterling Haddad",
+              "firstName": "Sterling",
+              "lastName": "Haddad",
+              "teamId": 1610612743,
+              "teamAbbr": "DEN",
+              "position": "G",
+              "jersey": "40",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "colorIndex": 1,
+            "values": [
+              {
+                "metric": "pts",
+                "value": 30.304347826086957,
+                "displayValue": "30.3",
+                "rank": 1,
+                "percentile": 0.9983333333333333,
+                "leagueAverage": 12.417536900420789,
+                "delta": 17.88681092566617,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "ts_pct",
+                "value": 0.5819584530091509,
+                "displayValue": "58.2%",
+                "rank": 127,
+                "percentile": 0.5783333333333334,
+                "leagueAverage": 0.576464387931087,
+                "delta": 0.005494065078063937,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "usg_pct",
+                "value": 0.32654262430820946,
+                "displayValue": "32.7%",
+                "rank": 7,
+                "percentile": 0.9783333333333334,
+                "leagueAverage": 0.19782083378438103,
+                "delta": 0.12872179052382843,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "ast_pct",
+                "value": 0.34200900602759443,
+                "displayValue": "34.2%",
+                "rank": 18,
+                "percentile": 0.9416666666666667,
+                "leagueAverage": 0.1574655559764613,
+                "delta": 0.18454345005113312,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "reb_pct",
+                "value": 0.06779398055577475,
+                "displayValue": "6.8%",
+                "rank": 217,
+                "percentile": 0.2783333333333333,
+                "leagueAverage": 0.0991886860228011,
+                "delta": -0.03139470546702636,
+                "isEstimated": false,
+                "availability": "full"
+              },
+              {
+                "metric": "net_rtg",
+                "value": 5.4292301088938615,
+                "displayValue": "5.4",
+                "rank": 49,
+                "percentile": 0.8383333333333334,
+                "leagueAverage": -0.14129939647576534,
+                "delta": 5.570529505369627,
+                "isEstimated": false,
+                "availability": "full"
+              }
+            ]
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w09.scoreboard",
+      "kind": "scoreboard",
+      "status": "ok",
+      "payload": {
+        "date": "2026-01-02",
+        "isLatestCompleted": true,
+        "allFinal": true,
+        "games": [
+          {
+            "gameId": "0022500364",
+            "date": "2026-01-02",
+            "season": "2025-26",
+            "seasonType": "Regular Season",
+            "home": {
+              "teamId": 1610612744,
+              "abbr": "GSW",
+              "name": "Golden State Warriors",
+              "city": "Golden State",
+              "nickname": "Warriors",
+              "conference": "West",
+              "division": "Pacific"
+            },
+            "away": {
+              "teamId": 1610612766,
+              "abbr": "CHA",
+              "name": "Charlotte Hornets",
+              "city": "Charlotte",
+              "nickname": "Hornets",
+              "conference": "East",
+              "division": "Southeast"
+            },
+            "homePts": 119,
+            "awayPts": 100,
+            "status": "final",
+            "period": 4,
+            "clock": null,
+            "finalizedAt": "2026-01-03T02:41:00Z",
+            "topPerformers": [
+              {
+                "player": {
+                  "playerId": 1500893,
+                  "name": "Simeon Castellanos",
+                  "firstName": "Simeon",
+                  "lastName": "Castellanos",
+                  "teamId": 1610612744,
+                  "teamAbbr": "GSW",
+                  "position": "G",
+                  "jersey": "2",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "GSW",
+                "line": "30 PTS · 6 AST",
+                "value": {
+                  "metric": "game_score",
+                  "value": 20.2,
+                  "displayValue": "20.2",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              },
+              {
+                "player": {
+                  "playerId": 1501198,
+                  "name": "Simeon Rankin",
+                  "firstName": "Simeon",
+                  "lastName": "Rankin",
+                  "teamId": 1610612766,
+                  "teamAbbr": "CHA",
+                  "position": "C",
+                  "jersey": "9",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "CHA",
+                "line": "18 PTS · 12 REB",
+                "value": {
+                  "metric": "game_score",
+                  "value": 15.499999999999996,
+                  "displayValue": "15.5",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              }
+            ]
+          },
+          {
+            "gameId": "0022500365",
+            "date": "2026-01-02",
+            "season": "2025-26",
+            "seasonType": "Regular Season",
+            "home": {
+              "teamId": 1610612738,
+              "abbr": "BOS",
+              "name": "Boston Celtics",
+              "city": "Boston",
+              "nickname": "Celtics",
+              "conference": "East",
+              "division": "Atlantic"
+            },
+            "away": {
+              "teamId": 1610612741,
+              "abbr": "CHI",
+              "name": "Chicago Bulls",
+              "city": "Chicago",
+              "nickname": "Bulls",
+              "conference": "East",
+              "division": "Central"
+            },
+            "homePts": 113,
+            "awayPts": 107,
+            "status": "final",
+            "period": 4,
+            "clock": null,
+            "finalizedAt": "2026-01-03T02:41:00Z",
+            "topPerformers": [
+              {
+                "player": {
+                  "playerId": 1500788,
+                  "name": "Zeke Kristof",
+                  "firstName": "Zeke",
+                  "lastName": "Kristof",
+                  "teamId": 1610612738,
+                  "teamAbbr": "BOS",
+                  "position": "C",
+                  "jersey": "45",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "BOS",
+                "line": "23 PTS · 13 REB",
+                "value": {
+                  "metric": "game_score",
+                  "value": 21.5,
+                  "displayValue": "21.5",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              },
+              {
+                "player": {
+                  "playerId": 1500820,
+                  "name": "Felix Falcone",
+                  "firstName": "Felix",
+                  "lastName": "Falcone",
+                  "teamId": 1610612741,
+                  "teamAbbr": "CHI",
+                  "position": "C",
+                  "jersey": "0",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "CHI",
+                "line": "18 PTS · 12 REB",
+                "value": {
+                  "metric": "game_score",
+                  "value": 17.699999999999996,
+                  "displayValue": "17.7",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              }
+            ]
+          },
+          {
+            "gameId": "0022500366",
+            "date": "2026-01-02",
+            "season": "2025-26",
+            "seasonType": "Regular Season",
+            "home": {
+              "teamId": 1610612748,
+              "abbr": "MIA",
+              "name": "Miami Heat",
+              "city": "Miami",
+              "nickname": "Heat",
+              "conference": "East",
+              "division": "Southeast"
+            },
+            "away": {
+              "teamId": 1610612751,
+              "abbr": "BKN",
+              "name": "Brooklyn Nets",
+              "city": "Brooklyn",
+              "nickname": "Nets",
+              "conference": "East",
+              "division": "Atlantic"
+            },
+            "homePts": 124,
+            "awayPts": 106,
+            "status": "final",
+            "period": 4,
+            "clock": null,
+            "finalizedAt": "2026-01-03T02:41:00Z",
+            "topPerformers": [
+              {
+                "player": {
+                  "playerId": 1500776,
+                  "name": "Terrance Winslow",
+                  "firstName": "Terrance",
+                  "lastName": "Winslow",
+                  "teamId": 1610612748,
+                  "teamAbbr": "MIA",
+                  "position": "F",
+                  "jersey": "19",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "MIA",
+                "line": "21 PTS · 8 REB · 5 AST",
+                "value": {
+                  "metric": "game_score",
+                  "value": 19.200000000000003,
+                  "displayValue": "19.2",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              },
+              {
+                "player": {
+                  "playerId": 1501047,
+                  "name": "Vance Prieto",
+                  "firstName": "Vance",
+                  "lastName": "Prieto",
+                  "teamId": 1610612751,
+                  "teamAbbr": "BKN",
+                  "position": "G",
+                  "jersey": "19",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "BKN",
+                "line": "23 PTS · 7 AST",
+                "value": {
+                  "metric": "game_score",
+                  "value": 15.5,
+                  "displayValue": "15.5",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              }
+            ]
+          },
+          {
+            "gameId": "0022500367",
+            "date": "2026-01-02",
+            "season": "2025-26",
+            "seasonType": "Regular Season",
+            "home": {
+              "teamId": 1610612757,
+              "abbr": "POR",
+              "name": "Portland Trail Blazers",
+              "city": "Portland",
+              "nickname": "Trail Blazers",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "away": {
+              "teamId": 1610612750,
+              "abbr": "MIN",
+              "name": "Minnesota Timberwolves",
+              "city": "Minnesota",
+              "nickname": "Timberwolves",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "homePts": 109,
+            "awayPts": 112,
+            "status": "final",
+            "period": 4,
+            "clock": null,
+            "finalizedAt": "2026-01-03T02:41:00Z",
+            "topPerformers": [
+              {
+                "player": {
+                  "playerId": 1500985,
+                  "name": "Vaughn Sandoval",
+                  "firstName": "Vaughn",
+                  "lastName": "Sandoval",
+                  "teamId": 1610612757,
+                  "teamAbbr": "POR",
+                  "position": "F",
+                  "jersey": "19",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "POR",
+                "line": "23 PTS · 7 REB",
+                "value": {
+                  "metric": "game_score",
+                  "value": 19.1,
+                  "displayValue": "19.1",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              },
+              {
+                "player": {
+                  "playerId": 1501163,
+                  "name": "Dominic Grier",
+                  "firstName": "Dominic",
+                  "lastName": "Grier",
+                  "teamId": 1610612750,
+                  "teamAbbr": "MIN",
+                  "position": "C",
+                  "jersey": "31",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "MIN",
+                "line": "18 PTS · 11 REB",
+                "value": {
+                  "metric": "game_score",
+                  "value": 14.999999999999996,
+                  "displayValue": "15.0",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              }
+            ]
+          },
+          {
+            "gameId": "0022500368",
+            "date": "2026-01-02",
+            "season": "2025-26",
+            "seasonType": "Regular Season",
+            "home": {
+              "teamId": 1610612760,
+              "abbr": "OKC",
+              "name": "Oklahoma City Thunder",
+              "city": "Oklahoma City",
+              "nickname": "Thunder",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "away": {
+              "teamId": 1610612740,
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "city": "New Orleans",
+              "nickname": "Pelicans",
+              "conference": "West",
+              "division": "Southwest"
+            },
+            "homePts": 108,
+            "awayPts": 110,
+            "status": "final",
+            "period": 4,
+            "clock": null,
+            "finalizedAt": "2026-01-03T02:41:00Z",
+            "topPerformers": [
+              {
+                "player": {
+                  "playerId": 1501059,
+                  "name": "Rowan Kowalski",
+                  "firstName": "Rowan",
+                  "lastName": "Kowalski",
+                  "teamId": 1610612740,
+                  "teamAbbr": "NOP",
+                  "position": "G",
+                  "jersey": "36",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "NOP",
+                "line": "32 PTS · 5 REB · 9 AST",
+                "value": {
+                  "metric": "game_score",
+                  "value": 26.0,
+                  "displayValue": "26.0",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              },
+              {
+                "player": {
+                  "playerId": 1501119,
+                  "name": "Silas Pashkov",
+                  "firstName": "Silas",
+                  "lastName": "Pashkov",
+                  "teamId": 1610612760,
+                  "teamAbbr": "OKC",
+                  "position": "G",
+                  "jersey": "50",
+                  "headshotUrl": null,
+                  "isActive": true
+                },
+                "teamAbbr": "OKC",
+                "line": "24 PTS · 5 AST",
+                "value": {
+                  "metric": "game_score",
+                  "value": 16.499999999999996,
+                  "displayValue": "16.5",
+                  "rank": null,
+                  "percentile": null,
+                  "leagueAverage": null,
+                  "delta": null,
+                  "isEstimated": false,
+                  "availability": "full"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 60,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w10.daily_movers",
+      "kind": "daily_movers",
+      "status": "ok",
+      "payload": {
+        "date": "2026-01-02",
+        "metric": {
+          "key": "game_score",
+          "name": "Game Score",
+          "shortName": "GmSc",
+          "category": "impact",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player"
+          ],
+          "availability": {
+            "seasonFrom": "1973-74",
+            "perGameFrom": "1973-74",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
+        },
+        "direction": "best",
+        "rows": [
+          {
+            "rank": 1,
+            "player": {
+              "playerId": 1501059,
+              "name": "Rowan Kowalski",
+              "firstName": "Rowan",
+              "lastName": "Kowalski",
+              "teamId": 1610612740,
+              "teamAbbr": "NOP",
+              "position": "G",
+              "jersey": "36",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500368",
+            "opponentAbbr": "OKC",
+            "isHome": false,
+            "result": "W",
+            "line": "32 PTS · 5 REB · 9 AST",
+            "value": {
+              "metric": "game_score",
+              "value": 26.0,
+              "displayValue": "26.0",
+              "rank": 1,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 18.795238095238098,
+            "delta": 7.204761904761902
+          },
+          {
+            "rank": 2,
+            "player": {
+              "playerId": 1500788,
+              "name": "Zeke Kristof",
+              "firstName": "Zeke",
+              "lastName": "Kristof",
+              "teamId": 1610612738,
+              "teamAbbr": "BOS",
+              "position": "C",
+              "jersey": "45",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500365",
+            "opponentAbbr": "CHI",
+            "isHome": true,
+            "result": "W",
+            "line": "23 PTS · 13 REB",
+            "value": {
+              "metric": "game_score",
+              "value": 21.5,
+              "displayValue": "21.5",
+              "rank": 2,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 16.919047619047614,
+            "delta": 4.580952380952386
+          },
+          {
+            "rank": 3,
+            "player": {
+              "playerId": 1500893,
+              "name": "Simeon Castellanos",
+              "firstName": "Simeon",
+              "lastName": "Castellanos",
+              "teamId": 1610612744,
+              "teamAbbr": "GSW",
+              "position": "G",
+              "jersey": "2",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500364",
+            "opponentAbbr": "CHA",
+            "isHome": true,
+            "result": "W",
+            "line": "30 PTS · 6 AST",
+            "value": {
+              "metric": "game_score",
+              "value": 20.2,
+              "displayValue": "20.2",
+              "rank": 3,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 20.665217391304346,
+            "delta": -0.46521739130434625
+          },
+          {
+            "rank": 4,
+            "player": {
+              "playerId": 1500795,
+              "name": "Wyatt Xiong",
+              "firstName": "Wyatt",
+              "lastName": "Xiong",
+              "teamId": 1610612738,
+              "teamAbbr": "BOS",
+              "position": "C",
+              "jersey": "98",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500365",
+            "opponentAbbr": "CHI",
+            "isHome": true,
+            "result": "W",
+            "line": "23 PTS · 9 REB · 3 BLK",
+            "value": {
+              "metric": "game_score",
+              "value": 19.500000000000004,
+              "displayValue": "19.5",
+              "rank": 4,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 15.608333333333334,
+            "delta": 3.8916666666666693
+          },
+          {
+            "rank": 5,
+            "player": {
+              "playerId": 1500776,
+              "name": "Terrance Winslow",
+              "firstName": "Terrance",
+              "lastName": "Winslow",
+              "teamId": 1610612748,
+              "teamAbbr": "MIA",
+              "position": "F",
+              "jersey": "19",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500366",
+            "opponentAbbr": "BKN",
+            "isHome": true,
+            "result": "W",
+            "line": "21 PTS · 8 REB · 5 AST",
+            "value": {
+              "metric": "game_score",
+              "value": 19.200000000000003,
+              "displayValue": "19.2",
+              "rank": 5,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 15.124999999999998,
+            "delta": 4.075000000000005
+          },
+          {
+            "rank": 6,
+            "player": {
+              "playerId": 1500985,
+              "name": "Vaughn Sandoval",
+              "firstName": "Vaughn",
+              "lastName": "Sandoval",
+              "teamId": 1610612757,
+              "teamAbbr": "POR",
+              "position": "F",
+              "jersey": "19",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500367",
+            "opponentAbbr": "MIN",
+            "isHome": true,
+            "result": "L",
+            "line": "23 PTS · 7 REB",
+            "value": {
+              "metric": "game_score",
+              "value": 19.1,
+              "displayValue": "19.1",
+              "rank": 6,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 12.562499999999998,
+            "delta": 6.537500000000003
+          },
+          {
+            "rank": 7,
+            "player": {
+              "playerId": 1500820,
+              "name": "Felix Falcone",
+              "firstName": "Felix",
+              "lastName": "Falcone",
+              "teamId": 1610612741,
+              "teamAbbr": "CHI",
+              "position": "C",
+              "jersey": "0",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500365",
+            "opponentAbbr": "BOS",
+            "isHome": false,
+            "result": "L",
+            "line": "18 PTS · 12 REB",
+            "value": {
+              "metric": "game_score",
+              "value": 17.699999999999996,
+              "displayValue": "17.7",
+              "rank": 7,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 14.563636363636364,
+            "delta": 3.1363636363636314
+          },
+          {
+            "rank": 8,
+            "player": {
+              "playerId": 1500909,
+              "name": "Vaughn Zabala",
+              "firstName": "Vaughn",
+              "lastName": "Zabala",
+              "teamId": 1610612757,
+              "teamAbbr": "POR",
+              "position": "F",
+              "jersey": "44",
+              "headshotUrl": null,
+              "isActive": true
+            },
+            "gameId": "0022500367",
+            "opponentAbbr": "MIN",
+            "isHome": true,
+            "result": "L",
+            "line": "20 PTS · 7 REB",
+            "value": {
+              "metric": "game_score",
+              "value": 17.5,
+              "displayValue": "17.5",
+              "rank": 8,
+              "percentile": null,
+              "leagueAverage": null,
+              "delta": null,
+              "isEstimated": false,
+              "availability": "full"
+            },
+            "seasonAverage": 15.573913043478258,
+            "delta": 1.9260869565217416
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 60,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w11.team_efficiency",
+      "kind": "team_efficiency",
+      "status": "ok",
+      "payload": {
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "sortBy": "net_rtg",
+        "style": "table",
+        "leagueAverage": {
+          "off_rtg": 113.98012134860024,
+          "def_rtg": 114.01525715252016,
+          "net_rtg": -0.03513580391992879,
+          "pace": 99.83775870222222
+        },
+        "rows": [
+          {
+            "rank": 1,
+            "team": {
+              "teamId": 1610612744,
+              "abbr": "GSW",
+              "name": "Golden State Warriors",
+              "city": "Golden State",
+              "nickname": "Warriors",
+              "conference": "West",
+              "division": "Pacific"
+            },
+            "wins": 17,
+            "losses": 8,
+            "values": {
+              "off_rtg": 118.82160987650305,
+              "def_rtg": 112.07038204261082,
+              "net_rtg": 6.75122783389223,
+              "pace": 100.7224192
+            },
+            "ranks": {
+              "off_rtg": 3,
+              "def_rtg": 5,
+              "net_rtg": 1,
+              "pace": 10
+            }
+          },
+          {
+            "rank": 2,
+            "team": {
+              "teamId": 1610612752,
+              "abbr": "NYK",
+              "name": "New York Knicks",
+              "city": "New York",
+              "nickname": "Knicks",
+              "conference": "East",
+              "division": "Atlantic"
+            },
+            "wins": 17,
+            "losses": 8,
+            "values": {
+              "off_rtg": 119.67385502567942,
+              "def_rtg": 113.08959824700749,
+              "net_rtg": 6.584256778671929,
+              "pace": 100.23910399999998
+            },
+            "ranks": {
+              "off_rtg": 2,
+              "def_rtg": 11,
+              "net_rtg": 2,
+              "pace": 13
+            }
+          },
+          {
+            "rank": 3,
+            "team": {
+              "teamId": 1610612753,
+              "abbr": "ORL",
+              "name": "Orlando Magic",
+              "city": "Orlando",
+              "nickname": "Magic",
+              "conference": "East",
+              "division": "Southeast"
+            },
+            "wins": 18,
+            "losses": 6,
+            "values": {
+              "off_rtg": 120.53082086254277,
+              "def_rtg": 114.07013841958639,
+              "net_rtg": 6.460682442956383,
+              "pace": 101.25349333333332
+            },
+            "ranks": {
+              "off_rtg": 1,
+              "def_rtg": 16,
+              "net_rtg": 3,
+              "pace": 8
+            }
+          },
+          {
+            "rank": 4,
+            "team": {
+              "teamId": 1610612743,
+              "abbr": "DEN",
+              "name": "Denver Nuggets",
+              "city": "Denver",
+              "nickname": "Nuggets",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "wins": 16,
+            "losses": 8,
+            "values": {
+              "off_rtg": 116.63616809135965,
+              "def_rtg": 112.17954594813085,
+              "net_rtg": 4.456622143228799,
+              "pace": 98.16851999999999
+            },
+            "ranks": {
+              "off_rtg": 7,
+              "def_rtg": 6,
+              "net_rtg": 4,
+              "pace": 24
+            }
+          },
+          {
+            "rank": 5,
+            "team": {
+              "teamId": 1610612748,
+              "abbr": "MIA",
+              "name": "Miami Heat",
+              "city": "Miami",
+              "nickname": "Heat",
+              "conference": "East",
+              "division": "Southeast"
+            },
+            "wins": 17,
+            "losses": 8,
+            "values": {
+              "off_rtg": 113.64468142246608,
+              "def_rtg": 109.6981262206937,
+              "net_rtg": 3.9465552017723837,
+              "pace": 99.32712959999999
+            },
+            "ranks": {
+              "off_rtg": 18,
+              "def_rtg": 1,
+              "net_rtg": 5,
+              "pace": 18
+            }
+          },
+          {
+            "rank": 6,
+            "team": {
+              "teamId": 1610612764,
+              "abbr": "WAS",
+              "name": "Washington Wizards",
+              "city": "Washington",
+              "nickname": "Wizards",
+              "conference": "East",
+              "division": "Southeast"
+            },
+            "wins": 16,
+            "losses": 9,
+            "values": {
+              "off_rtg": 114.34276458260082,
+              "def_rtg": 110.43259750361032,
+              "net_rtg": 3.910167078990497,
+              "pace": 101.27444479999998
+            },
+            "ranks": {
+              "off_rtg": 14,
+              "def_rtg": 3,
+              "net_rtg": 6,
+              "pace": 7
+            }
+          },
+          {
+            "rank": 7,
+            "team": {
+              "teamId": 1610612760,
+              "abbr": "OKC",
+              "name": "Oklahoma City Thunder",
+              "city": "Oklahoma City",
+              "nickname": "Thunder",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "wins": 14,
+            "losses": 11,
+            "values": {
+              "off_rtg": 113.8506086684588,
+              "def_rtg": 110.17669157266774,
+              "net_rtg": 3.6739170957910687,
+              "pace": 97.98805759999999
+            },
+            "ranks": {
+              "off_rtg": 17,
+              "def_rtg": 2,
+              "net_rtg": 7,
+              "pace": 26
+            }
+          },
+          {
+            "rank": 8,
+            "team": {
+              "teamId": 1610612759,
+              "abbr": "SAS",
+              "name": "San Antonio Spurs",
+              "city": "San Antonio",
+              "nickname": "Spurs",
+              "conference": "West",
+              "division": "Southwest"
+            },
+            "wins": 15,
+            "losses": 10,
+            "values": {
+              "off_rtg": 117.18939298007146,
+              "def_rtg": 113.72322783559046,
+              "net_rtg": 3.466165144480996,
+              "pace": 96.93710080000001
+            },
+            "ranks": {
+              "off_rtg": 4,
+              "def_rtg": 13,
+              "net_rtg": 8,
+              "pace": 30
+            }
+          },
+          {
+            "rank": 9,
+            "team": {
+              "teamId": 1610612750,
+              "abbr": "MIN",
+              "name": "Minnesota Timberwolves",
+              "city": "Minnesota",
+              "nickname": "Timberwolves",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "wins": 15,
+            "losses": 10,
+            "values": {
+              "off_rtg": 116.07093528277,
+              "def_rtg": 113.04057077521571,
+              "net_rtg": 3.0303645075542818,
+              "pace": 100.31796480000001
+            },
+            "ranks": {
+              "off_rtg": 8,
+              "def_rtg": 10,
+              "net_rtg": 9,
+              "pace": 11
+            }
+          },
+          {
+            "rank": 10,
+            "team": {
+              "teamId": 1610612746,
+              "abbr": "LAC",
+              "name": "Los Angeles Clippers",
+              "city": "Los Angeles",
+              "nickname": "Clippers",
+              "conference": "West",
+              "division": "Pacific"
+            },
+            "wins": 13,
+            "losses": 11,
+            "values": {
+              "off_rtg": 115.23146236451674,
+              "def_rtg": 112.84792997609236,
+              "net_rtg": 2.383532388424385,
+              "pace": 101.39013333333332
+            },
+            "ranks": {
+              "off_rtg": 10,
+              "def_rtg": 9,
+              "net_rtg": 10,
+              "pace": 6
+            }
+          },
+          {
+            "rank": 11,
+            "team": {
+              "teamId": 1610612738,
+              "abbr": "BOS",
+              "name": "Boston Celtics",
+              "city": "Boston",
+              "nickname": "Celtics",
+              "conference": "East",
+              "division": "Atlantic"
+            },
+            "wins": 15,
+            "losses": 10,
+            "values": {
+              "off_rtg": 116.88528590515962,
+              "def_rtg": 114.69759338821812,
+              "net_rtg": 2.187692516941496,
+              "pace": 102.39098880000003
+            },
+            "ranks": {
+              "off_rtg": 6,
+              "def_rtg": 22,
+              "net_rtg": 11,
+              "pace": 2
+            }
+          },
+          {
+            "rank": 12,
+            "team": {
+              "teamId": 1610612745,
+              "abbr": "HOU",
+              "name": "Houston Rockets",
+              "city": "Houston",
+              "nickname": "Rockets",
+              "conference": "West",
+              "division": "Southwest"
+            },
+            "wins": 15,
+            "losses": 10,
+            "values": {
+              "off_rtg": 114.87743156846847,
+              "def_rtg": 113.61251490455139,
+              "net_rtg": 1.2649166639170772,
+              "pace": 104.35470079999999
+            },
+            "ranks": {
+              "off_rtg": 11,
+              "def_rtg": 12,
+              "net_rtg": 12,
+              "pace": 1
+            }
+          },
+          {
+            "rank": 13,
+            "team": {
+              "teamId": 1610612758,
+              "abbr": "SAC",
+              "name": "Sacramento Kings",
+              "city": "Sacramento",
+              "nickname": "Kings",
+              "conference": "West",
+              "division": "Pacific"
+            },
+            "wins": 13,
+            "losses": 11,
+            "values": {
+              "off_rtg": 116.97887749577951,
+              "def_rtg": 115.92653063093803,
+              "net_rtg": 1.052346864841482,
+              "pace": 98.98510666666665
+            },
+            "ranks": {
+              "off_rtg": 5,
+              "def_rtg": 23,
+              "net_rtg": 13,
+              "pace": 21
+            }
+          },
+          {
+            "rank": 14,
+            "team": {
+              "teamId": 1610612761,
+              "abbr": "TOR",
+              "name": "Toronto Raptors",
+              "city": "Toronto",
+              "nickname": "Raptors",
+              "conference": "East",
+              "division": "Atlantic"
+            },
+            "wins": 14,
+            "losses": 10,
+            "values": {
+              "off_rtg": 115.24432173355162,
+              "def_rtg": 114.25859492065771,
+              "net_rtg": 0.9857268128939012,
+              "pace": 97.22098666666669
+            },
+            "ranks": {
+              "off_rtg": 9,
+              "def_rtg": 17,
+              "net_rtg": 14,
+              "pace": 28
+            }
+          },
+          {
+            "rank": 15,
+            "team": {
+              "teamId": 1610612740,
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "city": "New Orleans",
+              "nickname": "Pelicans",
+              "conference": "West",
+              "division": "Southwest"
+            },
+            "wins": 12,
+            "losses": 13,
+            "values": {
+              "off_rtg": 111.32682924834681,
+              "def_rtg": 111.24696782133938,
+              "net_rtg": 0.0798614270074296,
+              "pace": 100.1735168
+            },
+            "ranks": {
+              "off_rtg": 24,
+              "def_rtg": 4,
+              "net_rtg": 15,
+              "pace": 14
+            }
+          },
+          {
+            "rank": 16,
+            "team": {
+              "teamId": 1610612747,
+              "abbr": "LAL",
+              "name": "Los Angeles Lakers",
+              "city": "Los Angeles",
+              "nickname": "Lakers",
+              "conference": "West",
+              "division": "Pacific"
+            },
+            "wins": 13,
+            "losses": 12,
+            "values": {
+              "off_rtg": 114.38683563287806,
+              "def_rtg": 114.46741811659265,
+              "net_rtg": -0.08058248371459342,
+              "pace": 99.2771584
+            },
+            "ranks": {
+              "off_rtg": 12,
+              "def_rtg": 19,
+              "net_rtg": 16,
+              "pace": 19
+            }
+          },
+          {
+            "rank": 17,
+            "team": {
+              "teamId": 1610612762,
+              "abbr": "UTA",
+              "name": "Utah Jazz",
+              "city": "Utah",
+              "nickname": "Jazz",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "wins": 10,
+            "losses": 14,
+            "values": {
+              "off_rtg": 114.34919190603324,
+              "def_rtg": 114.51384157040478,
+              "net_rtg": -0.16464966437153805,
+              "pace": 101.22502666666668
+            },
+            "ranks": {
+              "off_rtg": 13,
+              "def_rtg": 20,
+              "net_rtg": 17,
+              "pace": 9
+            }
+          },
+          {
+            "rank": 18,
+            "team": {
+              "teamId": 1610612755,
+              "abbr": "PHI",
+              "name": "Philadelphia 76ers",
+              "city": "Philadelphia",
+              "nickname": "76ers",
+              "conference": "East",
+              "division": "Atlantic"
+            },
+            "wins": 11,
+            "losses": 13,
+            "values": {
+              "off_rtg": 113.98076726638158,
+              "def_rtg": 114.52393074675656,
+              "net_rtg": -0.5431634803749859,
+              "pace": 99.72442666666664
+            },
+            "ranks": {
+              "off_rtg": 16,
+              "def_rtg": 21,
+              "net_rtg": 18,
+              "pace": 16
+            }
+          },
+          {
+            "rank": 19,
+            "team": {
+              "teamId": 1610612749,
+              "abbr": "MIL",
+              "name": "Milwaukee Bucks",
+              "city": "Milwaukee",
+              "nickname": "Bucks",
+              "conference": "East",
+              "division": "Central"
+            },
+            "wins": 12,
+            "losses": 12,
+            "values": {
+              "off_rtg": 113.50740865558852,
+              "def_rtg": 114.26750290997863,
+              "net_rtg": -0.7600942543901112,
+              "pace": 98.67197333333333
+            },
+            "ranks": {
+              "off_rtg": 19,
+              "def_rtg": 18,
+              "net_rtg": 19,
+              "pace": 22
+            }
+          },
+          {
+            "rank": 20,
+            "team": {
+              "teamId": 1610612756,
+              "abbr": "PHX",
+              "name": "Phoenix Suns",
+              "city": "Phoenix",
+              "nickname": "Suns",
+              "conference": "West",
+              "division": "Pacific"
+            },
+            "wins": 11,
+            "losses": 13,
+            "values": {
+              "off_rtg": 110.83207203001288,
+              "def_rtg": 112.41063977256928,
+              "net_rtg": -1.5785677425564018,
+              "pace": 100.30189333333333
+            },
+            "ranks": {
+              "off_rtg": 26,
+              "def_rtg": 8,
+              "net_rtg": 20,
+              "pace": 12
+            }
+          },
+          {
+            "rank": 21,
+            "team": {
+              "teamId": 1610612763,
+              "abbr": "MEM",
+              "name": "Memphis Grizzlies",
+              "city": "Memphis",
+              "nickname": "Grizzlies",
+              "conference": "West",
+              "division": "Southwest"
+            },
+            "wins": 12,
+            "losses": 13,
+            "values": {
+              "off_rtg": 111.95052738452746,
+              "def_rtg": 113.95037275158609,
+              "net_rtg": -1.9998453670586258,
+              "pace": 98.0075776
+            },
+            "ranks": {
+              "off_rtg": 23,
+              "def_rtg": 15,
+              "net_rtg": 21,
+              "pace": 25
+            }
+          },
+          {
+            "rank": 22,
+            "team": {
+              "teamId": 1610612757,
+              "abbr": "POR",
+              "name": "Portland Trail Blazers",
+              "city": "Portland",
+              "nickname": "Trail Blazers",
+              "conference": "West",
+              "division": "Northwest"
+            },
+            "wins": 8,
+            "losses": 17,
+            "values": {
+              "off_rtg": 114.01688121875124,
+              "def_rtg": 116.50151059155696,
+              "net_rtg": -2.4846293728057276,
+              "pace": 101.4235776
+            },
+            "ranks": {
+              "off_rtg": 15,
+              "def_rtg": 25,
+              "net_rtg": 22,
+              "pace": 5
+            }
+          },
+          {
+            "rank": 23,
+            "team": {
+              "teamId": 1610612766,
+              "abbr": "CHA",
+              "name": "Charlotte Hornets",
+              "city": "Charlotte",
+              "nickname": "Hornets",
+              "conference": "East",
+              "division": "Southeast"
+            },
+            "wins": 12,
+            "losses": 13,
+            "values": {
+              "off_rtg": 109.6679471406759,
+              "def_rtg": 112.23797592756836,
+              "net_rtg": -2.5700287868924505,
+              "pace": 99.6097792
+            },
+            "ranks": {
+              "off_rtg": 28,
+              "def_rtg": 7,
+              "net_rtg": 23,
+              "pace": 17
+            }
+          },
+          {
+            "rank": 24,
+            "team": {
+              "teamId": 1610612737,
+              "abbr": "ATL",
+              "name": "Atlanta Hawks",
+              "city": "Atlanta",
+              "nickname": "Hawks",
+              "conference": "East",
+              "division": "Southeast"
+            },
+            "wins": 11,
+            "losses": 13,
+            "values": {
+              "off_rtg": 113.33817778674705,
+              "def_rtg": 116.14922533070303,
+              "net_rtg": -2.8110475439559792,
+              "pace": 102.27504
+            },
+            "ranks": {
+              "off_rtg": 20,
+              "def_rtg": 24,
+              "net_rtg": 24,
+              "pace": 3
+            }
+          },
+          {
+            "rank": 25,
+            "team": {
+              "teamId": 1610612742,
+              "abbr": "DAL",
+              "name": "Dallas Mavericks",
+              "city": "Dallas",
+              "nickname": "Mavericks",
+              "conference": "West",
+              "division": "Southwest"
+            },
+            "wins": 9,
+            "losses": 15,
+            "values": {
+              "off_rtg": 109.92428737798907,
+              "def_rtg": 113.748106243202,
+              "net_rtg": -3.823818865212928,
+              "pace": 99.15916
+            },
+            "ranks": {
+              "off_rtg": 27,
+              "def_rtg": 14,
+              "net_rtg": 25,
+              "pace": 20
+            }
+          },
+          {
+            "rank": 26,
+            "team": {
+              "teamId": 1610612754,
+              "abbr": "IND",
+              "name": "Indiana Pacers",
+              "city": "Indiana",
+              "nickname": "Pacers",
+              "conference": "East",
+              "division": "Central"
+            },
+            "wins": 6,
+            "losses": 18,
+            "values": {
+              "off_rtg": 112.05934969305552,
+              "def_rtg": 116.59330259451917,
+              "net_rtg": -4.53395290146365,
+              "pace": 100.17013333333335
+            },
+            "ranks": {
+              "off_rtg": 22,
+              "def_rtg": 27,
+              "net_rtg": 26,
+              "pace": 15
+            }
+          },
+          {
+            "rank": 27,
+            "team": {
+              "teamId": 1610612739,
+              "abbr": "CLE",
+              "name": "Cleveland Cavaliers",
+              "city": "Cleveland",
+              "nickname": "Cavaliers",
+              "conference": "East",
+              "division": "Central"
+            },
+            "wins": 8,
+            "losses": 16,
+            "values": {
+              "off_rtg": 111.21417483814788,
+              "def_rtg": 116.79178543033463,
+              "net_rtg": -5.577610592186744,
+              "pace": 98.60853333333334
+            },
+            "ranks": {
+              "off_rtg": 25,
+              "def_rtg": 28,
+              "net_rtg": 27,
+              "pace": 23
+            }
+          },
+          {
+            "rank": 28,
+            "team": {
+              "teamId": 1610612751,
+              "abbr": "BKN",
+              "name": "Brooklyn Nets",
+              "city": "Brooklyn",
+              "nickname": "Nets",
+              "conference": "East",
+              "division": "Atlantic"
+            },
+            "wins": 8,
+            "losses": 17,
+            "values": {
+              "off_rtg": 112.24095578530432,
+              "def_rtg": 118.71005639407554,
+              "net_rtg": -6.469100608771214,
+              "pace": 97.07686399999999
+            },
+            "ranks": {
+              "off_rtg": 21,
+              "def_rtg": 30,
+              "net_rtg": 28,
+              "pace": 29
+            }
+          },
+          {
+            "rank": 29,
+            "team": {
+              "teamId": 1610612741,
+              "abbr": "CHI",
+              "name": "Chicago Bulls",
+              "city": "Chicago",
+              "nickname": "Bulls",
+              "conference": "East",
+              "division": "Central"
+            },
+            "wins": 5,
+            "losses": 20,
+            "values": {
+              "off_rtg": 109.57804433488288,
+              "def_rtg": 116.54976031161698,
+              "net_rtg": -6.971715976734103,
+              "pace": 101.55319039999999
+            },
+            "ranks": {
+              "off_rtg": 29,
+              "def_rtg": 26,
+              "net_rtg": 29,
+              "pace": 4
+            }
+          },
+          {
+            "rank": 30,
+            "team": {
+              "teamId": 1610612765,
+              "abbr": "DET",
+              "name": "Detroit Pistons",
+              "city": "Detroit",
+              "nickname": "Pistons",
+              "conference": "East",
+              "division": "Central"
+            },
+            "wins": 5,
+            "losses": 19,
+            "values": {
+              "off_rtg": 107.05197429875649,
+              "def_rtg": 117.97127567722964,
+              "net_rtg": -10.91930137847315,
+              "pace": 97.30475999999999
+            },
+            "ranks": {
+              "off_rtg": 30,
+              "def_rtg": 29,
+              "net_rtg": 30,
+              "pace": 27
+            }
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w12.career_arc",
+      "kind": "career_arc",
+      "status": "ok",
+      "payload": {
+        "player": {
+          "playerId": 1500819,
+          "name": "Desmond Quintero",
+          "firstName": "Desmond",
+          "lastName": "Quintero",
+          "teamId": 1610612741,
+          "teamAbbr": "CHI",
+          "position": "G",
+          "jersey": "25",
+          "headshotUrl": null,
+          "isActive": true
+        },
+        "metric": {
+          "key": "per",
+          "name": "Player Efficiency Rating",
+          "shortName": "PER",
+          "category": "impact",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player"
+          ],
+          "availability": {
+            "seasonFrom": "1951-52",
+            "perGameFrom": "1951-52",
+            "seasonLevelOnly": true,
+            "estimatedBefore": "1996-97"
+          },
+          "domain": {
+            "min": 0.0,
+            "max": 35.0
+          },
+          "glossary": "Hollinger's per-minute rating, pace and league adjusted so that the league average is 15.00 every season."
+        },
+        "xAxis": "season",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "seasonType": "Regular Season",
+            "age": 23,
+            "teamAbbr": "CHI",
+            "gp": 56,
+            "value": 15.96,
+            "displayValue": "16.0",
+            "availability": "full"
+          },
+          {
+            "season": "2024-25",
+            "seasonType": "Regular Season",
+            "age": 24,
+            "teamAbbr": "CHI",
+            "gp": 57,
+            "value": 18.96,
+            "displayValue": "19.0",
+            "availability": "full"
+          },
+          {
+            "season": "2025-26",
+            "seasonType": "Regular Season",
+            "age": 25,
+            "teamAbbr": "CHI",
+            "gp": 25,
+            "value": 18.79,
+            "displayValue": "18.8",
+            "availability": "full"
+          }
+        ],
+        "playoffSeasons": [
+          {
+            "season": "2023-24",
+            "seasonType": "Playoffs",
+            "age": 23,
+            "teamAbbr": "CHI",
+            "gp": 4,
+            "value": 13.65,
+            "displayValue": "13.7",
+            "availability": "full"
+          },
+          {
+            "season": "2024-25",
+            "seasonType": "Playoffs",
+            "age": 24,
+            "teamAbbr": "CHI",
+            "gp": 7,
+            "value": 17.4,
+            "displayValue": "17.4",
+            "availability": "full"
+          }
+        ],
+        "eraBoundaries": [
+          {
+            "season": "1951-52",
+            "label": "Minutes played tracked",
+            "detail": "Enables per-minute metrics such as PER and WS/48."
+          },
+          {
+            "season": "1996-97",
+            "label": "Advanced box scores and play-by-play",
+            "detail": "First season with true per-game ratings, plus/minus and shot charts."
+          }
+        ],
+        "peak": {
+          "season": "2024-25",
+          "value": 18.96,
+          "displayValue": "19.0"
+        }
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 3600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "e01.player_snapshot",
+      "kind": "player_snapshot",
+      "status": "partial",
+      "payload": {
+        "player": {
+          "playerId": 1500182,
+          "name": "Damon Grier",
+          "firstName": "Damon",
+          "lastName": "Grier",
+          "teamId": 1610612759,
+          "teamAbbr": "SAS",
+          "position": "G",
+          "jersey": "15",
+          "headshotUrl": null,
+          "isActive": false
+        },
+        "season": "1985-86",
+        "seasonType": "Regular Season",
+        "teamAbbr": "SAS",
+        "gp": 53,
+        "gs": 53,
+        "minutesPerGame": 38.0188679245283,
+        "metrics": [
+          {
+            "metric": "ts_pct",
+            "value": 0.5481989270203526,
+            "displayValue": "54.8%",
+            "rank": 88,
+            "percentile": 0.6195652173913043,
+            "leagueAverage": 0.5311856028867766,
+            "delta": 0.017013324133575924,
+            "isEstimated": false,
+            "availability": "full"
+          },
+          {
+            "metric": "usg_pct",
+            "value": 0.32302680823501995,
+            "displayValue": "32.3%",
+            "rank": 1,
+            "percentile": 0.9978260869565218,
+            "leagueAverage": 0.19904800145184504,
+            "delta": 0.12397880678317491,
+            "isEstimated": true,
+            "availability": "estimated"
+          },
+          {
+            "metric": "ast_pct",
+            "value": 0.3345123811463732,
+            "displayValue": "33.5%",
+            "rank": 11,
+            "percentile": 0.9543478260869566,
+            "leagueAverage": 0.15651812511105617,
+            "delta": 0.17799425603531704,
+            "isEstimated": true,
+            "availability": "estimated"
+          },
+          {
+            "metric": "reb_pct",
+            "value": 0.06397510144267304,
+            "displayValue": "6.4%",
+            "rank": 169,
+            "percentile": 0.2673913043478261,
+            "leagueAverage": 0.09806265228708998,
+            "delta": -0.03408755084441693,
+            "isEstimated": true,
+            "availability": "estimated"
+          },
+          {
+            "metric": "off_rtg",
+            "value": null,
+            "displayValue": "—",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "unavailable"
+          },
+          {
+            "metric": "def_rtg",
+            "value": null,
+            "displayValue": "—",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "unavailable"
+          },
+          {
+            "metric": "net_rtg",
+            "value": null,
+            "displayValue": "—",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "unavailable"
+          },
+          {
+            "metric": "pie",
+            "value": null,
+            "displayValue": "—",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "unavailable"
+          }
+        ],
+        "eraNote": "Usage % for 1985-86 is derived from box-score formulas rather than possession data, which the league only recorded from 1996-97."
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 300,
+      "availability": "partial",
+      "notes": [
+        "Usage % for 1985-86 is derived from box-score formulas rather than possession data, which the league only recorded from 1996-97.",
+        "Assist % for 1985-86 is derived from box-score formulas rather than possession data, which the league only recorded from 1996-97.",
+        "Rebound % for 1985-86 is derived from box-score formulas rather than possession data, which the league only recorded from 1996-97.",
+        "Offensive Rating at season level begins in 1996-97; the 1985-86 season predates it.",
+        "Defensive Rating at season level begins in 1996-97; the 1985-86 season predates it.",
+        "Net Rating at season level begins in 1996-97; the 1985-86 season predates it.",
+        "Player Impact Estimate at season level begins in 1996-97; the 1985-86 season predates it."
+      ]
+    },
+    {
+      "widgetId": "e02.career_arc",
+      "kind": "career_arc",
+      "status": "partial",
+      "payload": {
+        "player": {
+          "playerId": 1500182,
+          "name": "Damon Grier",
+          "firstName": "Damon",
+          "lastName": "Grier",
+          "teamId": 1610612759,
+          "teamAbbr": "SAS",
+          "position": "G",
+          "jersey": "15",
+          "headshotUrl": null,
+          "isActive": false
+        },
+        "metric": {
+          "key": "per",
+          "name": "Player Efficiency Rating",
+          "shortName": "PER",
+          "category": "impact",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player"
+          ],
+          "availability": {
+            "seasonFrom": "1951-52",
+            "perGameFrom": "1951-52",
+            "seasonLevelOnly": true,
+            "estimatedBefore": "1996-97"
+          },
+          "domain": {
+            "min": 0.0,
+            "max": 35.0
+          },
+          "glossary": "Hollinger's per-minute rating, pace and league adjusted so that the league average is 15.00 every season."
+        },
+        "xAxis": "season",
+        "seasons": [
+          {
+            "season": "1985-86",
+            "seasonType": "Regular Season",
+            "age": 29,
+            "teamAbbr": "SAS",
+            "gp": 53,
+            "value": 22.54,
+            "displayValue": "22.5",
+            "availability": "estimated"
+          }
+        ],
+        "playoffSeasons": [
+          {
+            "season": "1985-86",
+            "seasonType": "Playoffs",
+            "age": 29,
+            "teamAbbr": "SAS",
+            "gp": 5,
+            "value": 21.87,
+            "displayValue": "21.9",
+            "availability": "estimated"
+          }
+        ],
+        "eraBoundaries": [
+          {
+            "season": "1951-52",
+            "label": "Minutes played tracked",
+            "detail": "Enables per-minute metrics such as PER and WS/48."
+          },
+          {
+            "season": "1996-97",
+            "label": "Advanced box scores and play-by-play",
+            "detail": "First season with true per-game ratings, plus/minus and shot charts."
+          }
+        ],
+        "peak": {
+          "season": "1985-86",
+          "value": 22.54,
+          "displayValue": "22.5"
+        }
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 3600,
+      "availability": "estimated",
+      "notes": [
+        "Player Efficiency Rating for 1985-86 is derived from box-score formulas rather than possession data, which the league only recorded from 1996-97."
+      ]
+    },
+    {
+      "widgetId": "e03.game_log",
+      "kind": "game_log",
+      "status": "partial",
+      "payload": {
+        "player": {
+          "playerId": 1500182,
+          "name": "Damon Grier",
+          "firstName": "Damon",
+          "lastName": "Grier",
+          "teamId": 1610612759,
+          "teamAbbr": "SAS",
+          "position": "G",
+          "jersey": "15",
+          "headshotUrl": null,
+          "isActive": false
+        },
+        "season": "1985-86",
+        "seasonType": "Regular Season",
+        "columns": [
+          {
+            "key": "min",
+            "name": "Minutes",
+            "shortName": "MIN",
+            "category": "volume",
+            "format": "minutes",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1951-52",
+              "perGameFrom": "1951-52",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Minutes played."
+          },
+          {
+            "key": "pts",
+            "name": "Points",
+            "shortName": "PTS",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1946-47",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Points scored."
+          },
+          {
+            "key": "reb",
+            "name": "Rebounds",
+            "shortName": "REB",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1950-51",
+              "perGameFrom": "1950-51",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+          },
+          {
+            "key": "ast",
+            "name": "Assists",
+            "shortName": "AST",
+            "category": "volume",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1946-47",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Assists."
+          },
+          {
+            "key": "ts_pct",
+            "name": "True Shooting %",
+            "shortName": "TS%",
+            "category": "shooting",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1946-47",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": {
+              "min": 0.35,
+              "max": 0.75
+            },
+            "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+          },
+          {
+            "key": "usg_pct",
+            "name": "Usage %",
+            "shortName": "USG%",
+            "category": "usage",
+            "format": "percent1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1977-78",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": "1996-97"
+            },
+            "domain": {
+              "min": 0.05,
+              "max": 0.42
+            },
+            "glossary": "Share of team possessions a player ends while on the floor."
+          },
+          {
+            "key": "plus_minus",
+            "name": "Plus/Minus",
+            "shortName": "+/-",
+            "category": "impact",
+            "format": "plusMinus1",
+            "higherIsBetter": true,
+            "scope": [
+              "player",
+              "team"
+            ],
+            "availability": {
+              "seasonFrom": "1996-97",
+              "perGameFrom": "1996-97",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Team point differential while the player is on the floor."
+          },
+          {
+            "key": "game_score",
+            "name": "Game Score",
+            "shortName": "GmSc",
+            "category": "impact",
+            "format": "decimal1",
+            "higherIsBetter": true,
+            "scope": [
+              "player"
+            ],
+            "availability": {
+              "seasonFrom": "1973-74",
+              "perGameFrom": "1973-74",
+              "seasonLevelOnly": false,
+              "estimatedBefore": null
+            },
+            "domain": null,
+            "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
+          }
+        ],
+        "seasonBests": {
+          "min": 44.5,
+          "pts": 38,
+          "reb": 6,
+          "ast": 12,
+          "game_score": 29.4
+        },
+        "rows": [
+          {
+            "gameId": "0028500667",
+            "date": "1986-04-19",
+            "opponentAbbr": "UTA",
+            "isHome": true,
+            "result": "W",
+            "score": "126-108",
+            "started": true,
+            "minutes": 39.0,
+            "values": {
+              "min": 39.0,
+              "pts": 32,
+              "reb": 4,
+              "ast": 11,
+              "ts_pct": null,
+              "usg_pct": null,
+              "plus_minus": null,
+              "game_score": 24.900000000000002
+            },
+            "availability": "partial"
+          },
+          {
+            "gameId": "0028500660",
+            "date": "1986-04-17",
+            "opponentAbbr": "PHI",
+            "isHome": true,
+            "result": "L",
+            "score": "111-136",
+            "started": true,
+            "minutes": 37.5,
+            "values": {
+              "min": 37.5,
+              "pts": 23,
+              "reb": 4,
+              "ast": 5,
+              "ts_pct": null,
+              "usg_pct": null,
+              "plus_minus": null,
+              "game_score": 12.100000000000001
+            },
+            "availability": "partial"
+          },
+          {
+            "gameId": "0028500649",
+            "date": "1986-04-14",
+            "opponentAbbr": "DET",
+            "isHome": true,
+            "result": "L",
+            "score": "112-113",
+            "started": true,
+            "minutes": 36.0,
+            "values": {
+              "min": 36.0,
+              "pts": 32,
+              "reb": 3,
+              "ast": 6,
+              "ts_pct": null,
+              "usg_pct": null,
+              "plus_minus": null,
+              "game_score": 20.599999999999998
+            },
+            "availability": "partial"
+          },
+          {
+            "gameId": "0028500637",
+            "date": "1986-04-11",
+            "opponentAbbr": "SAC",
+            "isHome": true,
+            "result": "W",
+            "score": "119-110",
+            "started": true,
+            "minutes": 38.5,
+            "values": {
+              "min": 38.5,
+              "pts": 28,
+              "reb": 6,
+              "ast": 9,
+              "ts_pct": null,
+              "usg_pct": null,
+              "plus_minus": null,
+              "game_score": 20.900000000000002
+            },
+            "availability": "partial"
+          },
+          {
+            "gameId": "0028500625",
+            "date": "1986-04-08",
+            "opponentAbbr": "GSW",
+            "isHome": true,
+            "result": "W",
+            "score": "107-105",
+            "started": true,
+            "minutes": 44.5,
+            "values": {
+              "min": 44.5,
+              "pts": 34,
+              "reb": 5,
+              "ast": 8,
+              "ts_pct": null,
+              "usg_pct": null,
+              "plus_minus": null,
+              "game_score": 20.600000000000005
+            },
+            "availability": "partial"
+          }
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 300,
+      "availability": "partial",
+      "notes": [
+        "True Shooting % per game begins in 1996-97; the 1985-86 season predates it.",
+        "Usage % per game begins in 1996-97; the 1985-86 season predates it.",
+        "Plus/Minus per game begins in 1996-97; the 1985-86 season predates it."
+      ]
+    },
+    {
+      "widgetId": "e04.shot_profile",
+      "kind": "shot_profile",
+      "status": "partial",
+      "payload": {
+        "subject": {
+          "type": "player",
+          "player": {
+            "playerId": 1500182,
+            "name": "Damon Grier",
+            "firstName": "Damon",
+            "lastName": "Grier",
+            "teamId": 1610612759,
+            "teamAbbr": "SAS",
+            "position": "G",
+            "jersey": "15",
+            "headshotUrl": null,
+            "isActive": false
+          },
+          "team": null
+        },
+        "season": "1985-86",
+        "seasonType": "Regular Season",
+        "zones": [
+          {
+            "zone": "rim",
+            "label": "At Rim",
+            "fga": null,
+            "fgPct": null,
+            "shareOfFga": null,
+            "pointsPerShot": null,
+            "leagueFgPct": null,
+            "leagueShareOfFga": null
+          },
+          {
+            "zone": "paint_non_rim",
+            "label": "Paint (non-rim)",
+            "fga": null,
+            "fgPct": null,
+            "shareOfFga": null,
+            "pointsPerShot": null,
+            "leagueFgPct": null,
+            "leagueShareOfFga": null
+          },
+          {
+            "zone": "mid_range",
+            "label": "Mid Range",
+            "fga": null,
+            "fgPct": null,
+            "shareOfFga": null,
+            "pointsPerShot": null,
+            "leagueFgPct": null,
+            "leagueShareOfFga": null
+          },
+          {
+            "zone": "corner_three",
+            "label": "Corner 3",
+            "fga": null,
+            "fgPct": null,
+            "shareOfFga": null,
+            "pointsPerShot": null,
+            "leagueFgPct": null,
+            "leagueShareOfFga": null
+          },
+          {
+            "zone": "above_break_three",
+            "label": "Above the Break 3",
+            "fga": null,
+            "fgPct": null,
+            "shareOfFga": null,
+            "pointsPerShot": null,
+            "leagueFgPct": null,
+            "leagueShareOfFga": null
+          }
+        ],
+        "threePointRate": null,
+        "freeThrowRate": null,
+        "note": "Shot locations begin in 1996-97, with league-wide play-by-play; the 1985-86 season has box scores but no shot chart."
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "unavailable",
+      "notes": [
+        "Shot locations begin in 1996-97, with league-wide play-by-play; the 1985-86 season has box scores but no shot chart."
+      ]
+    }
+  ]
+}

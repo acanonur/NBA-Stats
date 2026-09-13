@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "player_not_found",
+    "message": "No player with id 99999999.",
+    "recoverable": false,
+    "field": null,
+    "requestId": "0f1c4d2ba7e65930"
+  }
+}

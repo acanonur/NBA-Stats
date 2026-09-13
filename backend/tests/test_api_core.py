@@ -657,6 +657,25 @@ def test_rate_limiter_returns_429_with_retry_after(seeded_engine: Engine) -> Non
         assert client.get("/v1/health").status_code == 200, "health is never limited"
 
 
+def test_the_package_resolves_its_lazy_entry_points() -> None:
+    """``from nbastats.api import create_app`` is documented, so it has to work.
+
+    ``nbastats/api/__init__.py`` keeps FastAPI out of the import path of the pure-Python
+    modules by resolving its two public names in ``__getattr__``. Doing that with
+    ``from . import app`` made the package probe itself with ``hasattr`` and recurse, which no
+    other test caught because every one of them imports ``nbastats.api.app`` directly.
+    """
+    import importlib
+
+    package = importlib.import_module("nbastats.api")
+    assert package.create_app.__name__ == "create_app"
+    # The ASGI callable is `nbastats.api.app:app`; the package attribute is the module.
+    assert package.app.__name__ == "nbastats.api.app"
+    assert package.app.app is package.app.create_app.__globals__["app"]
+    with pytest.raises(AttributeError):
+        package.not_a_public_name
+
+
 def test_optional_widget_routers_are_optional(seeded_engine: Engine, monkeypatch) -> None:
     """The service starts whether or not the widget layer's modules exist yet."""
     from nbastats.api import app as app_module

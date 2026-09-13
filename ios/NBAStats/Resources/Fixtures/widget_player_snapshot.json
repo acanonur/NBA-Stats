@@ -1,0 +1,111 @@
+{
+  "player": {
+    "playerId": 1500819,
+    "name": "Desmond Quintero",
+    "firstName": "Desmond",
+    "lastName": "Quintero",
+    "teamId": 1610612741,
+    "teamAbbr": "CHI",
+    "position": "G",
+    "jersey": "25",
+    "headshotUrl": null,
+    "isActive": true
+  },
+  "season": "2025-26",
+  "seasonType": "Regular Season",
+  "teamAbbr": "CHI",
+  "gp": 25,
+  "gs": 25,
+  "minutesPerGame": 37.96,
+  "metrics": [
+    {
+      "metric": "ts_pct",
+      "value": 0.547408258430763,
+      "displayValue": "54.7%",
+      "rank": 242,
+      "percentile": 0.195,
+      "leagueAverage": 0.576464387931087,
+      "delta": -0.02905612950032399,
+      "isEstimated": false,
+      "availability": "full"
+    },
+    {
+      "metric": "usg_pct",
+      "value": 0.29952189522227346,
+      "displayValue": "30.0%",
+      "rank": 20,
+      "percentile": 0.935,
+      "leagueAverage": 0.19782083378438103,
+      "delta": 0.10170106143789243,
+      "isEstimated": false,
+      "availability": "full"
+    },
+    {
+      "metric": "ast_pct",
+      "value": 0.30749542051463014,
+      "displayValue": "30.7%",
+      "rank": 33,
+      "percentile": 0.8916666666666667,
+      "leagueAverage": 0.1574655559764613,
+      "delta": 0.15002986453816883,
+      "isEstimated": false,
+      "availability": "full"
+    },
+    {
+      "metric": "reb_pct",
+      "value": 0.05666866056398281,
+      "displayValue": "5.7%",
+      "rank": 263,
+      "percentile": 0.125,
+      "leagueAverage": 0.0991886860228011,
+      "delta": -0.0425200254588183,
+      "isEstimated": false,
+      "availability": "full"
+    },
+    {
+      "metric": "off_rtg",
+      "value": 109.48015568427377,
+      "displayValue": "109.5",
+      "rank": 208,
+      "percentile": 0.30833333333333335,
+      "leagueAverage": 112.12754481658327,
+      "delta": -2.647389132309499,
+      "isEstimated": false,
+      "availability": "full"
+    },
+    {
+      "metric": "def_rtg",
+      "value": 115.28994726354796,
+      "displayValue": "115.3",
+      "rank": 265,
+      "percentile": 0.11833333333333333,
+      "leagueAverage": 112.26884421305905,
+      "delta": 3.021103050488904,
+      "isEstimated": false,
+      "availability": "full"
+    },
+    {
+      "metric": "net_rtg",
+      "value": -5.80979157927419,
+      "displayValue": "-5.8",
+      "rank": 252,
+      "percentile": 0.16166666666666665,
+      "leagueAverage": -0.14129939647576534,
+      "delta": -5.668492182798425,
+      "isEstimated": false,
+      "availability": "full"
+    },
+    {
+      "metric": "pie",
+      "value": 0.09497752589407857,
+      "displayValue": "9.5%",
+      "rank": 21,
+      "percentile": 0.9316666666666666,
+      "leagueAverage": 0.05447185737798859,
+      "delta": 0.04050566851608998,
+      "isEstimated": false,
+      "availability": "full"
+    }
+  ],
+  "eraNote": null
+}

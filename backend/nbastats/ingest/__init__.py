@@ -32,4 +32,11 @@ Invariants every module here upholds
 """
 from __future__ import annotations
 
-__all__ = ["client", "normalize", "aggregate", "daily", "backfill", "runner"]
+import pkgutil
+
+#: The submodules this package actually ships, discovered rather than hard-coded.
+#: ``runner`` is the scheduler entry point and is built separately from the library,
+#: and a name listed here with no module behind it makes ``from nbastats.ingest
+#: import *`` fail with an ``AttributeError`` instead of simply offering one name
+#: fewer — the same tolerance ``nbastats.api.app`` gives its optional routers.
+__all__ = sorted(module.name for module in pkgutil.iter_modules(__path__))
