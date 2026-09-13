@@ -269,6 +269,47 @@ def check_fixtures_parse() -> str:
     return f"{len(paths)} golden fixtures parse as JSON"
 
 
+def check_app_bundle_has_no_name_collision() -> str:
+    """(g) No two app resources share a basename.
+
+    Xcode 16 file-system synchronized groups flatten resource subdirectories into the bundle
+    root, so ``Resources/Contracts/presets.json`` and ``Resources/Fixtures/presets.json`` both
+    resolve to ``Hardwood.app/presets.json`` and the build fails with "Multiple commands
+    produce ...". That is a linker-stage failure with a DerivedData path in the message and no
+    hint about which two files are at fault, which makes it a miserable thing to debug on the
+    machine that happens to own the only Swift compiler.
+
+    Checking it here costs nothing and names both paths. ``scripts/sync_contracts.sh`` keeps
+    the excluded set; this check is what proves the exclusion is still doing its job.
+
+    Asset catalogs are skipped: ``actool`` compiles them into a single ``Assets.car``, so the
+    many ``Contents.json`` files inside them never reach the bundle root.
+    """
+    app = ROOT / "ios" / "NBAStats"
+    if not app.is_dir():
+        return "the iOS app is not in this checkout; skipped"
+
+    seen: dict[str, list[Path]] = {}
+    for path in sorted(app.rglob("*")):
+        if not path.is_file():
+            continue
+        if any(part.endswith(".xcassets") for part in path.parts) or path.name == "Info.plist":
+            continue
+        if path.suffix.lower() not in {".json", ".plist", ".strings", ".txt", ".md"}:
+            continue
+        seen.setdefault(path.name, []).append(path.relative_to(ROOT))
+
+    problems = [
+        f"{name} is bundled from {len(paths)} places and would collide at the bundle root: "
+        + ", ".join(str(p) for p in paths)
+        for name, paths in sorted(seen.items())
+        if len(paths) > 1
+    ]
+    if problems:
+        raise CheckFailure(*problems)
+    return f"{len(seen)} bundled resources, no basename collision"
+
+
 # --------------------------------------------------------------------------- runner
 
 CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
@@ -278,6 +319,7 @@ CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
     ("d", "widget kinds match the service", check_widget_kinds_match),
     ("e", "iOS bundle matches contracts/", check_ios_bundle_matches),
     ("f", "golden fixtures parse", check_fixtures_parse),
+    ("g", "app bundle has no resource name collision", check_app_bundle_has_no_name_collision),
 )
 
 
