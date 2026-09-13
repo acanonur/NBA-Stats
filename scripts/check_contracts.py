@@ -7,7 +7,7 @@ iOS app — three copies of the same truth, each of which can be edited independ
 of which fails loudly when it stops agreeing with the others. This script is what makes that
 failure loud, and it is the first job in ``.github/workflows/backend.yml``.
 
-Six checks, one summary line each, exit 1 if any of them fails:
+Eight checks, one summary line each, exit 1 if any of them fails:
 
 a. the three catalogs regenerate **byte-identically** from their generators, so nobody has
    hand-edited a generated file;
@@ -16,7 +16,13 @@ b. every preset widget validates against the widget catalog — using ``gen_pres
 c. every metric key a preset references exists in ``metrics.json``;
 d. the widget kinds the service implements are exactly the kinds the catalog declares;
 e. the copies bundled in the iOS app are byte-identical to ``contracts/``;
-f. every golden fixture parses as JSON.
+f. every golden fixture parses as JSON;
+g. no two files bound for the app bundle share a basename;
+h. the hand-written Xcode project still resolves, and nothing is produced twice.
+
+Checks (g) and (h) are here because the iOS half of this repository is written on a machine
+with no Xcode. Both encode a build failure that otherwise only appears on someone's Mac, as a
+DerivedData path with no indication of which two files are at fault.
 
 Nothing here needs the network, and nothing writes to the repository.
 """
@@ -24,6 +30,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -310,6 +317,76 @@ def check_app_bundle_has_no_name_collision() -> str:
     return f"{len(seen)} bundled resources, no basename collision"
 
 
+def check_xcode_project_is_sound() -> str:
+    """(h) The hand-maintained ``project.pbxproj`` is structurally intact and has no file that
+    two build commands would both produce.
+
+    This project file is written by hand, on a machine with no Xcode, so nothing here can open
+    it to find out whether it still makes sense. Two failure modes are worth catching cheaply:
+
+    *Reference rot.* Every object is addressed by an opaque id. A hand edit that drops an
+    object, or references one that was never defined, produces a project Xcode may refuse to
+    open — a worse outcome than a build error, and one with no useful diagnostic.
+
+    *The Info.plist trap.* A file-system synchronized group makes every file in its folder a
+    target member automatically. A plist that lives in that folder is therefore copied into
+    ``Hardwood.app/Info.plist`` as a resource, while ``INFOPLIST_FILE`` is separately producing
+    that same path — "Multiple commands produce ..." and the build stops. A
+    ``membershipExceptions`` entry is supposed to prevent this and, in practice, did not: the
+    plist now lives at ``ios/Info.plist``, outside every synchronized folder, which removes the
+    mechanism rather than trying to opt one file out of it. This check keeps it there.
+    """
+    project = ROOT / "ios" / "NBAStats.xcodeproj" / "project.pbxproj"
+    if not project.is_file():
+        return "no Xcode project in this checkout; skipped"
+
+    text = project.read_text(encoding="utf-8")
+    problems: list[str] = []
+
+    defined = re.findall(r"^\t\t([A-Fa-f0-9]{8,32})\s*(?:/\*.*?\*/)?\s*=\s*\{", text, re.M)
+    if not defined:
+        raise CheckFailure("no objects found; the project file is not in the expected format")
+    width = len(defined[0])
+    known = set(defined)
+    referenced = set(re.findall(r"\b([A-Fa-f0-9]{%d})\b" % width, text))
+    for missing in sorted(referenced - known):
+        problems.append(f"object id {missing} is referenced but never defined")
+
+    root_object = re.search(r"rootObject\s*=\s*([A-Fa-f0-9]+)", text)
+    if not root_object or root_object.group(1) not in known:
+        problems.append("rootObject does not resolve to a defined object")
+
+    # Every folder mirrored into a target. Paths in build settings are relative to the folder
+    # holding the .xcodeproj, which is ios/.
+    synchronized = {
+        name.strip().strip('"')
+        for name in re.findall(
+            r"isa = PBXFileSystemSynchronizedRootGroup;.*?path = ([^;]+);", text, re.S
+        )
+    }
+    source_root = project.parent.parent
+    # The lookbehind matters: GENERATE_INFOPLIST_FILE ends in the same 14 characters, and
+    # matching it too made this check complain that "NO" was not a file.
+    for setting in sorted(set(re.findall(r"(?<![A-Z_])INFOPLIST_FILE\s*=\s*([^;]+);", text))):
+        plist = Path(setting.strip().strip('"'))
+        if plist.parts and plist.parts[0] in synchronized:
+            problems.append(
+                f"INFOPLIST_FILE is {plist}, inside synchronized folder {plist.parts[0]}/. "
+                "Everything in that folder is mirrored into the target, so the copy step and "
+                "the plist step both produce Hardwood.app/Info.plist. Move it to "
+                f"ios/{plist.name} and set INFOPLIST_FILE = {plist.name}"
+            )
+        if not (source_root / plist).is_file():
+            problems.append(f"INFOPLIST_FILE points at {plist}, which does not exist")
+
+    if problems:
+        raise CheckFailure(*problems)
+    return (
+        f"{len(known)} objects, all references resolve, "
+        f"{len(synchronized)} synchronized folder(s), Info.plist outside them"
+    )
+
+
 # --------------------------------------------------------------------------- runner
 
 CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
@@ -320,6 +397,7 @@ CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
     ("e", "iOS bundle matches contracts/", check_ios_bundle_matches),
     ("f", "golden fixtures parse", check_fixtures_parse),
     ("g", "app bundle has no resource name collision", check_app_bundle_has_no_name_collision),
+    ("h", "Xcode project is structurally sound", check_xcode_project_is_sound),
 )
 
 
