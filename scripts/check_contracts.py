@@ -317,6 +317,59 @@ def check_app_bundle_has_no_name_collision() -> str:
     return f"{len(seen)} bundled resources, no basename collision"
 
 
+#: Keys Xcode injects for you when GENERATE_INFOPLIST_FILE is YES, and that a hand-written
+#: plist must therefore carry itself. Each one is here because of the failure it causes:
+#: without CFBundleIdentifier the simulator refuses to install ("Missing bundle ID"), and
+#: without CFBundleExecutable the app installs and then fails to launch.
+REQUIRED_INFO_PLIST_KEYS = (
+    "CFBundleIdentifier",
+    "CFBundleExecutable",
+    "CFBundleName",
+    "CFBundlePackageType",
+    "CFBundleInfoDictionaryVersion",
+    "CFBundleDevelopmentRegion",
+    "CFBundleShortVersionString",
+    "CFBundleVersion",
+)
+
+
+def _info_plist_problems(plist_path: Path, project_text: str) -> list[str]:
+    """Check a hand-written Info.plist parses and carries the keys Xcode is not filling in."""
+    import plistlib
+
+    if "GENERATE_INFOPLIST_FILE = YES" in project_text and "GENERATE_INFOPLIST_FILE = NO" not in project_text:
+        return []  # Xcode generates the file; nothing to police.
+    try:
+        with plist_path.open("rb") as handle:
+            contents = plistlib.load(handle)
+    except Exception as exc:  # noqa: BLE001 - an unparseable plist is the finding
+        return [f"{plist_path.name} does not parse: {type(exc).__name__}: {exc}"]
+
+    missing = [key for key in REQUIRED_INFO_PLIST_KEYS if key not in contents]
+    if missing:
+        return [
+            f"{plist_path.name} is missing {', '.join(missing)}. GENERATE_INFOPLIST_FILE is NO, "
+            "so Xcode injects nothing and every CFBundle key has to be in the file"
+        ]
+
+    # The identifier has to agree with the build setting, or the app installs under a name
+    # nothing else in the project expects.
+    identifier = str(contents.get("CFBundleIdentifier", ""))
+    declared = set(re.findall(r"PRODUCT_BUNDLE_IDENTIFIER\s*=\s*([^;]+);", project_text))
+    if not identifier.startswith("$(") and identifier and declared:
+        if identifier not in {value.strip().strip('"') for value in declared}:
+            return [
+                f"CFBundleIdentifier is {identifier!r} but PRODUCT_BUNDLE_IDENTIFIER is "
+                f"{sorted(declared)}"
+            ]
+
+    # Every background task the app registers must be declared, or BGTaskScheduler throws.
+    declared_tasks = set(contents.get("BGTaskSchedulerPermittedIdentifiers", []) or [])
+    if "UIBackgroundModes" in contents and not declared_tasks:
+        return ["UIBackgroundModes is set but BGTaskSchedulerPermittedIdentifiers is empty"]
+    return []
+
+
 def check_xcode_project_is_sound() -> str:
     """(h) The hand-maintained ``project.pbxproj`` is structurally intact and has no file that
     two build commands would both produce.
@@ -378,6 +431,8 @@ def check_xcode_project_is_sound() -> str:
             )
         if not (source_root / plist).is_file():
             problems.append(f"INFOPLIST_FILE points at {plist}, which does not exist")
+            continue
+        problems.extend(_info_plist_problems(source_root / plist, text))
 
     if problems:
         raise CheckFailure(*problems)
