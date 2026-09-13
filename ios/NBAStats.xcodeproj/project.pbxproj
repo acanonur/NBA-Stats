@@ -11,8 +11,25 @@
 		A1000000000000000000002 /* HardwoodTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HardwoodTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A1000000000000000000012 /* Exceptions for "NBAStats" folder in "Hardwood" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A1000000000000000000040 /* Hardwood */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A1000000000000000000010 /* NBAStats */ = {isa = PBXFileSystemSynchronizedRootGroup; path = NBAStats; sourceTree = "<group>"; };
+		A1000000000000000000010 /* NBAStats */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A1000000000000000000012 /* Exceptions for "NBAStats" folder in "Hardwood" target */,
+			);
+			path = NBAStats;
+			sourceTree = "<group>";
+		};
 		A1000000000000000000011 /* NBAStatsTests */ = {isa = PBXFileSystemSynchronizedRootGroup; path = NBAStatsTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 

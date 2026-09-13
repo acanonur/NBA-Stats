@@ -22,9 +22,17 @@ targets:
     type: application
     platform: iOS
     sources:
+      # Info.plist must be excluded from the source list. It is processed via INFOPLIST_FILE
+      # into Hardwood.app/Info.plist; including it as a resource makes a second command
+      # produce that same path, and the build fails with "Multiple commands produce ...".
+      # The hand-maintained .xcodeproj expresses the same exclusion as a
+      # PBXFileSystemSynchronizedBuildFileExceptionSet.
       - path: NBAStats
-    info:
-      path: NBAStats/Info.plist
+        excludes:
+          - Info.plist
+    # No `info:` block on purpose: that would make XcodeGen *generate* a plist at this path
+    # and overwrite the hand-written one, losing the background-task identifiers and the
+    # HardwoodAPIBaseURL default.
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hardwood.nbastats
