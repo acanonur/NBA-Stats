@@ -1,0 +1,108 @@
+{
+  "player": {
+    "playerId": 1500819,
+    "name": "Desmond Quintero",
+    "firstName": "Desmond",
+    "lastName": "Quintero",
+    "teamId": 1610612741,
+    "teamAbbr": "CHI",
+    "position": "G",
+    "jersey": "25",
+    "headshotUrl": null,
+    "isActive": true
+  },
+  "metric": {
+    "key": "per",
+    "name": "Player Efficiency Rating",
+    "shortName": "PER",
+    "category": "impact",
+    "format": "decimal1",
+    "higherIsBetter": true,
+    "scope": [
+      "player"
+    ],
+    "availability": {
+      "seasonFrom": "1951-52",
+      "perGameFrom": "1951-52",
+      "seasonLevelOnly": true,
+      "estimatedBefore": "1996-97"
+    },
+    "domain": {
+      "min": 0.0,
+      "max": 35.0
+    },
+    "glossary": "Hollinger's per-minute rating, pace and league adjusted so that the league average is 15.00 every season."
+  },
+  "xAxis": "season",
+  "seasons": [
+    {
+      "season": "2023-24",
+      "seasonType": "Regular Season",
+      "age": 23,
+      "teamAbbr": "CHI",
+      "gp": 56,
+      "value": 15.96,
+      "displayValue": "16.0",
+      "availability": "full"
+    },
+    {
+      "season": "2024-25",
+      "seasonType": "Regular Season",
+      "age": 24,
+      "teamAbbr": "CHI",
+      "gp": 57,
+      "value": 18.96,
+      "displayValue": "19.0",
+      "availability": "full"
+    },
+    {
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "age": 25,
+      "teamAbbr": "CHI",
+      "gp": 25,
+      "value": 18.79,
+      "displayValue": "18.8",
+      "availability": "full"
+    }
+  ],
+  "playoffSeasons": [
+    {
+      "season": "2023-24",
+      "seasonType": "Playoffs",
+      "age": 23,
+      "teamAbbr": "CHI",
+      "gp": 4,
+      "value": 13.65,
+      "displayValue": "13.7",
+      "availability": "full"
+    },
+    {
+      "season": "2024-25",
+      "seasonType": "Playoffs",
+      "age": 24,
+      "teamAbbr": "CHI",
+      "gp": 7,
+      "value": 17.4,
+      "displayValue": "17.4",
+      "availability": "full"
+    }
+  ],
+  "eraBoundaries": [
+    {
+      "season": "1951-52",
+      "label": "Minutes played tracked",
+      "detail": "Enables per-minute metrics such as PER and WS/48."
+    },
+    {
+      "season": "1996-97",
+      "label": "Advanced box scores and play-by-play",
+      "detail": "First season with true per-game ratings, plus/minus and shot charts."
+    }
+  ],
+  "peak": {
+    "season": "2024-25",
+    "value": 18.96,
+    "displayValue": "19.0"
+  }
+}

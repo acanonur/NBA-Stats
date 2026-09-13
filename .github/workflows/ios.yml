@@ -1,0 +1,43 @@
+name: iOS
+
+on:
+  push:
+    branches: ["**"]
+    paths: ["ios/**", "contracts/**", ".github/workflows/ios.yml"]
+  pull_request:
+    paths: ["ios/**", "contracts/**", ".github/workflows/ios.yml"]
+
+jobs:
+  build-and-test:
+    # The app cannot be compiled on Linux — this job is the only place the Swift compiler ever
+    # sees the code, so treat a failure here as the real build result.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+
+      - name: Bundled contracts match contracts/
+        run: |
+          for f in metrics.json widgets.json presets.json; do
+            diff -q "contracts/$f" "ios/NBAStats/Resources/Contracts/$f"
+          done
+
+      - name: Build
+        working-directory: ios
+        run: |
+          xcodebuild build \
+            -project NBAStats.xcodeproj \
+            -scheme Hardwood \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || exit ${PIPESTATUS[0]}
+
+      - name: Test
+        working-directory: ios
+        run: |
+          xcodebuild test \
+            -project NBAStats.xcodeproj \
+            -scheme Hardwood \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || exit ${PIPESTATUS[0]}

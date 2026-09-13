@@ -1,0 +1,790 @@
+{
+  "schemaVersion": 1,
+  "version": 1,
+  "subjectTokens": [
+    {
+      "token": "$favorite_player",
+      "summary": "The player the user pinned as a favorite."
+    },
+    {
+      "token": "$favorite_team",
+      "summary": "The team the user pinned as a favorite."
+    },
+    {
+      "token": "$featured_player",
+      "summary": "The season's leader in PIE, used when no favorite is set."
+    },
+    {
+      "token": "$featured_team",
+      "summary": "The season's leader in net rating, used when no favorite is set."
+    },
+    {
+      "token": "$league_leader",
+      "summary": "The season's scoring leader."
+    }
+  ],
+  "presets": [
+    {
+      "id": "preset.daily_recap",
+      "presetKey": "daily_recap",
+      "name": "Daily Recap",
+      "icon": "sun.horizon",
+      "tagline": "Last night's slate, decoded.",
+      "accent": "orange",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "scoreboard",
+          "size": "large",
+          "title": "Last Night",
+          "config": {
+            "date": "latest",
+            "showTopPerformers": true,
+            "teamIds": []
+          },
+          "id": "daily_recap.01.scoreboard"
+        },
+        {
+          "kind": "daily_movers",
+          "size": "large",
+          "title": "Biggest Games",
+          "config": {
+            "date": "latest",
+            "metric": "game_score",
+            "limit": 8,
+            "minMinutes": 12.0,
+            "direction": "best"
+          },
+          "id": "daily_recap.02.daily_movers"
+        },
+        {
+          "kind": "daily_movers",
+          "size": "medium",
+          "title": "Against The Grain",
+          "config": {
+            "date": "latest",
+            "metric": "ts_pct",
+            "limit": 6,
+            "minMinutes": 15.0,
+            "direction": "surprise"
+          },
+          "id": "daily_recap.03.daily_movers"
+        },
+        {
+          "kind": "stat_tile",
+          "size": "small",
+          "title": "Your Player",
+          "config": {
+            "subjectType": "player",
+            "subjectId": "$favorite_player",
+            "metric": "game_score",
+            "secondaryMetrics": [
+              "pts",
+              "ts_pct"
+            ],
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "showSparkline": true,
+            "sparklineWindow": 10
+          },
+          "id": "daily_recap.04.stat_tile"
+        },
+        {
+          "kind": "stat_tile",
+          "size": "small",
+          "title": "Your Team",
+          "config": {
+            "subjectType": "team",
+            "subjectId": "$favorite_team",
+            "metric": "net_rtg",
+            "secondaryMetrics": [
+              "off_rtg",
+              "def_rtg"
+            ],
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "showSparkline": true,
+            "sparklineWindow": 10
+          },
+          "id": "daily_recap.05.stat_tile"
+        }
+      ]
+    },
+    {
+      "id": "preset.player_deep_dive",
+      "presetKey": "player_deep_dive",
+      "name": "Player Deep Dive",
+      "icon": "person.crop.square",
+      "tagline": "Everything about one player.",
+      "accent": "indigo",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "player_snapshot",
+          "size": "large",
+          "title": "Season Profile",
+          "config": {
+            "playerId": "$favorite_player",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "showPercentiles": true,
+            "metrics": [
+              "ts_pct",
+              "efg_pct",
+              "usg_pct",
+              "ast_pct",
+              "tov_pct",
+              "reb_pct",
+              "off_rtg",
+              "def_rtg",
+              "net_rtg",
+              "pie"
+            ]
+          },
+          "id": "player_deep_dive.01.player_snapshot"
+        },
+        {
+          "kind": "game_log",
+          "size": "large",
+          "title": "Recent Games",
+          "config": {
+            "playerId": "$favorite_player",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "limit": 10,
+            "highlightSeasonBest": true,
+            "columns": [
+              "min",
+              "pts",
+              "reb",
+              "ast",
+              "ts_pct",
+              "usg_pct",
+              "plus_minus",
+              "game_score"
+            ]
+          },
+          "id": "player_deep_dive.02.game_log"
+        },
+        {
+          "kind": "trend_chart",
+          "size": "large",
+          "title": "Efficiency Trend",
+          "config": {
+            "subjectType": "player",
+            "subjectIds": [
+              "$favorite_player"
+            ],
+            "metric": "ts_pct",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "rollingWindow": 5,
+            "showLeagueAverage": true,
+            "showRawPoints": true
+          },
+          "id": "player_deep_dive.03.trend_chart"
+        },
+        {
+          "kind": "shot_profile",
+          "size": "large",
+          "title": "Shot Diet",
+          "config": {
+            "subjectType": "player",
+            "subjectId": "$favorite_player",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "compareToLeague": true
+          },
+          "id": "player_deep_dive.04.shot_profile"
+        },
+        {
+          "kind": "career_arc",
+          "size": "large",
+          "title": "Career Arc",
+          "config": {
+            "playerId": "$favorite_player",
+            "metric": "per",
+            "seasonType": "Regular Season",
+            "includePlayoffs": true,
+            "xAxis": "season"
+          },
+          "id": "player_deep_dive.05.career_arc"
+        }
+      ]
+    },
+    {
+      "id": "preset.advanced_scout",
+      "presetKey": "advanced_scout",
+      "name": "Advanced Scout",
+      "icon": "binoculars",
+      "tagline": "Two-way impact and the four factors.",
+      "accent": "teal",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "team_efficiency",
+          "size": "large",
+          "title": "League Efficiency",
+          "config": {
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "sortBy": "net_rtg",
+            "conference": "all",
+            "limit": 30,
+            "style": "scatter"
+          },
+          "id": "advanced_scout.01.team_efficiency"
+        },
+        {
+          "kind": "four_factors",
+          "size": "medium",
+          "title": "Four Factors",
+          "config": {
+            "teamId": "$favorite_team",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "showOpponent": true,
+            "comparison": "league"
+          },
+          "id": "advanced_scout.02.four_factors"
+        },
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "Defensive Anchors",
+          "config": {
+            "subjectType": "player",
+            "metric": "def_rtg",
+            "scope": "season",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "limit": 10,
+            "minGames": 15,
+            "minMinutesPerGame": 24.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "blk_pct",
+              "dreb_pct"
+            ],
+            "ascending": false
+          },
+          "id": "advanced_scout.03.leaderboard"
+        },
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "On/Off Swing",
+          "config": {
+            "subjectType": "player",
+            "metric": "net_rtg",
+            "scope": "season",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "limit": 10,
+            "minGames": 20,
+            "minMinutesPerGame": 24.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "off_rtg",
+              "def_rtg"
+            ],
+            "ascending": false
+          },
+          "id": "advanced_scout.04.leaderboard"
+        }
+      ]
+    },
+    {
+      "id": "preset.efficiency_hunt",
+      "presetKey": "efficiency_hunt",
+      "name": "Efficiency Hunt",
+      "icon": "flame",
+      "tagline": "Who scores without wasting possessions.",
+      "accent": "red",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "True Shooting",
+          "config": {
+            "subjectType": "player",
+            "metric": "ts_pct",
+            "scope": "season",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "limit": 12,
+            "minGames": 15,
+            "minMinutesPerGame": 24.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "pts",
+              "usg_pct"
+            ],
+            "ascending": false
+          },
+          "id": "efficiency_hunt.01.leaderboard"
+        },
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "Usage Kings",
+          "config": {
+            "subjectType": "player",
+            "metric": "usg_pct",
+            "scope": "season",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "limit": 12,
+            "minGames": 15,
+            "minMinutesPerGame": 24.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "ts_pct",
+              "tov_pct"
+            ],
+            "ascending": false
+          },
+          "id": "efficiency_hunt.02.leaderboard"
+        },
+        {
+          "kind": "comparison",
+          "size": "large",
+          "title": "Volume vs Efficiency",
+          "config": {
+            "playerIds": [
+              "$league_leader",
+              "$favorite_player"
+            ],
+            "metrics": [
+              "pts",
+              "usg_pct",
+              "ts_pct",
+              "efg_pct",
+              "ftr",
+              "tov_pct"
+            ],
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "normalization": "percentile",
+            "style": "bars"
+          },
+          "id": "efficiency_hunt.03.comparison"
+        },
+        {
+          "kind": "stat_tile",
+          "size": "small",
+          "title": "League Average TS%",
+          "config": {
+            "subjectType": "team",
+            "subjectId": "$featured_team",
+            "metric": "ts_pct",
+            "secondaryMetrics": [
+              "efg_pct"
+            ],
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "showSparkline": false,
+            "sparklineWindow": 15
+          },
+          "id": "efficiency_hunt.04.stat_tile"
+        }
+      ]
+    },
+    {
+      "id": "preset.all_time_greats",
+      "presetKey": "all_time_greats",
+      "name": "All-Time Greats",
+      "icon": "crown",
+      "tagline": "Peak seasons across eighty years.",
+      "accent": "amber",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "Best Seasons Ever: PER",
+          "config": {
+            "subjectType": "player",
+            "metric": "per",
+            "scope": "all_time",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "limit": 15,
+            "minGames": 40,
+            "minMinutesPerGame": 28.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "ws",
+              "pts"
+            ],
+            "ascending": false
+          },
+          "id": "all_time_greats.01.leaderboard"
+        },
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "Best Seasons Ever: Win Shares",
+          "config": {
+            "subjectType": "player",
+            "metric": "ws",
+            "scope": "all_time",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "Totals",
+            "limit": 15,
+            "minGames": 40,
+            "minMinutesPerGame": 28.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "ws48",
+              "gp"
+            ],
+            "ascending": false
+          },
+          "id": "all_time_greats.02.leaderboard"
+        },
+        {
+          "kind": "career_arc",
+          "size": "large",
+          "title": "Career Arc",
+          "config": {
+            "playerId": "$favorite_player",
+            "metric": "ws48",
+            "seasonType": "Regular Season",
+            "includePlayoffs": true,
+            "xAxis": "age"
+          },
+          "id": "all_time_greats.03.career_arc"
+        },
+        {
+          "kind": "comparison",
+          "size": "large",
+          "title": "Head To Head",
+          "config": {
+            "playerIds": [
+              "$favorite_player",
+              "$league_leader"
+            ],
+            "metrics": [
+              "per",
+              "ws48",
+              "bpm",
+              "vorp",
+              "ts_pct",
+              "usg_pct"
+            ],
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "normalization": "raw",
+            "style": "table"
+          },
+          "id": "all_time_greats.04.comparison"
+        }
+      ]
+    },
+    {
+      "id": "preset.fantasy_watch",
+      "presetKey": "fantasy_watch",
+      "name": "Fantasy Watch",
+      "icon": "dice",
+      "tagline": "Production, minutes and the nightly swing.",
+      "accent": "green",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "daily_movers",
+          "size": "large",
+          "title": "Last Night's Scores",
+          "config": {
+            "date": "latest",
+            "metric": "fantasy_pts",
+            "limit": 10,
+            "minMinutes": 10.0,
+            "direction": "best"
+          },
+          "id": "fantasy_watch.01.daily_movers"
+        },
+        {
+          "kind": "game_log",
+          "size": "large",
+          "title": "Your Player's Log",
+          "config": {
+            "playerId": "$favorite_player",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "limit": 10,
+            "highlightSeasonBest": true,
+            "columns": [
+              "min",
+              "fantasy_pts",
+              "pts",
+              "reb",
+              "ast",
+              "stl",
+              "blk",
+              "tov"
+            ]
+          },
+          "id": "fantasy_watch.02.game_log"
+        },
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "Fantasy Leaders",
+          "config": {
+            "subjectType": "player",
+            "metric": "fantasy_pts",
+            "scope": "season",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "limit": 12,
+            "minGames": 5,
+            "minMinutesPerGame": 15.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "min",
+              "usg_pct"
+            ],
+            "ascending": false
+          },
+          "id": "fantasy_watch.03.leaderboard"
+        },
+        {
+          "kind": "trend_chart",
+          "size": "large",
+          "title": "Minutes Trend",
+          "config": {
+            "subjectType": "player",
+            "subjectIds": [
+              "$favorite_player"
+            ],
+            "metric": "min",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "rollingWindow": 5,
+            "showLeagueAverage": false,
+            "showRawPoints": true
+          },
+          "id": "fantasy_watch.04.trend_chart"
+        }
+      ]
+    },
+    {
+      "id": "preset.team_pulse",
+      "presetKey": "team_pulse",
+      "name": "Team Pulse",
+      "icon": "flag.checkered",
+      "tagline": "One team, week to week.",
+      "accent": "blue",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "stat_tile",
+          "size": "small",
+          "title": "Net Rating",
+          "config": {
+            "subjectType": "team",
+            "subjectId": "$favorite_team",
+            "metric": "net_rtg",
+            "secondaryMetrics": [
+              "off_rtg",
+              "def_rtg"
+            ],
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "showSparkline": true,
+            "sparklineWindow": 15
+          },
+          "id": "team_pulse.01.stat_tile"
+        },
+        {
+          "kind": "stat_tile",
+          "size": "small",
+          "title": "Pace",
+          "config": {
+            "subjectType": "team",
+            "subjectId": "$favorite_team",
+            "metric": "pace",
+            "secondaryMetrics": [
+              "poss"
+            ],
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "perMode": "PerGame",
+            "showSparkline": true,
+            "sparklineWindow": 15
+          },
+          "id": "team_pulse.02.stat_tile"
+        },
+        {
+          "kind": "four_factors",
+          "size": "large",
+          "title": "Four Factors",
+          "config": {
+            "teamId": "$favorite_team",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "showOpponent": true,
+            "comparison": "league"
+          },
+          "id": "team_pulse.03.four_factors"
+        },
+        {
+          "kind": "trend_chart",
+          "size": "large",
+          "title": "Net Rating Trend",
+          "config": {
+            "subjectType": "team",
+            "subjectIds": [
+              "$favorite_team"
+            ],
+            "metric": "net_rtg",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "rollingWindow": 10,
+            "showLeagueAverage": true,
+            "showRawPoints": true
+          },
+          "id": "team_pulse.04.trend_chart"
+        },
+        {
+          "kind": "scoreboard",
+          "size": "large",
+          "title": "Team Schedule",
+          "config": {
+            "date": "latest",
+            "showTopPerformers": true,
+            "teamIds": [
+              "$favorite_team"
+            ]
+          },
+          "id": "team_pulse.05.scoreboard"
+        }
+      ]
+    },
+    {
+      "id": "preset.playoff_lab",
+      "presetKey": "playoff_lab",
+      "name": "Playoff Lab",
+      "icon": "trophy",
+      "tagline": "How the postseason changes everything.",
+      "accent": "purple",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": [
+        {
+          "kind": "leaderboard",
+          "size": "large",
+          "title": "Playoff Risers",
+          "config": {
+            "subjectType": "player",
+            "metric": "ts_pct",
+            "scope": "season",
+            "season": "latest",
+            "seasonType": "Playoffs",
+            "perMode": "PerGame",
+            "limit": 12,
+            "minGames": 4,
+            "minMinutesPerGame": 20.0,
+            "positions": [],
+            "teamIds": [],
+            "secondaryMetrics": [
+              "pts",
+              "usg_pct"
+            ],
+            "ascending": false
+          },
+          "id": "playoff_lab.01.leaderboard"
+        },
+        {
+          "kind": "team_efficiency",
+          "size": "large",
+          "title": "Playoff Efficiency",
+          "config": {
+            "season": "latest",
+            "seasonType": "Playoffs",
+            "sortBy": "net_rtg",
+            "conference": "all",
+            "limit": 16,
+            "style": "table"
+          },
+          "id": "playoff_lab.02.team_efficiency"
+        },
+        {
+          "kind": "career_arc",
+          "size": "large",
+          "title": "Playoff Career Arc",
+          "config": {
+            "playerId": "$favorite_player",
+            "metric": "pie",
+            "seasonType": "Playoffs",
+            "includePlayoffs": true,
+            "xAxis": "season"
+          },
+          "id": "playoff_lab.03.career_arc"
+        },
+        {
+          "kind": "comparison",
+          "size": "large",
+          "title": "Regular Season vs Playoffs",
+          "config": {
+            "playerIds": [
+              "$favorite_player",
+              "$league_leader"
+            ],
+            "metrics": [
+              "pts",
+              "ts_pct",
+              "usg_pct",
+              "ast_pct",
+              "net_rtg",
+              "pie"
+            ],
+            "season": "latest",
+            "seasonType": "Playoffs",
+            "normalization": "percentile",
+            "style": "bars"
+          },
+          "id": "playoff_lab.04.comparison"
+        }
+      ]
+    },
+    {
+      "id": "preset.blank",
+      "presetKey": "blank",
+      "name": "Blank Canvas",
+      "icon": "square.dashed",
+      "tagline": "Start empty and build your own.",
+      "accent": "graphite",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "widgets": []
+    }
+  ]
+}

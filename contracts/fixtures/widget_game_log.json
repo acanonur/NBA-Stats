@@ -1,0 +1,405 @@
+{
+  "player": {
+    "playerId": 1500819,
+    "name": "Desmond Quintero",
+    "firstName": "Desmond",
+    "lastName": "Quintero",
+    "teamId": 1610612741,
+    "teamAbbr": "CHI",
+    "position": "G",
+    "jersey": "25",
+    "headshotUrl": null,
+    "isActive": true
+  },
+  "season": "2025-26",
+  "seasonType": "Regular Season",
+  "columns": [
+    {
+      "key": "min",
+      "name": "Minutes",
+      "shortName": "MIN",
+      "category": "volume",
+      "format": "minutes",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1951-52",
+        "perGameFrom": "1951-52",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Minutes played."
+    },
+    {
+      "key": "pts",
+      "name": "Points",
+      "shortName": "PTS",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Points scored."
+    },
+    {
+      "key": "reb",
+      "name": "Rebounds",
+      "shortName": "REB",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1950-51",
+        "perGameFrom": "1950-51",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+    },
+    {
+      "key": "ast",
+      "name": "Assists",
+      "shortName": "AST",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Assists."
+    },
+    {
+      "key": "ts_pct",
+      "name": "True Shooting %",
+      "shortName": "TS%",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.35,
+        "max": 0.75
+      },
+      "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+    },
+    {
+      "key": "usg_pct",
+      "name": "Usage %",
+      "shortName": "USG%",
+      "category": "usage",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.05,
+        "max": 0.42
+      },
+      "glossary": "Share of team possessions a player ends while on the floor."
+    },
+    {
+      "key": "plus_minus",
+      "name": "Plus/Minus",
+      "shortName": "+/-",
+      "category": "impact",
+      "format": "plusMinus1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Team point differential while the player is on the floor."
+    },
+    {
+      "key": "game_score",
+      "name": "Game Score",
+      "shortName": "GmSc",
+      "category": "impact",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1973-74",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
+    }
+  ],
+  "seasonBests": {
+    "min": 44.5,
+    "pts": 33,
+    "reb": 6,
+    "ast": 9,
+    "ts_pct": 0.7614213197969544,
+    "usg_pct": 0.3411517689725251,
+    "plus_minus": 11.0,
+    "game_score": 23.3
+  },
+  "rows": [
+    {
+      "gameId": "0022500365",
+      "date": "2026-01-02",
+      "opponentAbbr": "BOS",
+      "isHome": false,
+      "result": "L",
+      "score": "107-113",
+      "started": true,
+      "minutes": 34.5,
+      "values": {
+        "min": 34.5,
+        "pts": 18,
+        "reb": 4,
+        "ast": 6,
+        "ts_pct": 0.4766949152542373,
+        "usg_pct": 0.27584033282380194,
+        "plus_minus": -5.0,
+        "game_score": 12.6
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500351",
+      "date": "2025-12-30",
+      "opponentAbbr": "POR",
+      "isHome": false,
+      "result": "L",
+      "score": "107-120",
+      "started": true,
+      "minutes": 33.0,
+      "values": {
+        "min": 33.0,
+        "pts": 21,
+        "reb": 3,
+        "ast": 7,
+        "ts_pct": 0.5434782608695652,
+        "usg_pct": 0.29875634962340164,
+        "plus_minus": -4.0,
+        "game_score": 16.4
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500337",
+      "date": "2025-12-27",
+      "opponentAbbr": "IND",
+      "isHome": false,
+      "result": "W",
+      "score": "113-110",
+      "started": true,
+      "minutes": 38.0,
+      "values": {
+        "min": 38.0,
+        "pts": 33,
+        "reb": 4,
+        "ast": 6,
+        "ts_pct": 0.6516587677725119,
+        "usg_pct": 0.3257898440682988,
+        "plus_minus": 3.0,
+        "game_score": 22.2
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500323",
+      "date": "2025-12-25",
+      "opponentAbbr": "PHX",
+      "isHome": false,
+      "result": "L",
+      "score": "110-124",
+      "started": true,
+      "minutes": 37.5,
+      "values": {
+        "min": 37.5,
+        "pts": 24,
+        "reb": 5,
+        "ast": 8,
+        "ts_pct": 0.487012987012987,
+        "usg_pct": 0.28923479398299545,
+        "plus_minus": -10.0,
+        "game_score": 16.099999999999998
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500309",
+      "date": "2025-12-22",
+      "opponentAbbr": "CLE",
+      "isHome": false,
+      "result": "L",
+      "score": "107-117",
+      "started": true,
+      "minutes": 43.0,
+      "values": {
+        "min": 43.0,
+        "pts": 31,
+        "reb": 4,
+        "ast": 8,
+        "ts_pct": 0.6260096930533118,
+        "usg_pct": 0.2843091219138472,
+        "plus_minus": -5.0,
+        "game_score": 23.3
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500295",
+      "date": "2025-12-19",
+      "opponentAbbr": "ORL",
+      "isHome": false,
+      "result": "L",
+      "score": "111-120",
+      "started": true,
+      "minutes": 44.5,
+      "values": {
+        "min": 44.5,
+        "pts": 27,
+        "reb": 4,
+        "ast": 5,
+        "ts_pct": 0.5357142857142857,
+        "usg_pct": 0.2733133392353622,
+        "plus_minus": -6.0,
+        "game_score": 15.400000000000002
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500281",
+      "date": "2025-12-16",
+      "opponentAbbr": "UTA",
+      "isHome": false,
+      "result": "L",
+      "score": "116-119",
+      "started": true,
+      "minutes": 42.5,
+      "values": {
+        "min": 42.5,
+        "pts": 28,
+        "reb": 4,
+        "ast": 8,
+        "ts_pct": 0.45691906005221933,
+        "usg_pct": 0.2994436614494474,
+        "plus_minus": -1.0,
+        "game_score": 16.400000000000002
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500267",
+      "date": "2025-12-13",
+      "opponentAbbr": "MIL",
+      "isHome": false,
+      "result": "L",
+      "score": "103-122",
+      "started": true,
+      "minutes": 38.5,
+      "values": {
+        "min": 38.5,
+        "pts": 23,
+        "reb": 5,
+        "ast": 5,
+        "ts_pct": 0.47520661157024796,
+        "usg_pct": 0.3032991852867629,
+        "plus_minus": -12.0,
+        "game_score": 12.999999999999996
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500253",
+      "date": "2025-12-11",
+      "opponentAbbr": "LAC",
+      "isHome": false,
+      "result": "L",
+      "score": "115-129",
+      "started": true,
+      "minutes": 38.0,
+      "values": {
+        "min": 38.0,
+        "pts": 23,
+        "reb": 4,
+        "ast": 9,
+        "ts_pct": 0.484006734006734,
+        "usg_pct": 0.27653993026730866,
+        "plus_minus": -6.0,
+        "game_score": 14.900000000000002
+      },
+      "availability": "full"
+    },
+    {
+      "gameId": "0022500239",
+      "date": "2025-12-08",
+      "opponentAbbr": "OKC",
+      "isHome": false,
+      "result": "L",
+      "score": "102-113",
+      "started": true,
+      "minutes": 39.0,
+      "values": {
+        "min": 39.0,
+        "pts": 25,
+        "reb": 4,
+        "ast": 6,
+        "ts_pct": 0.5260942760942761,
+        "usg_pct": 0.3018272050530115,
+        "plus_minus": -9.0,
+        "game_score": 17.5
+      },
+      "availability": "full"
+    }
+  ]
+}

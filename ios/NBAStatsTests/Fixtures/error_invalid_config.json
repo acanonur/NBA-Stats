@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "invalid_config",
+    "message": "seasonType: 'Summer League' is not one of ['Regular Season', 'Playoffs', 'Play In', 'All Star', 'Pre Season']",
+    "recoverable": true,
+    "field": "seasonType",
+    "requestId": "0f1c4d2ba7e65930"
+  }
+}

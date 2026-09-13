@@ -1,0 +1,311 @@
+{
+  "season": "2025-26",
+  "seasonType": "Regular Season",
+  "normalization": "percentile",
+  "style": "bars",
+  "metrics": [
+    {
+      "key": "pts",
+      "name": "Points",
+      "shortName": "PTS",
+      "category": "volume",
+      "format": "decimal1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1946-47",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": null,
+      "glossary": "Points scored."
+    },
+    {
+      "key": "ts_pct",
+      "name": "True Shooting %",
+      "shortName": "TS%",
+      "category": "shooting",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": 0.35,
+        "max": 0.75
+      },
+      "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
+    },
+    {
+      "key": "usg_pct",
+      "name": "Usage %",
+      "shortName": "USG%",
+      "category": "usage",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1977-78",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.05,
+        "max": 0.42
+      },
+      "glossary": "Share of team possessions a player ends while on the floor."
+    },
+    {
+      "key": "ast_pct",
+      "name": "Assist %",
+      "shortName": "AST%",
+      "category": "playmaking",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1946-47",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.55
+      },
+      "glossary": "Share of teammate field goals a player assists while on the floor."
+    },
+    {
+      "key": "reb_pct",
+      "name": "Rebound %",
+      "shortName": "REB%",
+      "category": "rebounding",
+      "format": "percent1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1973-74",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": "1996-97"
+      },
+      "domain": {
+        "min": 0.0,
+        "max": 0.3
+      },
+      "glossary": "Share of available rebounds grabbed while on the floor."
+    },
+    {
+      "key": "net_rtg",
+      "name": "Net Rating",
+      "shortName": "NetRtg",
+      "category": "efficiency",
+      "format": "rating1",
+      "higherIsBetter": true,
+      "scope": [
+        "player",
+        "team"
+      ],
+      "availability": {
+        "seasonFrom": "1996-97",
+        "perGameFrom": "1996-97",
+        "seasonLevelOnly": false,
+        "estimatedBefore": null
+      },
+      "domain": {
+        "min": -25.0,
+        "max": 25.0
+      },
+      "glossary": "Offensive Rating minus Defensive Rating."
+    }
+  ],
+  "subjects": [
+    {
+      "player": {
+        "playerId": 1500819,
+        "name": "Desmond Quintero",
+        "firstName": "Desmond",
+        "lastName": "Quintero",
+        "teamId": 1610612741,
+        "teamAbbr": "CHI",
+        "position": "G",
+        "jersey": "25",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "colorIndex": 0,
+      "values": [
+        {
+          "metric": "pts",
+          "value": 25.92,
+          "displayValue": "25.9",
+          "rank": 7,
+          "percentile": 0.9783333333333334,
+          "leagueAverage": 12.417536900420789,
+          "delta": 13.502463099579213,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "ts_pct",
+          "value": 0.547408258430763,
+          "displayValue": "54.7%",
+          "rank": 242,
+          "percentile": 0.195,
+          "leagueAverage": 0.576464387931087,
+          "delta": -0.02905612950032399,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "usg_pct",
+          "value": 0.29952189522227346,
+          "displayValue": "30.0%",
+          "rank": 20,
+          "percentile": 0.935,
+          "leagueAverage": 0.19782083378438103,
+          "delta": 0.10170106143789243,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "ast_pct",
+          "value": 0.30749542051463014,
+          "displayValue": "30.7%",
+          "rank": 33,
+          "percentile": 0.8916666666666667,
+          "leagueAverage": 0.1574655559764613,
+          "delta": 0.15002986453816883,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "reb_pct",
+          "value": 0.05666866056398281,
+          "displayValue": "5.7%",
+          "rank": 263,
+          "percentile": 0.125,
+          "leagueAverage": 0.0991886860228011,
+          "delta": -0.0425200254588183,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "net_rtg",
+          "value": -5.80979157927419,
+          "displayValue": "-5.8",
+          "rank": 252,
+          "percentile": 0.16166666666666665,
+          "leagueAverage": -0.14129939647576534,
+          "delta": -5.668492182798425,
+          "isEstimated": false,
+          "availability": "full"
+        }
+      ]
+    },
+    {
+      "player": {
+        "playerId": 1500837,
+        "name": "Sterling Haddad",
+        "firstName": "Sterling",
+        "lastName": "Haddad",
+        "teamId": 1610612743,
+        "teamAbbr": "DEN",
+        "position": "G",
+        "jersey": "40",
+        "headshotUrl": null,
+        "isActive": true
+      },
+      "colorIndex": 1,
+      "values": [
+        {
+          "metric": "pts",
+          "value": 30.304347826086957,
+          "displayValue": "30.3",
+          "rank": 1,
+          "percentile": 0.9983333333333333,
+          "leagueAverage": 12.417536900420789,
+          "delta": 17.88681092566617,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "ts_pct",
+          "value": 0.5819584530091509,
+          "displayValue": "58.2%",
+          "rank": 127,
+          "percentile": 0.5783333333333334,
+          "leagueAverage": 0.576464387931087,
+          "delta": 0.005494065078063937,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "usg_pct",
+          "value": 0.32654262430820946,
+          "displayValue": "32.7%",
+          "rank": 7,
+          "percentile": 0.9783333333333334,
+          "leagueAverage": 0.19782083378438103,
+          "delta": 0.12872179052382843,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "ast_pct",
+          "value": 0.34200900602759443,
+          "displayValue": "34.2%",
+          "rank": 18,
+          "percentile": 0.9416666666666667,
+          "leagueAverage": 0.1574655559764613,
+          "delta": 0.18454345005113312,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "reb_pct",
+          "value": 0.06779398055577475,
+          "displayValue": "6.8%",
+          "rank": 217,
+          "percentile": 0.2783333333333333,
+          "leagueAverage": 0.0991886860228011,
+          "delta": -0.03139470546702636,
+          "isEstimated": false,
+          "availability": "full"
+        },
+        {
+          "metric": "net_rtg",
+          "value": 5.4292301088938615,
+          "displayValue": "5.4",
+          "rank": 49,
+          "percentile": 0.8383333333333334,
+          "leagueAverage": -0.14129939647576534,
+          "delta": 5.570529505369627,
+          "isEstimated": false,
+          "availability": "full"
+        }
+      ]
+    }
+  ]
+}

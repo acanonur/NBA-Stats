@@ -1,0 +1,249 @@
+"""Generate contracts/widgets.json - the shared widget catalog + config field schema."""
+import json
+
+def f(key, type_, label, **kw):
+    d = {"key": key, "type": type_, "label": label, "required": kw.pop("required", False),
+         "default": kw.pop("default", None)}
+    d.update(kw)
+    return d
+
+SEASON     = f("season", "season", "Season", default="latest", required=True,
+               help="A season string such as 2025-26, or 'latest' for the current season.")
+SEASON_TYPE= f("seasonType", "enum", "Season Type", default="Regular Season", required=True,
+               options=["Regular Season", "Playoffs", "Play In", "All Star", "Pre Season"])
+PER_MODE   = f("perMode", "enum", "Per Mode", default="PerGame",
+               options=["PerGame", "Totals", "Per36", "Per100"])
+
+W = [
+ {
+  "kind": "stat_tile",
+  "name": "Stat Tile",
+  "summary": "One headline metric for a player or team, with optional supporting metrics and a sparkline.",
+  "icon": "number.square",
+  "sizes": ["small", "medium", "large"],
+  "defaultSize": "small",
+  "minRefreshSeconds": 300,
+  "config": [
+    f("subjectType", "enum", "Subject", default="player", required=True, options=["player", "team"]),
+    f("subjectId", "subject", "Player or Team", required=True, dependsOn="subjectType"),
+    f("metric", "metric", "Metric", default="ts_pct", required=True, metricScope="any"),
+    f("secondaryMetrics", "metricList", "Supporting Metrics", default=["pts", "usg_pct"], maxItems=4),
+    SEASON, SEASON_TYPE, PER_MODE,
+    f("showSparkline", "bool", "Show Sparkline", default=True),
+    f("sparklineWindow", "int", "Sparkline Games", default=15, min=5, max=82),
+  ],
+ },
+ {
+  "kind": "player_snapshot",
+  "name": "Player Snapshot",
+  "summary": "A player's full advanced slate for a season, with league percentile bars.",
+  "icon": "person.crop.square",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 300,
+  "config": [
+    f("playerId", "player", "Player", required=True),
+    SEASON, SEASON_TYPE,
+    f("metrics", "metricList", "Metrics", required=True, metricScope="player",
+      default=["ts_pct", "usg_pct", "ast_pct", "reb_pct", "off_rtg", "def_rtg", "net_rtg", "pie"], maxItems=12),
+    f("showPercentiles", "bool", "Show League Percentiles", default=True),
+  ],
+ },
+ {
+  "kind": "leaderboard",
+  "name": "Leaderboard",
+  "summary": "Top players or teams ranked by any metric, with qualifier filters.",
+  "icon": "list.number",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    f("subjectType", "enum", "Subject", default="player", required=True, options=["player", "team"]),
+    f("metric", "metric", "Metric", default="pie", required=True, metricScope="any"),
+    f("scope", "enum", "Scope", default="season", options=["season", "all_time"],
+      help="'all_time' ranks the best single seasons in league history."),
+    SEASON, SEASON_TYPE, PER_MODE,
+    f("limit", "int", "Rows", default=10, min=3, max=50),
+    f("minGames", "int", "Minimum Games", default=15, min=0, max=82),
+    f("minMinutesPerGame", "double", "Minimum MPG", default=20.0, min=0.0, max=48.0),
+    f("positions", "enumList", "Positions", default=[], options=["G", "F", "C"]),
+    f("teamIds", "teamList", "Teams", default=[]),
+    f("secondaryMetrics", "metricList", "Extra Columns", default=["pts", "min"], maxItems=3),
+    f("ascending", "bool", "Reverse Order", default=False,
+      help="Off means best-first using the metric's own direction."),
+  ],
+ },
+ {
+  "kind": "game_log",
+  "name": "Game Log",
+  "summary": "Recent games for a player, with configurable basic and advanced columns.",
+  "icon": "tablecells",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 300,
+  "config": [
+    f("playerId", "player", "Player", required=True),
+    SEASON, SEASON_TYPE,
+    f("columns", "metricList", "Columns", required=True,
+      default=["min", "pts", "reb", "ast", "ts_pct", "usg_pct", "plus_minus", "game_score"], maxItems=14),
+    f("limit", "int", "Games", default=10, min=5, max=82),
+    f("highlightSeasonBest", "bool", "Highlight Season Bests", default=True),
+  ],
+ },
+ {
+  "kind": "trend_chart",
+  "name": "Trend",
+  "summary": "A metric game by game, with a rolling average and an optional league baseline.",
+  "icon": "chart.xyaxis.line",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 300,
+  "config": [
+    f("subjectType", "enum", "Subject", default="player", required=True, options=["player", "team"]),
+    f("subjectIds", "subjectList", "Players or Teams", required=True, maxItems=4, dependsOn="subjectType"),
+    f("metric", "metric", "Metric", default="ts_pct", required=True, metricScope="any"),
+    SEASON, SEASON_TYPE,
+    f("rollingWindow", "int", "Rolling Average Games", default=5, min=1, max=25),
+    f("showLeagueAverage", "bool", "Show League Average", default=True),
+    f("showRawPoints", "bool", "Show Individual Games", default=True),
+  ],
+ },
+ {
+  "kind": "four_factors",
+  "name": "Four Factors",
+  "summary": "Dean Oliver's four factors for a team, against the league average and the opponent.",
+  "icon": "square.grid.2x2",
+  "sizes": ["medium", "large"],
+  "defaultSize": "medium",
+  "minRefreshSeconds": 600,
+  "config": [
+    f("teamId", "team", "Team", required=True),
+    SEASON, SEASON_TYPE,
+    f("showOpponent", "bool", "Show Defensive Four Factors", default=True),
+    f("comparison", "enum", "Compare Against", default="league", options=["league", "none"]),
+  ],
+ },
+ {
+  "kind": "shot_profile",
+  "name": "Shot Profile",
+  "summary": "Where the shots come from and how they fall, by court zone.",
+  "icon": "scope",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "availableFrom": "1996-97",
+  "config": [
+    f("subjectType", "enum", "Subject", default="player", required=True, options=["player", "team"]),
+    f("subjectId", "subject", "Player or Team", required=True, dependsOn="subjectType"),
+    SEASON, SEASON_TYPE,
+    f("compareToLeague", "bool", "Compare to League", default=True),
+  ],
+ },
+ {
+  "kind": "comparison",
+  "name": "Comparison",
+  "summary": "Two to four players side by side on the metrics you choose, normalized to league percentiles.",
+  "icon": "person.2",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    f("playerIds", "playerList", "Players", required=True, minItems=2, maxItems=4),
+    f("metrics", "metricList", "Metrics", required=True, metricScope="player",
+      default=["pts", "ts_pct", "usg_pct", "ast_pct", "reb_pct", "net_rtg"], maxItems=10),
+    SEASON, SEASON_TYPE,
+    f("normalization", "enum", "Scale", default="percentile", options=["percentile", "raw"]),
+    f("style", "enum", "Style", default="bars", options=["bars", "radar", "table"]),
+  ],
+ },
+ {
+  "kind": "scoreboard",
+  "name": "Scoreboard",
+  "summary": "Every game on a slate with final scores and the best advanced line from each side.",
+  "icon": "sportscourt",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 60,
+  "config": [
+    f("date", "date", "Date", default="latest", required=True,
+      help="An ISO date, or 'latest' for the most recent completed slate."),
+    f("showTopPerformers", "bool", "Show Top Performers", default=True),
+    f("teamIds", "teamList", "Only These Teams", default=[]),
+  ],
+ },
+ {
+  "kind": "daily_movers",
+  "name": "Daily Movers",
+  "summary": "The biggest single-game performances from the last completed slate, versus each player's own season baseline.",
+  "icon": "arrow.up.right",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 60,
+  "config": [
+    f("date", "date", "Date", default="latest", required=True),
+    f("metric", "metric", "Metric", default="game_score", required=True, metricScope="player"),
+    f("limit", "int", "Rows", default=8, min=3, max=25),
+    f("minMinutes", "double", "Minimum Minutes", default=12.0, min=0.0, max=48.0),
+    f("direction", "enum", "Direction", default="best", options=["best", "worst", "surprise"],
+      help="'surprise' ranks by the largest gap against the player's own season average."),
+  ],
+ },
+ {
+  "kind": "team_efficiency",
+  "name": "Team Efficiency",
+  "summary": "League-wide offensive, defensive and net rating with pace.",
+  "icon": "chart.bar.xaxis",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    SEASON, SEASON_TYPE,
+    f("sortBy", "metric", "Sort By", default="net_rtg", metricScope="team"),
+    f("conference", "enum", "Conference", default="all", options=["all", "East", "West"]),
+    f("limit", "int", "Rows", default=30, min=5, max=30),
+    f("style", "enum", "Style", default="table", options=["table", "scatter"]),
+  ],
+ },
+ {
+  "kind": "career_arc",
+  "name": "Career Arc",
+  "summary": "A metric season by season across a whole career, with era availability marked.",
+  "icon": "waveform.path.ecg",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 3600,
+  "config": [
+    f("playerId", "player", "Player", required=True),
+    f("metric", "metric", "Metric", default="per", required=True, metricScope="player"),
+    f("seasonType", "enum", "Season Type", default="Regular Season",
+      options=["Regular Season", "Playoffs"]),
+    f("includePlayoffs", "bool", "Overlay Playoffs", default=True),
+    f("xAxis", "enum", "X Axis", default="season", options=["season", "age"]),
+  ],
+ },
+]
+
+for w in W:
+    w.setdefault("availableFrom", None)
+    assert w["defaultSize"] in w["sizes"], w["kind"]
+    keys = [c["key"] for c in w["config"]]
+    assert len(keys) == len(set(keys)), w["kind"]
+
+doc = {
+    "schemaVersion": 1,
+    "sizes": [
+        {"key": "small",  "columnsCompact": 1, "columnsRegular": 1, "height": 148,
+         "name": "Small",  "summary": "One column, headline value only."},
+        {"key": "medium", "columnsCompact": 2, "columnsRegular": 2, "height": 232,
+         "name": "Medium", "summary": "Full width on iPhone, half width on iPad."},
+        {"key": "large",  "columnsCompact": 2, "columnsRegular": 4, "height": 360,
+         "name": "Large",  "summary": "Full width, tall enough for tables and charts."},
+    ],
+    "gridColumns": {"compact": 2, "regular": 4},
+    "configFieldTypes": [
+        "season", "enum", "enumList", "metric", "metricList", "player", "playerList",
+        "team", "teamList", "subject", "subjectList", "int", "double", "bool", "date",
+    ],
+    "widgets": W,
+}
+print(json.dumps(doc, indent=2))

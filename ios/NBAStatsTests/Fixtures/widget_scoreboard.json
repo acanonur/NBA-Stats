@@ -1,0 +1,437 @@
+{
+  "date": "2026-01-02",
+  "isLatestCompleted": true,
+  "allFinal": true,
+  "games": [
+    {
+      "gameId": "0022500364",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612744,
+        "abbr": "GSW",
+        "name": "Golden State Warriors",
+        "city": "Golden State",
+        "nickname": "Warriors",
+        "conference": "West",
+        "division": "Pacific"
+      },
+      "away": {
+        "teamId": 1610612766,
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "city": "Charlotte",
+        "nickname": "Hornets",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "homePts": 119,
+      "awayPts": 100,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z",
+      "topPerformers": [
+        {
+          "player": {
+            "playerId": 1500893,
+            "name": "Simeon Castellanos",
+            "firstName": "Simeon",
+            "lastName": "Castellanos",
+            "teamId": 1610612744,
+            "teamAbbr": "GSW",
+            "position": "G",
+            "jersey": "2",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "GSW",
+          "line": "30 PTS · 6 AST",
+          "value": {
+            "metric": "game_score",
+            "value": 20.2,
+            "displayValue": "20.2",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        },
+        {
+          "player": {
+            "playerId": 1501198,
+            "name": "Simeon Rankin",
+            "firstName": "Simeon",
+            "lastName": "Rankin",
+            "teamId": 1610612766,
+            "teamAbbr": "CHA",
+            "position": "C",
+            "jersey": "9",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "CHA",
+          "line": "18 PTS · 12 REB",
+          "value": {
+            "metric": "game_score",
+            "value": 15.499999999999996,
+            "displayValue": "15.5",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        }
+      ]
+    },
+    {
+      "gameId": "0022500365",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612738,
+        "abbr": "BOS",
+        "name": "Boston Celtics",
+        "city": "Boston",
+        "nickname": "Celtics",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "away": {
+        "teamId": 1610612741,
+        "abbr": "CHI",
+        "name": "Chicago Bulls",
+        "city": "Chicago",
+        "nickname": "Bulls",
+        "conference": "East",
+        "division": "Central"
+      },
+      "homePts": 113,
+      "awayPts": 107,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z",
+      "topPerformers": [
+        {
+          "player": {
+            "playerId": 1500788,
+            "name": "Zeke Kristof",
+            "firstName": "Zeke",
+            "lastName": "Kristof",
+            "teamId": 1610612738,
+            "teamAbbr": "BOS",
+            "position": "C",
+            "jersey": "45",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "BOS",
+          "line": "23 PTS · 13 REB",
+          "value": {
+            "metric": "game_score",
+            "value": 21.5,
+            "displayValue": "21.5",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        },
+        {
+          "player": {
+            "playerId": 1500820,
+            "name": "Felix Falcone",
+            "firstName": "Felix",
+            "lastName": "Falcone",
+            "teamId": 1610612741,
+            "teamAbbr": "CHI",
+            "position": "C",
+            "jersey": "0",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "CHI",
+          "line": "18 PTS · 12 REB",
+          "value": {
+            "metric": "game_score",
+            "value": 17.699999999999996,
+            "displayValue": "17.7",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        }
+      ]
+    },
+    {
+      "gameId": "0022500366",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612748,
+        "abbr": "MIA",
+        "name": "Miami Heat",
+        "city": "Miami",
+        "nickname": "Heat",
+        "conference": "East",
+        "division": "Southeast"
+      },
+      "away": {
+        "teamId": 1610612751,
+        "abbr": "BKN",
+        "name": "Brooklyn Nets",
+        "city": "Brooklyn",
+        "nickname": "Nets",
+        "conference": "East",
+        "division": "Atlantic"
+      },
+      "homePts": 124,
+      "awayPts": 106,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z",
+      "topPerformers": [
+        {
+          "player": {
+            "playerId": 1500776,
+            "name": "Terrance Winslow",
+            "firstName": "Terrance",
+            "lastName": "Winslow",
+            "teamId": 1610612748,
+            "teamAbbr": "MIA",
+            "position": "F",
+            "jersey": "19",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "MIA",
+          "line": "21 PTS · 8 REB · 5 AST",
+          "value": {
+            "metric": "game_score",
+            "value": 19.200000000000003,
+            "displayValue": "19.2",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        },
+        {
+          "player": {
+            "playerId": 1501047,
+            "name": "Vance Prieto",
+            "firstName": "Vance",
+            "lastName": "Prieto",
+            "teamId": 1610612751,
+            "teamAbbr": "BKN",
+            "position": "G",
+            "jersey": "19",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "BKN",
+          "line": "23 PTS · 7 AST",
+          "value": {
+            "metric": "game_score",
+            "value": 15.5,
+            "displayValue": "15.5",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        }
+      ]
+    },
+    {
+      "gameId": "0022500367",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612757,
+        "abbr": "POR",
+        "name": "Portland Trail Blazers",
+        "city": "Portland",
+        "nickname": "Trail Blazers",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "away": {
+        "teamId": 1610612750,
+        "abbr": "MIN",
+        "name": "Minnesota Timberwolves",
+        "city": "Minnesota",
+        "nickname": "Timberwolves",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "homePts": 109,
+      "awayPts": 112,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z",
+      "topPerformers": [
+        {
+          "player": {
+            "playerId": 1500985,
+            "name": "Vaughn Sandoval",
+            "firstName": "Vaughn",
+            "lastName": "Sandoval",
+            "teamId": 1610612757,
+            "teamAbbr": "POR",
+            "position": "F",
+            "jersey": "19",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "POR",
+          "line": "23 PTS · 7 REB",
+          "value": {
+            "metric": "game_score",
+            "value": 19.1,
+            "displayValue": "19.1",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        },
+        {
+          "player": {
+            "playerId": 1501163,
+            "name": "Dominic Grier",
+            "firstName": "Dominic",
+            "lastName": "Grier",
+            "teamId": 1610612750,
+            "teamAbbr": "MIN",
+            "position": "C",
+            "jersey": "31",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "MIN",
+          "line": "18 PTS · 11 REB",
+          "value": {
+            "metric": "game_score",
+            "value": 14.999999999999996,
+            "displayValue": "15.0",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        }
+      ]
+    },
+    {
+      "gameId": "0022500368",
+      "date": "2026-01-02",
+      "season": "2025-26",
+      "seasonType": "Regular Season",
+      "home": {
+        "teamId": 1610612760,
+        "abbr": "OKC",
+        "name": "Oklahoma City Thunder",
+        "city": "Oklahoma City",
+        "nickname": "Thunder",
+        "conference": "West",
+        "division": "Northwest"
+      },
+      "away": {
+        "teamId": 1610612740,
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "city": "New Orleans",
+        "nickname": "Pelicans",
+        "conference": "West",
+        "division": "Southwest"
+      },
+      "homePts": 108,
+      "awayPts": 110,
+      "status": "final",
+      "period": 4,
+      "clock": null,
+      "finalizedAt": "2026-01-03T02:41:00Z",
+      "topPerformers": [
+        {
+          "player": {
+            "playerId": 1501059,
+            "name": "Rowan Kowalski",
+            "firstName": "Rowan",
+            "lastName": "Kowalski",
+            "teamId": 1610612740,
+            "teamAbbr": "NOP",
+            "position": "G",
+            "jersey": "36",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "NOP",
+          "line": "32 PTS · 5 REB · 9 AST",
+          "value": {
+            "metric": "game_score",
+            "value": 26.0,
+            "displayValue": "26.0",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        },
+        {
+          "player": {
+            "playerId": 1501119,
+            "name": "Silas Pashkov",
+            "firstName": "Silas",
+            "lastName": "Pashkov",
+            "teamId": 1610612760,
+            "teamAbbr": "OKC",
+            "position": "G",
+            "jersey": "50",
+            "headshotUrl": null,
+            "isActive": true
+          },
+          "teamAbbr": "OKC",
+          "line": "24 PTS · 5 AST",
+          "value": {
+            "metric": "game_score",
+            "value": 16.499999999999996,
+            "displayValue": "16.5",
+            "rank": null,
+            "percentile": null,
+            "leagueAverage": null,
+            "delta": null,
+            "isEstimated": false,
+            "availability": "full"
+          }
+        }
+      ]
+    }
+  ]
+}
