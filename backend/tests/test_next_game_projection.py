@@ -363,6 +363,57 @@ def test_the_factors_are_the_four_the_paper_names(ctx: ResolveContext) -> None:
         assert 0.5 < factor["value"] < 1.5, factor
 
 
+def test_every_factor_carries_a_contribution_for_every_projected_line(
+    ctx: ResolveContext,
+) -> None:
+    """The "Why" section's numbers, in each statistic's own units.
+
+    A multiplier of 1.021 means nothing to a reader until it is turned into points, which is
+    what docs/BROADSHEET.md §5 does. The check that matters is the sign agreement: a factor
+    above 1.0 must never produce a contribution that reads as a penalty.
+    """
+    payload, _availability, _notes = _resolve(ctx)
+    projected = {line["metric"]: line["mean"] for line in payload["lines"]}
+    assert projected
+
+    for factor in payload["factors"]:
+        contributions = factor["contributions"]
+        assert set(contributions) == set(projected), factor["key"]
+        for metric, contribution in contributions.items():
+            assert contribution == pytest.approx(
+                projected[metric] * (factor["value"] - 1.0), abs=5e-3
+            ), (factor["key"], metric)
+            if factor["value"] > 1.0:
+                assert contribution >= 0.0, (factor["key"], metric)
+            elif factor["value"] < 1.0:
+                assert contribution <= 0.0, (factor["key"], metric)
+            else:
+                assert contribution == 0.0, (factor["key"], metric)
+
+
+def test_the_contributions_are_not_sold_as_a_decomposition(ctx: ResolveContext) -> None:
+    """They are first-order, and the contract says so rather than the payload pretending.
+
+    If this ever *does* sum exactly, something has been changed to make it sum — which would
+    mean the factors stopped being multiplicative, and far more than this test would be wrong.
+    """
+    payload, _availability, _notes = _resolve(ctx)
+    multiplier = 1.0
+    for factor in payload["factors"]:
+        multiplier *= factor["value"]
+
+    points = next(line for line in payload["lines"] if line["metric"] == "pts")
+    neutral = points["mean"] / multiplier
+    summed = sum(f["contributions"]["pts"] for f in payload["factors"])
+
+    assert summed == pytest.approx(points["mean"] - neutral, abs=0.25), (
+        "a first-order attribution should still land close to the truth"
+    )
+
+    contract = CONTRACT_PATH.read_text(encoding="utf-8")
+    assert "first-order attribution, not a decomposition" in contract
+
+
 # --------------------------------------------------------------------------- no leakage
 
 

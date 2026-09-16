@@ -24,7 +24,7 @@ TOKENS = {"$favorite_player", "$favorite_team", "$featured_player", "$featured_t
 def w(kind, size, title, **config):
     return {"kind": kind, "size": size, "title": title, "config": config}
 
-def preset(key, name, icon, tagline, accent, widgets):
+def preset(key, name, icon, tagline, accent, widgets, presentation="tiles"):
     out = []
     for i, item in enumerate(widgets):
         item = dict(item)
@@ -33,6 +33,7 @@ def preset(key, name, icon, tagline, accent, widgets):
     return {
         "id": "preset." + key, "presetKey": key, "name": name, "icon": icon,
         "tagline": tagline, "accent": accent, "isPreset": True, "schemaVersion": 1,
+        "presentation": presentation,
         "widgets": out,
     }
 
@@ -170,6 +171,19 @@ PRESETS = [
      columns=["min", "pts", "reb", "ast", "fg3m", "stl", "blk", "tov"]),
    w("scoreboard", "medium", "Tonight", date="latest", showTopPerformers=False, teamIds=[]),
  ]),
+ preset("fantasy_board", "Fantasy Board", "newspaper", "Tonight, read like a broadsheet.",
+        "graphite", [
+   w("projection_board", "large", "Tonight's Projections", date="latest", scope="league",
+     playerIds=[], teamId=None, metrics=["pts", "reb", "ast"], limit=6, minMinutes=24.0,
+     reference="season_average", seasonType="Regular Season"),
+   w("next_game_projection", "large", "Your Player", playerId="$favorite_player",
+     stats=["pts", "reb", "ast", "fg3m", "stl", "blk", "tov"], opponentTeamId=None,
+     interval="80", showCombo=True, showFactors=True, season="latest",
+     seasonType="Regular Season"),
+   w("scoreboard", "large", "Last Night", date="latest", showTopPerformers=False, teamIds=[]),
+   w("daily_movers", "large", "Biggest Nights", date="latest", metric="game_score", limit=6,
+     minMinutes=12.0, direction="best"),
+ ], presentation="broadsheet"),
  preset("blank", "Blank Canvas", "square.dashed", "Start empty and build your own.", "graphite", []),
 ]
 

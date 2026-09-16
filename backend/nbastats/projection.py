@@ -80,6 +80,7 @@ __all__ = [
     "context_factors",
     "calibrate_context_factors",
     "total_context_multiplier",
+    "factor_contribution",
     "nb_params",
     "nb_variance",
     "nb_pmf",
@@ -445,13 +446,38 @@ class Factor:
     value: float
     explanation: str
 
-    def payload(self) -> dict[str, Any]:
-        return {
+    def payload(self, contributions: Mapping[str, float] | None = None) -> dict[str, Any]:
+        """The ``factors[]`` entry, optionally carrying per-statistic contributions.
+
+        ``contributions`` maps a stat key to this factor's signed share of that statistic's
+        projected mean, in the statistic's own units — see :func:`factor_contribution`.
+        """
+        out: dict[str, Any] = {
             "key": self.key,
             "label": self.label,
             "value": _round(self.value, 4),
             "explanation": self.explanation,
         }
+        if contributions is not None:
+            out["contributions"] = {
+                key: _round(value, 2) for key, value in contributions.items()
+            }
+        return out
+
+
+def factor_contribution(projected_mean: float, factor_value: float) -> float:
+    """This factor's signed share of ``projected_mean``, in the statistic's own units.
+
+    ``contribution = projected_mean * (factor - 1)``.
+
+    A **first-order attribution, not a decomposition.** The factors multiply, so their
+    contributions do not sum to the difference between the projection and its neutral-context
+    counterpart; the error is second order in the deviations and small while they are small, but
+    it is not zero. Callers must present these as the largest movers rather than as an exact
+    accounting — claiming to have decomposed a product into a sum would be wrong, and the
+    arithmetic would not survive a reader adding the column up. See docs/BROADSHEET.md section 5.
+    """
+    return projected_mean * (factor_value - 1.0)
 
 
 def _pct_phrase(value: float) -> str:
@@ -1354,7 +1380,12 @@ def project_box_score(
             "high": _round(m_high, 2),
         },
         "lines": [ln.payload(include_descriptor=include_descriptors) for ln in lines],
-        "factors": [f.payload() for f in factors],
+        "factors": [
+            f.payload(
+                {ln.stat_key: factor_contribution(ln.mean, f.value) for ln in lines}
+            )
+            for f in factors
+        ],
         "combo": combo_result.payload() if combo_result is not None else None,
         "method": {
             "summary": _METHOD_SUMMARY,

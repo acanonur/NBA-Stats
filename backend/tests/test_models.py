@@ -231,8 +231,8 @@ def test_season_column_resolution() -> None:
 
 def test_catalogs_load_with_the_expected_shape() -> None:
     assert len(catalog.all_metrics()) == 61
-    assert len(catalog.all_widgets()) == 13
-    assert len(catalog.presets()) == 10
+    assert len(catalog.all_widgets()) == 14
+    assert len(catalog.presets()) == 11
     assert catalog.metrics_document()["schemaVersion"] == 1
     assert catalog.subject_tokens() >= {"$favorite_player", "$favorite_team"}
 

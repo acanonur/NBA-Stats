@@ -311,25 +311,61 @@
       "key": "pace",
       "label": "Pace",
       "value": 1.0178,
-      "explanation": "The two teams' tempo deviations add: this game projects 1.8% faster than league average."
+      "explanation": "The two teams' tempo deviations add: this game projects 1.8% faster than league average.",
+      "contributions": {
+        "pts": 0.34,
+        "reb": 0.09,
+        "ast": 0.1,
+        "fg3m": 0.03,
+        "stl": 0.02,
+        "blk": 0.01,
+        "tov": 0.05
+      }
     },
     {
       "key": "opponent",
       "label": "Opponent Defence",
       "value": 1.0328,
-      "explanation": "Opponent defensive rating is 3.3% above league average — a weaker defence, so production projects up."
+      "explanation": "Opponent defensive rating is 3.3% above league average — a weaker defence, so production projects up.",
+      "contributions": {
+        "pts": 0.62,
+        "reb": 0.16,
+        "ast": 0.18,
+        "fg3m": 0.06,
+        "stl": 0.04,
+        "blk": 0.01,
+        "tov": 0.09
+      }
     },
     {
       "key": "venue",
       "label": "Venue",
       "value": 0.988,
-      "explanation": "Road game; the venue multiplier is 0.988 (-1.2%). Default multiplier, not yet recalibrated from data."
+      "explanation": "Road game; the venue multiplier is 0.988 (-1.2%). Default multiplier, not yet recalibrated from data.",
+      "contributions": {
+        "pts": -0.23,
+        "reb": -0.06,
+        "ast": -0.06,
+        "fg3m": -0.02,
+        "stl": -0.02,
+        "blk": -0.0,
+        "tov": -0.03
+      }
     },
     {
       "key": "rest",
       "label": "Rest",
       "value": 1.005,
-      "explanation": "Three or more days of rest; the rest multiplier is 1.005 (+0.5%). Default multiplier, not yet recalibrated from data."
+      "explanation": "Three or more days of rest; the rest multiplier is 1.005 (+0.5%). Default multiplier, not yet recalibrated from data.",
+      "contributions": {
+        "pts": 0.1,
+        "reb": 0.02,
+        "ast": 0.03,
+        "fg3m": 0.01,
+        "stl": 0.01,
+        "blk": 0.0,
+        "tov": 0.01
+      }
     }
   ],
   "combo": {

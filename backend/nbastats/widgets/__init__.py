@@ -31,6 +31,7 @@ from . import (
     leaderboard,
     next_game_projection,
     player_snapshot,
+    projection_board,
     scoreboard,
     shot_profile,
     stat_tile,
@@ -77,6 +78,7 @@ RESOLVERS: dict[str, Resolver] = {
     "daily_movers": daily_movers.resolve,
     "team_efficiency": team_efficiency.resolve,
     "next_game_projection": next_game_projection.resolve,
+    "projection_board": projection_board.resolve,
     "career_arc": career_arc.resolve,
 }
 
@@ -98,6 +100,7 @@ TTL_SECONDS: dict[str, int] = {
     # A projection moves when the schedule or the player's form does, not tick by tick; the
     # catalog's ``minRefreshSeconds`` for the kind says 600 and §8 groups it with the tables.
     "next_game_projection": 600,
+    "projection_board": 600,
     "career_arc": 3600,
 }
 

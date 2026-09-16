@@ -149,7 +149,7 @@ def test_meta_carries_league_state_and_the_catalogs(app_client: TestClient) -> N
     body = response.json()
     assert body["currentSeason"] == CURRENT_SEASON
     assert len(body["metrics"]["metrics"]) == 61
-    assert len(body["widgets"]["widgets"]) == 13
+    assert len(body["widgets"]["widgets"]) == 14
     assert len(body["teams"]) == 30
     assert body["coverage"]["advancedFrom"] == "1996-97"
     assert body["attribution"]
@@ -171,7 +171,7 @@ def test_presets_are_served_from_the_catalog(app_client: TestClient) -> None:
     body = response.json()
     assert body["schemaVersion"] == 1
     assert isinstance(body["version"], int)
-    assert len(body["presets"]) == 10
+    assert len(body["presets"]) == 11
     assert {token["token"] for token in body["subjectTokens"]} >= {
         "$favorite_player",
         "$favorite_team",

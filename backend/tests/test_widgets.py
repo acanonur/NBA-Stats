@@ -215,7 +215,7 @@ GAME_REF_KEYS = {
 def test_registry_covers_every_catalog_kind() -> None:
     """A kind in the catalog with no resolver must fail at import, not at request time."""
     assert set(RESOLVERS) == set(catalog.widget_kinds())
-    assert len(RESOLVERS) == 13
+    assert len(RESOLVERS) == 14
 
 
 def test_ttl_matches_the_freshness_model() -> None:

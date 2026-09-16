@@ -1017,6 +1017,114 @@
       ]
     },
     {
+      "kind": "projection_board",
+      "name": "Tonight's Projections",
+      "summary": "Tonight's projected lines for several players, each as a range with the season average marked.",
+      "icon": "chart.dots.scatter",
+      "sizes": [
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "availableFrom": "1996-97",
+      "config": [
+        {
+          "key": "date",
+          "type": "date",
+          "label": "Slate",
+          "required": true,
+          "default": "latest"
+        },
+        {
+          "key": "scope",
+          "type": "enum",
+          "label": "Players",
+          "required": false,
+          "default": "favorites",
+          "options": [
+            "favorites",
+            "league",
+            "team"
+          ],
+          "help": "'league' ranks by projected value across tonight's slate."
+        },
+        {
+          "key": "playerIds",
+          "type": "playerList",
+          "label": "Players",
+          "required": false,
+          "default": [],
+          "maxItems": 12,
+          "help": "Used when Players is set to a specific list; otherwise the scope decides."
+        },
+        {
+          "key": "teamId",
+          "type": "team",
+          "label": "Team",
+          "required": false,
+          "default": null
+        },
+        {
+          "key": "metrics",
+          "type": "metricList",
+          "label": "Lines",
+          "required": true,
+          "default": [
+            "pts",
+            "reb",
+            "ast"
+          ],
+          "metricScope": "player",
+          "maxItems": 6
+        },
+        {
+          "key": "limit",
+          "type": "int",
+          "label": "Rows",
+          "required": false,
+          "default": 6,
+          "min": 3,
+          "max": 20
+        },
+        {
+          "key": "minMinutes",
+          "type": "double",
+          "label": "Minimum Projected Minutes",
+          "required": false,
+          "default": 20.0,
+          "min": 0.0,
+          "max": 48.0
+        },
+        {
+          "key": "reference",
+          "type": "enum",
+          "label": "Reference Mark",
+          "required": false,
+          "default": "season_average",
+          "options": [
+            "season_average",
+            "career_average",
+            "none"
+          ],
+          "help": "The tick on the band. A projection is only meaningful against something."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        }
+      ]
+    },
+    {
       "kind": "career_arc",
       "name": "Career Arc",
       "summary": "A metric season by season across a whole career, with era availability marked.",

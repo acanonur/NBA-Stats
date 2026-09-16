@@ -73,6 +73,7 @@ from .base import (
 __all__ = [
     "resolve",
     "PROJECTION_FROM",
+    "era_gap_note",
     "CONTEXT_METRICS",
     "INTERVAL_LEVELS",
     "COMPETITIVE_SEASON_TYPES",
@@ -182,7 +183,7 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
     # Era gate first, before a single statistic is read: with no pace and no defensive rating
     # there is no f_pace and no f_opp, so there is no projection to make — only neutral
     # factors to pretend with.
-    era_note = _era_gap_note(season)
+    era_note = era_gap_note(season)
     if era_note is not None:
         notes.append(era_note)
         return _unavailable_payload(player_ref, era_note), "unavailable", notes
@@ -325,7 +326,7 @@ def _requested_stats(requested: Any, season: str, notes: list[str]) -> list[str]
     return kept
 
 
-def _era_gap_note(season: str) -> Optional[str]:
+def era_gap_note(season: str) -> Optional[str]:
     """The reason a season cannot be projected at all, or ``None`` when it can."""
     gated = [
         key

@@ -565,6 +565,51 @@ class TestContextFactors:
         assert P.total_context_multiplier([]) == 1.0
 
 
+# =========================================================================== contributions
+
+
+class TestFactorContribution:
+    """``mean * (factor - 1)`` — the "Why" section of docs/BROADSHEET.md section 5."""
+
+    def test_a_neutral_factor_contributes_nothing(self) -> None:
+        assert P.factor_contribution(28.4, 1.0) == 0.0
+
+    def test_the_sign_follows_the_factor(self) -> None:
+        assert P.factor_contribution(28.4, 1.021) > 0
+        assert P.factor_contribution(28.4, 0.979) < 0
+
+    def test_it_scales_with_the_mean(self) -> None:
+        """A 2% factor is worth more points to a 30-point scorer than to a 10-point one."""
+        assert P.factor_contribution(30.0, 1.02) == pytest.approx(0.6)
+        assert P.factor_contribution(10.0, 1.02) == pytest.approx(0.2)
+
+    def test_it_is_first_order_and_the_error_is_second_order(self) -> None:
+        """The headline caveat, made quantitative rather than left in a docstring.
+
+        Two factors of a+b deviation give a product of ``1 + a + b + ab``, so the sum of the
+        contributions misses the neutral-to-actual difference by exactly ``mean*ab/(1+a+b+ab)``
+        of the mean. Small while a and b are small, never zero, and the reason the payload is
+        documented as the largest movers rather than as a column that adds up.
+        """
+        a, b = 0.02, 0.03
+        multiplier = (1.0 + a) * (1.0 + b)
+        mean = 30.0
+        neutral = mean / multiplier
+
+        summed = P.factor_contribution(mean, 1.0 + a) + P.factor_contribution(mean, 1.0 + b)
+        truth = mean - neutral
+
+        assert summed != pytest.approx(truth, abs=1e-9), "a decomposition it is not"
+        # ...but close enough to be worth showing: under a tenth of a point here.
+        assert abs(summed - truth) < 0.1
+
+    def test_the_payload_carries_contributions_only_when_asked(self) -> None:
+        factor = P.Factor("pace", "Pace", 1.021, "faster")
+        assert "contributions" not in factor.payload()
+        with_contributions = factor.payload({"pts": 28.4 * 0.021, "reb": 8.0 * 0.021})
+        assert with_contributions["contributions"] == {"pts": 0.6, "reb": 0.17}
+
+
 # =========================================================================== calibration
 
 
@@ -1140,7 +1185,8 @@ class TestProjectBoxScore:
         for line in payload["lines"]:
             assert set(line) == self.LINE_KEYS
         for factor in payload["factors"]:
-            assert set(factor) == {"key", "label", "value", "explanation"}
+            assert set(factor) == {"key", "label", "value", "explanation", "contributions"}
+            assert set(factor["contributions"]) == {ln["metric"] for ln in payload["lines"]}
 
     def test_payload_is_json_serialisable(self) -> None:
         text = json.dumps(self._payload())
