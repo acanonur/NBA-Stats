@@ -253,7 +253,7 @@ public final class InMemoryLayoutPersistence: LayoutPersisting, @unchecked Senda
 /// Builds the layouts a brand new install starts with.
 ///
 /// Only one preset is copied into an editable layout; the rest stay in the catalog and are offered
-/// through the preset gallery, so a first launch is a working dashboard rather than nine of them.
+/// through the preset gallery, so a first launch is a working dashboard rather than ten of them.
 public enum LayoutSeeder {
 
     /// The preset a fresh install starts on.

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-/// The twelve widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
+/// The thirteen widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
 public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case statTile          = "stat_tile"
     case playerSnapshot    = "player_snapshot"
@@ -14,6 +14,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case scoreboard        = "scoreboard"
     case dailyMovers       = "daily_movers"
     case teamEfficiency    = "team_efficiency"
+    case nextGameProjection = "next_game_projection"
     case careerArc         = "career_arc"
 
     /// The catalog holds the real name; this is what the UI falls back to when the bundled
@@ -31,6 +32,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .scoreboard: return "Scoreboard"
         case .dailyMovers: return "Daily Movers"
         case .teamEfficiency: return "Team Efficiency"
+        case .nextGameProjection: return "Next Game"
         case .careerArc: return "Career Arc"
         }
     }
@@ -49,6 +51,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .scoreboard: return "sportscourt"
         case .dailyMovers: return "arrow.up.right"
         case .teamEfficiency: return "chart.bar.xaxis"
+        case .nextGameProjection: return "function"
         case .careerArc: return "waveform.path.ecg"
         }
     }

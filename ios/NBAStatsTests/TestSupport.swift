@@ -43,8 +43,23 @@ enum TestBundles {
     }
 
     /// The bytes of one of the bundled contract catalogs (`metrics`, `widgets`, `presets`).
+    ///
+    /// Deliberately *not* `url(forFixture:subdirectory:)`. Two different documents are called
+    /// `presets.json`: the catalog in `Resources/Contracts/`, and the golden fixture of
+    /// `GET /v1/presets` in `NBAStatsTests/Fixtures/`. The generic lookup tries the test bundle's
+    /// root before the app bundle's `Contracts` folder, so on a packaging that flattens
+    /// synchronized folders it would hand back the *fixture* — a different document, generated at
+    /// a different time, which drifts from the catalog the app actually loads. Every `Contracts`
+    /// folder is therefore tried before any bundle root, and the app bundle (which never carries
+    /// a fixture by that name — `scripts/sync_contracts.sh` excludes it) before the test bundle.
     static func contractData(named name: String) -> Data? {
-        guard let url = url(forFixture: name, subdirectory: "Contracts") else { return nil }
+        let candidates: [URL?] = [
+            app.url(forResource: name, withExtension: "json", subdirectory: "Contracts"),
+            tests.url(forResource: name, withExtension: "json", subdirectory: "Contracts"),
+            app.url(forResource: name, withExtension: "json"),
+            tests.url(forResource: name, withExtension: "json")
+        ]
+        guard let url = candidates.compactMap({ $0 }).first else { return nil }
         return try? Data(contentsOf: url)
     }
 
@@ -402,7 +417,7 @@ enum TestLayouts {
                         widgets: widgets)
     }
 
-    /// `count` widgets that cycle through the twelve kinds, so no two adjacent widgets share a
+    /// `count` widgets that cycle through the thirteen kinds, so no two adjacent widgets share a
     /// cache key.
     static func manyWidgets(_ count: Int) -> [DashboardWidget] {
         let kinds = WidgetKind.allCases

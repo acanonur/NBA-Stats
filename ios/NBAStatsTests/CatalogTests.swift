@@ -3,7 +3,7 @@ import XCTest
 @testable import Hardwood
 
 /// The bundled contracts are the app's spine: every widget's controls, every metric's format and
-/// era rules, and the nine dashboards a new install can start from are read from them at launch.
+/// era rules, and the ten dashboards a new install can start from are read from them at launch.
 /// If they do not decode, nothing else in the app is trustworthy — so these tests read the real
 /// bundled files rather than a fixture written for the occasion.
 @MainActor
@@ -11,8 +11,8 @@ final class CatalogTests: XCTestCase {
 
     /// The counts the contract commits to (`contracts/CONTRACT.md`, the table in its header).
     private let expectedMetricCount = 61
-    private let expectedWidgetCount = 12
-    private let expectedPresetCount = 9
+    private let expectedWidgetCount = 13
+    private let expectedPresetCount = 10
 
     /// The field types whose value is a subject the reader has to choose; the catalog gives them
     /// no default on purpose.

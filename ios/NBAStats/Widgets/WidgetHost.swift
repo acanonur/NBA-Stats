@@ -86,9 +86,9 @@ public extension View {
 /// Turns one `WidgetState` into the view that belongs to it.
 ///
 /// This is the single place where a payload meets a view: `WidgetContainer` owns the chrome —
-/// title, era badge, overflow menu — and hands the interior to this type. Four states and twelve
-/// payloads are all handled here, so adding a widget kind is a change in exactly two files: the
-/// payload in `Core`, and the one `case` below.
+/// title, era badge, overflow menu — and hands the interior to this type. Four states and
+/// thirteen payloads are all handled here, so adding a widget kind is a change in exactly two
+/// files: the payload in `Core`, and the one `case` below.
 public struct WidgetHost: View {
     private let widget: DashboardWidget
     private let state: WidgetState
@@ -147,7 +147,7 @@ public struct WidgetHost: View {
 
     // MARK: Payload dispatch
 
-    /// The twelve payload cases, each rendered by the view that owns it. Every widget view takes
+    /// The thirteen payload cases, each rendered by the view that owns it. Every widget view takes
     /// the same `(payload:size:)` shape, so this stays a flat mapping with nothing to decide.
     @ViewBuilder private func view(for payload: WidgetPayload) -> some View {
         switch payload {
@@ -173,6 +173,8 @@ public struct WidgetHost: View {
             DailyMoversWidget(payload: value, size: widget.size)
         case .teamEfficiency(let value):
             TeamEfficiencyWidget(payload: value, size: widget.size)
+        case .nextGameProjection(let value):
+            NextGameProjectionWidget(payload: value, size: widget.size)
         case .careerArc(let value):
             CareerArcWidget(payload: value, size: widget.size)
         }

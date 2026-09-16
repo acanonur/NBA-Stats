@@ -58,8 +58,19 @@ Seeder flags:
 
 The seeder is idempotent: it clears the tables first, so re-running replaces the league rather
 than doubling it. A default run produces 30 real franchises with real NBA.com ids, ~1,140
-fictional players, ~6,100 games (5,400 final), ~96,000 basic and ~56,000 advanced player game
-lines, and every aggregate on top of them — about six seconds.
+players wearing real NBA names, person ids and headshots, ~6,100 games (5,400 final), ~96,000
+basic and ~56,000 advanced player game lines, and every aggregate on top of them — about ten
+seconds.
+
+**Which parts are real.** Names, NBA person ids, headshot URLs and the 30 franchises come from
+`nbastats/data/nba_identities.json` (see `nbastats/identities.py`). Everything else is
+generated: which team a player appears on, his position, his physical profile and every
+number in every box score. Rosters change constantly and the bundled file carries no team
+column, so asserting one would be fabrication. Every seeded row is stamped
+`data_source = "synthetic-demo"`, and `/v1/meta` serves an attribution that says so. Seasons
+from 2020 on draw names from today's players, earlier ones from retired players, so no
+1985-86 roster stars a current rookie. If the identity file is missing or unreadable the
+seeder falls back to invented names and no headshots, and reports the count in its summary.
 
 Two honest caveats about the demo data. Players do not change teams mid-season (`player_season`
 still keys on `team_id`, so a traded player is representable), and because the default season
@@ -77,6 +88,7 @@ python3 -m pytest -q
 | `tests/test_metrics.py` | every advanced formula, against worked examples |
 | `tests/test_models.py` | schema, metric→column maps, era column sets |
 | `tests/test_seed.py` | the synthetic league reconciles: player lines sum to team totals |
+| `tests/test_identities.py` | the bundled NBA identities are real, searchable, and degrade to empty |
 | `tests/test_api_core.py` | the HTTP surface, key names, the error envelope |
 | `tests/test_widgets.py` | widget payloads and the dashboard resolve |
 | `tests/test_ingest.py` | normalize / client / daily / aggregate / backfill |
@@ -195,7 +207,8 @@ Plus one that belongs to the ingest client rather than to `Settings`:
 | `nbastats/db.py` | Engine, session factory, `get_session()` dependency, `init_db()`, sync-state helpers |
 | `nbastats/metrics.py` | Every advanced formula, and `compute_metric()` |
 | `nbastats/percentiles.py` | `rank_and_percentile()`, `percentile_of()`, `summarize()` |
-| `nbastats/seed.py` | The deterministic synthetic league |
+| `nbastats/identities.py` | The bundled NBA identities: 30 franchises, every person id, name and headshot. Lookup, diacritic-insensitive search, empty on a bad file. **stdlib only** |
+| `nbastats/seed.py` | The deterministic synthetic league, wearing those real identities |
 | **`nbastats/ingest/`** | |
 | `ingest/client.py` | Polite stats.nba.com client: optional `nba_api`, recorded-fixture mode, rate limiting, backoff |
 | `ingest/normalize.py` | The V2 (`UPPER_SNAKE_CASE`) / V3 (`camelCase`) translation layer |

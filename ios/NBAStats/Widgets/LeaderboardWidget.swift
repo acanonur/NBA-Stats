@@ -57,6 +57,19 @@ public struct LeaderboardWidget: View {
 
     private var isAllTime: Bool { payload.scope == "all_time" }
 
+    /// Whether a player row carries a portrait.
+    ///
+    /// Three things have to be true, and the third is the interesting one. A small tile is a
+    /// single grid column, too narrow once the rank, the team badge and the value have taken
+    /// their share. An accessibility size stacks the row and needs every point of width for the
+    /// name. And a large tile that is *also* showing secondary metric columns has already spent
+    /// its width on numbers — `valueWidth` plus three `columnWidth`s is most of an iPhone — so the
+    /// face would come out of the name, which is the one thing the row cannot lose. A ten-row
+    /// leaderboard therefore gets 24pt portraits or none, never anything bigger.
+    private var showsAvatars: Bool {
+        size != .small && !isStacked && columns.isEmpty
+    }
+
     private var contextLine: String {
         var parts: [String] = []
         if isAllTime {
@@ -210,7 +223,19 @@ public struct LeaderboardWidget: View {
     @ViewBuilder private func subjectBadge(_ row: LeaderboardRow) -> some View {
         if let team = row.team {
             TeamBadge(team: team, size: .small)
+        } else if let player = row.player, showsAvatars {
+            HStack(spacing: Spacing.xs) {
+                // Decorative: `accessibilityText(_:)` already reads the subject's name.
+                PlayerAvatar(player: player, size: .small)
+                    .accessibilityHidden(true)
+                if let abbreviation = player.teamAbbr, !abbreviation.isEmpty {
+                    TeamBadge(abbreviation: abbreviation, size: .small)
+                }
+            }
         } else if let abbreviation = row.player?.teamAbbr, !abbreviation.isEmpty {
+            // Unchanged from before the avatar existed. Kept as its own branch rather than as an
+            // empty `HStack` inside the one above, because a zero-width container still collects
+            // the parent stack's spacing on both sides and would nudge the whole row across.
             TeamBadge(abbreviation: abbreviation, size: .small)
         }
     }

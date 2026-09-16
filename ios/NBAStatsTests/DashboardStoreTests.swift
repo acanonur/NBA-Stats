@@ -116,7 +116,7 @@ final class DashboardStoreTests: XCTestCase {
 
     // MARK: - Editing a preset converts it
 
-    /// The rule that keeps the nine shipped dashboards intact: the first edit to a preset
+    /// The rule that keeps the ten shipped dashboards intact: the first edit to a preset
     /// silently makes an editable copy, keeping `presetKey` so "reset" stays available.
     func testEditingAPresetConvertsItToAnEditableCopy() throws {
         let preset = presetLayout()

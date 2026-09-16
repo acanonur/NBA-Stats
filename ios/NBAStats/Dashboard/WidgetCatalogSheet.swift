@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - Grouping
 
-/// How the twelve widget kinds are grouped in the "Add Widget" sheet.
+/// How the thirteen widget kinds are grouped in the "Add Widget" sheet.
 ///
 /// The grouping is about what a widget is *for* rather than what it renders, so the reader looking
 /// for "something about last night" finds the scoreboard and the movers together.
@@ -52,7 +52,7 @@ public enum WidgetCatalogGroup: String, CaseIterable, Identifiable, Sendable {
             return .today
         case .statTile, .trendChart, .shotProfile:
             return .flexible
-        case .playerSnapshot, .gameLog, .careerArc, .comparison:
+        case .playerSnapshot, .gameLog, .careerArc, .comparison, .nextGameProjection:
             return .players
         case .fourFactors, .teamEfficiency:
             return .teams
@@ -97,6 +97,7 @@ struct WidgetThumbnail: View {
         case .scoreboard:     return .split
         case .dailyMovers:    return .rows
         case .teamEfficiency: return .columns
+        case .nextGameProjection: return .headline
         case .careerArc:      return .line
         }
     }

@@ -444,6 +444,14 @@ def _validate_field(field: ConfigFieldSpec, value: Any) -> tuple[Any, list[str]]
         return cleaned, messages + extra
 
     if kind in ("player", "team", "subject"):
+        if value is None and not field.get("required"):
+            # An optional subject field written out as an explicit ``null`` means the same
+            # thing as one left out entirely: nothing is chosen. ``next_game_projection``'s
+            # ``opponentTeamId`` is exactly that — "leave empty to use the player's actual
+            # next scheduled opponent" — and ``contracts/presets.json`` ships it as ``null``,
+            # so rejecting it would make a preset in the contract invalid against the
+            # catalog in the same contract.
+            return None, messages
         if not _check_subject(value):
             return deepcopy(field.get("default")), [
                 f"expected an id or one of {sorted(_subject_tokens())}, got {value!r}"

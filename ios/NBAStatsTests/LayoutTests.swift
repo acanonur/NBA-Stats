@@ -161,7 +161,7 @@ final class LayoutTests: XCTestCase {
     }
 
     func testWidgetKindRawValuesMatchTheContract() {
-        XCTAssertEqual(WidgetKind.allCases.count, 12)
+        XCTAssertEqual(WidgetKind.allCases.count, 13)
         XCTAssertEqual(WidgetKind.statTile.rawValue, "stat_tile")
         XCTAssertEqual(WidgetKind.playerSnapshot.rawValue, "player_snapshot")
         XCTAssertEqual(WidgetKind.gameLog.rawValue, "game_log")
@@ -170,6 +170,7 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(WidgetKind.shotProfile.rawValue, "shot_profile")
         XCTAssertEqual(WidgetKind.dailyMovers.rawValue, "daily_movers")
         XCTAssertEqual(WidgetKind.teamEfficiency.rawValue, "team_efficiency")
+        XCTAssertEqual(WidgetKind.nextGameProjection.rawValue, "next_game_projection")
         XCTAssertEqual(WidgetKind.careerArc.rawValue, "career_arc")
         for kind in WidgetKind.allCases {
             XCTAssertFalse(kind.fallbackName.isEmpty)
@@ -454,7 +455,7 @@ final class LayoutCatalogTests: XCTestCase {
         let catalog = makeTestCatalog()
         try XCTSkipIf(catalog.presets.isEmpty, "The bundled presets are not available")
         let seeded = LayoutSeeder.seedLayouts(catalog: catalog)
-        XCTAssertEqual(seeded.count, 1, "A first launch should be one working dashboard, not nine")
+        XCTAssertEqual(seeded.count, 1, "A first launch should be one working dashboard, not ten")
         let layout = try XCTUnwrap(seeded.first)
         XCTAssertFalse(layout.isPreset)
         XCTAssertEqual(layout.presetKey, LayoutSeeder.defaultPresetKey)

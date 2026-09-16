@@ -133,7 +133,7 @@ FIXTURE_ENVIRONMENT: dict[str, Optional[str]] = {
 
 # --------------------------------------------------------------------------- widget configs
 
-#: One configuration per widget kind, in catalog order. These are the twelve tiles the
+#: One configuration per widget kind, in catalog order. These are the thirteen tiles the
 #: ``dashboard_resolve`` fixture asks for, and each result's payload is also written out on
 #: its own as ``widget_<kind>.json``, so the two can never disagree.
 #:
@@ -247,6 +247,16 @@ WIDGET_CONFIGS: dict[str, dict[str, Any]] = {
         "conference": "all",
         "limit": 30,
         "style": "table",
+    },
+    "next_game_projection": {
+        "playerId": "$favorite_player",
+        "stats": ["pts", "reb", "ast", "fg3m", "stl", "blk", "tov"],
+        "opponentTeamId": None,
+        "interval": "80",
+        "showCombo": True,
+        "showFactors": True,
+        "season": "latest",
+        "seasonType": "Regular Season",
     },
     "career_arc": {
         "playerId": "$favorite_player",

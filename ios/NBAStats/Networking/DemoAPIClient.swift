@@ -319,6 +319,9 @@ public actor DemoAPIClient: APIClientProtocol {
             for row in value.rows { note(player: row.player) }
         case .teamEfficiency(let value):
             for row in value.rows { note(team: row.team) }
+        case .nextGameProjection(let value):
+            note(player: value.player)
+            note(team: value.game?.opponent)
         case .careerArc(let value):
             note(player: value.player)
         }
