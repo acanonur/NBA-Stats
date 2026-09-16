@@ -919,6 +919,104 @@
       "availableFrom": null
     },
     {
+      "kind": "next_game_projection",
+      "name": "Next Game",
+      "summary": "A projected box score for a player's next game, with the interval and the factors behind it.",
+      "icon": "function",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "availableFrom": "1996-97",
+      "config": [
+        {
+          "key": "playerId",
+          "type": "player",
+          "label": "Player",
+          "required": true,
+          "default": null
+        },
+        {
+          "key": "stats",
+          "type": "metricList",
+          "label": "Project These",
+          "required": true,
+          "default": [
+            "pts",
+            "reb",
+            "ast",
+            "fg3m",
+            "stl",
+            "blk",
+            "tov"
+          ],
+          "metricScope": "player",
+          "maxItems": 8
+        },
+        {
+          "key": "opponentTeamId",
+          "type": "team",
+          "label": "Opponent Override",
+          "required": false,
+          "default": null,
+          "help": "Leave empty to use the player's actual next scheduled opponent."
+        },
+        {
+          "key": "interval",
+          "type": "enum",
+          "label": "Interval",
+          "required": false,
+          "default": "80",
+          "options": [
+            "80",
+            "50",
+            "none"
+          ],
+          "help": "A projected mean without its interval is misleading; 80% is the paper's nominal level."
+        },
+        {
+          "key": "showCombo",
+          "type": "bool",
+          "label": "Show PTS+REB+AST",
+          "required": false,
+          "default": true,
+          "help": "Uses the residual correlation, which widens the interval by about 13%."
+        },
+        {
+          "key": "showFactors",
+          "type": "bool",
+          "label": "Show Context Factors",
+          "required": false,
+          "default": true,
+          "help": "Pace, opponent, venue and rest, each as a multiplier around 1.0."
+        },
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest",
+          "help": "A season string such as 2025-26, or 'latest' for the current season."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        }
+      ]
+    },
+    {
       "kind": "career_arc",
       "name": "Career Arc",
       "summary": "A metric season by season across a whole career, with era availability marked.",

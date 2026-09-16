@@ -467,6 +467,47 @@ Zones, in order: `rim`, `paint_non_rim`, `mid_range`, `corner_three`, `above_bre
               "ranks": { "off_rtg": 3, "def_rtg": 5, "net_rtg": 1 } } ] }
 ```
 
+### `next_game_projection`
+
+A projected box score. See [`docs/PROJECTION.md`](../docs/PROJECTION.md) for the derivation;
+the short version is `Ŝ = M̂ · r̂_reg · f_pace · f_opp · f_home · f_rest`.
+
+```json
+{ "player": { "...PlayerRef" },
+  "game": { "gameId": "0022500640", "date": "2026-01-04", "opponentAbbr": "BOS",
+            "opponent": { "...TeamRef" }, "isHome": true, "restDays": 2, "isBackToBack": false,
+            "opponentDefRtg": 111.8, "expectedPace": 99.1 },
+  "projectedMinutes": { "value": 34.2, "displayValue": "34.2", "halfLifeGames": 2,
+                        "seasonAverage": 33.8, "low": 27.0, "high": 40.5 },
+  "lines": [
+    { "metric": "pts", "descriptor": { "...MetricDescriptor" },
+      "mean": 28.4, "displayValue": "28.4",
+      "low": 19, "high": 38, "intervalLevel": 0.8,
+      "seasonAverage": 27.1, "delta": 1.3,
+      "ratePerMinute": 0.831, "shrinkageK": 81, "exposureMinutes": 1240.0,
+      "shrinkageWeight": 0.94, "halfLifeGames": 6,
+      "dispersionAlpha": 0.061, "dispersionMultiplier": 1.34,
+      "availability": "estimated" } ],
+  "factors": [ { "key": "pace", "label": "Pace", "value": 1.021,
+                 "explanation": "Both teams play slightly faster than league average." } ],
+  "combo": { "label": "PTS+REB+AST", "mean": 45.1, "sd": 9.21, "sdIfIndependent": 8.17,
+             "inflation": 0.127, "low": 33, "high": 57,
+             "correlation": [[1.0, 0.3, 0.17], [0.3, 1.0, 0.2], [0.17, 0.2, 1.0]] },
+  "method": { "summary": "Opportunity x rate, shrunk per statistic.",
+              "minutesHalfLifeGames": 2, "correlationApplied": true,
+              "dispersionShrinkageGames": 60 },
+  "notes": [ "Projected minutes carry most of the error." ] }
+```
+
+Every `line` carries `availability: "estimated"` — a projection is never a record, and the
+client renders it with the same treatment as a pre-1997 derived stat. `game` is null when the
+player has no scheduled next game, in which case the payload still projects against a
+league-average opponent and says so in `notes`.
+
+`low`/`high` are the bounds of the negative-binomial interval at `intervalLevel`, **after** the
+per-player dispersion multiplier. `sdIfIndependent` exists so the client can show what ignoring
+residual correlation would have claimed; the gap is the point.
+
 ### `career_arc`
 
 ```json
