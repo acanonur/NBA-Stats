@@ -486,6 +486,15 @@ public struct WidgetHost: View {
 One view per kind, each taking its own payload type and a `WidgetSize`, each with an Xcode
 preview driven by a bundled fixture. Charts use Swift Charts (`import Charts`).
 
+**The broadsheet presentation.** `DashboardLayout.presentation` is `tiles` or `broadsheet`, and
+`DashboardScreen` pushes it down as `\.isBroadsheet`. On a broadsheet page `DashboardGrid`
+collapses to one column, `WidgetContainer` drops the card entirely (no fill, border, radius or
+reserved height) and sets the title as a kicker, and a widget that has a broadsheet variant picks
+it up from the environment. `DesignSystem/BroadsheetTheme.swift` holds the tokens — deliberately
+a separate namespace from `Palette`, so a tile widget cannot half-adopt the aesthetic by reaching
+for one colour. `ProjectionBoardWidget` is the only widget with a variant today; every other kind
+renders unchanged. See [`docs/BROADSHEET.md`](../docs/BROADSHEET.md).
+
 ### 2.10 `App/`
 
 ```swift

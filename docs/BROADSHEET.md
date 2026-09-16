@@ -123,3 +123,26 @@ two-thirds of the time:
 
 A client heading the board with `selectionDate` would print last night's date above tomorrow
 night's numbers. The first draft did that too.
+
+## 8. Where the broadsheet stops
+
+`LayoutPresentation` governs the page, the grid, the widget chrome and any widget that has a
+variant. Today exactly one does: `ProjectionBoardWidget`. Everything else renders unchanged, and
+three pieces of shared chrome stay in the app's tile treatment even on a broadsheet page:
+
+* `LoadingTile`, `ErrorTile` and `UnavailableTile`
+* `AvailabilityBadge` and `StalenessDot`
+* the configuration and catalog sheets
+
+This is a stop, not an oversight. Reskinning the state views means touching every widget's
+failure path to serve one preset, and a sans-serif "Try again" on a serif page is a smaller
+problem than a regression in the ten presets that are not broadsheets. The loaded-state
+footnote *is* restyled, because it is the only one of these a reader sees when nothing is wrong.
+
+Two consequences worth stating rather than discovering:
+
+* A widget dragged onto a broadsheet layout renders in its tile typography inside broadsheet
+  chrome. It is legible and it is honest about being a tile; it is not designed.
+* A `projection_board` dragged onto an ordinary dashboard renders as a tile, deliberately — the
+  widget reads `\.isBroadsheet` rather than assuming its own presentation, so it never becomes a
+  serif island in a grid of cards.

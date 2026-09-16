@@ -1356,6 +1356,7 @@ public enum WidgetPayload: Hashable, Sendable {
     case dailyMovers(DailyMoversPayload)
     case teamEfficiency(TeamEfficiencyPayload)
     case nextGameProjection(NextGameProjectionPayload)
+    case projectionBoard(ProjectionBoardPayload)
     case careerArc(CareerArcPayload)
 
     public var kind: WidgetKind {
@@ -1372,6 +1373,7 @@ public enum WidgetPayload: Hashable, Sendable {
         case .dailyMovers: return .dailyMovers
         case .teamEfficiency: return .teamEfficiency
         case .nextGameProjection: return .nextGameProjection
+        case .projectionBoard: return .projectionBoard
         case .careerArc: return .careerArc
         }
     }
@@ -1405,6 +1407,8 @@ public enum WidgetPayload: Hashable, Sendable {
             return .teamEfficiency(try container.decode(TeamEfficiencyPayload.self, forKey: payloadKey))
         case .nextGameProjection:
             return .nextGameProjection(try container.decode(NextGameProjectionPayload.self, forKey: payloadKey))
+        case .projectionBoard:
+            return .projectionBoard(try container.decode(ProjectionBoardPayload.self, forKey: payloadKey))
         case .careerArc:
             return .careerArc(try container.decode(CareerArcPayload.self, forKey: payloadKey))
         }
@@ -1437,6 +1441,8 @@ public enum WidgetPayload: Hashable, Sendable {
             return .teamEfficiency(try decoder.decode(TeamEfficiencyPayload.self, from: data))
         case .nextGameProjection:
             return .nextGameProjection(try decoder.decode(NextGameProjectionPayload.self, from: data))
+        case .projectionBoard:
+            return .projectionBoard(try decoder.decode(ProjectionBoardPayload.self, from: data))
         case .careerArc:
             return .careerArc(try decoder.decode(CareerArcPayload.self, from: data))
         }
@@ -1457,6 +1463,7 @@ public enum WidgetPayload: Hashable, Sendable {
         case .dailyMovers: return .dailyMovers(.preview)
         case .teamEfficiency: return .teamEfficiency(.preview)
         case .nextGameProjection: return .nextGameProjection(.preview)
+        case .projectionBoard: return .projectionBoard(.preview)
         case .careerArc: return .careerArc(.preview)
         }
     }
@@ -1480,6 +1487,7 @@ extension WidgetPayload: Encodable {
         case .dailyMovers(let payload): try container.encode(payload)
         case .teamEfficiency(let payload): try container.encode(payload)
         case .nextGameProjection(let payload): try container.encode(payload)
+        case .projectionBoard(let payload): try container.encode(payload)
         case .careerArc(let payload): try container.encode(payload)
         }
     }

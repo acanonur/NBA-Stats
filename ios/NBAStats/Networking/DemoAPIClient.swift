@@ -227,8 +227,13 @@ public actor DemoAPIClient: APIClientProtocol {
     /// `availability: "estimated"` for it. Without this, the demo tile would lose the chrome-level
     /// "est." badge that `WidgetContainer` draws from this value, which is exactly the
     /// projection-dressed-as-a-record that `docs/PROJECTION.md` §7 rule 5 forbids.
+    ///
+    /// Both projection kinds need it, for the same reason and with the same force.
     private static func demoAvailability(for kind: WidgetKind) -> MetricAvailability {
-        kind == .nextGameProjection ? .estimated : .full
+        switch kind {
+        case .nextGameProjection, .projectionBoard: return .estimated
+        default: return .full
+        }
     }
 
     /// The payload for a kind, decoded once and kept. A kind whose fixture is missing or
@@ -335,6 +340,8 @@ public actor DemoAPIClient: APIClientProtocol {
         case .nextGameProjection(let value):
             note(player: value.player)
             note(team: value.game?.opponent)
+        case .projectionBoard(let value):
+            for row in value.rows { note(player: row.player) }
         case .careerArc(let value):
             note(player: value.player)
         }

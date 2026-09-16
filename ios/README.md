@@ -4,7 +4,7 @@ An editable advanced-stats dashboard for NBA data. SwiftUI, iOS 17+, Swift Chart
 third-party packages**.
 
 The app is a grid of widgets the reader arranges themselves: drag to reorder, resize, configure
-every widget from a schema the server ships, or start from one of ten presets. Every number is
+every widget from a schema the server ships, or start from one of eleven presets. Every number is
 era-honest — a stat the league did not record in a given season renders as an em dash with an
 explanation, never as a zero.
 
@@ -170,7 +170,7 @@ the drift check:
 python3 scripts/check_contracts.py
 ```
 
-`CatalogTests` asserts the counts the contract commits to — **61 metrics, 13 widgets, 10 presets**
+`CatalogTests` asserts the counts the contract commits to — **61 metrics, 14 widgets, 11 presets**
 — so a catalog change that the app has not been told about fails the iOS suite too.
 
 ---
@@ -235,6 +235,40 @@ One thing the fixture will teach you before the code does: these are *quantile* 
 count, so a tiny mean can sit outside a collapsed one. The demo player projects 0.08 three-pointers
 with an 80% interval of 0–0, because he makes none more than nine nights in ten. That is the
 distribution being honest, not a bug, and the test allows it only when `low == high`.
+
+Each factor also carries `contributions`: the same multiplier expressed in each statistic's own
+units, so the widget's "Why" block can say `+0.6` rather than `1.021`. It is presented as the
+largest movers and never as a breakdown — the factors multiply, so the column does not sum, and
+`ProjectionPayloadTests` asserts the gap rather than leaving the caveat in prose.
+
+---
+
+## The Fantasy Board and the broadsheet
+
+`projection_board` is the same engine turned into a slate view: several players, each line drawn
+as a range with the player's own season average marked on it. It comes from a Claude Design
+handoff and it is the one preset that does not render as tiles.
+
+* **`DashboardLayout.presentation`** is `tiles` or `broadsheet` and governs the page, not a
+  widget: `DashboardGrid` collapses to one column, `WidgetContainer` drops the card entirely and
+  sets the title as a kicker, and `\.isBroadsheet` reaches every widget below.
+  A layout document written before the field existed decodes as `tiles`.
+* **`RangeBar`** draws the band (the 80% interval, which *is* the 10th-to-90th percentile), the
+  dot (the projection) and the tick (the reference). It takes its greys from the page, so the
+  board is legible on an ordinary dashboard too.
+* **The tick is a season average, never a book line.** The design drew every band against a
+  sportsbook number; that layer is not implemented and should not be added without the licensing
+  conversation in [`docs/BROADSHEET.md`](../docs/BROADSHEET.md) §1 happening first.
+  `ProjectionBoardPayloadTests` searches the encoded payload for the vocabulary.
+* **Rows are ranked by `deltaZ`, not by `delta`.** A raw delta is not comparable across
+  statistics — ranking on it returns six rows of points every night — so the sort key is the
+  delta over the projection's own spread. The test's power check re-ranks by raw delta and
+  asserts that it would have collapsed.
+* **Three dates, because there are three**: `selectionDate` is the completed slate the players
+  were chosen from, `date` and `throughDate` bracket the games being projected.
+
+`docs/BROADSHEET.md` §8 records where the presentation deliberately stops: the loading, failure
+and era-gap tiles keep the app's treatment even on a broadsheet page.
 
 ---
 

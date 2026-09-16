@@ -87,7 +87,7 @@ public extension View {
 ///
 /// This is the single place where a payload meets a view: `WidgetContainer` owns the chrome —
 /// title, era badge, overflow menu — and hands the interior to this type. Four states and
-/// thirteen payloads are all handled here, so adding a widget kind is a change in exactly two
+/// fourteen payloads are all handled here, so adding a widget kind is a change in exactly two
 /// files: the payload in `Core`, and the one `case` below.
 public struct WidgetHost: View {
     private let widget: DashboardWidget
@@ -95,6 +95,7 @@ public struct WidgetHost: View {
     private let isEditing: Bool
 
     @Environment(\.widgetRetryAction) private var retryAction
+    @Environment(\.isBroadsheet) private var isBroadsheet
 
     public init(widget: DashboardWidget, state: WidgetState, isEditing: Bool) {
         self.widget = widget
@@ -148,7 +149,7 @@ public struct WidgetHost: View {
 
     // MARK: Payload dispatch
 
-    /// The thirteen payload cases, each rendered by the view that owns it. Every widget view takes
+    /// The fourteen payload cases, each rendered by the view that owns it. Every widget view takes
     /// the same `(payload:size:)` shape, so this stays a flat mapping with nothing to decide.
     @ViewBuilder private func view(for payload: WidgetPayload) -> some View {
         switch payload {
@@ -176,6 +177,8 @@ public struct WidgetHost: View {
             TeamEfficiencyWidget(payload: value, size: widget.size)
         case .nextGameProjection(let value):
             NextGameProjectionWidget(payload: value, size: widget.size)
+        case .projectionBoard(let value):
+            ProjectionBoardWidget(payload: value, size: widget.size)
         case .careerArc(let value):
             CareerArcWidget(payload: value, size: widget.size)
         }
@@ -196,7 +199,7 @@ public struct WidgetHost: View {
         switch availability {
         case .full:
             return []
-        case .estimated where kind == .nextGameProjection:
+        case .estimated where kind == .nextGameProjection || kind == .projectionBoard:
             return ["Projected, not recorded. These are estimates of a game that has not been played, and each carries its own range."]
         case .estimated:
             return ["Estimated from the box score. The league did not publish possession data before 1996-97."]
@@ -204,6 +207,28 @@ public struct WidgetHost: View {
             return ["Some of the games behind these numbers are missing the inputs they need."]
         case .unavailable:
             return []
+        }
+    }
+
+    /// One footnote line, in the page's own voice.
+    ///
+    /// The footnote is the only piece of chrome that shows in the ordinary loaded state, so it is
+    /// worth following the broadsheet's typography. The loading, failure and era-gap tiles still
+    /// render in the app's tile treatment on a broadsheet page — a deliberate stop, recorded in
+    /// docs/BROADSHEET.md §8, rather than an oversight.
+    ///
+    /// Written as two branches instead of a conditional font: `hardwoodText` sets the font *and*
+    /// the colour, so applying it after a broadsheet font would silently undo it.
+    @ViewBuilder private func footnote(_ line: String) -> some View {
+        if isBroadsheet {
+            Text(line)
+                .font(Broadsheet.serif(11))
+                .foregroundStyle(Broadsheet.textMuted)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            Text(line)
+                .hardwoodText(.caption)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -217,9 +242,7 @@ public struct WidgetHost: View {
                 if !lines.isEmpty {
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         ForEach(lines.indices, id: \.self) { index in
-                            Text(lines[index])
-                                .hardwoodText(.caption)
-                                .fixedSize(horizontal: false, vertical: true)
+                            footnote(lines[index])
                         }
                     }
                 }

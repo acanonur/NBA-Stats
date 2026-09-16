@@ -262,6 +262,7 @@ public struct NextGameProjectionWidget: View {
             minutesBlock
             statLinesSection(readings)
             comboBlock
+            whyBlock
             factorsBlock
             HardwoodChartFootnote(lines: methodLines)
             notesBlock
@@ -844,6 +845,60 @@ public struct NextGameProjectionWidget: View {
         }
         parts.append("estimated, not a record")
         return parts.joined(separator: ", ")
+    }
+
+    // MARK: Why
+
+    /// The design's "Why" section: the context factors turned into the statistic's own units.
+    ///
+    /// A reader can be told that `f_pace` is 1.021 and still not know whether to care. Half a
+    /// point, they know. The arithmetic is the server's (`mean × (factor − 1)`) and the caption
+    /// is the honest part: these are the **largest movers**, not a breakdown. The factors
+    /// multiply, so the numbers below do not sum to anything, and the caption says as much
+    /// rather than inviting a reader to add them up and find the total wrong.
+    ///
+    /// Headline metric only. Repeating the block for all seven lines would turn an argument into
+    /// a spreadsheet, and the first line is the one the widget already leads with.
+    @ViewBuilder private var whyBlock: some View {
+        if let metric = whyMetric {
+            let movers = payload.factors.largestMovers(for: metric.key)
+            if !movers.isEmpty {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Text("Why \(metric.label)")
+                        .hardwoodText(.statLabel)
+                    ForEach(movers) { factor in
+                        whyRow(factor, metric: metric)
+                    }
+                    Text("The largest movers, not a breakdown: the factors multiply, so these do not add up to the projection.")
+                        .hardwoodText(.caption)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+    }
+
+    /// `(key, label, format)` for the line the "Why" block explains — the first one shown.
+    private var whyMetric: (key: String, label: String, format: MetricFormat?)? {
+        guard let line = payload.lines.first else { return nil }
+        return (line.metric, line.shortName, line.descriptor?.format)
+    }
+
+    private func whyRow(_ factor: ProjectionFactor, metric: (key: String, label: String, format: MetricFormat?)) -> some View {
+        let contribution = factor.contributions[metric.key] ?? 0
+        let text = factor.contributionText(for: metric.key, format: metric.format) ?? Formatting.emDash
+        return HStack(alignment: .firstTextBaseline, spacing: Spacing.sm) {
+            Text(text)
+                .hardwoodText(.tableCell,
+                              color: Palette.value(for: contribution, higherIsBetter: true),
+                              monospacedDigits: true)
+                .frame(minWidth: 44, alignment: .trailing)
+            Text(factor.explanation ?? factor.label)
+                .hardwoodText(.caption)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(text) \(metric.label) from \(factor.label). \(factor.explanation ?? "")")
     }
 
     // MARK: Context factors

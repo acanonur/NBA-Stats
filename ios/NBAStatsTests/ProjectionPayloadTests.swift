@@ -255,7 +255,8 @@ final class ProjectionPayloadTests: XCTestCase {
 
     func testPreviewCarriesEveryContextFactorTheFormulaHas() {
         let payload = NextGameProjectionPayload.preview
-        for key in ["pace", "opponent", "home", "rest"] {
+        // The resolver's own keys, not approximations of them: `venue`, never `home`.
+        for key in ["pace", "opponent", "venue", "rest"] {
             XCTAssertNotNil(payload.factor(key), "No \(key) factor, which §7 rule 3 requires")
         }
         XCTAssertNotNil(payload.line("pts"))
@@ -267,9 +268,82 @@ final class ProjectionPayloadTests: XCTestCase {
         XCTAssertFormatted(ProjectionFactor(key: "pace", label: "Pace", value: 1.021).effectText, "+2.1%")
         XCTAssertFormatted(ProjectionFactor(key: "opponent", label: "Opponent", value: 0.981).effectText, "-1.9%")
         XCTAssertEqual(ProjectionFactor(key: "rest", label: "Rest").effectText, Formatting.emDash)
-        XCTAssertTrue(ProjectionFactor(key: "home", label: "Home", value: 1.0).isNeutral)
-        XCTAssertTrue(ProjectionFactor(key: "home", label: "Home", value: nil).isNeutral,
+        XCTAssertTrue(ProjectionFactor(key: "venue", label: "Venue", value: 1.0).isNeutral)
+        XCTAssertTrue(ProjectionFactor(key: "venue", label: "Venue", value: nil).isNeutral,
                       "A factor with no value cannot be claimed to move anything")
+    }
+
+    // MARK: - "Why" contributions
+
+    func testEveryFactorCarriesAContributionForEveryProjectedLine() throws {
+        let payload = try fixtureOrPreview()
+        let metrics = Set(payload.lines.map { $0.metric })
+        XCTAssertFalse(metrics.isEmpty)
+
+        for factor in payload.factors {
+            XCTAssertEqual(Set(factor.contributions.keys), metrics,
+                           "\(factor.key) does not explain every projected line")
+            guard let value = factor.value else { continue }
+            for (metric, contribution) in factor.contributions {
+                if value > 1 {
+                    XCTAssertGreaterThanOrEqual(contribution, 0, "\(factor.key)/\(metric)")
+                } else if value < 1 {
+                    XCTAssertLessThanOrEqual(contribution, 0, "\(factor.key)/\(metric)")
+                }
+            }
+        }
+    }
+
+    func testAContributionRendersAsASignedNumberInTheStatisticsOwnUnits() {
+        let factor = ProjectionFactor(key: "pace", label: "Pace", value: 1.021,
+                                      contributions: ["pts": 0.6, "reb": -0.16])
+        XCTAssertFormatted(factor.contributionText(for: "pts") ?? "", "+0.6")
+        XCTAssertFormatted(factor.contributionText(for: "reb") ?? "", "-0.2")
+        XCTAssertNil(factor.contributionText(for: "ast"),
+                     "A metric the server said nothing about must not be drawn as zero")
+    }
+
+    func testALargestMoverListIsOrderedByMagnitudeAndDropsTheNoise() {
+        let factors = [
+            ProjectionFactor(key: "pace", label: "Pace", value: 1.02, contributions: ["pts": 0.6]),
+            ProjectionFactor(key: "opponent", label: "Opponent", value: 0.97, contributions: ["pts": -1.4]),
+            ProjectionFactor(key: "venue", label: "Venue", value: 1.01, contributions: ["pts": 0.3]),
+            // Below the 0.05 floor: true, and not worth a line of a reader's attention.
+            ProjectionFactor(key: "rest", label: "Rest", value: 1.0001, contributions: ["pts": 0.002])
+        ]
+        XCTAssertEqual(factors.largestMovers(for: "pts").map { $0.key }, ["opponent", "pace", "venue"])
+        XCTAssertEqual(factors.largestMovers(for: "pts", limit: 2).map { $0.key }, ["opponent", "pace"])
+        XCTAssertTrue(factors.largestMovers(for: "no_such_metric").isEmpty)
+    }
+
+    func testContributionsAreNotADecomposition() throws {
+        // The caveat the contract and both docs state, held as an assertion rather than prose:
+        // the factors multiply, so the contributions do not sum to the neutral-to-actual
+        // difference. If this ever starts summing exactly, the engine has stopped multiplying.
+        let payload = try fixtureOrPreview()
+        guard let points = payload.line("pts"), let mean = points.mean else {
+            throw XCTSkip("The payload does not project points")
+        }
+        let multiplier = payload.factors.compactMap { $0.value }.reduce(1, *)
+        guard multiplier > 0, abs(multiplier - 1) > 1e-6 else {
+            throw XCTSkip("Every context factor is neutral, so there is nothing to attribute")
+        }
+
+        let summed = payload.factors.compactMap { $0.contributions["pts"] }.reduce(0, +)
+        let truth = mean - mean / multiplier
+        XCTAssertNotEqual(summed, truth, accuracy: 1e-9,
+                          "The contributions summed exactly, which a product cannot do")
+        XCTAssertEqual(summed, truth, accuracy: 0.25,
+                       "A first-order attribution should still land close to the truth")
+    }
+
+    /// The generated fixture when the bundle has one, and the preview when it does not, so a
+    /// contribution test is never a no-op on a machine without the backend's output.
+    private func fixtureOrPreview() throws -> NextGameProjectionPayload {
+        guard let data = TestBundles.fixtureData(named: ProjectionPayloadTests.fixtureName) else {
+            return .preview
+        }
+        return try decoder.decode(NextGameProjectionPayload.self, from: data)
     }
 
     // MARK: - A projection is never a record

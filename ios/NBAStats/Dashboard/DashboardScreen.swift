@@ -217,10 +217,17 @@ struct DashboardScreenContent: View {
 
     // MARK: Body
 
+    /// True when the selected layout asks for the editorial presentation rather than tiles.
+    ///
+    /// Read once here and pushed down the environment: the grid uses it to collapse to a single
+    /// column, the chrome to drop the card, and each widget to pick its variant. Nothing below
+    /// needs to know which layout it belongs to.
+    private var isBroadsheet: Bool { layout?.presentation == .broadsheet }
+
     var body: some View {
         NavigationStack {
             ZStack {
-                Palette.background.ignoresSafeArea()
+                (isBroadsheet ? Broadsheet.background : Palette.background).ignoresSafeArea()
                 mainContent
             }
             .navigationTitle(layout?.name ?? "Dashboard")
@@ -231,7 +238,8 @@ struct DashboardScreenContent: View {
                 sheetContent(presented)
             }
         }
-        .tint(accent.color)
+        .tint(isBroadsheet ? Broadsheet.accentAbove : accent.color)
+        .broadsheet(isBroadsheet)
         .widgetRetryAction { widgetID in
             Task { await service.retry(widgetID: widgetID) }
         }

@@ -58,7 +58,7 @@ final class PayloadDecodingTests: XCTestCase {
         let missing = missingWidgetFixtures()
         // The tripwire survives the skip below: a *fourteenth* kind added with neither a fixture
         // nor a test still fails here rather than quietly widening the skip.
-        XCTAssertEqual(decoded.count + missing.count, 13, "A widget kind was added without a fixture or a test")
+        XCTAssertEqual(decoded.count + missing.count, 14, "A widget kind was added without a fixture or a test")
         XCTAssertEqual(decoded.count + missing.count, WidgetKind.allCases.count)
         try skipIfFixturesAreMissing(missing)
     }

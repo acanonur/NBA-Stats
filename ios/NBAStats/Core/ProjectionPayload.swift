@@ -345,11 +345,19 @@ public struct ProjectedLine: Codable, Hashable, Sendable, Identifiable {
 /// (`docs/PROJECTION.md` §3). Showing these is what turns the projection from an oracle into an
 /// argument (§7 rule 3).
 public struct ProjectionFactor: Codable, Hashable, Sendable, Identifiable {
-    /// `"pace"`, `"opponent"`, `"home"`, `"rest"`.
+    /// `"pace"`, `"opponent"`, `"venue"`, `"rest"` — the keys the resolver emits.
     public let key: String
     public let label: String
     public let value: Double?
     public let explanation: String?
+    /// This factor's signed share of each projected statistic, keyed by metric, in that
+    /// statistic's own units. Empty when the server did not send it.
+    ///
+    /// A multiplier of `1.021` means nothing to a reader until it is half a point. The server
+    /// derives this as `mean × (value − 1)` and the contract is explicit that it is a
+    /// **first-order attribution, not a decomposition** — the factors multiply, so the column
+    /// does not add up. `contributionsCaption` is written to say so wherever these are shown.
+    public let contributions: [String: Double]
 
     public var id: String { key }
 
@@ -365,15 +373,31 @@ public struct ProjectionFactor: Codable, Hashable, Sendable, Identifiable {
         return abs(value - 1) < 0.001
     }
 
-    public init(key: String, label: String, value: Double? = nil, explanation: String? = nil) {
+    /// This factor's contribution to one statistic, as a signed number in that statistic's
+    /// units: `"+1.6"`. `nil` when the server sent no contribution for that metric, which is
+    /// not the same as zero and must not be drawn as one.
+    public func contributionText(for metric: String, format: MetricFormat? = nil) -> String? {
+        guard let contribution = contributions[metric], contribution.isFinite else { return nil }
+        if let format = format, format.isPercentage {
+            return Formatting.value(contribution, format: format)
+        }
+        return Formatting.decimal(contribution, places: 1, signed: true)
+    }
+
+    public init(key: String,
+                label: String,
+                value: Double? = nil,
+                explanation: String? = nil,
+                contributions: [String: Double] = [:]) {
         self.key = key
         self.label = label
         self.value = value
         self.explanation = explanation
+        self.contributions = contributions
     }
 
     private enum CodingKeys: String, CodingKey {
-        case key, label, value, explanation
+        case key, label, value, explanation, contributions
     }
 
     public init(from decoder: Decoder) throws {
@@ -382,6 +406,27 @@ public struct ProjectionFactor: Codable, Hashable, Sendable, Identifiable {
         label = try container.decodeIfPresent(String.self, forKey: .label) ?? key
         value = try container.decodeIfPresent(Double.self, forKey: .value)
         explanation = try container.decodeIfPresent(String.self, forKey: .explanation)
+        // A server old enough not to send these, or one that sent something unreadable, costs
+        // the reader the "Why" numbers — never the projection they sit under.
+        let rawContributions = (try? container.decodeIfPresent([String: Double].self, forKey: .contributions)) ?? nil
+        contributions = rawContributions ?? [:]
+    }
+}
+
+public extension Array where Element == ProjectionFactor {
+    /// The factors that actually moved this statistic, largest first.
+    ///
+    /// "Largest movers", not "the breakdown". The factors are multiplicative, so these do not
+    /// sum to the difference between the projection and a neutral-context one, and presenting
+    /// them as a total would be arithmetic the reader could check and find wrong.
+    func largestMovers(for metric: String, limit: Int = 3) -> [ProjectionFactor] {
+        filter { factor in
+            guard let contribution = factor.contributions[metric] else { return false }
+            return contribution.isFinite && abs(contribution) >= 0.05
+        }
+        .sorted { abs($0.contributions[metric] ?? 0) > abs($1.contributions[metric] ?? 0) }
+        .prefix(limit)
+        .map { $0 }
     }
 }
 
@@ -650,13 +695,17 @@ public struct NextGameProjectionPayload: Codable, Hashable, Sendable {
         ],
         factors: [
             ProjectionFactor(key: "pace", label: "Pace", value: 1.021,
-                             explanation: "Both teams play slightly faster than league average."),
+                             explanation: "Both teams play slightly faster than league average.",
+                             contributions: ["pts": 0.60, "reb": 0.16, "ast": 0.19]),
             ProjectionFactor(key: "opponent", label: "Opponent", value: 0.981,
-                             explanation: "Boston's defence is better than league average, which costs about 2%."),
-            ProjectionFactor(key: "home", label: "Home", value: 1.014,
-                             explanation: "Home games run a little higher than road games."),
+                             explanation: "Boston's defence is better than league average, which costs about 2%.",
+                             contributions: ["pts": -0.54, "reb": -0.15, "ast": -0.17]),
+            ProjectionFactor(key: "venue", label: "Venue", value: 1.014,
+                             explanation: "Home games run a little higher than road games.",
+                             contributions: ["pts": 0.40, "reb": 0.11, "ast": 0.12]),
             ProjectionFactor(key: "rest", label: "Rest", value: 1.003,
-                             explanation: "Two days of rest, which is close to neutral.")
+                             explanation: "Two days of rest, which is close to neutral.",
+                             contributions: ["pts": 0.09, "reb": 0.02, "ast": 0.03])
         ],
         combo: ProjectionCombo.preview,
         method: ProjectionMethod.preview,
@@ -665,4 +714,267 @@ public struct NextGameProjectionPayload: Codable, Hashable, Sendable {
             "Every number here is an estimate, not a record."
         ]
     )
+}
+
+// MARK: - projection_board
+
+/// One row of the Fantasy Board: a player, a statistic, and the range it is projected into
+/// (`contracts/CONTRACT.md` §4, `projection_board.rows[]`).
+///
+/// **There is no line, price or edge here, and there must never be one.** The design this was
+/// built from drew each band against a sportsbook line; `referenceValue` is the player's own
+/// season average instead. `docs/BROADSHEET.md` §1 has the reasoning, `docs/PROJECTION.md` §6 the
+/// licensing that settles it.
+public struct ProjectionBoardRow: Codable, Hashable, Sendable, Identifiable {
+    public let player: PlayerRef
+    /// `"LAL @ DEN"` or `"BOS vs NYK"`, as the server composed it.
+    public let matchup: String?
+    public let opponentAbbr: String?
+    public let isHome: Bool?
+    public let gameId: GameID?
+    /// The scheduling day of the game being projected, which is *not* the slate the players were
+    /// chosen from. See `ProjectionBoardPayload`.
+    public let gameDate: String?
+    public let metric: String
+    public let descriptor: MetricDescriptor?
+    public let projection: Double?
+    public let displayValue: String
+    /// The 10th and 90th percentile of the predictive distribution — the band.
+    public let low: Double?
+    public let high: Double?
+    public let intervalLevel: Double?
+    /// The mark the band is read against: the player's own average. Never a market line.
+    public let referenceValue: Double?
+    public let delta: Double?
+    /// `delta` in units of the projection's own spread. This is the board's sort key, because a
+    /// raw delta is not comparable across statistics — see `docs/BROADSHEET.md` §6.
+    public let deltaZ: Double?
+    public let projectedMinutes: Double?
+    public let availability: MetricAvailability
+
+    /// Unique within one board: a player can appear once per statistic.
+    public var id: String { "\(player.playerId).\(metric)" }
+
+    public var metricLabel: String {
+        descriptor?.shortName ?? descriptor?.name ?? metric.uppercased()
+    }
+
+    /// `"31.5"` — the reference mark, formatted the way the metric formats.
+    public var referenceText: String? {
+        guard let referenceValue = referenceValue, referenceValue.isFinite else { return nil }
+        return Formatting.value(referenceValue, format: descriptor?.format ?? .decimal1)
+    }
+
+    /// `"+2.7"`, or `nil` when there is no mark to compare against.
+    public var deltaText: String? {
+        guard let delta = delta, delta.isFinite else { return nil }
+        return Formatting.decimal(delta, places: 1, signed: true)
+    }
+
+    /// The bounds as whole counts, because a single game's interval is a count and `19.0–38.0`
+    /// would claim a precision it does not have.
+    public var lowText: String { low.map { projectionBoundText($0, format: descriptor?.format) } ?? Formatting.emDash }
+    public var highText: String { high.map { projectionBoundText($0, format: descriptor?.format) } ?? Formatting.emDash }
+
+    /// True when the projection sits above the player's own average. `nil` with no reference, and
+    /// `nil` is drawn as neither colour rather than as "below".
+    public var isAboveReference: Bool? {
+        guard let delta = delta, delta.isFinite, abs(delta) > 1e-9 else { return nil }
+        return delta > 0
+    }
+
+    public init(player: PlayerRef,
+                matchup: String? = nil,
+                opponentAbbr: String? = nil,
+                isHome: Bool? = nil,
+                gameId: GameID? = nil,
+                gameDate: String? = nil,
+                metric: String,
+                descriptor: MetricDescriptor? = nil,
+                projection: Double? = nil,
+                displayValue: String = Formatting.emDash,
+                low: Double? = nil,
+                high: Double? = nil,
+                intervalLevel: Double? = nil,
+                referenceValue: Double? = nil,
+                delta: Double? = nil,
+                deltaZ: Double? = nil,
+                projectedMinutes: Double? = nil,
+                availability: MetricAvailability = .estimated) {
+        self.player = player
+        self.matchup = matchup
+        self.opponentAbbr = opponentAbbr
+        self.isHome = isHome
+        self.gameId = gameId
+        self.gameDate = gameDate
+        self.metric = metric
+        self.descriptor = descriptor
+        self.projection = projection
+        self.displayValue = displayValue
+        self.low = low
+        self.high = high
+        self.intervalLevel = intervalLevel
+        self.referenceValue = referenceValue
+        self.delta = delta
+        self.deltaZ = deltaZ
+        self.projectedMinutes = projectedMinutes
+        self.availability = ProjectionBoardRow.projectedAvailability(availability)
+    }
+
+    /// A projection is never a record (`docs/PROJECTION.md` §7 rule 5), so `.full` is not a value
+    /// this type can hold — however the server spelled it, and however a caller constructs one.
+    /// Same rule and same implementation as `ProjectedLine`; a board row is a projected line.
+    private static func projectedAvailability(_ raw: MetricAvailability) -> MetricAvailability {
+        raw == .full ? .estimated : raw
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case player, matchup, opponentAbbr, isHome, gameId, gameDate, metric, descriptor
+        case projection, displayValue, low, high, intervalLevel
+        case referenceValue, delta, deltaZ, projectedMinutes, availability
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        player = try container.decode(PlayerRef.self, forKey: .player)
+        matchup = try container.decodeIfPresent(String.self, forKey: .matchup)
+        opponentAbbr = try container.decodeIfPresent(String.self, forKey: .opponentAbbr)
+        isHome = try container.decodeIfPresent(Bool.self, forKey: .isHome)
+        gameId = try container.decodeIfPresent(GameID.self, forKey: .gameId)
+        gameDate = try container.decodeIfPresent(String.self, forKey: .gameDate)
+        metric = try container.decode(String.self, forKey: .metric)
+        descriptor = try container.decodeIfPresent(MetricDescriptor.self, forKey: .descriptor)
+        projection = try container.decodeIfPresent(Double.self, forKey: .projection)
+        displayValue = try container.decodeIfPresent(String.self, forKey: .displayValue) ?? Formatting.emDash
+        low = try container.decodeIfPresent(Double.self, forKey: .low)
+        high = try container.decodeIfPresent(Double.self, forKey: .high)
+        intervalLevel = try container.decodeIfPresent(Double.self, forKey: .intervalLevel)
+        referenceValue = try container.decodeIfPresent(Double.self, forKey: .referenceValue)
+        delta = try container.decodeIfPresent(Double.self, forKey: .delta)
+        deltaZ = try container.decodeIfPresent(Double.self, forKey: .deltaZ)
+        projectedMinutes = try container.decodeIfPresent(Double.self, forKey: .projectedMinutes)
+        // A projection is never a record, so an absent *or* unreadable marker is `estimated`,
+        // and a server that said `full` is overruled rather than believed.
+        let rawAvailability = (try? container.decodeIfPresent(MetricAvailability.self, forKey: .availability)) ?? nil
+        availability = ProjectionBoardRow.projectedAvailability(rawAvailability ?? .estimated)
+    }
+}
+
+/// The Fantasy Board (`contracts/CONTRACT.md` §4, `projection_board`).
+///
+/// **Three dates, because there are three.** The server picks its players off the last completed
+/// slate (`selectionDate`) and projects each of them forward to whatever *they* play next, which
+/// need not be one shared night — hence `date` and `throughDate`. Heading the board with
+/// `selectionDate` would put last night's date above tomorrow night's numbers, so this type
+/// exposes `dateHeadline`, which is built from the right two.
+public struct ProjectionBoardPayload: Codable, Hashable, Sendable {
+    /// The earliest game being projected: the board's "tonight".
+    public let date: String
+    /// The latest, when the rows span more than one night. `nil` when they do not.
+    public let throughDate: String?
+    /// The completed slate the candidate players were taken from.
+    public let selectionDate: String?
+    /// Distinct games among `rows`, not games on the slate.
+    public let gameCount: Int
+    /// `"season_average"`, `"career_average"` or `"none"`.
+    public let reference: String
+    /// What to call the mark on screen: `"season avg"`. `nil` when there is no mark.
+    public let referenceLabel: String?
+    public let rows: [ProjectionBoardRow]
+    /// The server's sentence about what the band is. Rendered verbatim; it is careful about
+    /// saying the interval is analytic rather than simulated.
+    public let note: String?
+
+    /// `"Sun, Jan 4"`, or `"Sun, Jan 4 – Mon, Jan 5"` when the rows span two nights.
+    public var dateHeadline: String {
+        let first = Formatting.mediumGameDate(date)
+        guard let throughDate = throughDate, throughDate != date, !throughDate.isEmpty else {
+            return first
+        }
+        return "\(first) – \(Formatting.mediumGameDate(throughDate))"
+    }
+
+    /// `"4 games"`. Kept separate from the date so a caller can put them on different lines.
+    public var gameCountText: String {
+        gameCount == 1 ? "1 game" : "\(gameCount) games"
+    }
+
+    /// True when the board has a mark to draw the tick at.
+    public var hasReference: Bool { reference != "none" && referenceLabel != nil }
+
+    public init(date: String,
+                throughDate: String? = nil,
+                selectionDate: String? = nil,
+                gameCount: Int = 0,
+                reference: String = "season_average",
+                referenceLabel: String? = "season avg",
+                rows: [ProjectionBoardRow] = [],
+                note: String? = nil) {
+        self.date = date
+        self.throughDate = throughDate
+        self.selectionDate = selectionDate
+        self.gameCount = gameCount
+        self.reference = reference
+        self.referenceLabel = referenceLabel
+        self.rows = rows
+        self.note = note
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case date, throughDate, selectionDate, gameCount, reference, referenceLabel, rows, note
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        date = try container.decodeIfPresent(String.self, forKey: .date) ?? ""
+        throughDate = try container.decodeIfPresent(String.self, forKey: .throughDate)
+        selectionDate = try container.decodeIfPresent(String.self, forKey: .selectionDate)
+        gameCount = decodeWholeNumber(container, forKey: .gameCount) ?? 0
+        reference = try container.decodeIfPresent(String.self, forKey: .reference) ?? "season_average"
+        referenceLabel = try container.decodeIfPresent(String.self, forKey: .referenceLabel)
+        rows = try container.decodeIfPresent([ProjectionBoardRow].self, forKey: .rows) ?? []
+        note = try container.decodeIfPresent(String.self, forKey: .note)
+    }
+
+    // MARK: Preview
+
+    public static let preview: ProjectionBoardPayload = {
+        let lines = NextGameProjectionPayload.preview.lines
+        let rows: [ProjectionBoardRow] = lines.map { line in
+            // The same arithmetic the server does: an 80% interval is 2·z(0.9) wide, so its
+            // width divided by 2.5632 recovers the spread the delta is standardised against.
+            let spread = ((line.high ?? 0) - (line.low ?? 0)) / (2 * 1.2816)
+            let standardised: Double? = spread > 0 ? (line.delta ?? 0) / spread : nil
+            return ProjectionBoardRow(
+                player: .preview,
+                matchup: "LAL @ DEN",
+                opponentAbbr: "DEN",
+                isHome: false,
+                gameId: "0022500640",
+                gameDate: "2026-01-04",
+                metric: line.metric,
+                descriptor: line.descriptor,
+                projection: line.mean,
+                displayValue: line.displayValue,
+                low: line.low,
+                high: line.high,
+                intervalLevel: 0.8,
+                referenceValue: line.seasonAverage,
+                delta: line.delta,
+                deltaZ: standardised,
+                projectedMinutes: 34.2,
+                availability: .estimated
+            )
+        }
+        return ProjectionBoardPayload(
+            date: "2026-01-04",
+            throughDate: nil,
+            selectionDate: "2026-01-02",
+            gameCount: 1,
+            reference: "season_average",
+            referenceLabel: "season avg",
+            rows: rows,
+            note: "The band is the model's 10th to 90th percentile from a negative binomial fit; the dot is the projection."
+        )
+    }()
 }

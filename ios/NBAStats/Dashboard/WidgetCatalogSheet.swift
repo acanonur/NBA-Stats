@@ -54,6 +54,10 @@ public enum WidgetCatalogGroup: String, CaseIterable, Identifiable, Sendable {
             return .flexible
         case .playerSnapshot, .gameLog, .careerArc, .comparison, .nextGameProjection:
             return .players
+        case .projectionBoard:
+            // The board is about tonight's slate, not about one player, so it belongs beside
+            // the scoreboard rather than in the player section with the single projection.
+            return .today
         case .fourFactors, .teamEfficiency:
             return .teams
         case .leaderboard:
@@ -98,6 +102,7 @@ struct WidgetThumbnail: View {
         case .dailyMovers:    return .rows
         case .teamEfficiency: return .columns
         case .nextGameProjection: return .headline
+        case .projectionBoard: return .rows
         case .careerArc:      return .line
         }
     }

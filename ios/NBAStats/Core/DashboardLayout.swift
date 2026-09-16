@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-/// The thirteen widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
+/// The fourteen widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
 public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case statTile          = "stat_tile"
     case playerSnapshot    = "player_snapshot"
@@ -15,6 +15,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case dailyMovers       = "daily_movers"
     case teamEfficiency    = "team_efficiency"
     case nextGameProjection = "next_game_projection"
+    case projectionBoard   = "projection_board"
     case careerArc         = "career_arc"
 
     /// The catalog holds the real name; this is what the UI falls back to when the bundled
@@ -33,6 +34,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .dailyMovers: return "Daily Movers"
         case .teamEfficiency: return "Team Efficiency"
         case .nextGameProjection: return "Next Game"
+        case .projectionBoard: return "Tonight's Projections"
         case .careerArc: return "Career Arc"
         }
     }
@@ -52,6 +54,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .dailyMovers: return "arrow.up.right"
         case .teamEfficiency: return "chart.bar.xaxis"
         case .nextGameProjection: return "function"
+        case .projectionBoard: return "chart.dots.scatter"
         case .careerArc: return "waveform.path.ecg"
         }
     }
@@ -179,6 +182,29 @@ public enum AccentName: String, Codable, Hashable, Sendable, CaseIterable {
     }
 }
 
+/// How a layout's page is drawn (`contracts/CONTRACT.md` §5).
+///
+/// This is a property of the *layout*, not of a widget, because the difference is structural
+/// rather than decorative: `broadsheet` removes the card chrome entirely — no fills, no borders,
+/// no radius — and replaces the flowing multi-column grid with a single editorial column of
+/// hairline rules. A widget cannot opt into that on its own without the page around it agreeing.
+///
+/// A layout document written before this field existed decodes as `tiles`, which is what every
+/// layout in the app was. See `docs/BROADSHEET.md` §3.
+public enum LayoutPresentation: String, Codable, Hashable, Sendable, CaseIterable {
+    /// Cards on a flowing grid: the app's default, and every preset but one.
+    case tiles
+    /// A single editorial column, serif, ruled rather than boxed.
+    case broadsheet
+
+    public var displayName: String {
+        switch self {
+        case .tiles: return "Tiles"
+        case .broadsheet: return "Broadsheet"
+        }
+    }
+}
+
 /// The editable dashboard document (`contracts/CONTRACT.md` §5).
 ///
 /// The same shape is what `GET /v1/presets` returns per preset and what the app writes to disk.
@@ -195,6 +221,9 @@ public struct DashboardLayout: Codable, Hashable, Sendable, Identifiable {
     /// Retained after a preset is copied, so the app can offer "based on Daily Recap" and a reset.
     public var presetKey: String?
     public var tagline: String?
+    /// How the page is drawn. Absent in a document written before the field existed, which is
+    /// `tiles` — the only presentation the app had.
+    public var presentation: LayoutPresentation
     public var createdAt: Date?
     public var updatedAt: Date?
     /// Render order; there are no explicit grid coordinates.
@@ -210,6 +239,7 @@ public struct DashboardLayout: Codable, Hashable, Sendable, Identifiable {
                 isPreset: Bool = false,
                 presetKey: String? = nil,
                 tagline: String? = nil,
+                presentation: LayoutPresentation = .tiles,
                 createdAt: Date? = nil,
                 updatedAt: Date? = nil,
                 widgets: [DashboardWidget] = []) {
@@ -221,6 +251,7 @@ public struct DashboardLayout: Codable, Hashable, Sendable, Identifiable {
         self.isPreset = isPreset
         self.presetKey = presetKey
         self.tagline = tagline
+        self.presentation = presentation
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.widgets = widgets
@@ -241,6 +272,7 @@ public struct DashboardLayout: Codable, Hashable, Sendable, Identifiable {
             isPreset: false,
             presetKey: presetKey,
             tagline: tagline,
+            presentation: presentation,
             createdAt: now,
             updatedAt: now,
             widgets: widgets.map { $0.copyWithNewID() }
@@ -275,7 +307,7 @@ public struct DashboardLayout: Codable, Hashable, Sendable, Identifiable {
 
     private enum CodingKeys: String, CodingKey {
         case id, name, icon, accent, schemaVersion, isPreset, presetKey, tagline
-        case createdAt, updatedAt, widgets
+        case presentation, createdAt, updatedAt, widgets
     }
 
     public init(from decoder: Decoder) throws {
@@ -289,6 +321,10 @@ public struct DashboardLayout: Codable, Hashable, Sendable, Identifiable {
         isPreset = try container.decodeIfPresent(Bool.self, forKey: .isPreset) ?? false
         presetKey = try container.decodeIfPresent(String.self, forKey: .presetKey)
         tagline = try container.decodeIfPresent(String.self, forKey: .tagline)
+        // Read as a raw string for the same reason `DashboardWidget.size` is: a presentation this
+        // build does not know must not throw the whole layout away over how the page is drawn.
+        let presentationRaw = (try? container.decodeIfPresent(String.self, forKey: .presentation)) ?? nil
+        presentation = presentationRaw.flatMap(LayoutPresentation.init(rawValue:)) ?? .tiles
         let createdRaw = try container.decodeIfPresent(String.self, forKey: .createdAt)
         let updatedRaw = try container.decodeIfPresent(String.self, forKey: .updatedAt)
         createdAt = Formatting.parseTimestamp(createdRaw)
@@ -309,6 +345,7 @@ public struct DashboardLayout: Codable, Hashable, Sendable, Identifiable {
         try container.encode(isPreset, forKey: .isPreset)
         try container.encodeIfPresent(presetKey, forKey: .presetKey)
         try container.encodeIfPresent(tagline, forKey: .tagline)
+        try container.encode(presentation, forKey: .presentation)
         if let createdAt = createdAt {
             try container.encode(Formatting.timestampString(createdAt), forKey: .createdAt)
         }

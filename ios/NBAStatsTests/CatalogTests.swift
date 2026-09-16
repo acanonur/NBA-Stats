@@ -11,8 +11,8 @@ final class CatalogTests: XCTestCase {
 
     /// The counts the contract commits to (`contracts/CONTRACT.md`, the table in its header).
     private let expectedMetricCount = 61
-    private let expectedWidgetCount = 13
-    private let expectedPresetCount = 10
+    private let expectedWidgetCount = 14
+    private let expectedPresetCount = 11
 
     /// The field types whose value is a subject the reader has to choose; the catalog gives them
     /// no default on purpose.
@@ -589,4 +589,35 @@ final class CatalogTests: XCTestCase {
         let tail = (((year + 1) % 100) + 100) % 100
         return tail < 10 ? "\(year)-0\(tail)" : "\(year)-\(tail)"
     }
+
+    // MARK: - Presentation
+
+    func testExactlyOnePresetIsABroadsheetAndItIsTheOneWithTheBoard() throws {
+        let catalog = loadedCatalog
+        try XCTSkipIf(catalog.presets.isEmpty, "The contracts are not in a test-visible bundle")
+
+        let broadsheets = catalog.presets.filter { $0.presentation == .broadsheet }
+        XCTAssertEqual(broadsheets.compactMap { $0.presetKey }, ["fantasy_board"],
+                       "Exactly one preset is a broadsheet, and it is the Fantasy Board")
+        XCTAssertTrue(broadsheets.allSatisfy { layout in
+            layout.widgets.contains { $0.kind == .projectionBoard }
+        }, "The broadsheet preset does not contain the board it exists for")
+
+        // The nine that shipped first are untouched — this preset was added alongside them.
+        let others = catalog.presets.filter { $0.presetKey != "fantasy_board" }
+        XCTAssertEqual(others.count, expectedPresetCount - 1)
+        XCTAssertTrue(others.allSatisfy { $0.presentation == .tiles })
+    }
+
+    func testTheBoardIsCatalogedAsALargeTileThatRefreshesWithTheSlate() throws {
+        let catalog = loadedCatalog
+        try XCTSkipIf(catalog.widgets.isEmpty, "The contracts are not in a test-visible bundle")
+
+        let spec = try XCTUnwrap(catalog.widget(.projectionBoard))
+        XCTAssertEqual(spec.sizes, [.large], "A range bar needs the full width to be readable")
+        XCTAssertEqual(spec.defaultSize, .large)
+        XCTAssertEqual(spec.minRefreshSeconds, 600)
+        XCTAssertEqual(WidgetKind.projectionBoard.defaultCacheTTLSeconds, spec.minRefreshSeconds)
+    }
+
 }
