@@ -179,9 +179,15 @@ public struct ScoreboardWidget: View {
     }
 
     private func performers(_ list: [TopPerformer]) -> some View {
+        // The performer lines are the only place on this tile where a person is named, so the
+        // portrait takes over the job the 16pt indent was doing: the block still reads as nested
+        // under the two team lines, and the text starts within a few points of where it did.
+        // `.small` rather than `.medium` because these are caption-weight footnotes — the score
+        // is the subject of the tile, and a 44pt face beside a 12pt line would invert that.
         VStack(alignment: .leading, spacing: Spacing.xxs) {
             ForEach(list.prefix(2)) { performer in
-                HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
+                HStack(alignment: .center, spacing: Spacing.xs) {
+                    PlayerAvatar(player: performer.player, size: .small)
                     Text(performer.player.shortName)
                         .hardwoodText(.caption, color: Palette.textSecondary)
                         .lineLimit(1)
@@ -198,7 +204,6 @@ public struct ScoreboardWidget: View {
                 }
             }
         }
-        .padding(.leading, Spacing.lg)
         .accessibilityHidden(true)
     }
 

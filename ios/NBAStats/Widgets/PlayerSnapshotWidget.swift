@@ -63,6 +63,13 @@ public struct PlayerSnapshotWidget: View {
         dynamicTypeSize.isAccessibilitySize
     }
 
+    /// The tile is one player, so the header can carry a real portrait — but a small tile is a
+    /// single grid column with three metric rows under it, and a 44pt circle there would take the
+    /// height the metrics need.
+    private var headerAvatarSize: PlayerAvatar.Size {
+        size == .small ? .small : .medium
+    }
+
     private var subtitle: String {
         var parts: [String] = []
         let context = Formatting.seasonContext(season: payload.season, seasonType: payload.seasonType)
@@ -106,7 +113,7 @@ public struct PlayerSnapshotWidget: View {
     public var body: some View {
         let entries = resolveEntries()
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            PlayerRow(player: payload.player, subtitle: subtitle)
+            PlayerRow(player: payload.player, subtitle: subtitle, avatar: headerAvatarSize)
             usageLine
             rule
             slate(entries)

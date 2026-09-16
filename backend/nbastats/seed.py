@@ -5,13 +5,32 @@ produce byte-identical data and tests can assert exact reconciliation.
 
 What it builds
 --------------
-* the 30 real franchises, with their real NBA.com team ids, abbreviations and alignment
-* a pool of fictional players carrying archetypes (rim-running big, 3-and-D wing, high-usage
-  guard, stretch four, bench playmaker) that produce statistically coherent lines
+* the 30 real franchises, read from ``data/nba_identities.json`` — real NBA.com team ids,
+  abbreviations, cities and names — with conference and division supplied by
+  :data:`TEAM_ALIGNMENT`, the two facts that file does not carry
+* a pool of players wearing **real NBA names, person ids and headshots**, drawn from the
+  same file, each given an archetype (rim-running big, 3-and-D wing, high-usage guard,
+  stretch four, bench playmaker) that produces statistically coherent lines
+
 * a full schedule per season, with final scores driven by team strength and home court
 * per-game box scores in which **every team total is the sum of its players' lines and the
   team's points equal the final score** — that identity is asserted in the tests
 * season aggregates, team seasons, league distribution rows and shot zones
+
+The honesty boundary
+--------------------
+The identity file states who exists, and nothing else: no rosters, no positions, no
+measurements, no statistics — rosters change constantly, so asserting one would be
+fabrication. This module therefore borrows names, ids and photos, and **generates everything
+else**: the team a player appears on, his position, his physical profile, his career years
+and every number in every box score. Two things keep that visible rather than implied —
+every row carries ``data_source = "synthetic-demo"``, and ``/v1/meta`` serves
+``DEMO_ATTRIBUTION`` from :mod:`nbastats.api.routes_meta`, which says so in a sentence.
+
+Era pools are kept apart for the same reason: seasons from :data:`ACTIVE_IDENTITY_FROM` draw
+on today's players, earlier ones on retired players, so no 1985-86 roster can star Victor
+Wembanyama. Without the file (or once a pool is exhausted) the generator falls back to
+invented names and no headshot, and reports the count in its summary.
 
 Era honesty
 -----------
@@ -50,7 +69,7 @@ from typing import Any, Sequence
 from sqlalchemy import delete, insert
 from sqlalchemy.orm import Session
 
-from . import catalog
+from . import catalog, identities
 from .db import create_db_engine, init_db, utcnow
 from .models import (
     SHOT_ZONES,
@@ -81,16 +100,32 @@ from .models import (
 
 __all__ = [
     "SEED",
+    "DATA_SOURCE",
+    "ACTIVE_IDENTITY_FROM",
     "DEFAULT_SEASONS",
     "DEFAULT_AS_OF",
     "NBA_TEAMS",
+    "TEAM_ALIGNMENT",
     "ARCHETYPES",
     "seed_database",
     "main",
 ]
 
 SEED = 20260912
-DATA_SOURCE = "synthetic"
+
+#: Stamped on every row this module writes, in the ``data_source`` column every fact table
+#: carries. Nothing seeded here was observed, so nothing seeded here may look ingested: a
+#: row saying ``synthetic-demo`` cannot be mistaken for one saying ``nba-live`` or ``bbref``.
+DATA_SOURCE = "synthetic-demo"
+
+#: Player ids for players the identity file could not name (it is missing, or its pool ran
+#: dry). Real NBA person ids are well under two million, so this block can never collide.
+SYNTHETIC_PLAYER_ID_BASE = 9_000_001
+
+#: Seasons from here on draw their names from the *active* identity list; earlier ones draw
+#: from the historical (inactive) list. A 1985-86 season starring Victor Wembanyama would be
+#: absurd, and the identity file carries no career years to be cleverer than this with.
+ACTIVE_IDENTITY_FROM = 2020
 
 DEFAULT_SEASONS: tuple[str, ...] = ("1985-86", "1992-93", "2005-06", "2024-25", "2025-26")
 
@@ -106,39 +141,106 @@ HOME_EDGE = 2.6  # points per game, split between the two sides
 
 # --------------------------------------------------------------------------- static data
 
-# (team_id, abbr, city, nickname, conference, division, year_founded)
-NBA_TEAMS: tuple[tuple[int, str, str, str, str, str, int], ...] = (
-    (1610612737, "ATL", "Atlanta", "Hawks", "East", "Southeast", 1949),
-    (1610612738, "BOS", "Boston", "Celtics", "East", "Atlantic", 1946),
-    (1610612739, "CLE", "Cleveland", "Cavaliers", "East", "Central", 1970),
-    (1610612740, "NOP", "New Orleans", "Pelicans", "West", "Southwest", 2002),
-    (1610612741, "CHI", "Chicago", "Bulls", "East", "Central", 1966),
-    (1610612742, "DAL", "Dallas", "Mavericks", "West", "Southwest", 1980),
-    (1610612743, "DEN", "Denver", "Nuggets", "West", "Northwest", 1976),
-    (1610612744, "GSW", "Golden State", "Warriors", "West", "Pacific", 1946),
-    (1610612745, "HOU", "Houston", "Rockets", "West", "Southwest", 1967),
-    (1610612746, "LAC", "Los Angeles", "Clippers", "West", "Pacific", 1970),
-    (1610612747, "LAL", "Los Angeles", "Lakers", "West", "Pacific", 1948),
-    (1610612748, "MIA", "Miami", "Heat", "East", "Southeast", 1988),
-    (1610612749, "MIL", "Milwaukee", "Bucks", "East", "Central", 1968),
-    (1610612750, "MIN", "Minnesota", "Timberwolves", "West", "Northwest", 1989),
-    (1610612751, "BKN", "Brooklyn", "Nets", "East", "Atlantic", 1976),
-    (1610612752, "NYK", "New York", "Knicks", "East", "Atlantic", 1946),
-    (1610612753, "ORL", "Orlando", "Magic", "East", "Southeast", 1989),
-    (1610612754, "IND", "Indiana", "Pacers", "East", "Central", 1976),
-    (1610612755, "PHI", "Philadelphia", "76ers", "East", "Atlantic", 1949),
-    (1610612756, "PHX", "Phoenix", "Suns", "West", "Pacific", 1968),
-    (1610612757, "POR", "Portland", "Trail Blazers", "West", "Northwest", 1970),
-    (1610612758, "SAC", "Sacramento", "Kings", "West", "Pacific", 1948),
-    (1610612759, "SAS", "San Antonio", "Spurs", "West", "Southwest", 1976),
-    (1610612760, "OKC", "Oklahoma City", "Thunder", "West", "Northwest", 1967),
-    (1610612761, "TOR", "Toronto", "Raptors", "East", "Atlantic", 1995),
-    (1610612762, "UTA", "Utah", "Jazz", "West", "Northwest", 1974),
-    (1610612763, "MEM", "Memphis", "Grizzlies", "West", "Southwest", 1995),
-    (1610612764, "WAS", "Washington", "Wizards", "East", "Southeast", 1961),
-    (1610612765, "DET", "Detroit", "Pistons", "East", "Central", 1948),
-    (1610612766, "CHA", "Charlotte", "Hornets", "East", "Southeast", 1988),
+#: Conference and division, the two franchise facts ``data/nba_identities.json`` does not
+#: carry. Everything else about a team — id, abbreviation, city, nickname, founding year,
+#: display name — comes from that file and is reconciled with this map by abbreviation.
+TEAM_ALIGNMENT: dict[str, tuple[str, str]] = {
+    "ATL": ("East", "Southeast"), "BOS": ("East", "Atlantic"), "BKN": ("East", "Atlantic"),
+    "CHA": ("East", "Southeast"), "CHI": ("East", "Central"), "CLE": ("East", "Central"),
+    "DET": ("East", "Central"), "IND": ("East", "Central"), "MIA": ("East", "Southeast"),
+    "MIL": ("East", "Central"), "NYK": ("East", "Atlantic"), "ORL": ("East", "Southeast"),
+    "PHI": ("East", "Atlantic"), "TOR": ("East", "Atlantic"), "WAS": ("East", "Southeast"),
+    "DAL": ("West", "Southwest"), "DEN": ("West", "Northwest"), "GSW": ("West", "Pacific"),
+    "HOU": ("West", "Southwest"), "LAC": ("West", "Pacific"), "LAL": ("West", "Pacific"),
+    "MEM": ("West", "Southwest"), "MIN": ("West", "Northwest"), "NOP": ("West", "Southwest"),
+    "OKC": ("West", "Northwest"), "PHX": ("West", "Pacific"), "POR": ("West", "Northwest"),
+    "SAC": ("West", "Pacific"), "SAS": ("West", "Southwest"), "UTA": ("West", "Northwest"),
+}
+
+# (team_id, abbr, city, nickname, conference, division, year_founded, name)
+#
+# Used only when the identity file cannot be read: the demo must still stand up without it.
+_FALLBACK_TEAMS: tuple[tuple[int, str, str, str, str, str, int, str], ...] = (
+    (1610612737, "ATL", "Atlanta", "Hawks", "East", "Southeast", 1949, "Atlanta Hawks"),
+    (1610612738, "BOS", "Boston", "Celtics", "East", "Atlantic", 1946, "Boston Celtics"),
+    (1610612739, "CLE", "Cleveland", "Cavaliers", "East", "Central", 1970,
+     "Cleveland Cavaliers"),
+    (1610612740, "NOP", "New Orleans", "Pelicans", "West", "Southwest", 2002,
+     "New Orleans Pelicans"),
+    (1610612741, "CHI", "Chicago", "Bulls", "East", "Central", 1966, "Chicago Bulls"),
+    (1610612742, "DAL", "Dallas", "Mavericks", "West", "Southwest", 1980,
+     "Dallas Mavericks"),
+    (1610612743, "DEN", "Denver", "Nuggets", "West", "Northwest", 1976, "Denver Nuggets"),
+    (1610612744, "GSW", "San Francisco", "Warriors", "West", "Pacific", 1946,
+     "Golden State Warriors"),
+    (1610612745, "HOU", "Houston", "Rockets", "West", "Southwest", 1967, "Houston Rockets"),
+    (1610612746, "LAC", "Los Angeles", "Clippers", "West", "Pacific", 1970,
+     "Los Angeles Clippers"),
+    (1610612747, "LAL", "Los Angeles", "Lakers", "West", "Pacific", 1948,
+     "Los Angeles Lakers"),
+    (1610612748, "MIA", "Miami", "Heat", "East", "Southeast", 1988, "Miami Heat"),
+    (1610612749, "MIL", "Milwaukee", "Bucks", "East", "Central", 1968, "Milwaukee Bucks"),
+    (1610612750, "MIN", "Minnesota", "Timberwolves", "West", "Northwest", 1989,
+     "Minnesota Timberwolves"),
+    (1610612751, "BKN", "Brooklyn", "Nets", "East", "Atlantic", 1976, "Brooklyn Nets"),
+    (1610612752, "NYK", "New York", "Knicks", "East", "Atlantic", 1946, "New York Knicks"),
+    (1610612753, "ORL", "Orlando", "Magic", "East", "Southeast", 1989, "Orlando Magic"),
+    (1610612754, "IND", "Indiana", "Pacers", "East", "Central", 1976, "Indiana Pacers"),
+    (1610612755, "PHI", "Philadelphia", "76ers", "East", "Atlantic", 1949,
+     "Philadelphia 76ers"),
+    (1610612756, "PHX", "Phoenix", "Suns", "West", "Pacific", 1968, "Phoenix Suns"),
+    (1610612757, "POR", "Portland", "Trail Blazers", "West", "Northwest", 1970,
+     "Portland Trail Blazers"),
+    (1610612758, "SAC", "Sacramento", "Kings", "West", "Pacific", 1948, "Sacramento Kings"),
+    (1610612759, "SAS", "San Antonio", "Spurs", "West", "Southwest", 1976,
+     "San Antonio Spurs"),
+    (1610612760, "OKC", "Oklahoma City", "Thunder", "West", "Northwest", 1967,
+     "Oklahoma City Thunder"),
+    (1610612761, "TOR", "Toronto", "Raptors", "East", "Atlantic", 1995, "Toronto Raptors"),
+    (1610612762, "UTA", "Utah", "Jazz", "West", "Northwest", 1974, "Utah Jazz"),
+    (1610612763, "MEM", "Memphis", "Grizzlies", "West", "Southwest", 1995,
+     "Memphis Grizzlies"),
+    (1610612764, "WAS", "Washington", "Wizards", "East", "Southeast", 1961,
+     "Washington Wizards"),
+    (1610612765, "DET", "Detroit", "Pistons", "East", "Central", 1948, "Detroit Pistons"),
+    (1610612766, "CHA", "Charlotte", "Hornets", "East", "Southeast", 1988,
+     "Charlotte Hornets"),
 )
+
+
+def _team_table() -> tuple[tuple[int, str, str, str, str, str, int, str], ...]:
+    """The 30 real franchises, read from the identity file and aligned by abbreviation.
+
+    Anything short of all 30 matching falls back to the table above rather than seeding a
+    half-league: the franchises are the one part of the demo that is entirely factual.
+    """
+    spares = {row[1]: row for row in _FALLBACK_TEAMS}
+    rows: list[tuple[int, str, str, str, str, str, int, str]] = []
+    for identity in identities.teams():
+        alignment = TEAM_ALIGNMENT.get(identity.abbr)
+        spare = spares.get(identity.abbr)
+        if alignment is None or spare is None:
+            continue
+        conference, division = alignment
+        rows.append(
+            (
+                identity.team_id,
+                identity.abbr,
+                identity.city or spare[2],
+                identity.nickname or spare[3],
+                conference,
+                division,
+                identity.year_founded if identity.year_founded is not None else spare[6],
+                identity.name or spare[7],
+            )
+        )
+    if len(rows) != len(TEAM_ALIGNMENT):
+        return _FALLBACK_TEAMS
+    return tuple(sorted(rows, key=lambda row: row[0]))
+
+
+#: (team_id, abbr, city, nickname, conference, division, year_founded, name)
+NBA_TEAMS: tuple[tuple[int, str, str, str, str, str, int, str], ...] = _team_table()
 
 FIRST_NAMES = (
     "Marcus", "Andre", "Terrance", "Julian", "Dominic", "Isaiah", "Caleb", "Desmond", "Malik",
@@ -518,7 +620,14 @@ class _Writer:
 
 @dataclass(slots=True, eq=False)
 class PlayerProfile:
-    """A fictional player: identity, physical profile and the archetype driving their line."""
+    """One demo player: a real person's name, and an invented everything-else.
+
+    ``player_id``, ``first_name``, ``last_name`` and ``headshot_url`` come from
+    ``data/nba_identities.json`` — they are the real NBA person, and the only factual thing
+    about this object. The archetype, the physical profile, the career years, the team and
+    every number generated from them are synthetic, and ``identity_pool`` records which list
+    the name was drawn from so a 1985-86 roster can never fill up with today's league.
+    """
 
     player_id: int
     first_name: str
@@ -537,10 +646,13 @@ class PlayerProfile:
     draft_pick: int | None
     jersey: str
     bbref_slug: str
+    headshot_url: str | None = None
+    identity_pool: str = "invented"
+    display_name: str | None = None
 
     @property
     def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return self.display_name or f"{self.first_name} {self.last_name}"
 
     @property
     def position(self) -> str:
@@ -608,10 +720,20 @@ class LeagueGenerator:
 
         self.teams = {row[0]: row for row in NBA_TEAMS}
         self.players: dict[int, PlayerProfile] = {}
-        self._used_names: set[tuple[str, str]] = set()
+        self._used_names: set[str] = set()
         self._used_slugs: set[str] = set()
-        self._next_player_id = 1500001
+        self._next_player_id = SYNTHETIC_PLAYER_ID_BASE
         self._game_sequence: dict[tuple[int, str], int] = {}
+
+        # Real names to hand out, shuffled once by the seeded Random so the demo is not the
+        # alphabetical head of the league and is still identical on every run. Two pools,
+        # never mixed: today's players for modern seasons, retired ones for the eras.
+        self._identity_pools: dict[str, list[identities.PlayerIdentity]] = {
+            "active": self._shuffled(identities.active_players()),
+            "historical": self._shuffled(identities.historical_players()),
+        }
+        #: How many players got a real name from each pool, and how many had to be invented.
+        self.identity_counts: dict[str, int] = {"active": 0, "historical": 0, "invented": 0}
 
         # Persistent rosters across seasons, plus the pool of players between contracts.
         self._rosters: dict[int, list[PlayerProfile]] = {}
@@ -627,13 +749,13 @@ class LeagueGenerator:
     # ------------------------------------------------------------------ reference rows
 
     def write_teams(self) -> None:
-        for team_id, abbr, city, nickname, conference, division, founded in NBA_TEAMS:
+        for team_id, abbr, city, nickname, conference, division, founded, name in NBA_TEAMS:
             self.writer.add(
                 Team,
                 {
                     "team_id": team_id,
                     "abbr": abbr,
-                    "name": f"{city} {nickname}",
+                    "name": name,
                     "city": city,
                     "nickname": nickname,
                     "conference": conference,
@@ -650,14 +772,57 @@ class LeagueGenerator:
 
     # ------------------------------------------------------------------ player pool
 
+    def _shuffled(
+        self, pool: Sequence[identities.PlayerIdentity]
+    ) -> list[identities.PlayerIdentity]:
+        """Sort by person id, then shuffle with the seeded Random: reproducible either way."""
+        ordered = sorted(pool, key=lambda identity: identity.player_id)
+        self.rng.shuffle(ordered)
+        return ordered
+
+    def identity_pool_for(self, season_year: int) -> str:
+        """Which real-name pool a season may draw from. See :data:`ACTIVE_IDENTITY_FROM`."""
+        return "active" if season_year >= ACTIVE_IDENTITY_FROM else "historical"
+
+    def _draw_identity(self, season_year: int) -> identities.PlayerIdentity | None:
+        """Take the next real identity for this era, or ``None`` when the pool is out.
+
+        Skips anyone already used and anyone whose name is already on a jersey: 38 names in
+        the file belong to more than one person ("Charles Smith" to three of them), and two
+        players sharing a name in one demo league would read as a bug rather than as the NBA.
+        """
+        pool = self._identity_pools.get(self.identity_pool_for(season_year), [])
+        while pool:
+            identity = pool.pop()
+            if identity.player_id in self.players or identity.name in self._used_names:
+                continue
+            return identity
+        return None
+
     def _new_player(self, season_year: int, role_index: int) -> PlayerProfile:
         rng = self.rng
-        while True:
-            first = rng.choice(FIRST_NAMES)
-            last = rng.choice(LAST_NAMES)
-            if (first, last) not in self._used_names:
-                self._used_names.add((first, last))
-                break
+        identity = self._draw_identity(season_year)
+        if identity is not None:
+            first, last = identity.first_name, identity.last_name
+            full_name = identity.name
+            player_id = identity.player_id
+            headshot_url = identity.headshot_url
+            identity_pool = "active" if identity.is_active else "historical"
+        else:
+            # No identity file, or its pool ran dry. An invented name is honest; reusing a
+            # real one, or leaving a roster spot empty, is not.
+            while True:
+                first = rng.choice(FIRST_NAMES)
+                last = rng.choice(LAST_NAMES)
+                full_name = f"{first} {last}"
+                if full_name not in self._used_names:
+                    break
+            player_id = self._next_player_id
+            self._next_player_id += 1
+            headshot_url = None
+            identity_pool = "invented"
+        self._used_names.add(full_name)
+        self.identity_counts[identity_pool] += 1
         archetype = rng.choices(ARCHETYPES, weights=ARCHETYPE_WEIGHTS, k=1)[0]
 
         # Better players are drafted higher, last longer and are already on the floor.
@@ -681,7 +846,12 @@ class LeagueGenerator:
                 (None, None) if undrafted else (2, rng.randrange(40, 61))
             )
 
-        slug_base = (last[:5] + first[:2]).lower()
+        # Basketball-Reference's own convention: five of the surname, two of the given name,
+        # a counter. Folded to ASCII, so "Dončić" slugs as "doncilu01" exactly as it does
+        # there — the accents belong in the display name, never in an identifier.
+        folded_last = identities.fold_name(last).replace(" ", "")
+        folded_first = identities.fold_name(first).replace(" ", "")
+        slug_base = (folded_last[:5] + folded_first[:2]) or "player"
         suffix = 1
         slug = f"{slug_base}{suffix:02d}"
         while slug in self._used_slugs:
@@ -690,7 +860,7 @@ class LeagueGenerator:
         self._used_slugs.add(slug)
 
         player = PlayerProfile(
-            player_id=self._next_player_id,
+            player_id=player_id,
             first_name=first,
             last_name=last,
             archetype=archetype,
@@ -707,10 +877,25 @@ class LeagueGenerator:
             draft_pick=draft_pick,
             jersey=str(rng.randrange(0, 56)),
             bbref_slug=slug,
+            headshot_url=headshot_url,
+            identity_pool=identity_pool,
+            display_name=full_name,
         )
-        self._next_player_id += 1
         self.players[player.player_id] = player
         return player
+
+    def _available_in(self, player: PlayerProfile, year: int) -> bool:
+        """Under contract in ``year``, and from the right era's name pool.
+
+        The second half is the one that matters for honesty: a name drawn from today's
+        league never appears in a season before :data:`ACTIVE_IDENTITY_FROM`, and a retired
+        name never appears after it, however long the synthetic career happens to run.
+        """
+        if not (player.from_year <= year <= player.to_year):
+            return False
+        if player.identity_pool == "invented":
+            return True
+        return player.identity_pool == self.identity_pool_for(year)
 
     def build_rosters(self, year: int) -> dict[int, list[RosterSpot]]:
         """Age every roster forward to ``year``, retire, sign, and set the minute shares."""
@@ -718,7 +903,7 @@ class LeagueGenerator:
         rosters: dict[int, list[RosterSpot]] = {}
         for team_id in self.active_team_ids(year):
             current = self._rosters.get(team_id, [])
-            kept = [p for p in current if p.to_year >= year and p.from_year <= year]
+            kept = [p for p in current if self._available_in(p, year)]
             # Roster churn: a couple of players change address every off-season.
             rng.shuffle(kept)
             churn = min(len(kept), rng.randrange(1, 4))
@@ -734,14 +919,15 @@ class LeagueGenerator:
                 if self._free_agents and rng.random() < 0.55:
                     index = rng.randrange(len(self._free_agents))
                     candidate = self._free_agents[index]
-                    if candidate.to_year >= year and candidate.from_year <= year:
+                    if self._available_in(candidate, year):
                         signed = self._free_agents.pop(index)
                 if signed is None:
                     signed = self._new_player(year, len(kept))
                 kept.append(signed)
             kept.sort(key=lambda p: -(p.talent * _age_curve(p.age_in(year))))
             self._rosters[team_id] = kept
-            self._free_agents = [p for p in self._free_agents if p.to_year >= year]
+            # Free agents who have retired — or whose era has turned over — go for good.
+            self._free_agents = [p for p in self._free_agents if self._available_in(p, year)]
             _resolve_jersey_clashes(kept, rng)
 
             shares = _minute_shares(len(kept))
@@ -781,7 +967,9 @@ class LeagueGenerator:
                     "to_year": player.to_year,
                     "is_active": player.to_year >= catalog.season_sort_key(self.seasons[-1]),
                     "jersey": player.jersey,
-                    "headshot_url": None,
+                    # Real photo for a real person id, straight from the identity file; the
+                    # fallback path (no file, or the pool ran out) has no photo to show.
+                    "headshot_url": player.headshot_url,
                 },
             )
             self.writer.add(
@@ -789,10 +977,11 @@ class LeagueGenerator:
                 {
                     "nba_person_id": player.player_id,
                     "bbref_slug": player.bbref_slug,
+                    # The NBA person id is real; these two are not, so the method says so.
                     "espn_id": 3000000 + player.player_id % 900000,
                     "balldontlie_id": player.player_id % 100000,
                     "confidence": 1.0,
-                    "method": "synthetic",
+                    "method": DATA_SOURCE,
                 },
             )
 
@@ -1713,7 +1902,10 @@ class LeagueGenerator:
                 last_run_at=started,
                 last_success_at=utcnow(),
                 games_ingested=self.final_games,
-                notes=f"Synthetic demo league seeded from random.Random({SEED}).",
+                notes=(
+                    f"Synthetic demo league seeded from random.Random({SEED}). Player names, "
+                    "ids and photos are real NBA identities; every number is generated."
+                ),
             )
         )
         self.session.add(
@@ -1748,6 +1940,11 @@ class LeagueGenerator:
             "shot_zone_rows": counts.get("shot_zone_season", 0),
             "data_through": data_through,
             "sync_version": self.final_games,
+            # The exposure behind the names: how many players carry a real NBA identity,
+            # from which pool, and how many had to be invented because the file ran out.
+            "real_identities_active": self.identity_counts["active"],
+            "real_identities_historical": self.identity_counts["historical"],
+            "invented_identities": self.identity_counts["invented"],
         }
 
 
@@ -1945,6 +2142,33 @@ def _game_rotation(rng: random.Random, team: SeasonTeam, size: int) -> list[dict
     return rows
 
 
+#: Per-player, per-game "form" shock. Real box scores are strongly OVER-dispersed: a 25-point
+#: scorer has a game-to-game standard deviation near 8, so variance/mean is about 2.8, not the
+#: 1.0 a Poisson process would give. Splitting a nearly-fixed team total with only a narrow
+#: jitter produces the opposite — implausibly consistent players — which silently collapses the
+#: projection intervals to the Poisson floor and makes the whole dispersion correction
+#: undemonstrable.
+#:
+#: A gamma shock with mean 1 fixes it at the source: a gamma-mixed Poisson count IS negative
+#: binomial, which is the distribution the projection model assumes, so the synthetic league and
+#: the model now agree about the shape of the world. The coefficients below were calibrated
+#: against real variance-to-mean ratios (see tests/test_seed.py).
+FORM_SHOCK_CV = {"usage": 0.42, "three": 0.40, "ft": 0.40, "reb": 0.54,
+                 "ast": 0.66, "defense": 0.60}
+
+
+def _form_shock(rng: random.Random, cv: float) -> float:
+    """A gamma variate with mean 1 and coefficient of variation ``cv``.
+
+    ``gammavariate(shape, scale)`` has mean shape*scale and variance shape*scale**2, so
+    shape = 1/cv**2 and scale = cv**2 give mean 1 and variance cv**2.
+    """
+    if cv <= 0:
+        return 1.0
+    shape = 1.0 / (cv * cv)
+    return rng.gammavariate(shape, cv * cv)
+
+
 def _distribute_team_line(
     rng: random.Random, era: Era, line: dict[str, int], rows: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
@@ -1954,19 +2178,19 @@ def _distribute_team_line(
     ratings = [row["spot"].rating for row in rows]
 
     usage_weights = [
-        m * a.usage * (0.75 + 0.35 * r) * rng.uniform(0.8, 1.2)
+        m * a.usage * (0.75 + 0.35 * r) * _form_shock(rng, FORM_SHOCK_CV["usage"])
         for m, a, r in zip(minutes, archetypes, ratings)
     ]
     fga = allocate(line["fga"], usage_weights)
 
     three_weights = [
-        max(0.02, f * a.three_lean * rng.uniform(0.7, 1.3))
+        max(0.02, f * a.three_lean * _form_shock(rng, FORM_SHOCK_CV["three"]))
         for f, a in zip(fga, archetypes)
     ]
     fg3a = allocate(line["fg3a"], three_weights, caps=fga)
 
     ft_weights = [
-        max(0.05, m * a.ft_lean * (0.8 + 0.4 * r) * rng.uniform(0.6, 1.4))
+        max(0.05, m * a.ft_lean * (0.8 + 0.4 * r) * _form_shock(rng, FORM_SHOCK_CV["ft"]))
         for m, a, r in zip(minutes, archetypes, ratings)
     ]
     fta = allocate(line["fta"], ft_weights)
@@ -1988,27 +2212,34 @@ def _distribute_team_line(
     ]
     ftm = allocate(line["ftm"], ft_make_weights, caps=fta)
 
-    def by_rate(total: int, rate: str, jitter: float = 0.35) -> list[int]:
+    def by_rate(total: int, rate: str, shocks: list[float] | None = None) -> list[int]:
+        draws = shocks or [_form_shock(rng, FORM_SHOCK_CV["reb"]) for _ in minutes]
         weights = [
-            max(0.01, m * getattr(a, rate) * rng.uniform(1 - jitter, 1 + jitter))
-            for m, a in zip(minutes, archetypes)
+            max(0.01, m * getattr(a, rate) * shock)
+            for m, a, shock in zip(minutes, archetypes, draws)
         ]
         return allocate(total, weights)
 
-    oreb = by_rate(line["oreb"], "oreb")
-    dreb = by_rate(line["dreb"], "dreb")
+    # A big rebounding night shows up on both boards, so the two categories share one draw.
+    # Independent draws cancel on the sum and leave total rebounds under-dispersed.
+    reb_shocks = [_form_shock(rng, FORM_SHOCK_CV["reb"]) for _ in minutes]
+    oreb = by_rate(line["oreb"], "oreb", reb_shocks)
+    dreb = by_rate(line["dreb"], "dreb", reb_shocks)
     assists = allocate(
         line["ast"],
-        [max(0.01, m * a.ast * (0.8 + 0.3 * r) * rng.uniform(0.7, 1.3))
-         for m, a, r in zip(minutes, archetypes, ratings)],
+        [max(0.01, m * a.ast * (0.8 + 0.3 * r) * shock)
+         for m, a, r, shock in zip(minutes, archetypes, ratings,
+                                   [_form_shock(rng, FORM_SHOCK_CV["ast"]) for _ in minutes])],
     )
-    steals = by_rate(line["stl"], "stl", 0.5)
-    blocks = by_rate(line["blk"], "blk", 0.5)
+    steals = by_rate(line["stl"], "stl",
+                     [_form_shock(rng, FORM_SHOCK_CV["defense"]) for _ in minutes])
+    blocks = by_rate(line["blk"], "blk",
+                     [_form_shock(rng, FORM_SHOCK_CV["defense"]) for _ in minutes])
     turnovers = allocate(
         line["tov"],
         [max(0.01, f * 0.55 + m * a.tov * 0.45) for f, m, a in zip(fga, minutes, archetypes)],
     )
-    fouls = by_rate(line["pf"], "pf", 0.3)
+    fouls = by_rate(line["pf"], "pf")
 
     for index, row in enumerate(rows):
         row["fga"] = fga[index]

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-/// The nine dashboards Hardwood ships with.
+/// The ten dashboards Hardwood ships with.
 ///
 /// A preset is never edited in place: "Use this" copies it into an editable layout that keeps its
 /// `presetKey`, so the copy can still be reset back to the original later.

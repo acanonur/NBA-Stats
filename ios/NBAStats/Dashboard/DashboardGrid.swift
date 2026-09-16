@@ -155,6 +155,7 @@ public struct DashboardGrid: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.isBroadsheet) private var isBroadsheet
 
     @State private var frames: [String: CGRect] = [:]
     @State private var dragFrames: [String: CGRect] = [:]
@@ -179,10 +180,17 @@ public struct DashboardGrid: View {
     private var gridSpace: CoordinateSpace { .named(DashboardGrid.gridSpaceName) }
 
     private var columnCount: Int {
+        // A broadsheet is one column of type at any width. Two columns of ruled, serif sections
+        // is not a narrower broadsheet, it is a different thing — see docs/BROADSHEET.md §3.
+        guard !isBroadsheet else { return 1 }
         let columns = catalog.gridColumns
         let count = horizontalSizeClass == .regular ? columns.regular : columns.compact
         return max(count, 1)
     }
+
+    /// The gap between sections. Wider on a broadsheet, where nothing but white space and a rule
+    /// separates one section from the next — a card's border is doing that work in tiles.
+    private var sectionSpacing: CGFloat { isBroadsheet ? Spacing.xl : Spacing.md }
 
     private var orderFingerprint: [String] { layout.widgets.map { $0.id } }
 
@@ -193,10 +201,12 @@ public struct DashboardGrid: View {
     // MARK: Body
 
     public var body: some View {
-        WidgetFlowLayout(columns: columnCount, spacing: Spacing.md) {
+        WidgetFlowLayout(columns: columnCount, spacing: sectionSpacing) {
             ForEach(layout.widgets) { widget in
                 tile(for: widget)
-                    .widgetColumnSpan(widget.size.columnSpan(horizontalSizeClass: horizontalSizeClass))
+                    .widgetColumnSpan(isBroadsheet
+                                      ? 1
+                                      : widget.size.columnSpan(horizontalSizeClass: horizontalSizeClass))
             }
         }
         .coordinateSpace(.named(DashboardGrid.gridSpaceName))

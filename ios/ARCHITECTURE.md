@@ -262,6 +262,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case scoreboard        = "scoreboard"
     case dailyMovers       = "daily_movers"
     case teamEfficiency    = "team_efficiency"
+    case nextGameProjection = "next_game_projection"
     case careerArc         = "career_arc"
 }
 
@@ -317,7 +318,12 @@ exceeds `currentSchemaVersion`.
 ### 2.6 `Core/Payloads.swift` — one struct per widget kind (`contracts/CONTRACT.md` §4)
 
 Every struct is `Codable, Hashable, Sendable` and its properties mirror the contract's key
-names exactly. The umbrella:
+names exactly. `next_game_projection` is the one payload that lives in its own file,
+`Core/ProjectionPayload.swift`, because it is seven types rather than one —
+`NextGameProjectionPayload`, `ProjectionGame`, `ProjectedMinutes`, `ProjectedLine`,
+`ProjectionFactor`, `ProjectionCombo`, `ProjectionMethod` — and because it carries an invariant
+the other payloads do not: a `ProjectedLine` is never `.full`, whatever the server said
+(`docs/PROJECTION.md` §7 rule 5). The umbrella:
 
 ```swift
 public enum WidgetPayload: Hashable, Sendable {
@@ -332,6 +338,7 @@ public enum WidgetPayload: Hashable, Sendable {
     case scoreboard(ScoreboardPayload)
     case dailyMovers(DailyMoversPayload)
     case teamEfficiency(TeamEfficiencyPayload)
+    case nextGameProjection(NextGameProjectionPayload)
     case careerArc(CareerArcPayload)
 
     public var kind: WidgetKind { get }
@@ -478,6 +485,15 @@ public struct WidgetHost: View {
 
 One view per kind, each taking its own payload type and a `WidgetSize`, each with an Xcode
 preview driven by a bundled fixture. Charts use Swift Charts (`import Charts`).
+
+**The broadsheet presentation.** `DashboardLayout.presentation` is `tiles` or `broadsheet`, and
+`DashboardScreen` pushes it down as `\.isBroadsheet`. On a broadsheet page `DashboardGrid`
+collapses to one column, `WidgetContainer` drops the card entirely (no fill, border, radius or
+reserved height) and sets the title as a kicker, and a widget that has a broadsheet variant picks
+it up from the environment. `DesignSystem/BroadsheetTheme.swift` holds the tokens — deliberately
+a separate namespace from `Palette`, so a tile widget cannot half-adopt the aesthetic by reaching
+for one colour. `ProjectionBoardWidget` is the only widget with a variant today; every other kind
+renders unchanged. See [`docs/BROADSHEET.md`](../docs/BROADSHEET.md).
 
 ### 2.10 `App/`
 

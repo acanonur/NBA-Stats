@@ -1,0 +1,311 @@
+{
+  "date": "2026-01-05",
+  "throughDate": null,
+  "selectionDate": "2026-01-02",
+  "gameCount": 4,
+  "reference": "season_average",
+  "referenceLabel": "season avg",
+  "rows": [
+    {
+      "player": {
+        "playerId": 1642354,
+        "name": "KJ Simpson",
+        "firstName": "KJ",
+        "lastName": "Simpson",
+        "teamId": 1610612755,
+        "teamAbbr": "PHI",
+        "position": "G",
+        "jersey": "27",
+        "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642354.png",
+        "isActive": true
+      },
+      "matchup": "PHI @ DET",
+      "opponentAbbr": "DET",
+      "isHome": false,
+      "gameId": "0022500381",
+      "gameDate": "2026-01-05",
+      "metric": "reb",
+      "descriptor": {
+        "key": "reb",
+        "name": "Rebounds",
+        "shortName": "REB",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1950-51",
+          "perGameFrom": "1950-51",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+      },
+      "projection": 3.336,
+      "displayValue": "3.3",
+      "low": 1,
+      "high": 5,
+      "intervalLevel": 0.8,
+      "referenceValue": 2.773,
+      "delta": 0.563,
+      "deltaZ": 0.361,
+      "projectedMinutes": 33.5,
+      "availability": "estimated"
+    },
+    {
+      "player": {
+        "playerId": 201935,
+        "name": "James Harden",
+        "firstName": "James",
+        "lastName": "Harden",
+        "teamId": 1610612758,
+        "teamAbbr": "SAC",
+        "position": "G",
+        "jersey": "24",
+        "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/201935.png",
+        "isActive": true
+      },
+      "matchup": "SAC vs MIL",
+      "opponentAbbr": "MIL",
+      "isHome": true,
+      "gameId": "0022500383",
+      "gameDate": "2026-01-05",
+      "metric": "pts",
+      "descriptor": {
+        "key": "pts",
+        "name": "Points",
+        "shortName": "PTS",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Points scored."
+      },
+      "projection": 15.756,
+      "displayValue": "15.8",
+      "low": 9,
+      "high": 21,
+      "intervalLevel": 0.8,
+      "referenceValue": 17.0,
+      "delta": -1.244,
+      "deltaZ": -0.266,
+      "projectedMinutes": 37.4,
+      "availability": "estimated"
+    },
+    {
+      "player": {
+        "playerId": 201935,
+        "name": "James Harden",
+        "firstName": "James",
+        "lastName": "Harden",
+        "teamId": 1610612758,
+        "teamAbbr": "SAC",
+        "position": "G",
+        "jersey": "24",
+        "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/201935.png",
+        "isActive": true
+      },
+      "matchup": "SAC vs MIL",
+      "opponentAbbr": "MIL",
+      "isHome": true,
+      "gameId": "0022500383",
+      "gameDate": "2026-01-05",
+      "metric": "reb",
+      "descriptor": {
+        "key": "reb",
+        "name": "Rebounds",
+        "shortName": "REB",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1950-51",
+          "perGameFrom": "1950-51",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+      },
+      "projection": 5.24,
+      "displayValue": "5.2",
+      "low": 2,
+      "high": 8,
+      "intervalLevel": 0.8,
+      "referenceValue": 5.833,
+      "delta": -0.593,
+      "deltaZ": -0.253,
+      "projectedMinutes": 37.4,
+      "availability": "estimated"
+    },
+    {
+      "player": {
+        "playerId": 203486,
+        "name": "Mason Plumlee",
+        "firstName": "Mason",
+        "lastName": "Plumlee",
+        "teamId": 1610612743,
+        "teamAbbr": "DEN",
+        "position": "C",
+        "jersey": "32",
+        "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/203486.png",
+        "isActive": true
+      },
+      "matchup": "DEN @ MIN",
+      "opponentAbbr": "MIN",
+      "isHome": false,
+      "gameId": "0022500379",
+      "gameDate": "2026-01-05",
+      "metric": "pts",
+      "descriptor": {
+        "key": "pts",
+        "name": "Points",
+        "shortName": "PTS",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Points scored."
+      },
+      "projection": 18.272,
+      "displayValue": "18.3",
+      "low": 11,
+      "high": 25,
+      "intervalLevel": 0.8,
+      "referenceValue": 16.958,
+      "delta": 1.314,
+      "deltaZ": 0.241,
+      "projectedMinutes": 34.8,
+      "availability": "estimated"
+    },
+    {
+      "player": {
+        "playerId": 1628997,
+        "name": "Caleb Martin",
+        "firstName": "Caleb",
+        "lastName": "Martin",
+        "teamId": 1610612759,
+        "teamAbbr": "SAS",
+        "position": "C",
+        "jersey": "0",
+        "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628997.png",
+        "isActive": true
+      },
+      "matchup": "SAS vs ATL",
+      "opponentAbbr": "ATL",
+      "isHome": true,
+      "gameId": "0022500382",
+      "gameDate": "2026-01-05",
+      "metric": "pts",
+      "descriptor": {
+        "key": "pts",
+        "name": "Points",
+        "shortName": "PTS",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Points scored."
+      },
+      "projection": 16.45,
+      "displayValue": "16.5",
+      "low": 9,
+      "high": 22,
+      "intervalLevel": 0.8,
+      "referenceValue": 15.25,
+      "delta": 1.2,
+      "deltaZ": 0.237,
+      "projectedMinutes": 34.2,
+      "availability": "estimated"
+    },
+    {
+      "player": {
+        "playerId": 1642260,
+        "name": "Nikola Topić",
+        "firstName": "Nikola",
+        "lastName": "Topić",
+        "teamId": 1610612758,
+        "teamAbbr": "SAC",
+        "position": "G",
+        "jersey": "48",
+        "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642260.png",
+        "isActive": true
+      },
+      "matchup": "SAC vs MIL",
+      "opponentAbbr": "MIL",
+      "isHome": true,
+      "gameId": "0022500383",
+      "gameDate": "2026-01-05",
+      "metric": "pts",
+      "descriptor": {
+        "key": "pts",
+        "name": "Points",
+        "shortName": "PTS",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Points scored."
+      },
+      "projection": 16.177,
+      "displayValue": "16.2",
+      "low": 10,
+      "high": 22,
+      "intervalLevel": 0.8,
+      "referenceValue": 17.261,
+      "delta": -1.084,
+      "deltaZ": -0.232,
+      "projectedMinutes": 36.9,
+      "availability": "estimated"
+    }
+  ],
+  "note": "The band is the model's 10th to 90th percentile from a negative binomial fit; the dot is the projection."
+}

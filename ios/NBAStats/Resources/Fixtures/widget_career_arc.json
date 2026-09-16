@@ -1,14 +1,14 @@
 {
   "player": {
-    "playerId": 1500819,
-    "name": "Desmond Quintero",
-    "firstName": "Desmond",
-    "lastName": "Quintero",
-    "teamId": 1610612741,
-    "teamAbbr": "CHI",
+    "playerId": 1631260,
+    "name": "AJ Green",
+    "firstName": "AJ",
+    "lastName": "Green",
+    "teamId": 1610612743,
+    "teamAbbr": "DEN",
     "position": "G",
-    "jersey": "25",
-    "headshotUrl": null,
+    "jersey": "44",
+    "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631260.png",
     "isActive": true
   },
   "metric": {
@@ -38,31 +38,31 @@
     {
       "season": "2023-24",
       "seasonType": "Regular Season",
-      "age": 23,
-      "teamAbbr": "CHI",
-      "gp": 56,
-      "value": 15.96,
-      "displayValue": "16.0",
+      "age": 21,
+      "teamAbbr": "DEN",
+      "gp": 54,
+      "value": 14.7,
+      "displayValue": "14.7",
       "availability": "full"
     },
     {
       "season": "2024-25",
       "seasonType": "Regular Season",
-      "age": 24,
-      "teamAbbr": "CHI",
+      "age": 22,
+      "teamAbbr": "DEN",
       "gp": 57,
-      "value": 18.96,
-      "displayValue": "19.0",
+      "value": 13.91,
+      "displayValue": "13.9",
       "availability": "full"
     },
     {
       "season": "2025-26",
       "seasonType": "Regular Season",
-      "age": 25,
-      "teamAbbr": "CHI",
+      "age": 23,
+      "teamAbbr": "DEN",
       "gp": 25,
-      "value": 18.79,
-      "displayValue": "18.8",
+      "value": 15.12,
+      "displayValue": "15.1",
       "availability": "full"
     }
   ],
@@ -70,21 +70,11 @@
     {
       "season": "2023-24",
       "seasonType": "Playoffs",
-      "age": 23,
-      "teamAbbr": "CHI",
-      "gp": 4,
-      "value": 13.65,
-      "displayValue": "13.7",
-      "availability": "full"
-    },
-    {
-      "season": "2024-25",
-      "seasonType": "Playoffs",
-      "age": 24,
-      "teamAbbr": "CHI",
-      "gp": 7,
-      "value": 17.4,
-      "displayValue": "17.4",
+      "age": 21,
+      "teamAbbr": "DEN",
+      "gp": 5,
+      "value": 9.59,
+      "displayValue": "9.6",
       "availability": "full"
     }
   ],
@@ -101,8 +91,8 @@
     }
   ],
   "peak": {
-    "season": "2024-25",
-    "value": 18.96,
-    "displayValue": "19.0"
+    "season": "2025-26",
+    "value": 15.12,
+    "displayValue": "15.1"
   }
 }

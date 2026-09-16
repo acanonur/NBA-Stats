@@ -130,20 +130,28 @@ public struct DailyMoversWidget: View {
     }
 
     private func identity(_ row: DailyMoverRow) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
-            HStack(spacing: Spacing.xs) {
-                if let abbreviation = row.player.teamAbbr, !abbreviation.isEmpty {
-                    TeamBadge(abbreviation: abbreviation, size: .small)
+        HStack(spacing: Spacing.sm) {
+            // This widget shows two to five rows, and the value and delta blocks opposite are
+            // each two or three lines, so the row is already about 44pt tall: the portrait costs
+            // no height here, unlike the single-line leaderboard rows.
+            // Decorative: `accessibilityText(_:)` reads the name.
+            PlayerAvatar(player: row.player, size: .medium)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 1) {
+                HStack(spacing: Spacing.xs) {
+                    if let abbreviation = row.player.teamAbbr, !abbreviation.isEmpty {
+                        TeamBadge(abbreviation: abbreviation, size: .small)
+                    }
+                    Text(row.player.name)
+                        .hardwoodText(.widgetTitle)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                 }
-                Text(row.player.name)
-                    .hardwoodText(.widgetTitle)
+                Text(subtitle(row))
+                    .hardwoodText(.caption, monospacedDigits: true)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    .minimumScaleFactor(0.8)
             }
-            Text(subtitle(row))
-                .hardwoodText(.caption, monospacedDigits: true)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
         }
     }
 

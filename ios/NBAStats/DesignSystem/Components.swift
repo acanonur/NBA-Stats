@@ -349,21 +349,27 @@ public struct TeamBadge: View {
 
 // MARK: - Player row
 
-/// A player line: optional rank, team monogram, name, subtitle, and whatever the caller wants
-/// on the trailing edge.
+/// A player line: optional rank, the player's face, team monogram, name, subtitle, and whatever
+/// the caller wants on the trailing edge.
 public struct PlayerRow<Trailing: View>: View {
     private let player: PlayerRef
     private let subtitle: String?
     private let rank: Int?
+    private let avatar: PlayerAvatar.Size?
     private let trailing: Trailing
 
+    /// - Parameter avatar: the leading portrait, or `nil` to suppress it. `.small` by default,
+    ///   which is the only size that fits a row of this height without changing it; a caller with
+    ///   a genuinely full-width list row — search results, say — passes `.medium` instead.
     public init(player: PlayerRef,
                 subtitle: String? = nil,
                 rank: Int? = nil,
+                avatar: PlayerAvatar.Size? = .small,
                 @ViewBuilder trailing: () -> Trailing) {
         self.player = player
         self.subtitle = subtitle
         self.rank = rank
+        self.avatar = avatar
         self.trailing = trailing()
     }
 
@@ -382,6 +388,12 @@ public struct PlayerRow<Trailing: View>: View {
                     .font(Typography.tableCellMono)
                     .foregroundStyle(Palette.textTertiary)
                     .frame(minWidth: 22, alignment: .trailing)
+                    .accessibilityHidden(true)
+            }
+            if let avatar {
+                // Hidden from VoiceOver: the row's own label already reads the name, and the
+                // avatar would otherwise say it a second time before it.
+                PlayerAvatar(player: player, size: avatar)
                     .accessibilityHidden(true)
             }
             if let abbr = player.teamAbbr, !abbr.isEmpty {
@@ -408,8 +420,15 @@ public struct PlayerRow<Trailing: View>: View {
 }
 
 public extension PlayerRow where Trailing == EmptyView {
-    init(player: PlayerRef, subtitle: String? = nil, rank: Int? = nil) {
-        self.init(player: player, subtitle: subtitle, rank: rank, trailing: { EmptyView() })
+    init(player: PlayerRef,
+         subtitle: String? = nil,
+         rank: Int? = nil,
+         avatar: PlayerAvatar.Size? = .small) {
+        self.init(player: player,
+                  subtitle: subtitle,
+                  rank: rank,
+                  avatar: avatar,
+                  trailing: { EmptyView() })
     }
 }
 

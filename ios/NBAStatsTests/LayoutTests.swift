@@ -161,7 +161,7 @@ final class LayoutTests: XCTestCase {
     }
 
     func testWidgetKindRawValuesMatchTheContract() {
-        XCTAssertEqual(WidgetKind.allCases.count, 12)
+        XCTAssertEqual(WidgetKind.allCases.count, 14)
         XCTAssertEqual(WidgetKind.statTile.rawValue, "stat_tile")
         XCTAssertEqual(WidgetKind.playerSnapshot.rawValue, "player_snapshot")
         XCTAssertEqual(WidgetKind.gameLog.rawValue, "game_log")
@@ -170,6 +170,8 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(WidgetKind.shotProfile.rawValue, "shot_profile")
         XCTAssertEqual(WidgetKind.dailyMovers.rawValue, "daily_movers")
         XCTAssertEqual(WidgetKind.teamEfficiency.rawValue, "team_efficiency")
+        XCTAssertEqual(WidgetKind.nextGameProjection.rawValue, "next_game_projection")
+        XCTAssertEqual(WidgetKind.projectionBoard.rawValue, "projection_board")
         XCTAssertEqual(WidgetKind.careerArc.rawValue, "career_arc")
         for kind in WidgetKind.allCases {
             XCTAssertFalse(kind.fallbackName.isEmpty)
@@ -207,6 +209,39 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(decoded.widgets, layout.widgets)
         XCTAssertEqual(decoded.createdAt, layout.createdAt)
         XCTAssertEqual(decoded.updatedAt, layout.updatedAt)
+        XCTAssertEqual(decoded.presentation, layout.presentation)
+    }
+
+    // MARK: - Presentation
+
+    func testALayoutWrittenBeforePresentationExistedIsTiles() throws {
+        // Every layout on every device today has no `presentation` key. Decoding one as anything
+        // but `tiles` would silently restyle a dashboard the reader built.
+        let json = #"{"name": "Old", "widgets": []}"#
+        let layout = try JSONDecoder().decode(DashboardLayout.self, from: Data(json.utf8))
+        XCTAssertEqual(layout.presentation, .tiles)
+        XCTAssertEqual(DashboardLayout(name: "New").presentation, .tiles)
+    }
+
+    func testAPresentationThisBuildCannotReadCostsTheStyleAndNotTheLayout() throws {
+        let json = #"{"name": "From the future", "presentation": "hologram", "widgets": []}"#
+        let layout = try JSONDecoder().decode(DashboardLayout.self, from: Data(json.utf8))
+        XCTAssertEqual(layout.presentation, .tiles)
+        XCTAssertEqual(layout.name, "From the future",
+                       "An unknown presentation threw away the whole layout")
+    }
+
+    func testPresentationRoundTripsAndSurvivesBeingCopied() throws {
+        var layout = TestLayouts.layout(widgets: makeWidgets())
+        layout.presentation = .broadsheet
+
+        let data = try JSONEncoder().encode(layout)
+        XCTAssertTrue(String(decoding: data, as: UTF8.self).contains(#""presentation":"broadsheet""#))
+        XCTAssertEqual(try JSONDecoder().decode(DashboardLayout.self, from: data).presentation, .broadsheet)
+
+        // Making a preset editable must not quietly return it to tiles: the presentation is part
+        // of what the reader chose when they picked the preset.
+        XCTAssertEqual(layout.makeEditableCopy().presentation, .broadsheet)
     }
 
     /// Timestamps are written by the type itself rather than by a decoder strategy, so a layout
@@ -454,7 +489,7 @@ final class LayoutCatalogTests: XCTestCase {
         let catalog = makeTestCatalog()
         try XCTSkipIf(catalog.presets.isEmpty, "The bundled presets are not available")
         let seeded = LayoutSeeder.seedLayouts(catalog: catalog)
-        XCTAssertEqual(seeded.count, 1, "A first launch should be one working dashboard, not nine")
+        XCTAssertEqual(seeded.count, 1, "A first launch should be one working dashboard, not ten")
         let layout = try XCTUnwrap(seeded.first)
         XCTAssertFalse(layout.isPreset)
         XCTAssertEqual(layout.presetKey, LayoutSeeder.defaultPresetKey)

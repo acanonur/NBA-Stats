@@ -86,15 +86,16 @@ public extension View {
 /// Turns one `WidgetState` into the view that belongs to it.
 ///
 /// This is the single place where a payload meets a view: `WidgetContainer` owns the chrome —
-/// title, era badge, overflow menu — and hands the interior to this type. Four states and twelve
-/// payloads are all handled here, so adding a widget kind is a change in exactly two files: the
-/// payload in `Core`, and the one `case` below.
+/// title, era badge, overflow menu — and hands the interior to this type. Four states and
+/// fourteen payloads are all handled here, so adding a widget kind is a change in exactly two
+/// files: the payload in `Core`, and the one `case` below.
 public struct WidgetHost: View {
     private let widget: DashboardWidget
     private let state: WidgetState
     private let isEditing: Bool
 
     @Environment(\.widgetRetryAction) private var retryAction
+    @Environment(\.isBroadsheet) private var isBroadsheet
 
     public init(widget: DashboardWidget, state: WidgetState, isEditing: Bool) {
         self.widget = widget
@@ -140,14 +141,15 @@ public struct WidgetHost: View {
                         stale: Bool) -> some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             view(for: payload)
-            footer(lines: footnotes(availability: availability, notes: notes), stale: stale)
+            footer(lines: footnotes(kind: payload.kind, availability: availability, notes: notes),
+                   stale: stale)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     // MARK: Payload dispatch
 
-    /// The twelve payload cases, each rendered by the view that owns it. Every widget view takes
+    /// The fourteen payload cases, each rendered by the view that owns it. Every widget view takes
     /// the same `(payload:size:)` shape, so this stays a flat mapping with nothing to decide.
     @ViewBuilder private func view(for payload: WidgetPayload) -> some View {
         switch payload {
@@ -173,6 +175,10 @@ public struct WidgetHost: View {
             DailyMoversWidget(payload: value, size: widget.size)
         case .teamEfficiency(let value):
             TeamEfficiencyWidget(payload: value, size: widget.size)
+        case .nextGameProjection(let value):
+            NextGameProjectionWidget(payload: value, size: widget.size)
+        case .projectionBoard(let value):
+            ProjectionBoardWidget(payload: value, size: widget.size)
         case .careerArc(let value):
             CareerArcWidget(payload: value, size: widget.size)
         }
@@ -181,18 +187,48 @@ public struct WidgetHost: View {
     // MARK: Footnotes
 
     /// The server's own notes, or — when it sent none — the sentence the era treatment implies.
-    private func footnotes(availability: MetricAvailability, notes: [String]) -> [String] {
+    ///
+    /// `kind` is here for one reason. `.estimated` means two different things in this app: a
+    /// season number derived from the box score because the league published no possession data
+    /// before 1996-97, and a *projection*, which is an estimate of a game that has not been
+    /// played. The pre-1997 sentence under a next-game projection would be simply false, so the
+    /// projection gets the sentence that is true of it (`docs/PROJECTION.md` §7 rule 5).
+    private func footnotes(kind: WidgetKind, availability: MetricAvailability, notes: [String]) -> [String] {
         let cleaned = notes.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         guard cleaned.isEmpty else { return cleaned }
         switch availability {
         case .full:
             return []
+        case .estimated where kind == .nextGameProjection || kind == .projectionBoard:
+            return ["Projected, not recorded. These are estimates of a game that has not been played, and each carries its own range."]
         case .estimated:
             return ["Estimated from the box score. The league did not publish possession data before 1996-97."]
         case .partial:
             return ["Some of the games behind these numbers are missing the inputs they need."]
         case .unavailable:
             return []
+        }
+    }
+
+    /// One footnote line, in the page's own voice.
+    ///
+    /// The footnote is the only piece of chrome that shows in the ordinary loaded state, so it is
+    /// worth following the broadsheet's typography. The loading, failure and era-gap tiles still
+    /// render in the app's tile treatment on a broadsheet page — a deliberate stop, recorded in
+    /// docs/BROADSHEET.md §8, rather than an oversight.
+    ///
+    /// Written as two branches instead of a conditional font: `hardwoodText` sets the font *and*
+    /// the colour, so applying it after a broadsheet font would silently undo it.
+    @ViewBuilder private func footnote(_ line: String) -> some View {
+        if isBroadsheet {
+            Text(line)
+                .font(Broadsheet.serif(11))
+                .foregroundStyle(Broadsheet.textMuted)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            Text(line)
+                .hardwoodText(.caption)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -206,9 +242,7 @@ public struct WidgetHost: View {
                 if !lines.isEmpty {
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         ForEach(lines.indices, id: \.self) { index in
-                            Text(lines[index])
-                                .hardwoodText(.caption)
-                                .fixedSize(horizontal: false, vertical: true)
+                            footnote(lines[index])
                         }
                     }
                 }

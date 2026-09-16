@@ -6,7 +6,9 @@ The package is layered so that each piece can be used on its own:
 ``catalog``  the shared contract catalogs (metrics / widgets / presets), pure stdlib
 ``models``   SQLAlchemy 2.0 declarative tables mirroring ``contracts/CONTRACT.md``
 ``db``       engine, session factory and the sync-state singleton helpers
-``seed``     a deterministic synthetic league so the app runs with zero network access
+``identities`` real NBA names, person ids, headshots and the 30 franchises, pure stdlib
+``seed``     a deterministic synthetic league, wearing those identities, so the app runs
+             with zero network access
 
 ``API_VERSION`` is what ``GET /v1/health`` reports as ``version``.
 """

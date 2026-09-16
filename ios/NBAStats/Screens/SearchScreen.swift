@@ -194,7 +194,9 @@ struct SearchScreenContent: View {
 
     private func row(for player: PlayerRef, subtitle: String?) -> some View {
         HStack(spacing: Spacing.xs) {
-            PlayerRow(player: player, subtitle: subtitle)
+            // A search result is a full-width list row and the reader is scanning for a person,
+            // so this is the one place in the app that earns the 44pt portrait.
+            PlayerRow(player: player, subtitle: subtitle, avatar: .medium)
             favoriteButton(for: player)
             Image(systemName: "chevron.right")
                 .imageScale(.small)

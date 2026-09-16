@@ -2,15 +2,15 @@
   "subject": {
     "type": "player",
     "player": {
-      "playerId": 1500819,
-      "name": "Desmond Quintero",
-      "firstName": "Desmond",
-      "lastName": "Quintero",
-      "teamId": 1610612741,
-      "teamAbbr": "CHI",
+      "playerId": 1631260,
+      "name": "AJ Green",
+      "firstName": "AJ",
+      "lastName": "Green",
+      "teamId": 1610612743,
+      "teamAbbr": "DEN",
       "position": "G",
-      "jersey": "25",
-      "headshotUrl": null,
+      "jersey": "44",
+      "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631260.png",
       "isActive": true
     },
     "team": null
@@ -21,55 +21,55 @@
     {
       "zone": "rim",
       "label": "At Rim",
-      "fga": 4.4,
-      "fgPct": 0.6181818181818182,
-      "shareOfFga": 0.20109689213893966,
-      "pointsPerShot": 1.2363636363636363,
-      "leagueFgPct": 0.6458691910499139,
-      "leagueShareOfFga": 0.283397353819889
+      "fga": 4.08,
+      "fgPct": 0.6470588235294118,
+      "shareOfFga": 0.27419354838709675,
+      "pointsPerShot": 1.2941176470588236,
+      "leagueFgPct": 0.6451747740216313,
+      "leagueShareOfFga": 0.2932371146656861
     },
     {
       "zone": "paint_non_rim",
       "label": "Paint (non-rim)",
-      "fga": 2.52,
-      "fgPct": 0.42857142857142855,
-      "shareOfFga": 0.11517367458866545,
-      "pointsPerShot": 0.8571428571428571,
-      "leagueFgPct": 0.43748433976447004,
-      "leagueShareOfFga": 0.12166941040180476
+      "fga": 2.44,
+      "fgPct": 0.4426229508196721,
+      "shareOfFga": 0.1639784946236559,
+      "pointsPerShot": 0.8852459016393442,
+      "leagueFgPct": 0.43683957732949086,
+      "leagueShareOfFga": 0.12759698473984188
     },
     {
       "zone": "mid_range",
       "label": "Mid Range",
-      "fga": 4.6,
-      "fgPct": 0.391304347826087,
-      "shareOfFga": 0.21023765996343693,
-      "pointsPerShot": 0.782608695652174,
-      "leagueFgPct": 0.40180543551330067,
-      "leagueShareOfFga": 0.15872507773916225
+      "fga": 3.64,
+      "fgPct": 0.4065934065934066,
+      "shareOfFga": 0.2446236559139785,
+      "pointsPerShot": 0.8131868131868132,
+      "leagueFgPct": 0.4021348951445305,
+      "leagueShareOfFga": 0.1621928050499479
     },
     {
       "zone": "corner_three",
       "label": "Corner 3",
-      "fga": 1.88,
-      "fgPct": 0.3829787234042553,
-      "shareOfFga": 0.08592321755027423,
-      "pointsPerShot": 1.148936170212766,
-      "leagueFgPct": 0.38818897637795274,
-      "leagueShareOfFga": 0.13551002987622707
+      "fga": 1.04,
+      "fgPct": 0.38461538461538464,
+      "shareOfFga": 0.06989247311827956,
+      "pointsPerShot": 1.1538461538461537,
+      "leagueFgPct": 0.3837960746768789,
+      "leagueShareOfFga": 0.1280259851688423
     },
     {
       "zone": "above_break_three",
       "label": "Above the Break 3",
-      "fga": 8.48,
-      "fgPct": 0.3490566037735849,
-      "shareOfFga": 0.3875685557586837,
-      "pointsPerShot": 1.0471698113207548,
-      "leagueFgPct": 0.35626298981091903,
-      "leagueShareOfFga": 0.3006981281629169
+      "fga": 3.68,
+      "fgPct": 0.34782608695652173,
+      "shareOfFga": 0.24731182795698925,
+      "pointsPerShot": 1.0434782608695652,
+      "leagueFgPct": 0.3528288880640543,
+      "leagueShareOfFga": 0.2889471103756818
     }
   ],
-  "threePointRate": 0.473491773308958,
-  "freeThrowRate": 0.18647166361974407,
+  "threePointRate": 0.3172043010752688,
+  "freeThrowRate": 0.2849462365591398,
   "note": null
 }

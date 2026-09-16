@@ -33,6 +33,7 @@
       "accent": "orange",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "scoreboard",
@@ -122,6 +123,7 @@
       "accent": "indigo",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "player_snapshot",
@@ -225,6 +227,7 @@
       "accent": "teal",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "team_efficiency",
@@ -312,6 +315,7 @@
       "accent": "red",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "leaderboard",
@@ -415,6 +419,7 @@
       "accent": "amber",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "leaderboard",
@@ -512,6 +517,7 @@
       "accent": "green",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "daily_movers",
@@ -602,6 +608,7 @@
       "accent": "blue",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "stat_tile",
@@ -697,6 +704,7 @@
       "accent": "purple",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": [
         {
           "kind": "leaderboard",
@@ -776,6 +784,199 @@
       ]
     },
     {
+      "id": "preset.next_game",
+      "presetKey": "next_game",
+      "name": "Next Game",
+      "icon": "function",
+      "tagline": "What the numbers expect tonight.",
+      "accent": "purple",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "presentation": "tiles",
+      "widgets": [
+        {
+          "kind": "next_game_projection",
+          "size": "large",
+          "title": "Projected Box Score",
+          "config": {
+            "playerId": "$favorite_player",
+            "stats": [
+              "pts",
+              "reb",
+              "ast",
+              "fg3m",
+              "stl",
+              "blk",
+              "tov"
+            ],
+            "opponentTeamId": null,
+            "interval": "80",
+            "showCombo": true,
+            "showFactors": true,
+            "season": "latest",
+            "seasonType": "Regular Season"
+          },
+          "id": "next_game.01.next_game_projection"
+        },
+        {
+          "kind": "player_snapshot",
+          "size": "large",
+          "title": "Form",
+          "config": {
+            "playerId": "$favorite_player",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "showPercentiles": true,
+            "metrics": [
+              "min",
+              "pts",
+              "reb",
+              "ast",
+              "ts_pct",
+              "usg_pct",
+              "net_rtg",
+              "pie"
+            ]
+          },
+          "id": "next_game.02.player_snapshot"
+        },
+        {
+          "kind": "trend_chart",
+          "size": "large",
+          "title": "Minutes Trend",
+          "config": {
+            "subjectType": "player",
+            "subjectIds": [
+              "$favorite_player"
+            ],
+            "metric": "min",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "rollingWindow": 5,
+            "showLeagueAverage": false,
+            "showRawPoints": true
+          },
+          "id": "next_game.03.trend_chart"
+        },
+        {
+          "kind": "game_log",
+          "size": "large",
+          "title": "Recent Games",
+          "config": {
+            "playerId": "$favorite_player",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "limit": 10,
+            "highlightSeasonBest": true,
+            "columns": [
+              "min",
+              "pts",
+              "reb",
+              "ast",
+              "fg3m",
+              "stl",
+              "blk",
+              "tov"
+            ]
+          },
+          "id": "next_game.04.game_log"
+        },
+        {
+          "kind": "scoreboard",
+          "size": "medium",
+          "title": "Tonight",
+          "config": {
+            "date": "latest",
+            "showTopPerformers": false,
+            "teamIds": []
+          },
+          "id": "next_game.05.scoreboard"
+        }
+      ]
+    },
+    {
+      "id": "preset.fantasy_board",
+      "presetKey": "fantasy_board",
+      "name": "Fantasy Board",
+      "icon": "newspaper",
+      "tagline": "Tonight, read like a broadsheet.",
+      "accent": "graphite",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "presentation": "broadsheet",
+      "widgets": [
+        {
+          "kind": "projection_board",
+          "size": "large",
+          "title": "Tonight's Projections",
+          "config": {
+            "date": "latest",
+            "scope": "league",
+            "playerIds": [],
+            "teamId": null,
+            "metrics": [
+              "pts",
+              "reb",
+              "ast"
+            ],
+            "limit": 6,
+            "minMinutes": 24.0,
+            "reference": "season_average",
+            "seasonType": "Regular Season"
+          },
+          "id": "fantasy_board.01.projection_board"
+        },
+        {
+          "kind": "next_game_projection",
+          "size": "large",
+          "title": "Your Player",
+          "config": {
+            "playerId": "$favorite_player",
+            "stats": [
+              "pts",
+              "reb",
+              "ast",
+              "fg3m",
+              "stl",
+              "blk",
+              "tov"
+            ],
+            "opponentTeamId": null,
+            "interval": "80",
+            "showCombo": true,
+            "showFactors": true,
+            "season": "latest",
+            "seasonType": "Regular Season"
+          },
+          "id": "fantasy_board.02.next_game_projection"
+        },
+        {
+          "kind": "scoreboard",
+          "size": "large",
+          "title": "Last Night",
+          "config": {
+            "date": "latest",
+            "showTopPerformers": false,
+            "teamIds": []
+          },
+          "id": "fantasy_board.03.scoreboard"
+        },
+        {
+          "kind": "daily_movers",
+          "size": "large",
+          "title": "Biggest Nights",
+          "config": {
+            "date": "latest",
+            "metric": "game_score",
+            "limit": 6,
+            "minMinutes": 12.0,
+            "direction": "best"
+          },
+          "id": "fantasy_board.04.daily_movers"
+        }
+      ]
+    },
+    {
       "id": "preset.blank",
       "presetKey": "blank",
       "name": "Blank Canvas",
@@ -784,6 +985,7 @@
       "accent": "graphite",
       "isPreset": true,
       "schemaVersion": 1,
+      "presentation": "tiles",
       "widgets": []
     }
   ]

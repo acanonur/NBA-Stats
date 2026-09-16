@@ -133,7 +133,7 @@ FIXTURE_ENVIRONMENT: dict[str, Optional[str]] = {
 
 # --------------------------------------------------------------------------- widget configs
 
-#: One configuration per widget kind, in catalog order. These are the twelve tiles the
+#: One configuration per widget kind, in catalog order. These are the fourteen tiles the
 #: ``dashboard_resolve`` fixture asks for, and each result's payload is also written out on
 #: its own as ``widget_<kind>.json``, so the two can never disagree.
 #:
@@ -248,6 +248,27 @@ WIDGET_CONFIGS: dict[str, dict[str, Any]] = {
         "limit": 30,
         "style": "table",
     },
+    "next_game_projection": {
+        "playerId": "$favorite_player",
+        "stats": ["pts", "reb", "ast", "fg3m", "stl", "blk", "tov"],
+        "opponentTeamId": None,
+        "interval": "80",
+        "showCombo": True,
+        "showFactors": True,
+        "season": "latest",
+        "seasonType": "Regular Season",
+    },
+    "projection_board": {
+        "date": "latest",
+        "scope": "league",
+        "playerIds": [],
+        "teamId": None,
+        "metrics": ["pts", "reb", "ast"],
+        "limit": 6,
+        "minMinutes": 20.0,
+        "reference": "season_average",
+        "seasonType": "Regular Season",
+    },
     "career_arc": {
         "playerId": "$favorite_player",
         "metric": "per",
@@ -267,7 +288,7 @@ FIXTURE_ERA_SEASON = "1985-86"
 #: Between them they produce every availability the contract defines other than ``"full"``:
 #: ``estimated`` (a career arc of box-score-derived PER), ``partial`` (a snapshot and a game
 #: log whose modern columns are ``null``, never ``0``) and ``unavailable`` (a shot profile
-#: for a season with no play-by-play). They come *after* the canonical dozen, so
+#: for a season with no play-by-play). They come *after* the canonical set, so
 #: ``resolvedContext`` still echoes the dashboard's modern subject.
 ERA_WIDGET_CONFIGS: tuple[tuple[str, str, dict[str, Any]], ...] = (
     (

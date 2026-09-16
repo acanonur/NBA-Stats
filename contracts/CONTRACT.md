@@ -467,6 +467,96 @@ Zones, in order: `rim`, `paint_non_rim`, `mid_range`, `corner_three`, `above_bre
               "ranks": { "off_rtg": 3, "def_rtg": 5, "net_rtg": 1 } } ] }
 ```
 
+### `next_game_projection`
+
+A projected box score. See [`docs/PROJECTION.md`](../docs/PROJECTION.md) for the derivation;
+the short version is `Ŝ = M̂ · r̂_reg · f_pace · f_opp · f_home · f_rest`.
+
+```json
+{ "player": { "...PlayerRef" },
+  "game": { "gameId": "0022500640", "date": "2026-01-04", "opponentAbbr": "BOS",
+            "opponent": { "...TeamRef" }, "isHome": true, "restDays": 2, "isBackToBack": false,
+            "opponentDefRtg": 111.8, "expectedPace": 99.1 },
+  "projectedMinutes": { "value": 34.2, "displayValue": "34.2", "halfLifeGames": 2,
+                        "seasonAverage": 33.8, "low": 27.0, "high": 40.5 },
+  "lines": [
+    { "metric": "pts", "descriptor": { "...MetricDescriptor" },
+      "mean": 28.4, "displayValue": "28.4",
+      "low": 19, "high": 38, "intervalLevel": 0.8,
+      "seasonAverage": 27.1, "delta": 1.3,
+      "ratePerMinute": 0.831, "shrinkageK": 81, "exposureMinutes": 1240.0,
+      "shrinkageWeight": 0.94, "halfLifeGames": 6,
+      "dispersionAlpha": 0.061, "dispersionMultiplier": 1.34,
+      "availability": "estimated" } ],
+  "factors": [ { "key": "pace", "label": "Pace", "value": 1.021,
+                 "explanation": "Both teams play slightly faster than league average.",
+                 "contributions": { "pts": 0.58, "reb": 0.16, "ast": 0.12 } } ],
+  "combo": { "label": "PTS+REB+AST", "mean": 45.1, "sd": 9.21, "sdIfIndependent": 8.17,
+             "inflation": 0.127, "low": 33, "high": 57,
+             "correlation": [[1.0, 0.3, 0.17], [0.3, 1.0, 0.2], [0.17, 0.2, 1.0]] },
+  "method": { "summary": "Opportunity x rate, shrunk per statistic.",
+              "minutesHalfLifeGames": 2, "correlationApplied": true,
+              "dispersionShrinkageGames": 60 },
+  "notes": [ "Projected minutes carry most of the error." ] }
+```
+
+Every `line` carries `availability: "estimated"` — a projection is never a record, and the
+client renders it with the same treatment as a pre-1997 derived stat. `game` is null when the
+player has no scheduled next game, in which case the payload still projects against a
+league-average opponent and says so in `notes`.
+
+`low`/`high` are the bounds of the negative-binomial interval at `intervalLevel`, **after** the
+per-player dispersion multiplier. `sdIfIndependent` exists so the client can show what ignoring
+residual correlation would have claimed; the gap is the point.
+
+`factors[].contributions` maps each `lines[].metric` to that factor's signed share of the
+statistic's projected mean, in the statistic's own units: `mean × (value − 1)`. It is a
+**first-order attribution, not a decomposition** — the factors multiply, so the contributions do
+not sum to the difference from a neutral-context projection. Clients must present them as the
+largest movers, never as a column that adds up. The key is absent when `showFactors` is false,
+along with the rest of `factors`.
+
+### `projection_board`
+
+Tonight's projected lines for several players, each drawn as a range. Designed from the
+`Hardwood Predictions` handoff, option 2b — see [`docs/BROADSHEET.md`](../docs/BROADSHEET.md).
+
+```json
+{ "date": "2026-01-04", "throughDate": "2026-01-05", "selectionDate": "2026-01-02",
+  "gameCount": 7,
+  "reference": "season_average", "referenceLabel": "season avg",
+  "rows": [
+    { "player": { "...PlayerRef" }, "matchup": "LAL @ DEN", "opponentAbbr": "DEN",
+      "isHome": false, "gameId": "0022500640", "gameDate": "2026-01-04",
+      "metric": "pts", "descriptor": { "...MetricDescriptor" },
+      "projection": 34.2, "displayValue": "34.2",
+      "low": 26, "high": 43, "intervalLevel": 0.8,
+      "referenceValue": 31.5, "delta": 2.7, "deltaZ": 0.38,
+      "projectedMinutes": 34.1, "availability": "estimated" } ],
+  "note": "The band is the model's 10th to 90th percentile; the dot is the projection." }
+```
+
+**Three dates, because they are genuinely three different things.** `selectionDate` is the last
+completed slate, which is only how the candidate players were chosen; `date` and `throughDate`
+bracket the games actually being projected, since each player is projected to whatever *they*
+play next and those need not fall on one night. `throughDate` is null when every row is on
+`date`. A client heading the board with `selectionDate` would put last night's date above
+tomorrow night's numbers. `gameCount` counts the distinct games in `rows`, not the slate.
+
+`referenceValue` is the mark the band is read against — the player's season or career average
+for that metric, or null when `reference` is `"none"`. **It is never a market line:** no odds,
+price, edge or implied probability appears anywhere in this payload, for the reasons in
+[`docs/PROJECTION.md`](../docs/PROJECTION.md) §6.
+
+`deltaZ` is `delta` divided by the projection's own predictive spread, recovered from the
+published interval. **Rows are sorted by `abs(deltaZ)` descending, not by `abs(delta)`** — that
+disagreement with a player's baseline is the only reason to look at the board, but a raw delta
+is not comparable across statistics, so ranking on it returns a board of nothing but points
+every night. `deltaZ` is a ranking scale, not a significance claim: values well under 1 are
+normal, because one game's noise is large. It is null when `reference` is `"none"` or the
+engine published no interval; with no reference, rows sort by `projection` over that same
+spread.
+
 ### `career_arc`
 
 ```json
@@ -509,6 +599,10 @@ the exact JSON below (also what `GET /v1/presets` returns per preset).
 * `title` is nullable; when null the client renders the widget catalog's default title.
 * Widget `id` is unique within a layout and stable across edits (drag, resize, reconfigure).
 * `accent` ∈ `orange`, `indigo`, `teal`, `red`, `amber`, `green`, `blue`, `purple`, `graphite`.
+* `presentation` ∈ `tiles` (default) | `broadsheet`. It governs the whole page, not one widget:
+  `tiles` is the card grid; `broadsheet` drops the card chrome for a single editorial column
+  with hairline rules, uppercase kickers and serif numerals. A layout that omits the key is
+  `tiles`, so every document written before this field remains valid.
 * Order in `widgets` is the render order. There are no explicit grid coordinates: the layout
   flows into a 2-column (compact) or 4-column (regular) grid using each widget's `size`.
 

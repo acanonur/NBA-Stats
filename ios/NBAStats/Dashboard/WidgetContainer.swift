@@ -50,6 +50,7 @@ public struct WidgetContainer: View {
     private let onRemove: () -> Void
 
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.isBroadsheet) private var isBroadsheet
 
     public init(widget: DashboardWidget,
                 state: WidgetState,
@@ -112,6 +113,26 @@ public struct WidgetContainer: View {
     // MARK: Body
 
     public var body: some View {
+        Group {
+            if isBroadsheet {
+                broadsheetBody
+            } else {
+                tileBody
+            }
+        }
+        .overlay(alignment: .topLeading) { deleteAffordance }
+        .scaleEffect(isDragging ? 1.03 : 1)
+        .opacity(isDragging ? 0.95 : 1)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            // Outside edit mode a tap belongs to the widget's own content.
+            if isEditing { onConfigure() }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(accessibilitySummary)
+    }
+
+    private var tileBody: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             header
             WidgetHost(widget: widget, state: state, isEditing: isEditing)
@@ -122,20 +143,56 @@ public struct WidgetContainer: View {
         .background(shape.fill(Palette.surface))
         .overlay { border }
         .clipShape(shape)
-        .overlay(alignment: .topLeading) { deleteAffordance }
         .shadow(color: isDragging ? Color.black.opacity(0.18) : Color.clear,
                 radius: isDragging ? 16 : 0,
                 x: 0,
                 y: isDragging ? 8 : 0)
-        .scaleEffect(isDragging ? 1.03 : 1)
-        .opacity(isDragging ? 0.95 : 1)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            // Outside edit mode a tap belongs to the widget's own content.
-            if isEditing { onConfigure() }
+    }
+
+    /// The same widget with the chrome taken off: no fill, no border, no radius, no shadow, no
+    /// reserved minimum height. A section of a broadsheet is separated from the next by the
+    /// kicker above it and the white space around it, and giving it a card back would undo the
+    /// whole presentation (docs/BROADSHEET.md §3).
+    ///
+    /// The edit-mode affordances stay — a broadsheet layout is as editable as any other — but
+    /// they are drawn as an underline rather than a dashed box, which is the nearest thing the
+    /// presentation has to a boundary.
+    private var broadsheetBody: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            broadsheetHeader
+            WidgetHost(widget: widget, state: state, isEditing: isEditing)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel(accessibilitySummary)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .padding(.vertical, Spacing.xs)
+        .overlay(alignment: .bottom) {
+            if isEditing || isDropTarget {
+                Rectangle()
+                    .fill(isDropTarget ? Broadsheet.accentAbove : Broadsheet.rule)
+                    .frame(height: isDropTarget ? 2 : 1)
+            }
+        }
+    }
+
+    private var broadsheetHeader: some View {
+        HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
+            BroadsheetKicker(title)
+                .accessibilityHidden(true)
+            AvailabilityBadge(availability: facts.availability,
+                              showsText: false,
+                              isInteractive: true,
+                              metricName: title,
+                              season: season,
+                              notes: facts.notes)
+            Spacer(minLength: Spacing.xs)
+            if facts.isStale {
+                StalenessDot(isStale: true)
+            }
+            if isEditing, let dragHandle = dragHandle {
+                dragHandle
+            }
+            overflowMenu
+        }
     }
 
     private var border: some View {

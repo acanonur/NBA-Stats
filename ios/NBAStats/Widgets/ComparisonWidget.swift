@@ -228,11 +228,31 @@ public struct ComparisonWidget: View {
         }
     }
 
+    /// Whether the header names its subjects with faces rather than with one run of text.
+    ///
+    /// Four subjects is the payload's maximum and four portraits plus four short names plus the
+    /// season context do not fit on one line, so above three the header stays as it was. A small
+    /// tile is one grid column and never has the room. And there is no point in a row of
+    /// portraits when every subject is a team.
+    private var showsSubjectAvatars: Bool {
+        size != .small
+            && subjectInfos.count <= 3
+            && subjectInfos.contains(where: { $0.subject.player != nil })
+    }
+
     private var header: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
-            Text(subjectInfos.map(\.shortName).joined(separator: " · "))
-                .hardwoodText(.statLabel, color: Palette.textPrimary)
-                .lineLimit(1)
+        HStack(alignment: showsSubjectAvatars ? .center : .firstTextBaseline, spacing: Spacing.xs) {
+            if showsSubjectAvatars {
+                HStack(spacing: Spacing.sm) {
+                    ForEach(subjectInfos) { info in
+                        subjectChip(info)
+                    }
+                }
+            } else {
+                Text(subjectInfos.map(\.shortName).joined(separator: " · "))
+                    .hardwoodText(.statLabel, color: Palette.textPrimary)
+                    .lineLimit(1)
+            }
             Spacer(minLength: Spacing.xs)
             if !contextText.isEmpty {
                 Text(contextText)
@@ -241,6 +261,26 @@ public struct ComparisonWidget: View {
             }
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// One subject: their face, ringed in the colour their marks are drawn in, and their short
+    /// name. The ring is what makes this a legend as well as a heading, which matters most in the
+    /// table presentation, where the separate legend is suppressed.
+    @ViewBuilder private func subjectChip(_ info: SubjectInfo) -> some View {
+        HStack(spacing: Spacing.xs) {
+            if let player = info.subject.player {
+                PlayerAvatar(player: player, size: .small)
+                    .overlay(Circle().strokeBorder(info.color, lineWidth: 2))
+                    .accessibilityHidden(true)
+            } else if let team = info.subject.team {
+                TeamBadge(team: team, size: .small)
+                    .accessibilityHidden(true)
+            }
+            Text(info.shortName)
+                .hardwoodText(.statLabel, color: Palette.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
     }
 
     // MARK: Bars

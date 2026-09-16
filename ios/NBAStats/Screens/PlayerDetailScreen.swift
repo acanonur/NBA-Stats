@@ -180,13 +180,20 @@ struct PlayerDetailScreenContent: View {
     private func hero(_ detail: PlayerDetailResponse) -> some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack(alignment: .top, spacing: Spacing.md) {
-                if let abbr = detail.player.teamAbbr, !abbr.isEmpty {
-                    TeamBadge(abbreviation: abbr, size: .large)
-                }
-                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                // The player is the subject of the whole screen, so this is the one 88pt
+                // portrait in the app. Decorative — the name is the very next thing VoiceOver
+                // reads, and hearing it twice helps nobody.
+                PlayerAvatar(player: detail.player, size: .large)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text(detail.player.name)
                         .hardwoodText(.sectionTitle)
                         .fixedSize(horizontal: false, vertical: true)
+                    // The team badge moves under the name: at 88pt the portrait is the leading
+                    // element, and a large badge beside it would be two marks competing.
+                    if let abbr = detail.player.teamAbbr, !abbr.isEmpty {
+                        TeamBadge(abbreviation: abbr, size: .medium)
+                    }
                     Text(heroSubtitle(detail))
                         .hardwoodText(.caption)
                         .fixedSize(horizontal: false, vertical: true)

@@ -2,19 +2,27 @@
 
 The reconciliation tests are the load-bearing ones. If a player's points do not add up to
 the team's, and the team's not to the final score, every widget in the app is quietly wrong.
+
+The identity tests are the honest ones. The seeded league wears real NBA names, ids and
+headshots and invents everything else, so they check both halves of that sentence: the names
+are the file's, the numbers are stamped ``synthetic-demo``, and a 1985-86 roster never fills
+up with players who are in the league today.
 """
 from __future__ import annotations
 
 from datetime import date
+from typing import Iterator
 
 import pytest
 from sqlalchemy import Engine, func, select, text
 from sqlalchemy.orm import Session
 
-from nbastats import catalog
+from nbastats import catalog, identities
 from nbastats.models import (
     SHOT_ZONES,
+    Base,
     Game,
+    IdCrosswalk,
     LeagueSeason,
     Player,
     PlayerGameAdvanced,
@@ -25,7 +33,7 @@ from nbastats.models import (
     Team,
     TeamSeason,
 )
-from nbastats.seed import NBA_TEAMS, seed_database
+from nbastats.seed import ACTIVE_IDENTITY_FROM, DATA_SOURCE, NBA_TEAMS, seed_database
 
 
 # --------------------------------------------------------------------------- reference
@@ -76,6 +84,145 @@ def test_players_are_plausible(seeded_db: Session, seed_summary: dict) -> None:
         assert player.from_year <= player.to_year
         assert player.height and "-" in player.height
         assert 150 <= (player.weight or 0) <= 340
+
+
+# ------------------------------------------------------------------- real identities
+
+
+def test_seeded_players_wear_real_nba_identities(
+    seeded_db: Session, seed_summary: dict
+) -> None:
+    """Every name, id and photo in the demo league is the identity file's, verbatim."""
+    assert seed_summary["invented_identities"] == 0, "the identity pools should cover this seed"
+    assert seed_summary["real_identities_active"] > 0
+    assert seed_summary["real_identities_historical"] > 0
+
+    players = seeded_db.execute(select(Player)).scalars().all()
+    assert len(players) > 200
+    for player in players:
+        identity = identities.player(player.player_id)
+        assert identity is not None, f"{player.full_name} carries an id nobody has"
+        assert player.full_name == identity.name
+        assert player.first_name == identity.first_name
+        assert player.last_name == identity.last_name
+        assert player.headshot_url == identity.headshot_url
+        assert player.headshot_url == (
+            f"https://cdn.nba.com/headshots/nba/latest/1040x760/{player.player_id}.png"
+        )
+
+    # A reader opening the app sees people they have heard of, spelled the way NBA.com
+    # spells them: the demo league is full of accented names and keeps every mark.
+    assert any(not player.full_name.isascii() for player in players)
+
+
+def test_the_identity_file_supplies_the_franchises(seeded_db: Session) -> None:
+    """Team ids, cities and names come from the file; only the alignment is ours."""
+    teams = seeded_db.execute(select(Team)).scalars().all()
+    assert len(teams) == 30
+    for team in teams:
+        identity = identities.team(team.abbr)
+        assert identity is not None
+        assert team.team_id == identity.team_id
+        assert team.name == identity.name
+        assert team.city == identity.city
+        assert team.year_founded == identity.year_founded
+        # Conference and division are not in the file — the seeder supplies them.
+        assert team.conference in ("East", "West")
+        assert team.division
+
+
+def test_the_crosswalk_keeps_the_real_person_id_and_labels_the_rest(
+    seeded_db: Session,
+) -> None:
+    rows = seeded_db.execute(select(IdCrosswalk)).scalars().all()
+    assert rows
+    for row in rows:
+        # The NBA person id is real; the ESPN and balldontlie ids are made up, so the
+        # method column says where the row came from rather than claiming a match.
+        assert identities.player(row.nba_person_id) is not None
+        assert row.method == DATA_SOURCE
+
+
+def test_every_seeded_row_is_stamped_synthetic_demo(seeded_db: Session) -> None:
+    """No seeded number can be mistaken for an observation."""
+    assert DATA_SOURCE == "synthetic-demo"
+    stamped = [table.name for table in Base.metadata.sorted_tables if "data_source" in table.c]
+    assert len(stamped) == 6, stamped
+    for name in stamped:
+        sources = seeded_db.execute(
+            text(f"SELECT DISTINCT data_source FROM {name}")  # noqa: S608 - table names are ours
+        ).scalars().all()
+        assert sources == [DATA_SOURCE], f"{name} carries {sources}"
+
+
+def _season_player_ids(session: Session, season: str) -> set[int]:
+    return set(
+        session.execute(
+            select(PlayerSeason.player_id).where(PlayerSeason.season == season).distinct()
+        ).scalars().all()
+    )
+
+
+def test_each_season_draws_from_its_own_era_pool(seeded_db: Session) -> None:
+    """1992-93 gets retired players; 2024-25 and 2025-26 get today's."""
+    active_ids = {person.player_id for person in identities.active_players()}
+    seasons = seeded_db.execute(select(PlayerSeason.season).distinct()).scalars().all()
+    assert len(seasons) >= 2
+    for season in seasons:
+        ids = _season_player_ids(seeded_db, season)
+        assert ids, season
+        if catalog.season_sort_key(season) >= ACTIVE_IDENTITY_FROM:
+            assert ids <= active_ids, season
+        else:
+            assert ids.isdisjoint(active_ids), season
+
+
+@pytest.fixture(scope="module")
+def era_seeded_db(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Session]:
+    """A two-season league either side of the identity-pool boundary: 1985-86 and 2025-26."""
+    from nbastats.db import create_db_engine, init_db
+
+    path = tmp_path_factory.mktemp("hardwood-eras") / "eras.db"
+    engine = create_db_engine(f"sqlite:///{path}")
+    init_db(engine)
+    with Session(engine, future=True) as session:
+        seed_database(
+            session, as_of=date(2026, 1, 2), seasons=["1985-86", "2025-26"],
+            games_per_team=4, players_per_team=9, include_playoffs=False,
+        )
+        session.commit()
+    session = Session(engine, future=True)
+    try:
+        yield session
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_a_1985_86_roster_never_stars_a_current_player(era_seeded_db: Session) -> None:
+    """A 1985-86 season starring Victor Wembanyama would undermine the era work."""
+    active_ids = {person.player_id for person in identities.active_players()}
+    historical_ids = {person.player_id for person in identities.historical_players()}
+    assert 1985 < ACTIVE_IDENTITY_FROM <= 2026
+
+    modern = _season_player_ids(era_seeded_db, "2025-26")
+    historic = _season_player_ids(era_seeded_db, "1985-86")
+    assert modern and historic
+    assert modern.isdisjoint(historic)
+
+    # The modern season is drawn from the active list, the 1985-86 season from the
+    # retired list, and neither borrows from the other.
+    assert modern <= active_ids
+    assert historic <= historical_ids
+    assert historic.isdisjoint(active_ids)
+
+    historic_names = set(
+        era_seeded_db.execute(
+            select(Player.full_name).where(Player.player_id.in_(historic))
+        ).scalars().all()
+    )
+    assert "Victor Wembanyama" not in historic_names
+    assert "Luka Dončić" not in historic_names
 
 
 # --------------------------------------------------------------------- reconciliation
@@ -524,7 +671,7 @@ def test_play_in_only_exists_in_the_modern_era(seeded_db: Session) -> None:
 
 
 def test_seed_is_deterministic(empty_engine: Engine, tmp_path) -> None:
-    """The same seed produces the same league, twice."""
+    """The same seed produces the same league, twice — the same numbers *and* the same people."""
     from nbastats.db import create_db_engine, init_db
 
     def fingerprint(engine: Engine) -> tuple:
@@ -537,6 +684,19 @@ def test_seed_is_deterministic(empty_engine: Engine, tmp_path) -> None:
                     text("SELECT COUNT(*), SUM(home_pts), SUM(away_pts) FROM games")
                 ).one(),
                 session.execute(text("SELECT COUNT(*) FROM players")).one(),
+                # Which real identities were drawn, and onto which team they landed: the
+                # draw runs off the same seeded Random as everything else, so it has to be
+                # reproducible too.
+                tuple(
+                    session.execute(
+                        text(
+                            "SELECT p.player_id, p.full_name, p.headshot_url, ps.team_id "
+                            "FROM players p JOIN player_season ps "
+                            "ON ps.player_id = p.player_id "
+                            "ORDER BY p.player_id, ps.season, ps.season_type"
+                        )
+                    ).all()
+                ),
             )
 
     with Session(empty_engine, future=True) as session:

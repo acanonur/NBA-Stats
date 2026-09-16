@@ -24,7 +24,7 @@ TOKENS = {"$favorite_player", "$favorite_team", "$featured_player", "$featured_t
 def w(kind, size, title, **config):
     return {"kind": kind, "size": size, "title": title, "config": config}
 
-def preset(key, name, icon, tagline, accent, widgets):
+def preset(key, name, icon, tagline, accent, widgets, presentation="tiles"):
     out = []
     for i, item in enumerate(widgets):
         item = dict(item)
@@ -33,6 +33,7 @@ def preset(key, name, icon, tagline, accent, widgets):
     return {
         "id": "preset." + key, "presetKey": key, "name": name, "icon": icon,
         "tagline": tagline, "accent": accent, "isPreset": True, "schemaVersion": 1,
+        "presentation": presentation,
         "widgets": out,
     }
 
@@ -153,6 +154,36 @@ PRESETS = [
      metrics=["pts", "ts_pct", "usg_pct", "ast_pct", "net_rtg", "pie"], season="latest",
      seasonType="Playoffs", normalization="percentile", style="bars"),
  ]),
+ preset("next_game", "Next Game", "function", "What the numbers expect tonight.", "purple", [
+   w("next_game_projection", "large", "Projected Box Score", playerId="$favorite_player",
+     stats=["pts", "reb", "ast", "fg3m", "stl", "blk", "tov"], opponentTeamId=None,
+     interval="80", showCombo=True, showFactors=True, season="latest",
+     seasonType="Regular Season"),
+   w("player_snapshot", "large", "Form", playerId="$favorite_player", season="latest",
+     seasonType="Regular Season", showPercentiles=True,
+     metrics=["min", "pts", "reb", "ast", "ts_pct", "usg_pct", "net_rtg", "pie"]),
+   w("trend_chart", "large", "Minutes Trend", subjectType="player",
+     subjectIds=["$favorite_player"], metric="min", season="latest",
+     seasonType="Regular Season", rollingWindow=5, showLeagueAverage=False,
+     showRawPoints=True),
+   w("game_log", "large", "Recent Games", playerId="$favorite_player", season="latest",
+     seasonType="Regular Season", limit=10, highlightSeasonBest=True,
+     columns=["min", "pts", "reb", "ast", "fg3m", "stl", "blk", "tov"]),
+   w("scoreboard", "medium", "Tonight", date="latest", showTopPerformers=False, teamIds=[]),
+ ]),
+ preset("fantasy_board", "Fantasy Board", "newspaper", "Tonight, read like a broadsheet.",
+        "graphite", [
+   w("projection_board", "large", "Tonight's Projections", date="latest", scope="league",
+     playerIds=[], teamId=None, metrics=["pts", "reb", "ast"], limit=6, minMinutes=24.0,
+     reference="season_average", seasonType="Regular Season"),
+   w("next_game_projection", "large", "Your Player", playerId="$favorite_player",
+     stats=["pts", "reb", "ast", "fg3m", "stl", "blk", "tov"], opponentTeamId=None,
+     interval="80", showCombo=True, showFactors=True, season="latest",
+     seasonType="Regular Season"),
+   w("scoreboard", "large", "Last Night", date="latest", showTopPerformers=False, teamIds=[]),
+   w("daily_movers", "large", "Biggest Nights", date="latest", metric="game_score", limit=6,
+     minMinutes=12.0, direction="best"),
+ ], presentation="broadsheet"),
  preset("blank", "Blank Canvas", "square.dashed", "Start empty and build your own.", "graphite", []),
 ]
 
@@ -198,6 +229,8 @@ def validate(presets=None):
                             errors.append("%s/%s.%s: metric %r is not a player metric" % (p["presetKey"], item["kind"], k, x))
                     if c.get("maxItems") and len(v) > c["maxItems"]:
                         errors.append("%s/%s.%s: %d items exceeds max %d" % (p["presetKey"], item["kind"], k, len(v), c["maxItems"]))
+                if t in ("player", "team", "subject") and v is None and not c["required"]:
+                    continue
                 if t in ("player", "team", "subject") and isinstance(v, str) and v not in TOKENS:
                     errors.append("%s/%s.%s: unknown subject token %r" % (p["presetKey"], item["kind"], k, v))
                 if t in ("playerList", "teamList", "subjectList"):
