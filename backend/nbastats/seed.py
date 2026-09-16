@@ -2142,6 +2142,33 @@ def _game_rotation(rng: random.Random, team: SeasonTeam, size: int) -> list[dict
     return rows
 
 
+#: Per-player, per-game "form" shock. Real box scores are strongly OVER-dispersed: a 25-point
+#: scorer has a game-to-game standard deviation near 8, so variance/mean is about 2.8, not the
+#: 1.0 a Poisson process would give. Splitting a nearly-fixed team total with only a narrow
+#: jitter produces the opposite — implausibly consistent players — which silently collapses the
+#: projection intervals to the Poisson floor and makes the whole dispersion correction
+#: undemonstrable.
+#:
+#: A gamma shock with mean 1 fixes it at the source: a gamma-mixed Poisson count IS negative
+#: binomial, which is the distribution the projection model assumes, so the synthetic league and
+#: the model now agree about the shape of the world. The coefficients below were calibrated
+#: against real variance-to-mean ratios (see tests/test_seed.py).
+FORM_SHOCK_CV = {"usage": 0.42, "three": 0.40, "ft": 0.40, "reb": 0.54,
+                 "ast": 0.66, "defense": 0.60}
+
+
+def _form_shock(rng: random.Random, cv: float) -> float:
+    """A gamma variate with mean 1 and coefficient of variation ``cv``.
+
+    ``gammavariate(shape, scale)`` has mean shape*scale and variance shape*scale**2, so
+    shape = 1/cv**2 and scale = cv**2 give mean 1 and variance cv**2.
+    """
+    if cv <= 0:
+        return 1.0
+    shape = 1.0 / (cv * cv)
+    return rng.gammavariate(shape, cv * cv)
+
+
 def _distribute_team_line(
     rng: random.Random, era: Era, line: dict[str, int], rows: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
@@ -2151,19 +2178,19 @@ def _distribute_team_line(
     ratings = [row["spot"].rating for row in rows]
 
     usage_weights = [
-        m * a.usage * (0.75 + 0.35 * r) * rng.uniform(0.8, 1.2)
+        m * a.usage * (0.75 + 0.35 * r) * _form_shock(rng, FORM_SHOCK_CV["usage"])
         for m, a, r in zip(minutes, archetypes, ratings)
     ]
     fga = allocate(line["fga"], usage_weights)
 
     three_weights = [
-        max(0.02, f * a.three_lean * rng.uniform(0.7, 1.3))
+        max(0.02, f * a.three_lean * _form_shock(rng, FORM_SHOCK_CV["three"]))
         for f, a in zip(fga, archetypes)
     ]
     fg3a = allocate(line["fg3a"], three_weights, caps=fga)
 
     ft_weights = [
-        max(0.05, m * a.ft_lean * (0.8 + 0.4 * r) * rng.uniform(0.6, 1.4))
+        max(0.05, m * a.ft_lean * (0.8 + 0.4 * r) * _form_shock(rng, FORM_SHOCK_CV["ft"]))
         for m, a, r in zip(minutes, archetypes, ratings)
     ]
     fta = allocate(line["fta"], ft_weights)
@@ -2185,27 +2212,34 @@ def _distribute_team_line(
     ]
     ftm = allocate(line["ftm"], ft_make_weights, caps=fta)
 
-    def by_rate(total: int, rate: str, jitter: float = 0.35) -> list[int]:
+    def by_rate(total: int, rate: str, shocks: list[float] | None = None) -> list[int]:
+        draws = shocks or [_form_shock(rng, FORM_SHOCK_CV["reb"]) for _ in minutes]
         weights = [
-            max(0.01, m * getattr(a, rate) * rng.uniform(1 - jitter, 1 + jitter))
-            for m, a in zip(minutes, archetypes)
+            max(0.01, m * getattr(a, rate) * shock)
+            for m, a, shock in zip(minutes, archetypes, draws)
         ]
         return allocate(total, weights)
 
-    oreb = by_rate(line["oreb"], "oreb")
-    dreb = by_rate(line["dreb"], "dreb")
+    # A big rebounding night shows up on both boards, so the two categories share one draw.
+    # Independent draws cancel on the sum and leave total rebounds under-dispersed.
+    reb_shocks = [_form_shock(rng, FORM_SHOCK_CV["reb"]) for _ in minutes]
+    oreb = by_rate(line["oreb"], "oreb", reb_shocks)
+    dreb = by_rate(line["dreb"], "dreb", reb_shocks)
     assists = allocate(
         line["ast"],
-        [max(0.01, m * a.ast * (0.8 + 0.3 * r) * rng.uniform(0.7, 1.3))
-         for m, a, r in zip(minutes, archetypes, ratings)],
+        [max(0.01, m * a.ast * (0.8 + 0.3 * r) * shock)
+         for m, a, r, shock in zip(minutes, archetypes, ratings,
+                                   [_form_shock(rng, FORM_SHOCK_CV["ast"]) for _ in minutes])],
     )
-    steals = by_rate(line["stl"], "stl", 0.5)
-    blocks = by_rate(line["blk"], "blk", 0.5)
+    steals = by_rate(line["stl"], "stl",
+                     [_form_shock(rng, FORM_SHOCK_CV["defense"]) for _ in minutes])
+    blocks = by_rate(line["blk"], "blk",
+                     [_form_shock(rng, FORM_SHOCK_CV["defense"]) for _ in minutes])
     turnovers = allocate(
         line["tov"],
         [max(0.01, f * 0.55 + m * a.tov * 0.45) for f, m, a in zip(fga, minutes, archetypes)],
     )
-    fouls = by_rate(line["pf"], "pf", 0.3)
+    fouls = by_rate(line["pf"], "pf")
 
     for index, row in enumerate(rows):
         row["fga"] = fga[index]

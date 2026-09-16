@@ -191,7 +191,7 @@ public actor DemoAPIClient: APIClientProtocol {
                                              payload: payload,
                                              generatedAt: generatedAt,
                                              ttlSeconds: widget.kind.defaultCacheTTLSeconds,
-                                             availability: .full,
+                                             availability: DemoAPIClient.demoAvailability(for: widget.kind),
                                              notes: []))
             } else {
                 let name = "widget_\(widget.kind.rawValue).json"
@@ -217,6 +217,19 @@ public actor DemoAPIClient: APIClientProtocol {
     }
 
     // MARK: - Fixtures
+
+    /// What the service would have called this result, so demo mode does not look *more*
+    /// confident than the real thing.
+    ///
+    /// The fixtures are bare payloads and carry no result envelope, so the qualifier has to be
+    /// restated here. Only one kind needs it: a projection is an estimate of a game that has not
+    /// been played, and `contracts/fixtures/dashboard_resolve.json` shows the service answering
+    /// `availability: "estimated"` for it. Without this, the demo tile would lose the chrome-level
+    /// "est." badge that `WidgetContainer` draws from this value, which is exactly the
+    /// projection-dressed-as-a-record that `docs/PROJECTION.md` §7 rule 5 forbids.
+    private static func demoAvailability(for kind: WidgetKind) -> MetricAvailability {
+        kind == .nextGameProjection ? .estimated : .full
+    }
 
     /// The payload for a kind, decoded once and kept. A kind whose fixture is missing or
     /// unreadable is remembered as missing so the bundle is not searched again on every resolve.

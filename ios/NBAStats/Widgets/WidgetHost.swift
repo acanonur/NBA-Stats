@@ -140,7 +140,8 @@ public struct WidgetHost: View {
                         stale: Bool) -> some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             view(for: payload)
-            footer(lines: footnotes(availability: availability, notes: notes), stale: stale)
+            footer(lines: footnotes(kind: payload.kind, availability: availability, notes: notes),
+                   stale: stale)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -183,12 +184,20 @@ public struct WidgetHost: View {
     // MARK: Footnotes
 
     /// The server's own notes, or — when it sent none — the sentence the era treatment implies.
-    private func footnotes(availability: MetricAvailability, notes: [String]) -> [String] {
+    ///
+    /// `kind` is here for one reason. `.estimated` means two different things in this app: a
+    /// season number derived from the box score because the league published no possession data
+    /// before 1996-97, and a *projection*, which is an estimate of a game that has not been
+    /// played. The pre-1997 sentence under a next-game projection would be simply false, so the
+    /// projection gets the sentence that is true of it (`docs/PROJECTION.md` §7 rule 5).
+    private func footnotes(kind: WidgetKind, availability: MetricAvailability, notes: [String]) -> [String] {
         let cleaned = notes.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         guard cleaned.isEmpty else { return cleaned }
         switch availability {
         case .full:
             return []
+        case .estimated where kind == .nextGameProjection:
+            return ["Projected, not recorded. These are estimates of a game that has not been played, and each carries its own range."]
         case .estimated:
             return ["Estimated from the box score. The league did not publish possession data before 1996-97."]
         case .partial:

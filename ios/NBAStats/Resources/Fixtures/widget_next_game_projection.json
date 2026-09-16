@@ -1,0 +1,372 @@
+{
+  "player": {
+    "playerId": 1631260,
+    "name": "AJ Green",
+    "firstName": "AJ",
+    "lastName": "Green",
+    "teamId": 1610612743,
+    "teamAbbr": "DEN",
+    "position": "G",
+    "jersey": "44",
+    "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631260.png",
+    "isActive": true
+  },
+  "game": {
+    "gameId": "0022500379",
+    "date": "2026-01-05",
+    "opponentAbbr": "MIN",
+    "opponent": {
+      "teamId": 1610612750,
+      "abbr": "MIN",
+      "name": "Minnesota Timberwolves",
+      "city": "Minnesota",
+      "nickname": "Timberwolves",
+      "conference": "West",
+      "division": "Northwest"
+    },
+    "isHome": false,
+    "restDays": 3,
+    "isBackToBack": false,
+    "opponentDefRtg": 117.3,
+    "expectedPace": 101.2
+  },
+  "projectedMinutes": {
+    "value": 38.59,
+    "displayValue": "38.6",
+    "halfLifeGames": 2,
+    "seasonAverage": 38.24,
+    "low": 31.17,
+    "high": 46.01
+  },
+  "lines": [
+    {
+      "metric": "pts",
+      "descriptor": {
+        "key": "pts",
+        "name": "Points",
+        "shortName": "PTS",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Points scored."
+      },
+      "mean": 19.041,
+      "displayValue": "19.0",
+      "low": 11,
+      "high": 26,
+      "intervalLevel": 0.8,
+      "seasonAverage": 18.92,
+      "delta": 0.121,
+      "ratePerMinute": 0.47274,
+      "shrinkageK": 81,
+      "exposureMinutes": 5315.0,
+      "shrinkageWeight": 0.9554,
+      "halfLifeGames": 6,
+      "dispersionAlpha": 0.05442,
+      "dispersionMultiplier": 0.9407,
+      "availability": "estimated"
+    },
+    {
+      "metric": "reb",
+      "descriptor": {
+        "key": "reb",
+        "name": "Rebounds",
+        "shortName": "REB",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1950-51",
+          "perGameFrom": "1950-51",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
+      },
+      "mean": 4.965,
+      "displayValue": "5.0",
+      "low": 2,
+      "high": 8,
+      "intervalLevel": 0.8,
+      "seasonAverage": 4.56,
+      "delta": 0.405,
+      "ratePerMinute": 0.12327,
+      "shrinkageK": 34,
+      "exposureMinutes": 5315.0,
+      "shrinkageWeight": 0.9804,
+      "halfLifeGames": 8,
+      "dispersionAlpha": 0.08774,
+      "dispersionMultiplier": 0.8896,
+      "availability": "estimated"
+    },
+    {
+      "metric": "ast",
+      "descriptor": {
+        "key": "ast",
+        "name": "Assists",
+        "shortName": "AST",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Assists."
+      },
+      "mean": 5.384,
+      "displayValue": "5.4",
+      "low": 2,
+      "high": 8,
+      "intervalLevel": 0.8,
+      "seasonAverage": 5.2,
+      "delta": 0.184,
+      "ratePerMinute": 0.13367,
+      "shrinkageK": 36,
+      "exposureMinutes": 5315.0,
+      "shrinkageWeight": 0.9793,
+      "halfLifeGames": 8,
+      "dispersionAlpha": 0.10438,
+      "dispersionMultiplier": 0.9356,
+      "availability": "estimated"
+    },
+    {
+      "metric": "fg3m",
+      "descriptor": {
+        "key": "fg3m",
+        "name": "Three Pointers Made",
+        "shortName": "3PM",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1979-80",
+          "perGameFrom": "1979-80",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Three-point field goals made. The three-point line arrived in 1979-80."
+      },
+      "mean": 1.733,
+      "displayValue": "1.7",
+      "low": 0,
+      "high": 3,
+      "intervalLevel": 0.8,
+      "seasonAverage": 1.68,
+      "delta": 0.053,
+      "ratePerMinute": 0.04301,
+      "shrinkageK": 62,
+      "exposureMinutes": 5315.0,
+      "shrinkageWeight": 0.9652,
+      "halfLifeGames": 12,
+      "dispersionAlpha": 0.0,
+      "dispersionMultiplier": 0.8146,
+      "availability": "estimated"
+    },
+    {
+      "metric": "stl",
+      "descriptor": {
+        "key": "stl",
+        "name": "Steals",
+        "shortName": "STL",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Steals. Officially tracked from 1973-74."
+      },
+      "mean": 1.295,
+      "displayValue": "1.3",
+      "low": 0,
+      "high": 2,
+      "intervalLevel": 0.8,
+      "seasonAverage": 1.24,
+      "delta": 0.055,
+      "ratePerMinute": 0.03215,
+      "shrinkageK": 322,
+      "exposureMinutes": 5315.0,
+      "shrinkageWeight": 0.8541,
+      "halfLifeGames": 30,
+      "dispersionAlpha": 0.0,
+      "dispersionMultiplier": 0.7216,
+      "availability": "estimated"
+    },
+    {
+      "metric": "blk",
+      "descriptor": {
+        "key": "blk",
+        "name": "Blocks",
+        "shortName": "BLK",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": true,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1973-74",
+          "perGameFrom": "1973-74",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Blocked shots. Officially tracked from 1973-74."
+      },
+      "mean": 0.373,
+      "displayValue": "0.4",
+      "low": 0,
+      "high": 1,
+      "intervalLevel": 0.8,
+      "seasonAverage": 0.36,
+      "delta": 0.013,
+      "ratePerMinute": 0.00927,
+      "shrinkageK": 69,
+      "exposureMinutes": 5315.0,
+      "shrinkageWeight": 0.9616,
+      "halfLifeGames": 20,
+      "dispersionAlpha": 0.0,
+      "dispersionMultiplier": 0.809,
+      "availability": "estimated"
+    },
+    {
+      "metric": "tov",
+      "descriptor": {
+        "key": "tov",
+        "name": "Turnovers",
+        "shortName": "TOV",
+        "category": "volume",
+        "format": "decimal1",
+        "higherIsBetter": false,
+        "scope": [
+          "player",
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1977-78",
+          "perGameFrom": "1977-78",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Individual turnovers. Officially tracked from 1977-78."
+      },
+      "mean": 2.621,
+      "displayValue": "2.6",
+      "low": 1,
+      "high": 4,
+      "intervalLevel": 0.8,
+      "seasonAverage": 2.44,
+      "delta": 0.181,
+      "ratePerMinute": 0.06508,
+      "shrinkageK": 209,
+      "exposureMinutes": 5315.0,
+      "shrinkageWeight": 0.8968,
+      "halfLifeGames": 15,
+      "dispersionAlpha": 0.0,
+      "dispersionMultiplier": 0.3863,
+      "availability": "estimated"
+    }
+  ],
+  "factors": [
+    {
+      "key": "pace",
+      "label": "Pace",
+      "value": 1.0178,
+      "explanation": "The two teams' tempo deviations add: this game projects 1.8% faster than league average."
+    },
+    {
+      "key": "opponent",
+      "label": "Opponent Defence",
+      "value": 1.0328,
+      "explanation": "Opponent defensive rating is 3.3% above league average — a weaker defence, so production projects up."
+    },
+    {
+      "key": "venue",
+      "label": "Venue",
+      "value": 0.988,
+      "explanation": "Road game; the venue multiplier is 0.988 (-1.2%). Default multiplier, not yet recalibrated from data."
+    },
+    {
+      "key": "rest",
+      "label": "Rest",
+      "value": 1.005,
+      "explanation": "Three or more days of rest; the rest multiplier is 1.005 (+0.5%). Default multiplier, not yet recalibrated from data."
+    }
+  ],
+  "combo": {
+    "label": "PTS+REB+AST",
+    "mean": 29.391,
+    "sd": 8.27,
+    "sdIfIndependent": 7.119,
+    "inflation": 0.1616,
+    "low": 19,
+    "high": 39,
+    "correlation": [
+      [
+        1.0,
+        0.3,
+        0.17
+      ],
+      [
+        0.3,
+        1.0,
+        0.2
+      ],
+      [
+        0.17,
+        0.2,
+        1.0
+      ]
+    ]
+  },
+  "method": {
+    "summary": "Opportunity x rate, shrunk per statistic.",
+    "minutesHalfLifeGames": 2,
+    "correlationApplied": true,
+    "dispersionShrinkageGames": 60
+  },
+  "notes": [
+    "Projected minutes carry most of the error: supplying true minutes improves points RMSE by 19.3% and rebounds by 17.6%, far more than any model change.",
+    "PTS+REB+AST uses the residual correlation: the independent calculation would have claimed an SD of 7.12 against 8.27.",
+    "No overdispersion is detectable in the league sample for FG3M, STL, BLK, TOV: the method-of-moments alpha fits at zero, so the predictive distribution is the Poisson limit Var = mean rather than a wider negative binomial. A dispersion multiplier below 1.0 is reported as fitted but cannot narrow an interval past that floor."
+  ]
+}

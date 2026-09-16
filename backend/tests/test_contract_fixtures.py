@@ -446,7 +446,11 @@ SHARED_OBJECTS: dict[str, tuple[frozenset[str], frozenset[str], frozenset[str]]]
         frozenset(),
     ),
     "MetricValue": (
-        frozenset({"metric", "displayValue"}),
+        # ``isEstimated`` is in the marker because it is the one key no other §4 object has.
+        # A ``next_game_projection`` line also carries ``metric`` and ``displayValue`` beside
+        # its own mean and interval, and it is a different documented shape, not a
+        # ``MetricValue`` missing half its keys — the marker has to tell them apart.
+        frozenset({"metric", "displayValue", "isEstimated"}),
         frozenset(
             {
                 "metric",

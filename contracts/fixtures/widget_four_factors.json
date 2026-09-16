@@ -1,12 +1,12 @@
 {
   "team": {
-    "teamId": 1610612741,
-    "abbr": "CHI",
-    "name": "Chicago Bulls",
-    "city": "Chicago",
-    "nickname": "Bulls",
-    "conference": "East",
-    "division": "Central"
+    "teamId": 1610612743,
+    "abbr": "DEN",
+    "name": "Denver Nuggets",
+    "city": "Denver",
+    "nickname": "Nuggets",
+    "conference": "West",
+    "division": "Northwest"
   },
   "season": "2025-26",
   "seasonType": "Regular Season",
@@ -15,41 +15,41 @@
       "key": "efg_pct",
       "label": "eFG%",
       "weight": 0.4,
-      "value": 0.5202132385606397,
-      "displayValue": "52.0%",
-      "leagueAverage": 0.5396099575555411,
-      "percentile": 0.05,
-      "rank": 29
+      "value": 0.5188038060715904,
+      "displayValue": "51.9%",
+      "leagueAverage": 0.5366783816477564,
+      "percentile": 0.11666666666666667,
+      "rank": 27
     },
     {
       "key": "tov_pct",
       "label": "TOV%",
       "weight": 0.25,
-      "value": 0.12963868893703262,
-      "displayValue": "13.0%",
-      "leagueAverage": 0.12565213947366055,
-      "percentile": 0.18333333333333332,
-      "rank": 25
+      "value": 0.1263924592973436,
+      "displayValue": "12.6%",
+      "leagueAverage": 0.12557837222868368,
+      "percentile": 0.4166666666666667,
+      "rank": 18
     },
     {
       "key": "oreb_pct",
       "label": "OREB%",
       "weight": 0.2,
-      "value": 0.2567215958369471,
-      "displayValue": "25.7%",
-      "leagueAverage": 0.23968112265503427,
-      "percentile": 0.95,
-      "rank": 2
+      "value": 0.24106324472960586,
+      "displayValue": "24.1%",
+      "leagueAverage": 0.24173636901334336,
+      "percentile": 0.48333333333333334,
+      "rank": 16
     },
     {
       "key": "ftr",
       "label": "FTr",
       "weight": 0.15,
-      "value": 0.24211461572634385,
-      "displayValue": "24.2%",
-      "leagueAverage": 0.24667551658676967,
-      "percentile": 0.31666666666666665,
-      "rank": 21
+      "value": 0.2469415496148618,
+      "displayValue": "24.7%",
+      "leagueAverage": 0.2495568929398906,
+      "percentile": 0.4166666666666667,
+      "rank": 18
     }
   ],
   "defense": [
@@ -57,41 +57,41 @@
       "key": "opp_efg_pct",
       "label": "Opp eFG%",
       "weight": 0.4,
-      "value": 0.5471739130434783,
-      "displayValue": "54.7%",
-      "leagueAverage": 0.5396544936239362,
-      "percentile": 0.2833333333333333,
-      "rank": 22
+      "value": 0.5273224043715847,
+      "displayValue": "52.7%",
+      "leagueAverage": 0.5366898259101455,
+      "percentile": 0.8166666666666667,
+      "rank": 6
     },
     {
       "key": "opp_tov_pct",
       "label": "Opp TOV%",
       "weight": 0.25,
-      "value": 0.12681134584538614,
-      "displayValue": "12.7%",
-      "leagueAverage": 0.12558079815770198,
-      "percentile": 0.65,
-      "rank": 11
+      "value": 0.13032331576698475,
+      "displayValue": "13.0%",
+      "leagueAverage": 0.12550840705246208,
+      "percentile": 0.7833333333333333,
+      "rank": 7
     },
     {
       "key": "opp_oreb_pct",
       "label": "Opp OREB%",
       "weight": 0.2,
-      "value": 0.25022261798753337,
-      "displayValue": "25.0%",
-      "leagueAverage": 0.2396535523108244,
-      "percentile": 0.05,
-      "rank": 29
+      "value": 0.24082363473589974,
+      "displayValue": "24.1%",
+      "leagueAverage": 0.24176634013417722,
+      "percentile": 0.5166666666666667,
+      "rank": 15
     },
     {
       "key": "opp_ftr",
       "label": "Opp FTr",
       "weight": 0.15,
-      "value": 0.2447826086956522,
-      "displayValue": "24.5%",
-      "leagueAverage": 0.24646168200036117,
-      "percentile": 0.5833333333333334,
-      "rank": 13
+      "value": 0.2550091074681239,
+      "displayValue": "25.5%",
+      "leagueAverage": 0.24933445606512528,
+      "percentile": 0.21666666666666667,
+      "rank": 24
     }
   ]
 }

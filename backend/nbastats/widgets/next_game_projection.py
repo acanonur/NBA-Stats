@@ -54,7 +54,7 @@ Payload: ``contracts/CONTRACT.md`` §4 ``next_game_projection``.
 from __future__ import annotations
 
 from datetime import date
-from typing import Any, Iterable, NamedTuple, Optional, Sequence
+from typing import Any, Callable, Iterable, NamedTuple, Optional, Sequence
 
 from sqlalchemy import select
 
@@ -80,6 +80,7 @@ __all__ = [
     "DISPERSION_MIN_MINUTES",
     "DISPERSION_POOL_MAX_ROWS",
     "DISPERSION_POOL_MIN_ROWS",
+    "THIN_HISTORY_MARKER",
 ]
 
 #: First season with the possession data ``f_pace`` and ``f_opp`` are built from.
@@ -110,6 +111,11 @@ DISPERSION_POOL_MAX_ROWS = 6000
 
 #: Below this many usable pairs the pooled ``alpha`` is thin enough to say so in a note.
 DISPERSION_POOL_MIN_ROWS = 200
+
+#: How :func:`nbastats.projection.project_box_score` opens its thin-history note. The engine
+#: owns the rule (it owns the exposure and the shrinkage weight); the resolver only has to
+#: recognise the sentence so it can lift it into the result's notes.
+THIN_HISTORY_MARKER = "Thin history"
 
 
 # --------------------------------------------------------------- the pre-tip-off guarantee
@@ -148,7 +154,6 @@ class PoolRow(NamedTuple):
     """One league line in the dispersion sample: who, how long, and what he did."""
 
     player_id: int
-    season: str
     minutes: float
     values: dict[str, Optional[float]]
 
@@ -180,7 +185,7 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
     era_note = _era_gap_note(season)
     if era_note is not None:
         notes.append(era_note)
-        return _unavailable_payload(player_ref, season, era_note, notes), "unavailable", notes
+        return _unavailable_payload(player_ref, era_note), "unavailable", notes
 
     stats = _requested_stats(config.get("stats"), season, notes)
 
@@ -224,10 +229,10 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
     )
 
     # --- the projection ------------------------------------------------------------------
-    minutes_series = [r.minutes for r in form_rows]
+    season_minutes_average = _mean([r.minutes for r in season_rows])
     minutes = P.project_minutes(
-        minutes_series,
-        season_average=_mean([r.minutes for r in season_rows]),
+        [r.minutes for r in form_rows],
+        season_average=season_minutes_average,
         level=interval_level,
     )
     stat_inputs = [
@@ -239,7 +244,9 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
         commentary.append(
             f"No overdispersion is detectable in the league sample for {', '.join(poisson)}: "
             "the method-of-moments alpha fits at zero, so the predictive distribution is the "
-            "Poisson limit Var = mean rather than a wider negative binomial."
+            "Poisson limit Var = mean rather than a wider negative binomial. A dispersion "
+            "multiplier below 1.0 is reported as fitted but cannot narrow an interval past "
+            "that floor."
         )
 
     payload = P.project_box_score(
@@ -247,7 +254,7 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
         minutes=minutes,
         factors=factors,
         interval_level=interval_level,
-        minutes_season_average=_mean([r.minutes for r in season_rows]),
+        minutes_season_average=season_minutes_average,
         include_combo=show_combo,
         player=player_ref,
         game=_game_block(ctx, game, team_id, opponent_id, context, history),
@@ -259,6 +266,13 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
         # than pretending the projection was computed without them.
         payload["factors"] = []
     payload["notes"] = _dedupe(list(payload["notes"]) + notes + commentary)
+    # The engine decides what counts as thin history (it owns the exposure and the shrinkage
+    # weight), and §7 rule 4 says that finding must reach the reader — so its note is lifted
+    # into the result's own notes, which is what makes the result ``"partial"``. Promoting the
+    # engine's sentence rather than recomputing the rule keeps one threshold, not two.
+    notes.extend(
+        note for note in payload["notes"] if note.startswith(THIN_HISTORY_MARKER)
+    )
 
     # docs/PROJECTION.md §7 rule 5: a projection is an estimate, never a record.
     return payload, P.AVAILABILITY, notes
@@ -276,7 +290,8 @@ def _requested_stats(requested: Any, season: str, notes: list[str]) -> list[str]
     *nothing* projectable is a configuration error naming its own field, not a tile silently
     re-pointed at some other statistic.
     """
-    keys = list(requested or []) or list(catalog.widget_config_defaults("next_game_projection")["stats"])
+    defaults = catalog.widget_config_defaults("next_game_projection")["stats"]
+    keys = list(requested or []) or list(defaults)
     kept: list[str] = []
     dropped: list[str] = []
     era_gated: list[str] = []
@@ -328,37 +343,39 @@ def _era_gap_note(season: str) -> Optional[str]:
     )
 
 
-def _unavailable_payload(
-    player_ref: Optional[dict[str, Any]], season: str, note: str, notes: list[str]
-) -> dict[str, Any]:
+def _unavailable_payload(player_ref: Optional[dict[str, Any]], note: str) -> dict[str, Any]:
     """The §4 payload for a season the projection cannot be made in: shaped, and empty.
 
     Same treatment as ``shot_profile`` before 1996-97 — every key the client decodes is
     present, every number is ``null``, and the note says why. A 500 would claim the request
     was wrong when the request was fine and history is simply shorter than the widget.
+
+    Built through the engine with no statistics rather than assembled here, so ``method`` and
+    the rest of the envelope cannot drift from the payload a real projection produces. Two
+    things are then overridden: the minutes, because "0.0" would be a claim that he will not
+    play rather than "this was not projected", and the notes, because the reason is the era
+    and not the schedule.
     """
-    return {
-        "player": player_ref,
-        "game": None,
-        "projectedMinutes": {
+    payload = P.project_box_score(
+        [],
+        minutes=P.MinutesProjection(0.0, 0.0, 0.0),
+        factors=(),
+        include_combo=False,
+        player=player_ref,
+        game=None,
+        notes=[note],
+    )
+    payload["projectedMinutes"].update(
+        {
             "value": None,
             "displayValue": catalog.EM_DASH,
-            "halfLifeGames": C.MINUTES_HALFLIFE_GAMES,
             "seasonAverage": None,
             "low": None,
             "high": None,
-        },
-        "lines": [],
-        "factors": [],
-        "combo": None,
-        "method": {
-            "summary": "Opportunity x rate, shrunk per statistic.",
-            "minutesHalfLifeGames": C.MINUTES_HALFLIFE_GAMES,
-            "correlationApplied": False,
-            "dispersionShrinkageGames": C.DISPERSION_SHRINKAGE_GAMES,
-        },
-        "notes": [note],
-    }
+        }
+    )
+    payload["notes"] = [note]
+    return payload
 
 
 # --------------------------------------------------------------------------- the game
@@ -396,7 +413,9 @@ def _next_game(
 
     A game is "next" when it is still ``scheduled`` and is not behind the store's own
     freshness cursor. A postponed fixture that the league never removed would otherwise sit
-    in the past forever and be projected every night.
+    in the past forever and be projected every night. A ``live`` game is deliberately not
+    projected either: half its box score is already written, so a pre-tip-off projection of
+    it would be answering a question that is no longer open.
     """
     reference = _reference_date(ctx)
 
@@ -425,7 +444,8 @@ def _opponent_id(
         return override, True
     if game is None or team_id is None:
         return None, False
-    return int(game.away_team_id if game.home_team_id == int(team_id) else game.home_team_id), False
+    home = game.home_team_id == int(team_id)
+    return int(game.away_team_id if home else game.home_team_id), False
 
 
 def _rest_days(history: Sequence[HistoryRow], game: Optional[Game]) -> Optional[int]:
@@ -443,7 +463,13 @@ def _game_block(
     context: dict[str, Optional[float]],
     history: Sequence[HistoryRow],
 ) -> Optional[dict[str, Any]]:
-    """The ``game`` object of §4, or ``None`` when there is no scheduled next game."""
+    """The ``game`` object of §4, or ``None`` when there is no scheduled next game.
+
+    ``opponent``, ``opponentDefRtg`` and ``expectedPace`` describe the matchup **that was
+    projected**, so under an ``opponentTeamId`` override they are the override's — otherwise
+    the block would contradict the ``f_opp`` sitting beside it in ``factors``. The override
+    says so in the payload's notes, and ``gameId`` and ``date`` are always the real fixture's.
+    """
     if game is None:
         return None
     is_home = team_id is not None and int(game.home_team_id) == int(team_id)
@@ -713,7 +739,6 @@ def _dispersion_pool(
     def _load() -> list[PoolRow]:
         columns = [
             PlayerGameBasic.player_id,
-            Game.season,
             PlayerGameBasic.minutes,
             *[getattr(PlayerGameBasic, key) for key in C.PROJECTABLE_STATS],
         ]
@@ -733,9 +758,8 @@ def _dispersion_pool(
         return [
             PoolRow(
                 player_id=int(row[0]),
-                season=row[1],
-                minutes=float(row[2] or 0.0),
-                values=dict(zip(C.PROJECTABLE_STATS, row[3:])),
+                minutes=float(row[1] or 0.0),
+                values=dict(zip(C.PROJECTABLE_STATS, row[2:])),
             )
             for row in ctx.session.execute(statement).all()
         ]
@@ -744,7 +768,7 @@ def _dispersion_pool(
 
 
 def _padding_rates(
-    rows: Iterable[Any], stat_key: str, key: Any
+    rows: Iterable[Any], stat_key: str, key: Callable[[Any], Any]
 ) -> dict[Any, float]:
     """``{group: padding-estimator rate}`` — ``(sum stat + k*mu) / (sum minutes + k)``.
 
@@ -769,7 +793,7 @@ def _padding_rates(
 
 
 def _observed_and_predicted(
-    rows: Sequence[Any], stat_key: str, key: Any
+    rows: Sequence[Any], stat_key: str, key: Callable[[Any], Any]
 ) -> tuple[list[float], list[float]]:
     """Paired ``(y, mu)`` for a set of game lines, ``mu = minutes * rate(group)``."""
     rates = _padding_rates(rows, stat_key, key)

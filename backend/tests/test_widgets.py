@@ -7,7 +7,7 @@ Four things are checked harder than the rest, because they are the ones that bre
   assertions below spell out the key set from §4 instead of round-tripping through a model,
   which would hide exactly the mistake they exist to catch.
 * **Every preset, every widget.** ``contracts/presets.json`` is iterated rather than sampled:
-  the nine starter dashboards are what most users will ever see, and "the app opens" means
+  the ten starter dashboards are what most users will ever see, and "the app opens" means
   every tile in them resolves.
 * **Null, never zero.** A 1985-86 request for a per-game advanced stat has to come back as a
   ``null`` value with ``"unavailable"`` and an explanation — not a zero, not a 500.
@@ -215,7 +215,7 @@ GAME_REF_KEYS = {
 def test_registry_covers_every_catalog_kind() -> None:
     """A kind in the catalog with no resolver must fail at import, not at request time."""
     assert set(RESOLVERS) == set(catalog.widget_kinds())
-    assert len(RESOLVERS) == 12
+    assert len(RESOLVERS) == 13
 
 
 def test_ttl_matches_the_freshness_model() -> None:
@@ -254,7 +254,7 @@ def _preset_widgets() -> list[tuple[str, dict[str, Any]]]:
 
 
 def test_every_preset_widget_resolves(app_client: TestClient) -> None:
-    """The real integration test: every tile of all nine starter dashboards.
+    """The real integration test: every tile of all ten starter dashboards.
 
     Iterated from ``contracts/presets.json`` rather than hard-coded, so a preset added to the
     contract is covered the moment it lands.

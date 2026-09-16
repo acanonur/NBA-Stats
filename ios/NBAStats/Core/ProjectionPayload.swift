@@ -223,7 +223,8 @@ public struct ProjectedLine: Codable, Hashable, Sendable, Identifiable {
     public let dispersionAlpha: Double?
     /// The shrunken per-player variance ratio `ĉ_i`; 1.0 means "no history, league prior".
     public let dispersionMultiplier: Double?
-    /// Always `.estimated` in practice, and never decoded upward to `.full`.
+    /// Never `.full`. A projection is not a record, whatever the server called it
+    /// (`docs/PROJECTION.md` §7 rule 5); `projectedAvailability(_:)` holds that invariant.
     public let availability: MetricAvailability
 
     public var id: String { metric }
@@ -253,6 +254,18 @@ public struct ProjectedLine: Codable, Hashable, Sendable, Identifiable {
     public var leansOnLeaguePrior: Bool {
         guard let shrinkageWeight = shrinkageWeight else { return false }
         return shrinkageWeight < 0.5
+    }
+
+    /// Holds the one invariant this type exists to protect: a projected value is never `.full`.
+    ///
+    /// `MetricAvailability.decoded(…)` is lenient about *unknown* strings but faithful about known
+    /// ones, so a server that spelled a projected line `"availability": "full"` — a bug, or an
+    /// older build of the service — would decode to `.full`, and `.full` is precisely the value
+    /// that renders with no dashed underline and no `est.` marker: a projection dressed as a
+    /// record. Clamping it here rather than in the view means every reader of the payload gets the
+    /// same answer, including the accessibility labels and anything built on it later.
+    private static func projectedAvailability(_ raw: MetricAvailability) -> MetricAvailability {
+        raw == .full ? .estimated : raw
     }
 
     public init(metric: String,
@@ -288,7 +301,7 @@ public struct ProjectedLine: Codable, Hashable, Sendable, Identifiable {
         self.halfLifeGames = halfLifeGames
         self.dispersionAlpha = dispersionAlpha
         self.dispersionMultiplier = dispersionMultiplier
-        self.availability = availability
+        self.availability = ProjectedLine.projectedAvailability(availability)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -321,8 +334,10 @@ public struct ProjectedLine: Codable, Hashable, Sendable, Identifiable {
         dispersionAlpha = try container.decodeIfPresent(Double.self, forKey: .dispersionAlpha)
         dispersionMultiplier = try container.decodeIfPresent(Double.self, forKey: .dispersionMultiplier)
         // A projection is never a record: an absent or unreadable qualifier stays `.estimated`,
-        // and `MetricAvailability.decoded` will not resolve an unknown string upward to `.full`.
-        availability = MetricAvailability.decoded(from: container, forKey: .availability, default: .estimated)
+        // and an explicit `"full"` is clamped back down rather than rendered as a measured number.
+        availability = ProjectedLine.projectedAvailability(
+            MetricAvailability.decoded(from: container, forKey: .availability, default: .estimated)
+        )
     }
 }
 

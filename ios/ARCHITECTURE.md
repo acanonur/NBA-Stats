@@ -262,6 +262,7 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case scoreboard        = "scoreboard"
     case dailyMovers       = "daily_movers"
     case teamEfficiency    = "team_efficiency"
+    case nextGameProjection = "next_game_projection"
     case careerArc         = "career_arc"
 }
 
@@ -317,7 +318,12 @@ exceeds `currentSchemaVersion`.
 ### 2.6 `Core/Payloads.swift` — one struct per widget kind (`contracts/CONTRACT.md` §4)
 
 Every struct is `Codable, Hashable, Sendable` and its properties mirror the contract's key
-names exactly. The umbrella:
+names exactly. `next_game_projection` is the one payload that lives in its own file,
+`Core/ProjectionPayload.swift`, because it is seven types rather than one —
+`NextGameProjectionPayload`, `ProjectionGame`, `ProjectedMinutes`, `ProjectedLine`,
+`ProjectionFactor`, `ProjectionCombo`, `ProjectionMethod` — and because it carries an invariant
+the other payloads do not: a `ProjectedLine` is never `.full`, whatever the server said
+(`docs/PROJECTION.md` §7 rule 5). The umbrella:
 
 ```swift
 public enum WidgetPayload: Hashable, Sendable {
@@ -332,6 +338,7 @@ public enum WidgetPayload: Hashable, Sendable {
     case scoreboard(ScoreboardPayload)
     case dailyMovers(DailyMoversPayload)
     case teamEfficiency(TeamEfficiencyPayload)
+    case nextGameProjection(NextGameProjectionPayload)
     case careerArc(CareerArcPayload)
 
     public var kind: WidgetKind { get }

@@ -231,8 +231,8 @@ def test_season_column_resolution() -> None:
 
 def test_catalogs_load_with_the_expected_shape() -> None:
     assert len(catalog.all_metrics()) == 61
-    assert len(catalog.all_widgets()) == 12
-    assert len(catalog.presets()) == 9
+    assert len(catalog.all_widgets()) == 13
+    assert len(catalog.presets()) == 10
     assert catalog.metrics_document()["schemaVersion"] == 1
     assert catalog.subject_tokens() >= {"$favorite_player", "$favorite_team"}
 
@@ -357,7 +357,7 @@ def test_widget_config_honours_metric_scope_and_max_items() -> None:
 
 
 def test_every_preset_widget_is_valid() -> None:
-    """The nine shipped dashboards must survive the validator untouched."""
+    """The ten shipped dashboards must survive the validator untouched."""
     for preset in catalog.presets():
         for widget in preset["widgets"]:
             spec = catalog.widget(widget["kind"])

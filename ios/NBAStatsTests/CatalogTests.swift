@@ -414,6 +414,174 @@ final class CatalogTests: XCTestCase {
         XCTAssertNil(catalog.metric("no_such_metric"))
     }
 
+    // MARK: - The kinds and the catalog agree
+
+    /// Both directions, against the *raw* document rather than the decoded one.
+    ///
+    /// `WidgetCatalogDocument` decodes its entries leniently, so a catalog kind this build does
+    /// not know is dropped silently and would never show up in `catalog.widgets`. Reading the
+    /// kind strings straight out of the JSON is what makes "and vice versa" mean anything.
+    func testEveryWidgetKindHasACatalogEntryAndEveryCatalogEntryHasAKind() throws {
+        let catalog = try requireCatalog()
+        let data = try XCTUnwrap(TestBundles.contractData(named: "widgets"), "widgets.json is not in the bundle")
+        let document = try JSONDecoder().decode(JSONValue.self, from: data)
+        let rawKinds = (document["widgets"]?.arrayValue ?? []).compactMap { $0["kind"]?.stringValue }
+
+        XCTAssertEqual(rawKinds.count, expectedWidgetCount, "The widget catalog is not the size the contract says")
+        XCTAssertEqual(Set(rawKinds).count, rawKinds.count, "Two catalog entries share a kind")
+        XCTAssertEqual(Set(rawKinds), Set(WidgetKind.allCases.map { $0.rawValue }), """
+            The bundled catalog and WidgetKind disagree. In the catalog only: \
+            \(Set(rawKinds).subtracting(WidgetKind.allCases.map { $0.rawValue }).sorted()); \
+            in WidgetKind only: \
+            \(Set(WidgetKind.allCases.map { $0.rawValue }).subtracting(rawKinds).sorted()).
+            """)
+
+        for kind in WidgetKind.allCases {
+            XCTAssertNotNil(catalog.widget(kind), "No catalog entry for \(kind.rawValue)")
+        }
+        for raw in rawKinds {
+            XCTAssertNotNil(WidgetKind(rawValue: raw), "The catalog offers \"\(raw)\", which this build cannot render")
+        }
+    }
+
+    /// The preset count, from the raw document for the same reason.
+    func testThePresetDocumentCarriesEveryPresetTheCatalogLoaded() throws {
+        let catalog = try requireCatalog()
+        let data = try XCTUnwrap(TestBundles.contractData(named: "presets"), "presets.json is not in the bundle")
+        let document = try JSONDecoder().decode(JSONValue.self, from: data)
+        let rawKeys = (document["presets"]?.arrayValue ?? []).compactMap { $0["presetKey"]?.stringValue }
+
+        XCTAssertEqual(rawKeys.count, expectedPresetCount)
+        XCTAssertEqual(Set(rawKeys), Set(catalog.presets.compactMap { $0.presetKey }),
+                       "A preset in the document did not survive decoding into a layout")
+    }
+
+    // MARK: - The Next Game preset
+
+    func testTheNextGamePresetIsShippedAndItsProjectionWidgetValidates() throws {
+        let catalog = try requireCatalog()
+        let preset = try XCTUnwrap(catalog.preset("next_game"),
+                                   "The Next Game preset is not in the bundled catalog")
+        XCTAssertTrue(preset.isPreset)
+        XCTAssertEqual(preset.schemaVersion, DashboardLayout.currentSchemaVersion)
+        XCTAssertFalse(preset.name.isEmpty)
+        XCTAssertFalse(preset.widgets.isEmpty)
+
+        let widget = try XCTUnwrap(preset.widgets.first { $0.kind == .nextGameProjection },
+                                   "The Next Game preset does not contain a next_game_projection widget")
+        let spec = try XCTUnwrap(catalog.widget(.nextGameProjection),
+                                 "next_game_projection is not in the widget catalog")
+
+        XCTAssertTrue(spec.sizes.contains(widget.size),
+                      "The preset asks for a size the widget does not offer")
+        XCTAssertEqual(ConfigValidator.issues(for: spec, config: widget.config), [:],
+                       "The shipped Next Game configuration does not validate")
+        XCTAssertTrue(catalog.missingRequiredFields(for: .nextGameProjection, config: widget.config).isEmpty,
+                      "The shipped Next Game configuration is missing a required field")
+
+        let known = Set(spec.config.map { $0.key })
+        for key in widget.config.keys {
+            XCTAssertTrue(known.contains(key), "The preset carries an unknown config key \"\(key)\"")
+        }
+
+        // The subject is a token rather than a hard-coded player: a shipped dashboard cannot know
+        // whose next game the reader cares about.
+        let playerId = try XCTUnwrap(widget.config["playerId"]?.stringValue,
+                                     "The preset pins a concrete player instead of a subject token")
+        XCTAssertTrue(playerId.hasPrefix("$"), "\"\(playerId)\" is not a subject token")
+
+        // An explicitly unset optional subject survives normalization as an explicit null, so the
+        // server resolves the opponent from the schedule rather than guessing the key was dropped.
+        let normalized = catalog.normalizedConfig(for: .nextGameProjection, config: widget.config)
+        XCTAssertEqual(normalized["playerId"], widget.config["playerId"])
+        XCTAssertEqual(normalized["interval"], JSONValue.string("80"))
+        XCTAssertEqual(normalized["opponentTeamId"], JSONValue.null)
+    }
+
+    func testTheNextGameProjectionSpecOffersTheControlsTheWidgetReads() throws {
+        let catalog = try requireCatalog()
+        let spec = try XCTUnwrap(catalog.widget(.nextGameProjection))
+
+        XCTAssertEqual(spec.defaultSize, .large)
+        XCTAssertFalse(spec.sizes.contains(.small),
+                       "A projection cannot show a mean, an interval and the factors in one grid column")
+        XCTAssertEqual(spec.availableFrom, "1996-97")
+        XCTAssertGreaterThanOrEqual(spec.minRefreshSeconds, 60)
+
+        let keys = Set(spec.config.map { $0.key })
+        for key in ["playerId", "stats", "interval", "showCombo", "showFactors", "season", "seasonType"] {
+            XCTAssertTrue(keys.contains(key), "next_game_projection has no \"\(key)\" field")
+        }
+
+        let playerField = try XCTUnwrap(spec.field("playerId"))
+        XCTAssertEqual(playerField.type, .player)
+        XCTAssertTrue(playerField.required, "A projection with no subject is not a projection")
+
+        let interval = try XCTUnwrap(spec.field("interval"))
+        XCTAssertEqual(interval.type, .`enum`)
+        XCTAssertEqual(interval.`default`?.stringValue, "80",
+                       "The paper's nominal level is 80%, and that is what a fresh widget should use")
+        XCTAssertEqual(Set(interval.options ?? []), ["80", "50", "none"])
+
+        let stats = try XCTUnwrap(spec.field("stats"))
+        XCTAssertEqual(stats.type, .metricList)
+        let defaults = stats.`default`?.arrayValue ?? []
+        XCTAssertFalse(defaults.isEmpty, "A projection with no statistics projects nothing")
+        if let maxItems = stats.maxItems {
+            XCTAssertLessThanOrEqual(defaults.count, maxItems, "The default stat list is longer than maxItems")
+        }
+        for element in defaults {
+            let key = try XCTUnwrap(element.stringValue)
+            XCTAssertNotNil(catalog.metric(key), "The default stat \"\(key)\" is not in the metric catalog")
+        }
+
+        let opponent = try XCTUnwrap(spec.field("opponentTeamId"))
+        XCTAssertEqual(opponent.type, .team)
+        XCTAssertFalse(opponent.required, "The opponent comes from the schedule unless the reader overrides it")
+    }
+
+    // MARK: - No market translation, anywhere in the catalog
+
+    /// `docs/PROJECTION.md` §6: the source pipeline's market translation is deliberately absent,
+    /// first because NBA.com's terms forbid using their statistics in connection with gambling.
+    /// A control the catalog offers is a control the app has to build, so the rule is enforced on
+    /// the catalog and not only on the views.
+    func testNothingInTheCatalogOffersAMarketOrABettingControl() throws {
+        let catalog = try requireCatalog()
+        let forbidden = ["odds", "betting", "parlay", "wager", "moneyline", "payout",
+                         "kelly", "staking", "vigorish", "implied probability", "expected value"]
+
+        var inspected: [(String, String)] = []
+        for spec in catalog.widgets {
+            inspected.append((spec.name, "\(spec.kind.rawValue).name"))
+            inspected.append((spec.summary, "\(spec.kind.rawValue).summary"))
+            for field in spec.config {
+                inspected.append((field.key, "\(spec.kind.rawValue).\(field.key)"))
+                inspected.append((field.label, "\(spec.kind.rawValue).\(field.key).label"))
+                inspected.append((field.help ?? "", "\(spec.kind.rawValue).\(field.key).help"))
+                for option in field.options ?? [] {
+                    inspected.append((option, "\(spec.kind.rawValue).\(field.key) option"))
+                }
+            }
+        }
+        for preset in catalog.presets {
+            inspected.append((preset.name, "preset \(preset.presetKey ?? preset.id).name"))
+            inspected.append((preset.tagline ?? "", "preset \(preset.presetKey ?? preset.id).tagline"))
+            for widget in preset.widgets {
+                inspected.append((widget.title ?? "", "preset \(preset.presetKey ?? preset.id) widget title"))
+            }
+        }
+
+        XCTAssertGreaterThan(inspected.count, 0, "Nothing was inspected, so this test proved nothing")
+        for (text, location) in inspected {
+            let lowered = text.lowercased()
+            for term in forbidden {
+                XCTAssertFalse(lowered.contains(term),
+                               "\(location) mentions \"\(term)\", which docs/PROJECTION.md §6 rules out")
+            }
+        }
+    }
+
     // MARK: - Helpers
 
     /// `1996` becomes `"1996-97"`, `1999` becomes `"1999-00"`.
