@@ -141,21 +141,9 @@ HOME_EDGE = 2.6  # points per game, split between the two sides
 
 # --------------------------------------------------------------------------- static data
 
-#: Conference and division, the two franchise facts ``data/nba_identities.json`` does not
-#: carry. Everything else about a team — id, abbreviation, city, nickname, founding year,
-#: display name — comes from that file and is reconciled with this map by abbreviation.
-TEAM_ALIGNMENT: dict[str, tuple[str, str]] = {
-    "ATL": ("East", "Southeast"), "BOS": ("East", "Atlantic"), "BKN": ("East", "Atlantic"),
-    "CHA": ("East", "Southeast"), "CHI": ("East", "Central"), "CLE": ("East", "Central"),
-    "DET": ("East", "Central"), "IND": ("East", "Central"), "MIA": ("East", "Southeast"),
-    "MIL": ("East", "Central"), "NYK": ("East", "Atlantic"), "ORL": ("East", "Southeast"),
-    "PHI": ("East", "Atlantic"), "TOR": ("East", "Atlantic"), "WAS": ("East", "Southeast"),
-    "DAL": ("West", "Southwest"), "DEN": ("West", "Northwest"), "GSW": ("West", "Pacific"),
-    "HOU": ("West", "Southwest"), "LAC": ("West", "Pacific"), "LAL": ("West", "Pacific"),
-    "MEM": ("West", "Southwest"), "MIN": ("West", "Northwest"), "NOP": ("West", "Southwest"),
-    "OKC": ("West", "Northwest"), "PHX": ("West", "Pacific"), "POR": ("West", "Northwest"),
-    "SAC": ("West", "Pacific"), "SAS": ("West", "Southwest"), "UTA": ("West", "Northwest"),
-}
+#: Re-exported from :mod:`nbastats.identities`, which is where this belongs: the live ingest
+#: path needs the same map, and it must not have to import the demo generator to get it.
+TEAM_ALIGNMENT: dict[str, tuple[str, str]] = identities.TEAM_ALIGNMENT
 
 # (team_id, abbr, city, nickname, conference, division, year_founded, name)
 #

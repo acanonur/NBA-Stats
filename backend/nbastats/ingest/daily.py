@@ -39,10 +39,10 @@ from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Any, Iterable, Mapping
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from .. import catalog
+from .. import catalog, identities
 from ..config import get_settings
 from ..db import bump_sync_version, read_sync_state, utcnow
 from ..models import (
@@ -74,6 +74,7 @@ __all__ = [
     "write_team_game_row",
     "ensure_player",
     "ensure_team",
+    "ensure_franchises",
 ]
 
 logger = logging.getLogger("nbastats.ingest.daily")
@@ -277,6 +278,51 @@ def ensure_team(session: Session, side: normalize.BoxScoreTeam) -> None:
             "nickname": nickname,
         },
     )
+
+
+def ensure_franchises(session: Session) -> int:
+    """Make sure the 30 franchises exist, from the bundled identity snapshot.
+
+    :func:`ensure_team` covers the per-game path, because a box score names both sides. The
+    bulk path does not: :func:`ingest_day` reads ``LeagueGameLog`` and ``PlayerGameLogs``,
+    writes ``team_game`` rows keyed by ``team_id``, and never had anywhere to learn a
+    franchise's city, nickname, conference or division from. A database walked entirely with
+    ``--once`` or ``--nightly`` therefore ended up with team ids that resolve to nothing:
+    invisible on SQLite, which does not enforce foreign keys by default, and a constraint
+    violation on Postgres, which does.
+
+    The fix reads the franchises out of ``data/nba_identities.json`` rather than out of the
+    game log, because the file is better data — it carries the real id, abbreviation, city,
+    nickname and founding year, and :data:`nbastats.identities.TEAM_ALIGNMENT` adds the
+    conference and division that no NBA.com endpoint on this path returns. It is also
+    offline and factual, so a backfill does not spend a request on it.
+
+    Returns the number of franchises written, and does nothing at all once they are present.
+    """
+    existing = session.execute(select(func.count()).select_from(Team)).scalar_one()
+    known = identities.teams()
+    if existing >= len(known):
+        return 0
+    written = 0
+    for identity in known:
+        conference, division = identities.team_alignment(identity.abbr)
+        aggregate.upsert(
+            session,
+            Team,
+            {"team_id": identity.team_id},
+            {
+                "abbr": identity.abbr,
+                "name": identity.name,
+                "city": identity.city,
+                "nickname": identity.nickname,
+                "conference": conference,
+                "division": division,
+                "year_founded": identity.year_founded,
+            },
+        )
+        written += 1
+    logger.info("event=franchises_ensured written=%d", written)
+    return written
 
 
 def ensure_player(session: Session, line: Mapping[str, Any]) -> None:
@@ -699,6 +745,10 @@ def ingest_day(
     api = client or StatsClient()
     result = DayIngestResult(game_date=game_date)
 
+    # Before anything writes a row that points at a team id. Cheap and idempotent: one count
+    # query once the franchises are in, so a 250-day walk pays for it once.
+    ensure_franchises(session)
+
     finalized = poll_finalized_games(session, game_date, client=api, commit=False)
     result.finalized = list(finalized)
 
@@ -863,6 +913,18 @@ def run_correction_window(
 
     Defaults to ``CORRECTION_WINDOW_DAYS`` (3) ending at ``data_through``, or
     today when the store is empty.
+
+    **Commits per day, not once at the end.** With ``--days 3`` that distinction is academic;
+    with ``--days 250`` — this is also the only date-range ingest the CLI has, so it is what a
+    season backfill runs — it is the difference between a walk you can interrupt and one that
+    throws away half an hour of work on Ctrl-C. Every write on this path is an upsert and
+    ``data_through`` only moves forward, so a partial walk is a consistent prefix rather than a
+    torn write, and re-running resumes rather than duplicating.
+
+    **Aggregates are recomputed once at the end**, over the union of the seasons touched,
+    instead of once per day. Recomputing a season's aggregates is proportional to the rows in
+    it, so doing it inside the loop makes a long backfill quadratic in the season's length for
+    no benefit: nothing reads the aggregates until the walk finishes.
     """
     settings = get_settings()
     window = settings.correction_window_days if days is None else days
@@ -873,13 +935,20 @@ def run_correction_window(
     last = end_date or state.data_through or date.today()
     started = utcnow()
     results: list[DayIngestResult] = []
+    touched: set[tuple[str, str]] = set()
     rows = 0
 
     for offset in range(window - 1, -1, -1):
         day = last - timedelta(days=offset)
-        outcome = ingest_day(session, day, client=client, commit=False)
+        outcome = ingest_day(session, day, client=client, reaggregate=False, commit=False)
         results.append(outcome)
+        touched |= outcome.seasons
         rows += outcome.player_rows + outcome.team_rows + outcome.advanced_rows
+        if commit:
+            session.commit()
+
+    if touched:
+        aggregate.recompute_seasons(session, sorted(touched))
 
     record_ingest_log(
         session,

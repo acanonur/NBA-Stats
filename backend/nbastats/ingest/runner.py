@@ -394,7 +394,12 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--reconcile-ids", action="store_true",
                       help="build the nba_person_id to bbref_slug crosswalk and report misses")
 
-    parser.add_argument("--date", type=_parse_date, help="ISO date for --once (default: today)")
+    parser.add_argument(
+        "--date",
+        type=_parse_date,
+        help="ISO date: the day for --once (default: today), or the LAST day of the window "
+             "for --nightly (default: data_through, else today)",
+    )
     parser.add_argument("--days", type=int, help="override the correction window for --nightly")
     parser.add_argument("--poll-seconds", type=int, help="override INGEST_POLL_SECONDS")
     parser.add_argument("--seasons", nargs="*", help="restrict a backfill to these seasons")
@@ -448,7 +453,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
 
         if args.nightly:
-            run_nightly(days=args.days)
+            # --date is the window's END. It used to be parsed, accepted and silently dropped
+            # here, which is worse than rejecting it: `--nightly --days 250 --date 2026-04-15`
+            # looked like a season backfill and quietly walked back from today instead.
+            run_nightly(days=args.days, end_date=args.date)
             return 0
 
         with session_scope() as session:

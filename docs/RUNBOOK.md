@@ -57,6 +57,60 @@ between them.
 
 ---
 
+## 2b. Loading a real season straight from NBA.com
+
+The bulk files above are the right answer for deep history. For *one recent season* — enough to
+search a real roster, see real numbers and run the projection engine on them — the live client
+can walk the schedule itself, with no downloads.
+
+### First, a fresh database. This part is not optional.
+
+`seed.py` mints game ids in the **real NBA format**: `00` + a season-type digit + the two-digit
+year + a five-digit sequence, so a seeded 2025-26 league occupies `0022500001`…`0022501230` —
+exactly the id space real 2025-26 regular-season games live in. Ingesting real data into a
+seeded database therefore *upserts real box scores onto synthetic ones*, leaving `player_season`
+a blend of measured and invented numbers with nothing to tell them apart.
+
+```bash
+cd backend
+export DATABASE_URL="sqlite:///./hardwood-live.db"   # a NEW file
+unset HARDWOOD_DEMO_MODE                             # do not seed into it
+```
+
+### Then walk the season
+
+`--nightly` is a date-range walker, not just a 3-day correction pass: `--days` sets the width and
+`--date` sets the **last** day of the window.
+
+```bash
+python3 -m nbastats.ingest.runner --nightly --days 200 --date 2026-04-15
+```
+
+That covers the 2025-26 regular season. It commits **per day**, so it is safe to interrupt and
+safe to re-run: every write is an upsert, `data_through` only moves forward, and a resumed run
+picks up rather than duplicating.
+
+| | |
+| --- | --- |
+| Requests | `1 + 3 × scopes` per day — 4 on a normal night, 7 when a Play-In and the regular season share a date |
+| Pacing | 1.0s floor between calls, so ~200 days is roughly 15–25 minutes |
+| Writes | `teams`, `players`, `games`, `player_game_basic`, `player_game_advanced`, `team_game`, then season aggregates **once** at the end |
+
+### What this gives you, and what it does not
+
+* **Real players, real teams, real statistics** for every game on those dates. Search finds them
+  because `ensure_player` writes a row for everyone who appears in a box score.
+* **No roster endpoint is called.** A player who did not play in the window does not exist.
+  `common_all_players` is implemented in `ingest/client.py` and wired to nothing.
+* **No schedule is ingested.** `poll_finalized_games` only writes the date you asked for, and
+  after a finished day every game on it is final — so there is never a `scheduled` row ahead of
+  `data_through`. `next_game_projection` therefore falls back to a league-average opponent and
+  says so in its notes, exactly as it does out of season.
+* **Headshot URLs are null** on players first seen through a box score. The identity file has
+  them; nothing on this path reads it for players.
+
+---
+
 ## 3. Keeping current — the part that makes stats appear after each game
 
 ```bash
