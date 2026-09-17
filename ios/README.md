@@ -4,7 +4,7 @@ An editable advanced-stats dashboard for NBA data. SwiftUI, iOS 17+, Swift Chart
 third-party packages**.
 
 The app is a grid of widgets the reader arranges themselves: drag to reorder, resize, configure
-every widget from a schema the server ships, or start from one of eleven presets. Every number is
+every widget from a schema the server ships, or start from one of twelve presets. Every number is
 era-honest — a stat the league did not record in a given season renders as an em dash with an
 explanation, never as a zero.
 
@@ -170,7 +170,7 @@ the drift check:
 python3 scripts/check_contracts.py
 ```
 
-`CatalogTests` asserts the counts the contract commits to — **61 metrics, 14 widgets, 11 presets**
+`CatalogTests` asserts the counts the contract commits to — **61 metrics, 16 widgets, 12 presets**
 — so a catalog change that the app has not been told about fails the iOS suite too.
 
 ---

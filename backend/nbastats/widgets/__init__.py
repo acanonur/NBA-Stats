@@ -31,6 +31,8 @@ from . import (
     leaderboard,
     next_game_projection,
     player_snapshot,
+    fantasy_draft_board,
+    fantasy_trade,
     projection_board,
     scoreboard,
     shot_profile,
@@ -79,6 +81,8 @@ RESOLVERS: dict[str, Resolver] = {
     "team_efficiency": team_efficiency.resolve,
     "next_game_projection": next_game_projection.resolve,
     "projection_board": projection_board.resolve,
+    "fantasy_draft_board": fantasy_draft_board.resolve,
+    "fantasy_trade": fantasy_trade.resolve,
     "career_arc": career_arc.resolve,
 }
 
@@ -101,6 +105,9 @@ TTL_SECONDS: dict[str, int] = {
     # catalog's ``minRefreshSeconds`` for the kind says 600 and §8 groups it with the tables.
     "next_game_projection": 600,
     "projection_board": 600,
+    # Season aggregates, the leaderboard/team-table group in CONTRACT.md section 8.
+    "fantasy_draft_board": 600,
+    "fantasy_trade": 600,
     "career_arc": 3600,
 }
 

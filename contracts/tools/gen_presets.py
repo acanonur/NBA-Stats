@@ -184,6 +184,21 @@ PRESETS = [
    w("daily_movers", "large", "Biggest Nights", date="latest", metric="game_score", limit=6,
      minMinutes=12.0, direction="best"),
  ], presentation="broadsheet"),
+ preset("fantasy_manager", "Fantasy Manager", "checklist",
+        "Draft it, trade it, and see what each move costs.", "green", [
+   w("fantasy_draft_board", "large", "Draft Board", season="latest", scoring="categories",
+     puntCategories=[], teams=12, rosterSpots=13, poolSize=150, draftedPlayerIds=[],
+     myPlayerIds=[], limit=30, seasonType="Regular Season"),
+   w("fantasy_trade", "large", "Trade Analyzer", season="latest", givePlayerIds=[],
+     getPlayerIds=[], puntCategories=[], poolSize=150, fairBand=0.75, clearBand=2.0,
+     showSensitivity=True, seasonType="Regular Season"),
+   w("player_snapshot", "medium", "Your Player", playerId="$favorite_player",
+     season="latest", seasonType="Regular Season",
+     metrics=["pts", "reb", "ast", "fg3m", "stl", "blk", "tov", "ts_pct"],
+     showPercentiles=True),
+   w("daily_movers", "medium", "Waiver Watch", date="latest", metric="fantasy_pts", limit=6,
+     minMinutes=12.0, direction="best"),
+ ]),
  preset("blank", "Blank Canvas", "square.dashed", "Start empty and build your own.", "graphite", []),
 ]
 

@@ -10,7 +10,7 @@ Built from the acquisition and architecture research in
 [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md).
 
 ```
-┌── contracts/ ── the shared truth: 61 metrics, 14 widgets, 11 presets, golden fixtures ──┐
+┌── contracts/ ── the shared truth: 61 metrics, 16 widgets, 12 presets, golden fixtures ──┐
 │                                                                                         │
 │   backend/  ingest → SQLite/Postgres → FastAPI   ⇄   ios/  SwiftUI dashboard + sync    │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
@@ -79,13 +79,13 @@ Real data, licensing, the residential-IP requirement and the nightly cron line a
 | `contracts/` | **Start here.** `CONTRACT.md` is the API and payload spec; `metrics.json`, `widgets.json` and `presets.json` are consumed by *both* sides; `fixtures/` holds golden payloads both sides test against |
 | `backend/` | Ingest pipeline, advanced-stat formulas, schema, FastAPI service, tests |
 | `ios/` | The SwiftUI app. `ios/ARCHITECTURE.md` is its binding Swift type surface |
-| `docs/` | [Architecture](docs/ARCHITECTURE.md) · [Data sources](docs/DATA_SOURCES.md) · [Projection](docs/PROJECTION.md) · [Broadsheet](docs/BROADSHEET.md) · [Legal](docs/LEGAL.md) · [Runbook](docs/RUNBOOK.md) |
+| `docs/` | [Architecture](docs/ARCHITECTURE.md) · [Data sources](docs/DATA_SOURCES.md) · [Projection](docs/PROJECTION.md) · [Broadsheet](docs/BROADSHEET.md) · [Fantasy](docs/FANTASY.md) · [Legal](docs/LEGAL.md) · [Runbook](docs/RUNBOOK.md) |
 | `sql/` | The original BigQuery-flavoured queries this project grew out of |
 | `scripts/` | `check_contracts.py` (CI drift guard), `sync_contracts.sh` |
 
 ### Why `contracts/` is a top-level directory
 
-Two codebases in two languages have to agree on 61 metric definitions, 14 payload shapes and 11
+Two codebases in two languages have to agree on 61 metric definitions, 16 payload shapes and 12
 preset dashboards. Prose guarantees drift, so the agreement is data: the backend formats values
 from `metrics.json`, the app formats values from the same file, the app *generates its
 configuration UI* from `widgets.json`, and `scripts/check_contracts.py` fails CI the moment the

@@ -56,6 +56,34 @@ The operative restrictions on NBA statistics:
 * No live play-by-play depiction: Hardwood ingests a game **after it is final**, which is a
   design choice with a legal dimension as well as an engineering one.
 * No logos, no player photography, no team marks. `headshotUrl` is nullable and unpopulated.
+* The fantasy toolkit analyses a manager's own roster decisions; it does not operate a game.
+  See §2a below, which is the one line in this document that needed drawing rather than quoting.
+
+## 2a. The fantasy line, and where this repository sits relative to it
+
+The terms exclude using NBA statistics "for a fantasy game". That phrase has to be read against
+what it is plainly aimed at — **operating** one: hosting leagues, scoring contests, taking
+entries, running the thing people play. `backend/nbastats/fantasy.py` and its two widgets do none
+of that. They value players against each other and tell one person what a draft pick or a trade
+would do to their own roster, in a league run by ESPN or Yahoo or a group chat.
+
+That is analysis of statistics for a private, non-commercial purpose, which is the use the same
+paragraph permits. The distinction is real, but it is a distinction, not an exemption, and three
+things follow that are worth writing down rather than discovering later:
+
+1. **Publishing is the trigger, and this feature raises the stakes of it.** Everything in §3
+   above depends on the deployment staying private and single-user. A fantasy toolkit is the part
+   of this app most likely to make someone want to share it, and it is also the part whose
+   compliance argument is thinnest. Publishing the API, shipping the app, or putting the board in
+   front of anyone who is not the person who built it needs the licensing conversation first —
+   not a re-reading of this section.
+2. **It must never become a contest.** No entries, no scoring of leagues, no head-to-head results,
+   no money, no prizes, no odds. `tests/test_fantasy.py` greps the module for the market
+   vocabulary, and that test is the mechanism, not the intention.
+3. **The cleanest footing is a manager's own numbers.** `SeasonLine` is a plain value object so a
+   spreadsheet's projections can be valued instead of NBA.com-derived season lines. Fed that way
+   the feature does not rest on NBA statistics at all, which makes the question moot for the case
+   it is most useful in.
 
 ### What would break compliance
 

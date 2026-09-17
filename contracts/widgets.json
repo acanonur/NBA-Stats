@@ -1125,6 +1125,233 @@
       ]
     },
     {
+      "kind": "fantasy_draft_board",
+      "name": "Draft Board",
+      "summary": "Nine-category fantasy value for every player, ranked, with what each pick adds.",
+      "icon": "checklist",
+      "sizes": [
+        "medium",
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "availableFrom": "1979-80",
+      "config": [
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest"
+        },
+        {
+          "key": "scoring",
+          "type": "enum",
+          "label": "Scoring",
+          "required": true,
+          "default": "categories",
+          "options": [
+            "categories",
+            "espn_points",
+            "yahoo_points"
+          ],
+          "help": "Categories ranks on the nine z-scores; the other two use that site's default points."
+        },
+        {
+          "key": "puntCategories",
+          "type": "enumList",
+          "label": "Punt",
+          "required": false,
+          "default": [],
+          "options": [
+            "pts",
+            "fg3m",
+            "reb",
+            "ast",
+            "stl",
+            "blk",
+            "tov",
+            "fg_pct",
+            "ft_pct"
+          ],
+          "help": "A punted category is weighted 0. The per-category numbers do not change, so a punt build and a balanced build stay comparable."
+        },
+        {
+          "key": "teams",
+          "type": "int",
+          "label": "Teams in League",
+          "required": false,
+          "default": 12,
+          "min": 2,
+          "max": 30
+        },
+        {
+          "key": "rosterSpots",
+          "type": "int",
+          "label": "Roster Spots",
+          "required": false,
+          "default": 13,
+          "min": 1,
+          "max": 25
+        },
+        {
+          "key": "poolSize",
+          "type": "int",
+          "label": "Players in the Pool",
+          "required": false,
+          "default": 150,
+          "min": 20,
+          "max": 500,
+          "help": "Who the z-scores are measured against. Teams x roster spots is the usual choice."
+        },
+        {
+          "key": "draftedPlayerIds",
+          "type": "playerList",
+          "label": "Already Drafted",
+          "required": false,
+          "default": [],
+          "maxItems": 200
+        },
+        {
+          "key": "myPlayerIds",
+          "type": "playerList",
+          "label": "My Roster",
+          "required": false,
+          "default": [],
+          "maxItems": 25,
+          "help": "Sets the categories the board weighs your remaining need against."
+        },
+        {
+          "key": "limit",
+          "type": "int",
+          "label": "Rows",
+          "required": false,
+          "default": 30,
+          "min": 5,
+          "max": 100
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "fantasy_trade",
+      "name": "Trade Analyzer",
+      "summary": "What a trade gains and costs, category by category, with the roster spots it moves.",
+      "icon": "arrow.left.arrow.right",
+      "sizes": [
+        "large"
+      ],
+      "defaultSize": "large",
+      "minRefreshSeconds": 600,
+      "availableFrom": "1979-80",
+      "config": [
+        {
+          "key": "season",
+          "type": "season",
+          "label": "Season",
+          "required": true,
+          "default": "latest"
+        },
+        {
+          "key": "givePlayerIds",
+          "type": "playerList",
+          "label": "You Give",
+          "required": false,
+          "default": [],
+          "maxItems": 4
+        },
+        {
+          "key": "getPlayerIds",
+          "type": "playerList",
+          "label": "You Get",
+          "required": false,
+          "default": [],
+          "maxItems": 4
+        },
+        {
+          "key": "puntCategories",
+          "type": "enumList",
+          "label": "Punt",
+          "required": false,
+          "default": [],
+          "options": [
+            "pts",
+            "fg3m",
+            "reb",
+            "ast",
+            "stl",
+            "blk",
+            "tov",
+            "fg_pct",
+            "ft_pct"
+          ]
+        },
+        {
+          "key": "poolSize",
+          "type": "int",
+          "label": "Players in the Pool",
+          "required": false,
+          "default": 150,
+          "min": 20,
+          "max": 500
+        },
+        {
+          "key": "fairBand",
+          "type": "double",
+          "label": "Fair Within",
+          "required": false,
+          "default": 0.75,
+          "min": 0.0,
+          "max": 10.0,
+          "help": "Net z-sum per game inside this band reads as fair. Set it against your league's own spread, which the widget reports."
+        },
+        {
+          "key": "clearBand",
+          "type": "double",
+          "label": "Clear Win Beyond",
+          "required": false,
+          "default": 2.0,
+          "min": 0.0,
+          "max": 20.0
+        },
+        {
+          "key": "showSensitivity",
+          "type": "bool",
+          "label": "Show Scenario Range",
+          "required": false,
+          "default": true,
+          "help": "Recomputes the trade under four named what-ifs. A range, never a probability."
+        },
+        {
+          "key": "seasonType",
+          "type": "enum",
+          "label": "Season Type",
+          "required": true,
+          "default": "Regular Season",
+          "options": [
+            "Regular Season",
+            "Playoffs",
+            "Play In",
+            "All Star",
+            "Pre Season"
+          ]
+        }
+      ]
+    },
+    {
       "kind": "career_arc",
       "name": "Career Arc",
       "summary": "A metric season by season across a whole career, with era availability marked.",

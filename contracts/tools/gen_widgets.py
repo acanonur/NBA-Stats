@@ -256,6 +256,65 @@ W = [
   ],
  },
  {
+  "kind": "fantasy_draft_board",
+  "name": "Draft Board",
+  "summary": "Nine-category fantasy value for every player, ranked, with what each pick adds.",
+  "icon": "checklist",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  # 3PM is the binding era boundary of a nine-category board: turnovers begin in 1977-78 and
+  # steals and blocks in 1973-74, but a category league without threes is a different game.
+  "availableFrom": "1979-80",
+  "config": [
+    f("season", "season", "Season", default="latest", required=True),
+    f("scoring", "enum", "Scoring", default="categories", required=True,
+      options=["categories", "espn_points", "yahoo_points"],
+      help="Categories ranks on the nine z-scores; the other two use that site's default points."),
+    f("puntCategories", "enumList", "Punt", default=[],
+      options=["pts", "fg3m", "reb", "ast", "stl", "blk", "tov", "fg_pct", "ft_pct"],
+      help="A punted category is weighted 0. The per-category numbers do not change, so a "
+           "punt build and a balanced build stay comparable."),
+    f("teams", "int", "Teams in League", default=12, min=2, max=30),
+    f("rosterSpots", "int", "Roster Spots", default=13, min=1, max=25),
+    f("poolSize", "int", "Players in the Pool", default=150, min=20, max=500,
+      help="Who the z-scores are measured against. Teams x roster spots is the usual choice."),
+    f("draftedPlayerIds", "playerList", "Already Drafted", default=[], maxItems=200),
+    f("myPlayerIds", "playerList", "My Roster", default=[], maxItems=25,
+      help="Sets the categories the board weighs your remaining need against."),
+    f("limit", "int", "Rows", default=30, min=5, max=100),
+    SEASON_TYPE,
+  ],
+ },
+ {
+  "kind": "fantasy_trade",
+  "name": "Trade Analyzer",
+  "summary": "What a trade gains and costs, category by category, with the roster spots it moves.",
+  "icon": "arrow.left.arrow.right",
+  "sizes": ["large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "availableFrom": "1979-80",
+  "config": [
+    f("season", "season", "Season", default="latest", required=True),
+    # No minItems: the widget ships empty and the reader fills both sides in. The resolver
+    # says "add at least one player to each side" rather than the catalog rejecting the
+    # preset that introduces it.
+    f("givePlayerIds", "playerList", "You Give", default=[], maxItems=4),
+    f("getPlayerIds", "playerList", "You Get", default=[], maxItems=4),
+    f("puntCategories", "enumList", "Punt", default=[],
+      options=["pts", "fg3m", "reb", "ast", "stl", "blk", "tov", "fg_pct", "ft_pct"]),
+    f("poolSize", "int", "Players in the Pool", default=150, min=20, max=500),
+    f("fairBand", "double", "Fair Within", default=0.75, min=0.0, max=10.0,
+      help="Net z-sum per game inside this band reads as fair. Set it against your league's "
+           "own spread, which the widget reports."),
+    f("clearBand", "double", "Clear Win Beyond", default=2.0, min=0.0, max=20.0),
+    f("showSensitivity", "bool", "Show Scenario Range", default=True,
+      help="Recomputes the trade under four named what-ifs. A range, never a probability."),
+    SEASON_TYPE,
+  ],
+ },
+ {
   "kind": "career_arc",
   "name": "Career Arc",
   "summary": "A metric season by season across a whole career, with era availability marked.",

@@ -557,6 +557,98 @@ normal, because one game's noise is large. It is null when `reference` is `"none
 engine published no interval; with no reference, rows sort by `projection` over that same
 spread.
 
+### `fantasy_draft_board`
+
+Nine-category fantasy value for a whole season, ranked. See
+[`docs/FANTASY.md`](../docs/FANTASY.md).
+
+```json
+{ "season": "2025-26", "seasonType": "Regular Season", "scoring": "categories",
+  "categories": ["pts","fg3m","reb","ast","stl","blk","tov","fg_pct","ft_pct"],
+  "puntCategories": ["ft_pct"],
+  "teams": 12, "rosterSpots": 13,
+  "nextPick": { "overall": 5, "round": 1, "pickInRound": 5 },
+  "poolSize": 150, "replacementValue": -3.2,
+  "weakestCategories": ["ast", "fg3m", "stl"],
+  "rosterStrength": { "pts": 2.1, "reb": 4.4, "…": 0.0 },
+  "picks": [
+    { "player": { "...PlayerRef" }, "overall": 5, "round": 1, "pickInRound": 5,
+      "baselineRank": 4, "totalZ": 6.82, "score": 0.76, "valueOverReplacement": 10.02,
+      "suggestion": 7.01, "espnPoints": 48.2, "yahooPoints": 41.6,
+      "gamesPlayed": 72, "minutesPerGame": 34.1,
+      "categories": [
+        { "category": "pts", "value": 26.8, "z": 1.94 },
+        { "category": "fg_pct", "value": 0.571, "z": 1.12,
+          "attempts": 17.5, "impact": 1.74, "shrinkageWeight": 0.91 } ],
+      "fills": ["ast"], "reason": "Best available; carries points and rebounds; fills assists",
+      "availability": "estimated" } ],
+  "note": "Values are z-scores against the top 150 players of 2025-26…" }
+```
+
+`z` is standardised against the **pool** — the top `poolSize` players — not the whole league,
+and the moments are population rather than sample, because the pool is the population of
+interest. Turnovers are sign-flipped, so a high `z` there means *few* turnovers; any client
+phrasing that says "carries turnovers" has the direction wrong.
+
+The two percentage categories carry three extra keys and are not a plain z of the percentage.
+`value` is the shooting rate after shrinking toward the league by **attempts** (paper Table B.5:
+129 for FG%, 25 for FT%), and `impact` — `attempts × (value − pool rate)` — is what actually gets
+standardised. That volume weighting is the whole point: a 90% free-throw shooter on one attempt
+a game moves the category by almost nothing. `impact` over the pool sums to zero by construction.
+
+`totalZ` is the weighted **sum** of the nine and `score` is the weighted **mean**; they differ by
+a factor of the weight total, and a threshold written for one is wrong for the other by that
+factor. A punted category has weight 0 in both and leaves every `z` unchanged, so a punt build
+and a balanced build remain comparable.
+
+`suggestion` is what the board is sorted by: `totalZ` plus at most a quarter of itself for the
+categories `myPlayerIds` is weakest in, and exactly `totalZ` until that roster has three players.
+`availableFrom` is `1979-80`, the first season with three-pointers.
+
+### `fantasy_trade`
+
+```json
+{ "season": "2025-26", "seasonType": "Regular Season", "puntCategories": [],
+  "give": { "label": "give", "count": 2, "totalZ": 8.1, "espnPoints": 71.2,
+            "yahooPoints": 60.4, "players": [ { "player": { "...PlayerRef" },
+            "totalZ": 4.9, "baselineRank": 11, "gamesPlayed": 68,
+            "categories": { "pts": 1.2, "…": 0.0 }, "availability": "estimated" } ],
+            "missing": [] },
+  "get":  { "…": "same shape" },
+  "categories": [
+    { "category": "pts", "give": 2.4, "get": 3.1, "change": 0.7, "net": 0.34,
+      "verdict": "gain", "punted": false } ],
+  "changeZ": 1.21, "rosterAdjustment": -3.2, "netZ": -1.99,
+  "replacementValue": -3.2, "poolSpread": 2.06,
+  "verdict": "slight loss", "bands": { "fair": 0.75, "clear": 2.0 },
+  "points": { "espn_points": { "change": 6.4, "net": -8.1, "verdict": "clear loss" },
+              "yahoo_points": { "…": "same shape" } },
+  "sensitivity": { "base": -1.99, "low": -4.4, "high": 0.3, "width": 4.7,
+                   "lowScenario": "The player you give up gains 15% of his minutes",
+                   "highScenario": "The player you get misses 22 games",
+                   "flips": true,
+                   "scenarios": [ { "key": "base", "label": "As projected", "net": -1.99 } ] },
+  "note": "The range is a sweep over named assumptions, not a confidence interval…" }
+```
+
+**`rosterAdjustment` is a separate key on purpose.** Give two and get one and the freed slot is
+refilled from waivers at `replacementValue`, which is below pool average by construction — often
+a larger number than the difference between the players themselves. `netZ` is
+`changeZ + rosterAdjustment`, and a client that shows only the net leaves a reader unable to tell
+a bad trade from slot arithmetic.
+
+**`sensitivity` is a range, not an interval, and must never be labelled as one.** There is no
+probability anywhere in it. It is the same trade recomputed under four named scenarios — the
+player you get misses 22 games or loses 15% of his minutes, and the same two for the player you
+give up — with the scenario that produced each end. `flips` is true when those scenarios disagree
+about the sign, which is the most useful thing the block can say. A predictive interval is
+deliberately *not* offered: the engine's negative-binomial band is a single-game count for one
+player in one category, and an honest variance for a signed sum over eight players and nine
+standardised categories needs a covariance matrix this project does not have.
+
+`poolSpread` is the population SD of `totalZ` across the pool, reported so `bands` can be read
+against the league they are being applied to rather than taken as universal thresholds.
+
 ### `career_arc`
 
 ```json

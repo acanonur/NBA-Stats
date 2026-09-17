@@ -133,7 +133,7 @@ FIXTURE_ENVIRONMENT: dict[str, Optional[str]] = {
 
 # --------------------------------------------------------------------------- widget configs
 
-#: One configuration per widget kind, in catalog order. These are the fourteen tiles the
+#: One configuration per widget kind, in catalog order. These are the sixteen tiles the
 #: ``dashboard_resolve`` fixture asks for, and each result's payload is also written out on
 #: its own as ``widget_<kind>.json``, so the two can never disagree.
 #:
@@ -267,6 +267,32 @@ WIDGET_CONFIGS: dict[str, dict[str, Any]] = {
         "limit": 6,
         "minMinutes": 20.0,
         "reference": "season_average",
+        "seasonType": "Regular Season",
+    },
+    "fantasy_draft_board": {
+        "season": "latest",
+        "scoring": "categories",
+        "puntCategories": [],
+        "teams": 12,
+        "rosterSpots": 13,
+        "poolSize": 150,
+        "draftedPlayerIds": [],
+        "myPlayerIds": [],
+        "limit": 12,
+        "seasonType": "Regular Season",
+    },
+    "fantasy_trade": {
+        "season": "latest",
+        # A real one-for-one, because a trade fixture with empty sides would exercise nothing
+        # but the empty-state branch. The subject tokens resolve server-side like every other
+        # config, so the fixture also covers token resolution inside a player list.
+        "givePlayerIds": ["$favorite_player"],
+        "getPlayerIds": ["$league_leader"],
+        "puntCategories": [],
+        "poolSize": 150,
+        "fairBand": 0.75,
+        "clearBand": 2.0,
+        "showSensitivity": True,
         "seasonType": "Regular Season",
     },
     "career_arc": {
