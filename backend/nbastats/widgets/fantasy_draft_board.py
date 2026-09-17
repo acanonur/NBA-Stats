@@ -14,7 +14,7 @@ ranking.
 """
 from __future__ import annotations
 
-from typing import Any, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence
 
 from .. import catalog, fantasy as F
 from ..models import PlayerSeason
@@ -31,6 +31,83 @@ __all__ = ["resolve", "SCORINGS", "DEFAULT_LIMIT", "season_lines"]
 
 SCORINGS = ("categories", "espn_points", "yahoo_points")
 DEFAULT_LIMIT = 30
+
+#: The board is a **table**, and its columns ship as data so the client renders whatever the
+#: server sends rather than hardcoding a column set that then drifts.
+#:
+#: The order is the one a FanScout export uses, because that is the layout a reader is most
+#: likely to be holding beside the app: rank and player, then a value, then the identity block,
+#: then the raw per-game line, then the nine z-scores. Two departures from that export are
+#: deliberate and are documented in docs/FANTASY.md:
+#:
+#: * **No Contract column.** Nothing in this project knows a player's contract status — it is
+#:   not in the box score, not in the identity snapshot and not on any NBA.com endpoint the
+#:   ingest touches. An export has it because a subscription supplied it.
+#: * **``score`` sits where a FanScout "Value" would.** That number is proprietary and provably
+#:   not the mean of the nine z-scores printed beside it, so reproducing the header with a
+#:   different number underneath would be the worst of both. ``score`` is the weighted mean this
+#:   engine computes and docs/FANTASY.md derives.
+#:
+#: The z block keeps the export's ordering (zPTS zTPM zAST zREB…), which differs from the raw
+#: block's (PTS TPM REB AST…). That is a quirk of the export rather than a mistake of ours, and
+#: reproducing it is what lets a reader diff the two column by column.
+_COLUMNS: tuple[dict[str, Any], ...] = (
+    {"key": "score", "label": "Value", "format": "decimal2", "group": "summary",
+     "signed": True, "higherIsBetter": True},
+    {"key": "team", "label": "Team", "format": None, "group": "summary",
+     "align": "leading", "higherIsBetter": None},
+    {"key": "gp", "label": "GP", "format": "integer", "group": "summary",
+     "higherIsBetter": True},
+    # The export calls this "Total Minutes" and it is nothing of the kind — the values run 5 to
+    # 37 against season game counts, i.e. minutes per game. Labelled for what it is.
+    {"key": "mpg", "label": "MPG", "format": "decimal1", "group": "summary",
+     "higherIsBetter": True},
+    {"key": "pts", "label": "PTS", "format": "decimal1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "fg3m", "label": "TPM", "format": "decimal1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "reb", "label": "REB", "format": "decimal1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "ast", "label": "AST", "format": "decimal1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "stl", "label": "STL", "format": "decimal1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "blk", "label": "BLK", "format": "decimal1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "tov", "label": "TOV", "format": "decimal1", "group": "production",
+     "higherIsBetter": False},
+    {"key": "fg_pct", "label": "FG%", "format": "percent1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "fga", "label": "FGA", "format": "decimal1", "group": "production",
+     "higherIsBetter": None},
+    {"key": "ft_pct", "label": "FT%", "format": "percent1", "group": "production",
+     "higherIsBetter": True},
+    {"key": "fta", "label": "FTA", "format": "decimal1", "group": "production",
+     "higherIsBetter": None},
+    {"key": "z_pts", "label": "zPTS", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    {"key": "z_fg3m", "label": "zTPM", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    {"key": "z_ast", "label": "zAST", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    {"key": "z_reb", "label": "zREB", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    {"key": "z_stl", "label": "zSTL", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    {"key": "z_blk", "label": "zBLK", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    # Already sign-flipped by the valuation, so a high zTOV is FEW turnovers and "higher is
+    # better" is true of the z even though it is false of the statistic it came from.
+    {"key": "z_tov", "label": "zTOV", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    {"key": "z_fg_pct", "label": "zFG%", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+    {"key": "z_ft_pct", "label": "zFT%", "format": "decimal2", "group": "impact",
+     "signed": True, "higherIsBetter": True},
+)
+
+#: ``category key -> the z column that reports it``.
+_Z_COLUMN = {category: f"z_{category}" for category in F.CATEGORIES}
 
 #: Below this many games a season line is noise rather than evidence, and a draft board full of
 #: four-game cameos at the top is the classic way a value model embarrasses itself.
@@ -91,7 +168,7 @@ def resolve(config: dict[str, Any], ctx: ResolveContext) -> tuple[dict[str, Any]
         )
 
     refs = q.player_ref_dicts(ctx, [p.valuation.player_id for p in board.picks])
-    payload = _payload(board, pool, refs, season, season_type, scoring, punts)
+    payload = _payload(board, pool, refs, season, season_type, scoring, punts, weights)
     return payload, "estimated", notes
 
 
@@ -144,7 +221,10 @@ def _payload(
     season_type: str,
     scoring: str,
     punts: Sequence[str],
+    weights: Mapping[str, float],
 ) -> dict[str, Any]:
+    punted = set(punts)
+    columns = [{**column, "punted": _is_punted(column["key"], punted)} for column in _COLUMNS]
     return {
         "season": season,
         "seasonType": season_type,
@@ -162,51 +242,76 @@ def _payload(
         "replacementValue": round(board.replacement_value, 3),
         "weakestCategories": list(board.weakest),
         "rosterStrength": {c: round(v, 3) for c, v in board.roster_strength.items()},
-        "picks": [_pick(pick, refs, scoring) for pick in board.picks],
+        "columns": columns,
+        "rows": [_row(pick, refs, weights) for pick in board.picks],
         "note": (
             "Values are z-scores against the top "
-            f"{pool.pool_size} players of {season}; a projection is not involved. "
-            "FG% and FT% are volume-weighted, so a high percentage on few attempts is worth "
-            "little."
+            f"{pool.pool_size} players of {season}. FG% and FT% are volume-weighted, so a high "
+            "percentage on few attempts is worth little, and zTOV is sign-flipped, so a high "
+            "number there means few turnovers."
         ),
     }
 
 
-def _pick(pick: F.DraftPick, refs: dict[int, dict[str, Any]], scoring: str) -> dict[str, Any]:
+def _is_punted(key: str, punted: set[str]) -> bool:
+    """True for a z column whose category is punted. Raw production is never punted.
+
+    A punt zeroes a category's *weight*, not the player's production: the reader still wants to
+    see that a centre gets nine rebounds, they just do not want it counted. Greying the raw
+    column too would hide a fact rather than a judgement.
+    """
+    if not key.startswith("z_"):
+        return False
+    return key[2:] in punted
+
+
+def _row(
+    pick: F.DraftPick, refs: dict[int, dict[str, Any]], weights: Mapping[str, float]
+) -> dict[str, Any]:
+    """One table row: the pinned identity, then every column's value by key.
+
+    ``values`` is a dict rather than a parallel array so a column the client does not know
+    about is skipped rather than shifting every cell after it by one.
+
+    ``weights`` has to be threaded all the way down here. The board sorts on a weighted
+    suggestion, so a Value column computed with default weights is not monotonic with the rank
+    beside it the moment anything is punted — a table that says it is sorted and visibly is not.
+    """
     valuation = pick.valuation
+    line = valuation.line
+    player = refs.get(valuation.player_id) or {}
+    values: dict[str, Any] = {
+        "score": round(valuation.score(weights), 3),
+        "team": player.get("teamAbbr"),
+        "gp": line.games_played,
+        "mpg": round(line.minutes_per_game, 1),
+    }
+    for category in F.CATEGORIES:
+        value = valuation.categories[category]
+        if category not in F.PERCENTAGE_CATEGORIES:
+            values[category] = round(value.value, 2)
+        else:
+            values[category] = round(value.value, 4)
+            makes, attempts = F.PERCENTAGE_PARTS[category]
+            values[attempts] = round(getattr(line, attempts, 0.0), 1)
+        values[_Z_COLUMN[category]] = round(value.z, 3)
     return {
-        "player": refs.get(valuation.player_id),
-        "overall": pick.overall_rank,
+        "rank": pick.overall_rank,
         "round": pick.round_number,
         "pickInRound": pick.pick_in_round,
+        "player": refs.get(valuation.player_id),
         "baselineRank": valuation.baseline_rank,
-        "totalZ": round(valuation.total_z(), 3),
-        "score": round(valuation.score(), 3),
+        "totalZ": round(valuation.total_z(weights), 3),
         "valueOverReplacement": round(pick.value_over_replacement, 3),
         "suggestion": round(pick.suggestion, 3),
         "espnPoints": round(valuation.espn_points, 2),
         "yahooPoints": round(valuation.yahoo_points, 2),
-        "gamesPlayed": valuation.line.games_played,
-        "minutesPerGame": round(valuation.line.minutes_per_game, 1),
-        "categories": [_category(valuation, c) for c in F.CATEGORIES],
+        "values": values,
         "fills": list(pick.fills),
         "reason": pick.reason,
+        # A valuation is never a record — the same rule the projection widgets follow.
         "availability": "estimated",
     }
-
-
-def _category(valuation: F.PlayerValuation, category: str) -> dict[str, Any]:
-    value = valuation.categories[category]
-    out: dict[str, Any] = {
-        "category": category,
-        "value": round(value.value, 4),
-        "z": round(value.z, 3),
-    }
-    if value.is_percentage:
-        out["attempts"] = round(value.attempts or 0.0, 2)
-        out["impact"] = round(value.standardised, 4)
-        out["shrinkageWeight"] = round(value.shrinkage_weight or 0.0, 3)
-    return out
 
 
 def _empty(season: str, season_type: str, notes: list[str]) -> dict[str, Any]:
@@ -223,6 +328,7 @@ def _empty(season: str, season_type: str, notes: list[str]) -> dict[str, Any]:
         "replacementValue": 0.0,
         "weakestCategories": [],
         "rosterStrength": {},
-        "picks": [],
+        "columns": [{**column, "punted": False} for column in _COLUMNS],
+        "rows": [],
         "note": None,
     }

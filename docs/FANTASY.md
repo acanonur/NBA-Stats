@@ -165,7 +165,39 @@ of each category: a high turnover z means few turnovers, so the phrase is "prote
 
 ---
 
-## 5. What this is not
+## 5. The board is a table
+
+The first version rendered each player as a card with a nine-column z-score strip underneath.
+That was wrong, and the user said so: a draft kit is a spreadsheet — you scan down a rank column
+and across a stat line — and a column of cards cannot be scanned that way.
+
+It is now a table, built on the same idiom `GameLogWidget` already uses: a pinned rank and name
+block, the value columns scrolling horizontally under a header that stays put, and the table
+abandoned for stacked blocks at accessibility text sizes. The columns ship **as data**
+(`payload.columns`), so the server owns the layout.
+
+The column order follows a FanScout export, including its quirk of reordering the z block
+(`zPTS zTPM zAST zREB…`) relative to the raw block (`PTS TPM REB AST…`), so the two can be
+diffed column by column. Two columns such an export carries are deliberately absent:
+
+* **Contract status** — nothing in this project knows it, and 289 of 481 rows are blank even in
+  the export.
+* **A proprietary "Value"** — not reproducible from the nine z-scores printed beside it. On one
+  such export the published value ranks players differently from a transparent z-sum at 453 of
+  481 positions, and a least-squares fit leaves a maximum residual of 0.53. `score` occupies
+  that slot instead: the weighted mean §1 derives.
+
+One bug worth recording, because it would have looked plausible. `score` and `totalZ` are
+computed **with the punt weights in force**. The first version displayed them unweighted while
+the board sorted on the weighted suggestion, so the moment anything was punted the value column
+stopped being monotonic with the rank beside it — a table that says it is sorted and visibly is
+not. The `z` values are never reweighted: a punt zeroes a category's contribution to a total, it
+does not change what a player did, so the raw and z cells stay as they are and only the total
+moves.
+
+---
+
+## 6. What this is not
 
 No odds, no price, no edge, no stake, and no contest of any kind — the same boundary
 [`PROJECTION.md`](PROJECTION.md) §6 draws, enforced here by a test that greps this module for the

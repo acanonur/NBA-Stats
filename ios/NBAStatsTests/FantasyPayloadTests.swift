@@ -65,80 +65,153 @@ final class FantasyPayloadTests: XCTestCase {
         XCTAssertFalse(FantasyCategory.isNegative("usg_pct"))
     }
 
-    // MARK: - Draft board
+    // MARK: - Draft board (a table)
 
-    func testTheBoardFixtureDecodesAndRanks() throws {
+    func testTheBoardFixtureDecodesAsATable() throws {
         let payload = try board()
-        XCTAssertFalse(payload.picks.isEmpty)
+        XCTAssertFalse(payload.columns.isEmpty)
+        XCTAssertFalse(payload.rows.isEmpty)
         XCTAssertEqual(payload.categories.count, 9)
         XCTAssertGreaterThan(payload.poolSize, 0)
 
-        // Ordered by the suggestion, which is what the board sorted on.
-        let suggestions = payload.picks.compactMap { $0.suggestion }
-        XCTAssertEqual(suggestions, suggestions.sorted(by: >))
-
-        for pick in payload.picks {
-            XCTAssertEqual(pick.availability, .estimated, "a valuation is not a record")
-            XCTAssertEqual(Set(pick.categories.map { $0.category }), Set(FantasyCategory.order))
-            XCTAssertNotNil(pick.player)
-        }
-    }
-
-    func testTheSnakeSlotsAdvanceDownTheBoard() throws {
-        let payload = try board()
-        let overalls = payload.picks.map { $0.overall }
-        XCTAssertEqual(overalls, Array(overalls.first!...(overalls.first! + overalls.count - 1)))
-        XCTAssertEqual(payload.picks.first?.overall, payload.nextPick.overall)
-    }
-
-    func testAPercentageCategoryKeepsTheVolumeItWasWeightedBy() throws {
-        let payload = try board()
-        for pick in payload.picks {
-            for key in ["fg_pct", "ft_pct"] {
-                let value = try XCTUnwrap(pick.category(key))
-                XCTAssertNotNil(value.attempts, "\(key) lost the volume it is weighted by")
-                XCTAssertNotNil(value.impact, "\(key) lost the quantity actually standardised")
-                let weight = try XCTUnwrap(value.shrinkageWeight)
-                XCTAssertTrue((0...1).contains(weight), "\(key) shrinkage weight \(weight)")
+        let keys = Set(payload.columns.map { $0.key })
+        for row in payload.rows {
+            XCTAssertEqual(row.availability, .estimated, "a valuation is not a record")
+            XCTAssertNotNil(row.player)
+            // Every numeric column must be answerable from the row. `team` is the one text
+            // value and lands on its own property rather than in `values`.
+            for key in keys where key != "team" {
+                XCTAssertNotNil(row.value(key), "row \(row.rank) has no cell for \(key)")
             }
-            // A counting category must NOT carry them, or a client could mistake one for the
-            // other and render a rebound total as a shooting percentage.
-            XCTAssertNil(pick.category("pts")?.attempts)
-            XCTAssertNil(pick.category("pts")?.impact)
+            XCTAssertNotNil(row.team)
         }
     }
 
-    func testAPercentageRendersAsAPercentageAndACountDoesNot() {
-        let shooting = FantasyCategoryValue(category: "fg_pct", value: 0.571, z: 1.1,
-                                            attempts: 17.5, impact: 1.74, shrinkageWeight: 0.91)
-        let counting = FantasyCategoryValue(category: "pts", value: 26.8, z: 1.94)
-        XCTAssertTrue(shooting.displayValue.contains("%"), shooting.displayValue)
-        XCTAssertFalse(counting.displayValue.contains("%"), counting.displayValue)
-        XCTAssertFormatted(counting.zText, "+1.94")
+    func testTheValueColumnIsMonotonicWithTheRankBesideIt() throws {
+        // A table that says it is sorted and visibly is not. The board ranks on a weighted
+        // suggestion, so the value column has to be computed with the same weights.
+        let payload = try board()
+        let scores = payload.rows.compactMap { $0.value("score") }
+        XCTAssertEqual(scores.count, payload.rows.count)
+        XCTAssertEqual(scores, scores.sorted(by: >))
+        XCTAssertEqual(payload.rows.map { $0.rank }, payload.rows.map { $0.rank }.sorted())
     }
 
-    func testTotalZAndScoreAreNotTheSameNumber() throws {
-        // They differ by the weight total. A threshold written for one is wrong for the other
-        // by that factor, which is why both are on the payload rather than one being derived.
+    func testTheZBlockKeepsTheExportOrdering() throws {
+        /// Raw runs PTS TPM REB AST; the z block runs zPTS zTPM zAST zREB. Reproduced from the
+        /// export this table is modelled on so the two diff column by column.
         let payload = try board()
-        let pick = try XCTUnwrap(payload.picks.first)
-        let totalZ = try XCTUnwrap(pick.totalZ)
-        let score = try XCTUnwrap(pick.score)
-        XCTAssertNotEqual(totalZ, score, accuracy: 1e-9)
-        XCTAssertEqual(score, totalZ / 9.0, accuracy: 0.01)
+        let impact = payload.columns(in: "impact").map { $0.label }
+        XCTAssertEqual(impact, ["zPTS", "zTPM", "zAST", "zREB", "zSTL", "zBLK", "zTOV", "zFG%", "zFT%"])
+        let production = payload.columns(in: "production").map { $0.label }
+        XCTAssertEqual(Array(production.prefix(4)), ["PTS", "TPM", "REB", "AST"])
+    }
+
+    func testTheGroupsArePagedInServerOrder() throws {
+        let payload = try board()
+        XCTAssertEqual(payload.groups, ["summary", "production", "impact"])
+        for group in payload.groups {
+            XCTAssertFalse(payload.columns(in: group).isEmpty, group)
+        }
+    }
+
+    func testAColumnFormatsItsOwnCell() {
+        let percent = FantasyColumn(key: "fg_pct", label: "FG%", format: .percent1)
+        XCTAssertTrue(percent.text(0.5355).contains("%"))
+        let signed = FantasyColumn(key: "z_pts", label: "zPTS", format: .decimal2, signed: true)
+        XCTAssertFormatted(signed.text(2.29), "+2.29")
+        XCTAssertFormatted(signed.text(-0.43), "-0.43")
+        let count = FantasyColumn(key: "gp", label: "GP", format: .integer)
+        XCTAssertFormatted(count.text(68), "68")
+    }
+
+    func testAnAbsentCellIsADashAndNeverAZero() {
+        // §6's rule, and it matters more here than usual: a missing value and a genuine 0.0
+        // are indistinguishable once rendered.
+        let column = FantasyColumn(key: "blk", label: "BLK", format: .decimal1)
+        XCTAssertEqual(column.text(nil), Formatting.emDash)
+        XCTAssertEqual(column.text(Double.nan), Formatting.emDash)
+        XCTAssertNotEqual(column.text(0), Formatting.emDash)
+    }
+
+    func testAColumnWithAFormatThisBuildCannotReadStillRenders() throws {
+        // A new format must cost the column its formatting, never the whole table.
+        let json = #"{"key": "xyz", "label": "XYZ", "format": "furlongs", "group": "impact"}"#
+        let column = try decoder.decode(FantasyColumn.self, from: Data(json.utf8))
+        XCTAssertNil(column.format)
+        XCTAssertEqual(column.label, "XYZ")
+        XCTAssertFalse(column.text(1.5).isEmpty)
+    }
+
+    func testARowSurvivesAValuesDictThatMixesNumbersAndText() throws {
+        // `values` carries one string among the numbers. Decoding it as [String: Double] would
+        // throw on the team and cost the reader the whole row.
+        let json = #"""
+        {"rank": 3, "values": {"score": 1.2, "team": "LAL", "pts": 28.3}}
+        """#
+        let row = try decoder.decode(FantasyDraftRow.self, from: Data(json.utf8))
+        XCTAssertEqual(row.rank, 3)
+        XCTAssertEqual(row.team, "LAL")
+        XCTAssertEqual(row.value("pts") ?? 0, 28.3, accuracy: 1e-9)
+        XCTAssertNil(row.value("team"), "the team is text and must not surface as a number")
+    }
+
+    func testAPuntGreysTheZColumnAndLeavesProductionAlone() throws {
+        let payload = try board()
+        for column in payload.columns where column.punted {
+            XCTAssertTrue(column.key.hasPrefix("z_"),
+                          "\(column.key) is punted but is not a value column")
+        }
+        // A punt zeroes a category's weight, not a player's rebounds.
+        for key in ["pts", "reb", "fg_pct", "fta"] {
+            let column = payload.columns.first { $0.key == key }
+            XCTAssertEqual(column?.punted, false, key)
+        }
+    }
+
+    func testTheBoardServesNoContractColumnAndNoForeignValue() throws {
+        let payload = try board()
+        let keys = Set(payload.columns.map { $0.key })
+        XCTAssertFalse(keys.contains("contract"),
+                       "contract status is nowhere in this project's data model")
+        XCTAssertTrue(keys.contains("score"))
+        let value = try XCTUnwrap(payload.columns.first { $0.key == "score" })
+        XCTAssertEqual(value.label, "Value")
+    }
+
+    func testMinutesAreLabelledForWhatTheyAre() throws {
+        let payload = try board()
+        let column = try XCTUnwrap(payload.columns.first { $0.key == "mpg" })
+        XCTAssertEqual(column.label, "MPG")
+        for row in payload.rows {
+            let minutes = try XCTUnwrap(row.value("mpg"))
+            XCTAssertTrue((0...48).contains(minutes), "\(minutes) is not a per-game figure")
+        }
+    }
+
+    func testOnlyNumbersAreTrailingAligned() throws {
+        let payload = try board()
+        for column in payload.columns {
+            if column.key == "team" {
+                XCTAssertFalse(column.isTrailing, "text reads left")
+            } else {
+                XCTAssertTrue(column.isTrailing, "\(column.key): decimals have to line up")
+            }
+        }
     }
 
     func testAnEmptyBoardDecodesToDefaultsRatherThanThrowing() throws {
         let payload = try decoder.decode(FantasyDraftBoardPayload.self, from: Data("{}".utf8))
-        XCTAssertTrue(payload.picks.isEmpty)
+        XCTAssertTrue(payload.rows.isEmpty)
+        XCTAssertTrue(payload.columns.isEmpty)
         XCTAssertEqual(payload.categories, FantasyCategory.order)
         XCTAssertEqual(payload.nextPick.round, 1)
     }
 
     func testABoardRowThatClaimsToBeFullIsStillAnEstimate() throws {
-        let json = #"{"overall": 1, "availability": "full"}"#
-        let pick = try decoder.decode(FantasyDraftPick.self, from: Data(json.utf8))
-        XCTAssertEqual(pick.availability, .estimated)
+        let json = #"{"rank": 1, "availability": "full"}"#
+        let row = try decoder.decode(FantasyDraftRow.self, from: Data(json.utf8))
+        XCTAssertEqual(row.availability, .estimated)
     }
 
     // MARK: - Trade

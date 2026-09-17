@@ -4621,8 +4621,216 @@
           "fg_pct": 0,
           "ft_pct": 0
         },
-        "picks": [
+        "columns": [
           {
+            "key": "score",
+            "label": "Value",
+            "format": "decimal2",
+            "group": "summary",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "team",
+            "label": "Team",
+            "format": null,
+            "group": "summary",
+            "align": "leading",
+            "higherIsBetter": null,
+            "punted": false
+          },
+          {
+            "key": "gp",
+            "label": "GP",
+            "format": "integer",
+            "group": "summary",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "mpg",
+            "label": "MPG",
+            "format": "decimal1",
+            "group": "summary",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "pts",
+            "label": "PTS",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "fg3m",
+            "label": "TPM",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "reb",
+            "label": "REB",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "ast",
+            "label": "AST",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "stl",
+            "label": "STL",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "blk",
+            "label": "BLK",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "tov",
+            "label": "TOV",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": false,
+            "punted": false
+          },
+          {
+            "key": "fg_pct",
+            "label": "FG%",
+            "format": "percent1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "fga",
+            "label": "FGA",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": null,
+            "punted": false
+          },
+          {
+            "key": "ft_pct",
+            "label": "FT%",
+            "format": "percent1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "fta",
+            "label": "FTA",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": null,
+            "punted": false
+          },
+          {
+            "key": "z_pts",
+            "label": "zPTS",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_fg3m",
+            "label": "zTPM",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_ast",
+            "label": "zAST",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_reb",
+            "label": "zREB",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_stl",
+            "label": "zSTL",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_blk",
+            "label": "zBLK",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_tov",
+            "label": "zTOV",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_fg_pct",
+            "label": "zFG%",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_ft_pct",
+            "label": "zFT%",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          }
+        ],
+        "rows": [
+          {
+            "rank": 1,
+            "round": 1,
+            "pickInRound": 1,
             "player": {
               "playerId": 1630558,
               "name": "Davion Mitchell",
@@ -4635,76 +4843,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630558.png",
               "isActive": true
             },
-            "overall": 1,
-            "round": 1,
-            "pickInRound": 1,
             "baselineRank": 1,
             "totalZ": 5.775,
-            "score": 0.642,
             "valueOverReplacement": 9.359,
             "suggestion": 5.775,
             "espnPoints": 50.08,
             "yahooPoints": 48.21,
-            "gamesPlayed": 24,
-            "minutesPerGame": 37.9,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 21.5,
-                "z": 1.323
-              },
-              {
-                "category": "fg3m",
-                "value": 0.125,
-                "z": -1.511
-              },
-              {
-                "category": "reb",
-                "value": 13.75,
-                "z": 2.996
-              },
-              {
-                "category": "ast",
-                "value": 1.9167,
-                "z": -0.898
-              },
-              {
-                "category": "stl",
-                "value": 0.7917,
-                "z": -0.605
-              },
-              {
-                "category": "blk",
-                "value": 2.2917,
-                "z": 2.659
-              },
-              {
-                "category": "tov",
-                "value": 1.9167,
-                "z": 0.094
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.5876,
-                "z": 3.277,
-                "attempts": 14.29,
-                "impact": 1.7342,
-                "shrinkageWeight": 0.727
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.7033,
-                "z": -1.56,
-                "attempts": 4.71,
-                "impact": -0.4069,
-                "shrinkageWeight": 0.819
-              }
-            ],
+            "values": {
+              "score": 0.642,
+              "team": "PHI",
+              "gp": 24,
+              "mpg": 37.9,
+              "pts": 21.5,
+              "z_pts": 1.323,
+              "fg3m": 0.12,
+              "z_fg3m": -1.511,
+              "reb": 13.75,
+              "z_reb": 2.996,
+              "ast": 1.92,
+              "z_ast": -0.898,
+              "stl": 0.79,
+              "z_stl": -0.605,
+              "blk": 2.29,
+              "z_blk": 2.659,
+              "tov": 1.92,
+              "z_tov": 0.094,
+              "fg_pct": 0.5876,
+              "fga": 14.3,
+              "z_fg_pct": 3.277,
+              "ft_pct": 0.7033,
+              "fta": 4.7,
+              "z_ft_pct": -1.56
+            },
             "fills": [],
             "reason": "Best available; carries FG% and rebounds; costs you FT%",
             "availability": "estimated"
           },
           {
+            "rank": 2,
+            "round": 1,
+            "pickInRound": 2,
             "player": {
               "playerId": 1642358,
               "name": "AJ Johnson",
@@ -4717,76 +4895,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642358.png",
               "isActive": true
             },
-            "overall": 2,
-            "round": 1,
-            "pickInRound": 2,
             "baselineRank": 2,
             "totalZ": 5.504,
-            "score": 0.612,
             "valueOverReplacement": 9.088,
             "suggestion": 5.504,
             "espnPoints": 47.76,
             "yahooPoints": 44.97,
-            "gamesPlayed": 21,
-            "minutesPerGame": 36.2,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 26.4762,
-                "z": 2.646
-              },
-              {
-                "category": "fg3m",
-                "value": 3.6667,
-                "z": 1.459
-              },
-              {
-                "category": "reb",
-                "value": 5.3333,
-                "z": -0.398
-              },
-              {
-                "category": "ast",
-                "value": 6.8571,
-                "z": 1.811
-              },
-              {
-                "category": "stl",
-                "value": 1.4762,
-                "z": 1.739
-              },
-              {
-                "category": "blk",
-                "value": 0.1905,
-                "z": -0.933
-              },
-              {
-                "category": "tov",
-                "value": 3.1905,
-                "z": -2.025
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4675,
-                "z": 0.049,
-                "attempts": 20.48,
-                "impact": 0.026,
-                "shrinkageWeight": 0.769
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.8642,
-                "z": 1.155,
-                "attempts": 4.05,
-                "impact": 0.3013,
-                "shrinkageWeight": 0.773
-              }
-            ],
+            "values": {
+              "score": 0.612,
+              "team": "HOU",
+              "gp": 21,
+              "mpg": 36.2,
+              "pts": 26.48,
+              "z_pts": 2.646,
+              "fg3m": 3.67,
+              "z_fg3m": 1.459,
+              "reb": 5.33,
+              "z_reb": -0.398,
+              "ast": 6.86,
+              "z_ast": 1.811,
+              "stl": 1.48,
+              "z_stl": 1.739,
+              "blk": 0.19,
+              "z_blk": -0.933,
+              "tov": 3.19,
+              "z_tov": -2.025,
+              "fg_pct": 0.4675,
+              "fga": 20.5,
+              "z_fg_pct": 0.049,
+              "ft_pct": 0.8642,
+              "fta": 4.0,
+              "z_ft_pct": 1.155
+            },
             "fills": [],
             "reason": "carries points and assists; turns it over",
             "availability": "estimated"
           },
           {
+            "rank": 3,
+            "round": 1,
+            "pickInRound": 3,
             "player": {
               "playerId": 1628502,
               "name": "Nigel Hayes-Davis",
@@ -4799,76 +4947,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628502.png",
               "isActive": true
             },
-            "overall": 3,
-            "round": 1,
-            "pickInRound": 3,
             "baselineRank": 3,
             "totalZ": 4.628,
-            "score": 0.514,
             "valueOverReplacement": 8.212,
             "suggestion": 4.628,
             "espnPoints": 49.5,
             "yahooPoints": 47.83,
-            "gamesPlayed": 22,
-            "minutesPerGame": 36.8,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 26.1818,
-                "z": 2.568
-              },
-              {
-                "category": "fg3m",
-                "value": 1.9545,
-                "z": 0.023
-              },
-              {
-                "category": "reb",
-                "value": 4.7273,
-                "z": -0.642
-              },
-              {
-                "category": "ast",
-                "value": 10.4091,
-                "z": 3.759
-              },
-              {
-                "category": "stl",
-                "value": 1.3182,
-                "z": 1.198
-              },
-              {
-                "category": "blk",
-                "value": 0.0455,
-                "z": -1.181
-              },
-              {
-                "category": "tov",
-                "value": 3.7273,
-                "z": -2.917
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4553,
-                "z": -0.462,
-                "attempts": 22.23,
-                "impact": -0.2445,
-                "shrinkageWeight": 0.791
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.9322,
-                "z": 2.283,
-                "attempts": 4.18,
-                "impact": 0.5954,
-                "shrinkageWeight": 0.786
-              }
-            ],
+            "values": {
+              "score": 0.514,
+              "team": "MIL",
+              "gp": 22,
+              "mpg": 36.8,
+              "pts": 26.18,
+              "z_pts": 2.568,
+              "fg3m": 1.95,
+              "z_fg3m": 0.023,
+              "reb": 4.73,
+              "z_reb": -0.642,
+              "ast": 10.41,
+              "z_ast": 3.759,
+              "stl": 1.32,
+              "z_stl": 1.198,
+              "blk": 0.05,
+              "z_blk": -1.181,
+              "tov": 3.73,
+              "z_tov": -2.917,
+              "fg_pct": 0.4553,
+              "fga": 22.2,
+              "z_fg_pct": -0.462,
+              "ft_pct": 0.9322,
+              "fta": 4.2,
+              "z_ft_pct": 2.283
+            },
             "fills": [],
             "reason": "carries assists and points; turns it over",
             "availability": "estimated"
           },
           {
+            "rank": 4,
+            "round": 1,
+            "pickInRound": 4,
             "player": {
               "playerId": 1642920,
               "name": "Kobe Sanders",
@@ -4881,76 +4999,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642920.png",
               "isActive": true
             },
-            "overall": 4,
-            "round": 1,
-            "pickInRound": 4,
             "baselineRank": 4,
             "totalZ": 4.601,
-            "score": 0.511,
             "valueOverReplacement": 8.185,
             "suggestion": 4.601,
             "espnPoints": 49.29,
             "yahooPoints": 47.0,
-            "gamesPlayed": 24,
-            "minutesPerGame": 36.6,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 30.4583,
-                "z": 3.705
-              },
-              {
-                "category": "fg3m",
-                "value": 2.5,
-                "z": 0.48
-              },
-              {
-                "category": "reb",
-                "value": 4.25,
-                "z": -0.835
-              },
-              {
-                "category": "ast",
-                "value": 7.375,
-                "z": 2.095
-              },
-              {
-                "category": "stl",
-                "value": 1.1667,
-                "z": 0.679
-              },
-              {
-                "category": "blk",
-                "value": 0.125,
-                "z": -1.045
-              },
-              {
-                "category": "tov",
-                "value": 3.5,
-                "z": -2.539
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4886,
-                "z": 1.036,
-                "attempts": 24.5,
-                "impact": 0.5482,
-                "shrinkageWeight": 0.82
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.852,
-                "z": 1.025,
-                "attempts": 4.29,
-                "impact": 0.2673,
-                "shrinkageWeight": 0.805
-              }
-            ],
+            "values": {
+              "score": 0.511,
+              "team": "LAL",
+              "gp": 24,
+              "mpg": 36.6,
+              "pts": 30.46,
+              "z_pts": 3.705,
+              "fg3m": 2.5,
+              "z_fg3m": 0.48,
+              "reb": 4.25,
+              "z_reb": -0.835,
+              "ast": 7.38,
+              "z_ast": 2.095,
+              "stl": 1.17,
+              "z_stl": 0.679,
+              "blk": 0.12,
+              "z_blk": -1.045,
+              "tov": 3.5,
+              "z_tov": -2.539,
+              "fg_pct": 0.4886,
+              "fga": 24.5,
+              "z_fg_pct": 1.036,
+              "ft_pct": 0.852,
+              "fta": 4.3,
+              "z_ft_pct": 1.025
+            },
             "fills": [],
             "reason": "carries points and assists; turns it over",
             "availability": "estimated"
           },
           {
+            "rank": 5,
+            "round": 1,
+            "pickInRound": 5,
             "player": {
               "playerId": 204060,
               "name": "Joe Ingles",
@@ -4963,76 +5051,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/204060.png",
               "isActive": true
             },
-            "overall": 5,
-            "round": 1,
-            "pickInRound": 5,
             "baselineRank": 5,
             "totalZ": 4.321,
-            "score": 0.48,
             "valueOverReplacement": 7.905,
             "suggestion": 4.321,
             "espnPoints": 47.82,
             "yahooPoints": 45.99,
-            "gamesPlayed": 22,
-            "minutesPerGame": 37.2,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 27.8182,
-                "z": 3.003
-              },
-              {
-                "category": "fg3m",
-                "value": 3.9545,
-                "z": 1.7
-              },
-              {
-                "category": "reb",
-                "value": 4.8182,
-                "z": -0.605
-              },
-              {
-                "category": "ast",
-                "value": 8.3182,
-                "z": 2.612
-              },
-              {
-                "category": "stl",
-                "value": 1.0909,
-                "z": 0.419
-              },
-              {
-                "category": "blk",
-                "value": 0.0909,
-                "z": -1.103
-              },
-              {
-                "category": "tov",
-                "value": 3.6364,
-                "z": -2.766
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4481,
-                "z": -0.75,
-                "attempts": 21.86,
-                "impact": -0.3967,
-                "shrinkageWeight": 0.789
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.8868,
-                "z": 1.81,
-                "attempts": 4.86,
-                "impact": 0.4721,
-                "shrinkageWeight": 0.811
-              }
-            ],
+            "values": {
+              "score": 0.48,
+              "team": "ATL",
+              "gp": 22,
+              "mpg": 37.2,
+              "pts": 27.82,
+              "z_pts": 3.003,
+              "fg3m": 3.95,
+              "z_fg3m": 1.7,
+              "reb": 4.82,
+              "z_reb": -0.605,
+              "ast": 8.32,
+              "z_ast": 2.612,
+              "stl": 1.09,
+              "z_stl": 0.419,
+              "blk": 0.09,
+              "z_blk": -1.103,
+              "tov": 3.64,
+              "z_tov": -2.766,
+              "fg_pct": 0.4481,
+              "fga": 21.9,
+              "z_fg_pct": -0.75,
+              "ft_pct": 0.8868,
+              "fta": 4.9,
+              "z_ft_pct": 1.81
+            },
             "fills": [],
             "reason": "carries points and assists; turns it over",
             "availability": "estimated"
           },
           {
+            "rank": 6,
+            "round": 1,
+            "pickInRound": 6,
             "player": {
               "playerId": 203507,
               "name": "Giannis Antetokounmpo",
@@ -5045,76 +5103,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/203507.png",
               "isActive": true
             },
-            "overall": 6,
-            "round": 1,
-            "pickInRound": 6,
             "baselineRank": 6,
             "totalZ": 4.084,
-            "score": 0.454,
             "valueOverReplacement": 7.667,
             "suggestion": 4.084,
             "espnPoints": 44.0,
             "yahooPoints": 43.15,
-            "gamesPlayed": 22,
-            "minutesPerGame": 37.9,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 22.3182,
-                "z": 1.541
-              },
-              {
-                "category": "fg3m",
-                "value": 3.3182,
-                "z": 1.166
-              },
-              {
-                "category": "reb",
-                "value": 10.1818,
-                "z": 1.557
-              },
-              {
-                "category": "ast",
-                "value": 3.5,
-                "z": -0.03
-              },
-              {
-                "category": "stl",
-                "value": 0.9091,
-                "z": -0.203
-              },
-              {
-                "category": "blk",
-                "value": 1.0,
-                "z": 0.451
-              },
-              {
-                "category": "tov",
-                "value": 2.3636,
-                "z": -0.649
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4664,
-                "z": 0.006,
-                "attempts": 17.36,
-                "impact": 0.0031,
-                "shrinkageWeight": 0.748
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.8087,
-                "z": 0.244,
-                "attempts": 3.36,
-                "impact": 0.0637,
-                "shrinkageWeight": 0.747
-              }
-            ],
+            "values": {
+              "score": 0.454,
+              "team": "MIN",
+              "gp": 22,
+              "mpg": 37.9,
+              "pts": 22.32,
+              "z_pts": 1.541,
+              "fg3m": 3.32,
+              "z_fg3m": 1.166,
+              "reb": 10.18,
+              "z_reb": 1.557,
+              "ast": 3.5,
+              "z_ast": -0.03,
+              "stl": 0.91,
+              "z_stl": -0.203,
+              "blk": 1.0,
+              "z_blk": 0.451,
+              "tov": 2.36,
+              "z_tov": -0.649,
+              "fg_pct": 0.4664,
+              "fga": 17.4,
+              "z_fg_pct": 0.006,
+              "ft_pct": 0.8087,
+              "fta": 3.4,
+              "z_ft_pct": 0.244
+            },
             "fills": [],
             "reason": "carries rebounds and points",
             "availability": "estimated"
           },
           {
+            "rank": 7,
+            "round": 1,
+            "pickInRound": 7,
             "player": {
               "playerId": 1642867,
               "name": "Collin Murray-Boyles",
@@ -5127,76 +5155,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642867.png",
               "isActive": true
             },
-            "overall": 7,
-            "round": 1,
-            "pickInRound": 7,
             "baselineRank": 7,
             "totalZ": 4.018,
-            "score": 0.446,
             "valueOverReplacement": 7.601,
             "suggestion": 4.018,
             "espnPoints": 47.68,
             "yahooPoints": 46.12,
-            "gamesPlayed": 22,
-            "minutesPerGame": 34.8,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 18.7273,
-                "z": 0.586
-              },
-              {
-                "category": "fg3m",
-                "value": 0.0909,
-                "z": -1.54
-              },
-              {
-                "category": "reb",
-                "value": 13.9091,
-                "z": 3.061
-              },
-              {
-                "category": "ast",
-                "value": 1.9545,
-                "z": -0.877
-              },
-              {
-                "category": "stl",
-                "value": 0.5,
-                "z": -1.604
-              },
-              {
-                "category": "blk",
-                "value": 2.6818,
-                "z": 3.325
-              },
-              {
-                "category": "tov",
-                "value": 1.7727,
-                "z": 0.333
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.5797,
-                "z": 2.698,
-                "attempts": 12.59,
-                "impact": 1.428,
-                "shrinkageWeight": 0.682
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.6672,
-                "z": -1.965,
-                "attempts": 4.18,
-                "impact": -0.5126,
-                "shrinkageWeight": 0.786
-              }
-            ],
+            "values": {
+              "score": 0.446,
+              "team": "HOU",
+              "gp": 22,
+              "mpg": 34.8,
+              "pts": 18.73,
+              "z_pts": 0.586,
+              "fg3m": 0.09,
+              "z_fg3m": -1.54,
+              "reb": 13.91,
+              "z_reb": 3.061,
+              "ast": 1.95,
+              "z_ast": -0.877,
+              "stl": 0.5,
+              "z_stl": -1.604,
+              "blk": 2.68,
+              "z_blk": 3.325,
+              "tov": 1.77,
+              "z_tov": 0.333,
+              "fg_pct": 0.5797,
+              "fga": 12.6,
+              "z_fg_pct": 2.698,
+              "ft_pct": 0.6672,
+              "fta": 4.2,
+              "z_ft_pct": -1.965
+            },
             "fills": [],
             "reason": "carries blocks and rebounds; costs you FT%",
             "availability": "estimated"
           },
           {
+            "rank": 8,
+            "round": 1,
+            "pickInRound": 8,
             "player": {
               "playerId": 1629012,
               "name": "Collin Sexton",
@@ -5209,76 +5207,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629012.png",
               "isActive": true
             },
-            "overall": 8,
-            "round": 1,
-            "pickInRound": 8,
             "baselineRank": 8,
             "totalZ": 3.69,
-            "score": 0.41,
             "valueOverReplacement": 7.274,
             "suggestion": 3.69,
             "espnPoints": 44.24,
             "yahooPoints": 43.04,
-            "gamesPlayed": 21,
-            "minutesPerGame": 36.8,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 25.9524,
-                "z": 2.507
-              },
-              {
-                "category": "fg3m",
-                "value": 2.3333,
-                "z": 0.341
-              },
-              {
-                "category": "reb",
-                "value": 4.9524,
-                "z": -0.551
-              },
-              {
-                "category": "ast",
-                "value": 6.0952,
-                "z": 1.393
-              },
-              {
-                "category": "stl",
-                "value": 1.3333,
-                "z": 1.25
-              },
-              {
-                "category": "blk",
-                "value": 0.2857,
-                "z": -0.77
-              },
-              {
-                "category": "tov",
-                "value": 2.8571,
-                "z": -1.47
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4646,
-                "z": -0.066,
-                "attempts": 21.67,
-                "impact": -0.0351,
-                "shrinkageWeight": 0.779
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.8604,
-                "z": 1.058,
-                "attempts": 3.9,
-                "impact": 0.2758,
-                "shrinkageWeight": 0.766
-              }
-            ],
+            "values": {
+              "score": 0.41,
+              "team": "DEN",
+              "gp": 21,
+              "mpg": 36.8,
+              "pts": 25.95,
+              "z_pts": 2.507,
+              "fg3m": 2.33,
+              "z_fg3m": 0.341,
+              "reb": 4.95,
+              "z_reb": -0.551,
+              "ast": 6.1,
+              "z_ast": 1.393,
+              "stl": 1.33,
+              "z_stl": 1.25,
+              "blk": 0.29,
+              "z_blk": -0.77,
+              "tov": 2.86,
+              "z_tov": -1.47,
+              "fg_pct": 0.4646,
+              "fga": 21.7,
+              "z_fg_pct": -0.066,
+              "ft_pct": 0.8604,
+              "fta": 3.9,
+              "z_ft_pct": 1.058
+            },
             "fills": [],
             "reason": "carries points and assists; turns it over",
             "availability": "estimated"
           },
           {
+            "rank": 9,
+            "round": 1,
+            "pickInRound": 9,
             "player": {
               "playerId": 1627747,
               "name": "Caris LeVert",
@@ -5291,76 +5259,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627747.png",
               "isActive": true
             },
-            "overall": 9,
-            "round": 1,
-            "pickInRound": 9,
             "baselineRank": 9,
             "totalZ": 3.679,
-            "score": 0.409,
             "valueOverReplacement": 7.263,
             "suggestion": 3.679,
             "espnPoints": 44.24,
             "yahooPoints": 42.12,
-            "gamesPlayed": 21,
-            "minutesPerGame": 38.1,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 19.0,
-                "z": 0.659
-              },
-              {
-                "category": "fg3m",
-                "value": 0.0476,
-                "z": -1.576
-              },
-              {
-                "category": "reb",
-                "value": 11.1905,
-                "z": 1.964
-              },
-              {
-                "category": "ast",
-                "value": 1.6667,
-                "z": -1.035
-              },
-              {
-                "category": "stl",
-                "value": 0.8571,
-                "z": -0.381
-              },
-              {
-                "category": "blk",
-                "value": 2.0952,
-                "z": 2.323
-              },
-              {
-                "category": "tov",
-                "value": 1.6667,
-                "z": 0.51
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.5913,
-                "z": 2.78,
-                "attempts": 11.76,
-                "impact": 1.4713,
-                "shrinkageWeight": 0.657
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.7082,
-                "z": -1.564,
-                "attempts": 5.0,
-                "impact": -0.408,
-                "shrinkageWeight": 0.808
-              }
-            ],
+            "values": {
+              "score": 0.409,
+              "team": "NOP",
+              "gp": 21,
+              "mpg": 38.1,
+              "pts": 19.0,
+              "z_pts": 0.659,
+              "fg3m": 0.05,
+              "z_fg3m": -1.576,
+              "reb": 11.19,
+              "z_reb": 1.964,
+              "ast": 1.67,
+              "z_ast": -1.035,
+              "stl": 0.86,
+              "z_stl": -0.381,
+              "blk": 2.1,
+              "z_blk": 2.323,
+              "tov": 1.67,
+              "z_tov": 0.51,
+              "fg_pct": 0.5913,
+              "fga": 11.8,
+              "z_fg_pct": 2.78,
+              "ft_pct": 0.7082,
+              "fta": 5.0,
+              "z_ft_pct": -1.564
+            },
             "fills": [],
             "reason": "carries FG% and blocks; costs you threes",
             "availability": "estimated"
           },
           {
+            "rank": 10,
+            "round": 1,
+            "pickInRound": 10,
             "player": {
               "playerId": 1628998,
               "name": "Cody Martin",
@@ -5373,76 +5311,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628998.png",
               "isActive": true
             },
-            "overall": 10,
-            "round": 1,
-            "pickInRound": 10,
             "baselineRank": 10,
             "totalZ": 3.226,
-            "score": 0.358,
             "valueOverReplacement": 6.81,
             "suggestion": 3.226,
             "espnPoints": 39.17,
             "yahooPoints": 37.37,
-            "gamesPlayed": 23,
-            "minutesPerGame": 38.0,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 20.7826,
-                "z": 1.133
-              },
-              {
-                "category": "fg3m",
-                "value": 4.2609,
-                "z": 1.957
-              },
-              {
-                "category": "reb",
-                "value": 5.7391,
-                "z": -0.234
-              },
-              {
-                "category": "ast",
-                "value": 4.6087,
-                "z": 0.578
-              },
-              {
-                "category": "stl",
-                "value": 1.2609,
-                "z": 1.001
-              },
-              {
-                "category": "blk",
-                "value": 0.4348,
-                "z": -0.515
-              },
-              {
-                "category": "tov",
-                "value": 2.3043,
-                "z": -0.551
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4254,
-                "z": -1.328,
-                "attempts": 17.22,
-                "impact": -0.703,
-                "shrinkageWeight": 0.754
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.9239,
-                "z": 1.185,
-                "attempts": 2.3,
-                "impact": 0.309,
-                "shrinkageWeight": 0.679
-              }
-            ],
+            "values": {
+              "score": 0.358,
+              "team": "NYK",
+              "gp": 23,
+              "mpg": 38.0,
+              "pts": 20.78,
+              "z_pts": 1.133,
+              "fg3m": 4.26,
+              "z_fg3m": 1.957,
+              "reb": 5.74,
+              "z_reb": -0.234,
+              "ast": 4.61,
+              "z_ast": 0.578,
+              "stl": 1.26,
+              "z_stl": 1.001,
+              "blk": 0.43,
+              "z_blk": -0.515,
+              "tov": 2.3,
+              "z_tov": -0.551,
+              "fg_pct": 0.4254,
+              "fga": 17.2,
+              "z_fg_pct": -1.328,
+              "ft_pct": 0.9239,
+              "fta": 2.3,
+              "z_ft_pct": 1.185
+            },
             "fills": [],
             "reason": "carries threes and FT%; costs you FG%",
             "availability": "estimated"
           },
           {
+            "rank": 11,
+            "round": 1,
+            "pickInRound": 11,
             "player": {
               "playerId": 1630164,
               "name": "James Wiseman",
@@ -5455,76 +5363,46 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630164.png",
               "isActive": true
             },
-            "overall": 11,
-            "round": 1,
-            "pickInRound": 11,
             "baselineRank": 11,
             "totalZ": 3.151,
-            "score": 0.35,
             "valueOverReplacement": 6.735,
             "suggestion": 3.151,
             "espnPoints": 35.91,
             "yahooPoints": 33.7,
-            "gamesPlayed": 23,
-            "minutesPerGame": 38.3,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 18.0,
-                "z": 0.393
-              },
-              {
-                "category": "fg3m",
-                "value": 4.3478,
-                "z": 2.03
-              },
-              {
-                "category": "reb",
-                "value": 5.7826,
-                "z": -0.217
-              },
-              {
-                "category": "ast",
-                "value": 2.8261,
-                "z": -0.399
-              },
-              {
-                "category": "stl",
-                "value": 1.4783,
-                "z": 1.746
-              },
-              {
-                "category": "blk",
-                "value": 0.6522,
-                "z": -0.144
-              },
-              {
-                "category": "tov",
-                "value": 1.8696,
-                "z": 0.172
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4278,
-                "z": -1.022,
-                "attempts": 14.04,
-                "impact": -0.5406,
-                "shrinkageWeight": 0.715
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.858,
-                "z": 0.591,
-                "attempts": 2.26,
-                "impact": 0.1542,
-                "shrinkageWeight": 0.675
-              }
-            ],
+            "values": {
+              "score": 0.35,
+              "team": "UTA",
+              "gp": 23,
+              "mpg": 38.3,
+              "pts": 18.0,
+              "z_pts": 0.393,
+              "fg3m": 4.35,
+              "z_fg3m": 2.03,
+              "reb": 5.78,
+              "z_reb": -0.217,
+              "ast": 2.83,
+              "z_ast": -0.399,
+              "stl": 1.48,
+              "z_stl": 1.746,
+              "blk": 0.65,
+              "z_blk": -0.144,
+              "tov": 1.87,
+              "z_tov": 0.172,
+              "fg_pct": 0.4278,
+              "fga": 14.0,
+              "z_fg_pct": -1.022,
+              "ft_pct": 0.858,
+              "fta": 2.3,
+              "z_ft_pct": 0.591
+            },
             "fills": [],
             "reason": "carries threes and steals; costs you FG%",
             "availability": "estimated"
           },
           {
+            "rank": 12,
+            "round": 1,
+            "pickInRound": 12,
             "player": {
               "playerId": 1629661,
               "name": "Cameron Johnson",
@@ -5537,77 +5415,44 @@
               "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629661.png",
               "isActive": true
             },
-            "overall": 12,
-            "round": 1,
-            "pickInRound": 12,
             "baselineRank": 12,
             "totalZ": 3.111,
-            "score": 0.346,
             "valueOverReplacement": 6.695,
             "suggestion": 3.111,
             "espnPoints": 33.32,
             "yahooPoints": 30.37,
-            "gamesPlayed": 22,
-            "minutesPerGame": 34.9,
-            "categories": [
-              {
-                "category": "pts",
-                "value": 15.3182,
-                "z": -0.32
-              },
-              {
-                "category": "fg3m",
-                "value": 2.7273,
-                "z": 0.671
-              },
-              {
-                "category": "reb",
-                "value": 5.1364,
-                "z": -0.477
-              },
-              {
-                "category": "ast",
-                "value": 2.3182,
-                "z": -0.678
-              },
-              {
-                "category": "stl",
-                "value": 1.6364,
-                "z": 2.287
-              },
-              {
-                "category": "blk",
-                "value": 0.5909,
-                "z": -0.248
-              },
-              {
-                "category": "tov",
-                "value": 1.2727,
-                "z": 1.165
-              },
-              {
-                "category": "fg_pct",
-                "value": 0.4665,
-                "z": 0.006,
-                "attempts": 11.32,
-                "impact": 0.0031,
-                "shrinkageWeight": 0.659
-              },
-              {
-                "category": "ft_pct",
-                "value": 0.8759,
-                "z": 0.705,
-                "attempts": 2.14,
-                "impact": 0.1839,
-                "shrinkageWeight": 0.653
-              }
-            ],
+            "values": {
+              "score": 0.346,
+              "team": "DET",
+              "gp": 22,
+              "mpg": 34.9,
+              "pts": 15.32,
+              "z_pts": -0.32,
+              "fg3m": 2.73,
+              "z_fg3m": 0.671,
+              "reb": 5.14,
+              "z_reb": -0.477,
+              "ast": 2.32,
+              "z_ast": -0.678,
+              "stl": 1.64,
+              "z_stl": 2.287,
+              "blk": 0.59,
+              "z_blk": -0.248,
+              "tov": 1.27,
+              "z_tov": 1.165,
+              "fg_pct": 0.4665,
+              "fga": 11.3,
+              "z_fg_pct": 0.006,
+              "ft_pct": 0.8759,
+              "fta": 2.1,
+              "z_ft_pct": 0.705
+            },
             "fills": [],
             "reason": "carries steals; protects the ball",
             "availability": "estimated"
           }
         ],
-        "note": "Values are z-scores against the top 150 players of 2025-26; a projection is not involved. FG% and FT% are volume-weighted, so a high percentage on few attempts is worth little."
+        "note": "Values are z-scores against the top 150 players of 2025-26. FG% and FT% are volume-weighted, so a high percentage on few attempts is worth little, and zTOV is sign-flipped, so a high number there means few turnovers."
       },
       "error": null,
       "generatedAt": "2026-01-03T07:12:44Z",

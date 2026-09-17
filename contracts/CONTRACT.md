@@ -559,7 +559,7 @@ spread.
 
 ### `fantasy_draft_board`
 
-Nine-category fantasy value for a whole season, ranked. See
+A **table**. Nine-category fantasy value for a whole season, ranked. See
 [`docs/FANTASY.md`](../docs/FANTASY.md).
 
 ```json
@@ -571,39 +571,61 @@ Nine-category fantasy value for a whole season, ranked. See
   "poolSize": 150, "replacementValue": -3.2,
   "weakestCategories": ["ast", "fg3m", "stl"],
   "rosterStrength": { "pts": 2.1, "reb": 4.4, "…": 0.0 },
-  "picks": [
-    { "player": { "...PlayerRef" }, "overall": 5, "round": 1, "pickInRound": 5,
-      "baselineRank": 4, "totalZ": 6.82, "score": 0.76, "valueOverReplacement": 10.02,
-      "suggestion": 7.01, "espnPoints": 48.2, "yahooPoints": 41.6,
-      "gamesPlayed": 72, "minutesPerGame": 34.1,
-      "categories": [
-        { "category": "pts", "value": 26.8, "z": 1.94 },
-        { "category": "fg_pct", "value": 0.571, "z": 1.12,
-          "attempts": 17.5, "impact": 1.74, "shrinkageWeight": 0.91 } ],
-      "fills": ["ast"], "reason": "Best available; carries points and rebounds; fills assists",
+  "columns": [
+    { "key": "score", "label": "Value", "format": "decimal2", "group": "summary",
+      "align": "trailing", "higherIsBetter": true, "signed": true, "punted": false },
+    { "key": "team", "label": "Team", "format": null, "group": "summary",
+      "align": "leading", "higherIsBetter": null, "signed": false, "punted": false },
+    { "key": "z_ft_pct", "label": "zFT%", "format": "decimal2", "group": "impact",
+      "align": "trailing", "higherIsBetter": true, "signed": true, "punted": true } ],
+  "rows": [
+    { "rank": 1, "round": 1, "pickInRound": 1, "player": { "...PlayerRef" },
+      "baselineRank": 1, "totalZ": 16.94, "valueOverReplacement": 20.1,
+      "suggestion": 1.88, "espnPoints": 52.4, "yahooPoints": 45.1,
+      "values": { "score": 1.88, "team": "SAS", "gp": 68, "mpg": 31.0,
+                  "pts": 28.3, "fg_pct": 0.5355, "fga": 18.8, "z_pts": 2.29 },
+      "fills": ["ast"], "reason": "Best available; carries blocks and rebounds",
       "availability": "estimated" } ],
   "note": "Values are z-scores against the top 150 players of 2025-26…" }
 ```
 
-`z` is standardised against the **pool** — the top `poolSize` players — not the whole league,
-and the moments are population rather than sample, because the pool is the population of
-interest. Turnovers are sign-flipped, so a high `z` there means *few* turnovers; any client
-phrasing that says "carries turnovers" has the direction wrong.
+**Columns ship as data.** The server owns the layout; a client renders whatever arrives and adding
+a column needs no app release. A `columns[]` entry is deliberately **not** a `MetricDescriptor` —
+nine of them are pool-relative z-scores and three are identity, none of which exist in
+`metrics.json`, and §2's rule is that anything carrying `key`/`name`/`shortName`/`category`/
+`format`/`availability` together *is* verbatim a catalog entry.
 
-The two percentage categories carry three extra keys and are not a plain z of the percentage.
-`value` is the shooting rate after shrinking toward the league by **attempts** (paper Table B.5:
-129 for FG%, 25 for FT%), and `impact` — `attempts × (value − pool rate)` — is what actually gets
-standardised. That volume weighting is the whole point: a 90% free-throw shooter on one attempt
-a game moves the category by almost nothing. `impact` over the pool sums to zero by construction.
+| key | meaning |
+| --- | --- |
+| `format` | a `MetricFormat`, or `null` for a text column |
+| `group` | `summary`, `production` or `impact` — the strips a reader pages between |
+| `align` | `leading` for text, `trailing` for numbers so the decimals line up |
+| `higherIsBetter` | `null` where neither — field-goal attempts are volume, not virtue |
+| `signed` | render with an explicit `+` |
+| `punted` | this category is weighted 0; **only ever true on a `z_` column** |
 
-`totalZ` is the weighted **sum** of the nine and `score` is the weighted **mean**; they differ by
-a factor of the weight total, and a threshold written for one is wrong for the other by that
-factor. A punted category has weight 0 in both and leaves every `z` unchanged, so a punt build
-and a balanced build remain comparable.
+`rows[].values` is keyed, not a parallel array, so a column a client does not know is skipped
+rather than shifting every cell after it. An absent key is an em dash and **never** a zero (§6).
+Every value is a number except `team`.
 
-`suggestion` is what the board is sorted by: `totalZ` plus at most a quarter of itself for the
-categories `myPlayerIds` is weakest in, and exactly `totalZ` until that roster has three players.
-`availableFrom` is `1979-80`, the first season with three-pointers.
+**The column order is a FanScout export's**, because that is the sheet a reader is most likely to
+have beside the app: rank and player, a value, the identity block, the raw per-game line, then the
+nine z-scores. The z block keeps that export's ordering — `zPTS zTPM zAST zREB…` — which differs
+from the raw block's `PTS TPM REB AST…`. That is the export's quirk, reproduced so the two diff
+column by column.
+
+Two columns such an export has are **not** served, and their absence is deliberate:
+
+* **Contract status.** Nothing in this project knows it. It is not in a box score, not in the
+  identity snapshot, and not on any NBA.com endpoint the ingest touches.
+* **A proprietary "Value".** `score` occupies that slot instead — the weighted mean this engine
+  computes and `docs/FANTASY.md` derives. A third party's value is not reproducible from the nine
+  z-scores printed beside it, so keeping the header and changing the number underneath would be
+  the worst of both.
+
+`score` and `totalZ` are computed with the **punt weights in force**, so the value column is
+monotonic with `rank`. `z` values are never reweighted: a punt zeroes a category's contribution to
+a total, it does not change what a player did.
 
 ### `fantasy_trade`
 

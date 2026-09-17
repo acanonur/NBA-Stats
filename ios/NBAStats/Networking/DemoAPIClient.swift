@@ -344,7 +344,7 @@ public actor DemoAPIClient: APIClientProtocol {
         case .projectionBoard(let value):
             for row in value.rows { note(player: row.player) }
         case .fantasyDraftBoard(let value):
-            for pick in value.picks { note(player: pick.player) }
+            for row in value.rows { note(player: row.player) }
         case .fantasyTrade(let value):
             for side in [value.give, value.get] {
                 for entry in side.players { note(player: entry.player) }

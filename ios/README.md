@@ -292,6 +292,14 @@ that three properties of the payload must survive any redesign.
   trade that only wins if everyone stays healthy is a different proposition from one that wins
   either way.
 
+The draft board is a **table**, not a column of cards — a draft kit is a spreadsheet and gets
+scanned like one. It reuses `GameLogWidget`'s idiom (pinned identity block, columns scrolling
+under a fixed header, stacked fallback at accessibility sizes) with three of that file's defects
+left behind: it does not rubber-band when the strip already fits, it does not hide the numbers
+from VoiceOver, and its pinned name column shrinks against the measured container as type grows
+instead of widening until the table has no room. Columns arrive as data, so adding one needs no
+app release.
+
 The nine-category strip is the reason a category league is not a single number: two players with
 the same `totalZ` can be opposite picks. Colour on that strip carries the sign and nothing else,
 since the z is printed beside it and a gradient would imply precision it does not have. At

@@ -52,49 +52,6 @@ public enum FantasyCategory {
     }
 }
 
-/// One category's number for one player (`contracts/CONTRACT.md` §4).
-public struct FantasyCategoryValue: Codable, Hashable, Sendable, Identifiable {
-    public let category: String
-    /// The statistic as a reader knows it: 26.8 points, or 0.571 for FG%.
-    public let value: Double?
-    public let z: Double?
-    /// Percentage categories only: attempts per game, the volume the impact is weighted by.
-    public let attempts: Double?
-    /// Percentage categories only: `attempts × (rate − pool rate)` — the quantity actually
-    /// standardised. Never show this as though it were a shooting percentage.
-    public let impact: Double?
-    /// Percentage categories only: how much of the rate is the player rather than the league.
-    public let shrinkageWeight: Double?
-
-    public var id: String { category }
-
-    public var label: String { FantasyCategory.shortLabel(category) }
-
-    /// `"26.8"` or `"57.1%"`, chosen from the category rather than the number.
-    public var displayValue: String {
-        guard let value = value, value.isFinite else { return Formatting.emDash }
-        return FantasyCategory.isPercentage(category)
-            ? Formatting.percent(value, places: 1)
-            : Formatting.decimal(value, places: 1)
-    }
-
-    public var zText: String {
-        guard let z = z, z.isFinite else { return Formatting.emDash }
-        return Formatting.decimal(z, places: 2, signed: true)
-    }
-
-    public init(category: String, value: Double? = nil, z: Double? = nil,
-                attempts: Double? = nil, impact: Double? = nil,
-                shrinkageWeight: Double? = nil) {
-        self.category = category
-        self.value = value
-        self.z = z
-        self.attempts = attempts
-        self.impact = impact
-        self.shrinkageWeight = shrinkageWeight
-    }
-}
-
 // MARK: - fantasy_draft_board
 
 /// Where the next pick falls in a snake draft.
@@ -113,103 +70,179 @@ public struct FantasyNextPick: Codable, Hashable, Sendable {
     }
 }
 
-/// One row of the draft board.
-public struct FantasyDraftPick: Codable, Hashable, Sendable, Identifiable {
-    public let player: PlayerRef?
-    public let overall: Int
+/// One column of the draft-board table (`contracts/CONTRACT.md` §4).
+///
+/// Deliberately **not** a `MetricDescriptor`. Nine of these columns are pool-relative z-scores
+/// and three are identity, none of which exist in `contracts/metrics.json` — and a payload
+/// object carrying `key`/`name`/`shortName`/`category`/`format`/`availability` together is
+/// asserted by the contract tests to be verbatim a catalog entry. This is a lighter thing that
+/// says only what a table cell needs.
+public struct FantasyColumn: Codable, Hashable, Sendable, Identifiable {
+    public let key: String
+    public let label: String
+    /// `nil` for a text column such as the team abbreviation.
+    public let format: MetricFormat?
+    /// `"summary"`, `"production"` or `"impact"` — the strips a reader can page between.
+    public let group: String
+    /// Leading for text, trailing for every number, so the decimal points line up.
+    public let align: String
+    /// Whether a larger number is better, for the sign colouring. `nil` where it is neither —
+    /// field-goal attempts are volume, not virtue.
+    public let higherIsBetter: Bool?
+    /// True for a z column whose category is punted. Raw production is never punted: a punt
+    /// zeroes a category's weight, not a player's rebounds.
+    public let punted: Bool
+    /// True where the value reads better with an explicit `+`.
+    public let signed: Bool
+
+    public var id: String { key }
+    public var isTrailing: Bool { align != "leading" }
+
+    public init(key: String, label: String, format: MetricFormat? = nil,
+                group: String = "production", align: String = "trailing",
+                higherIsBetter: Bool? = nil, punted: Bool = false, signed: Bool = false) {
+        self.key = key
+        self.label = label
+        self.format = format
+        self.group = group
+        self.align = align
+        self.higherIsBetter = higherIsBetter
+        self.punted = punted
+        self.signed = signed
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case key, label, format, group, align, higherIsBetter, punted, signed
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        key = try container.decode(String.self, forKey: .key)
+        label = try container.decodeIfPresent(String.self, forKey: .label) ?? key.uppercased()
+        // A format this build does not know must cost the column its formatting, never the
+        // whole table — so it is read leniently and falls back to a plain decimal.
+        format = (try? container.decodeIfPresent(MetricFormat.self, forKey: .format)) ?? nil
+        group = try container.decodeIfPresent(String.self, forKey: .group) ?? "production"
+        align = try container.decodeIfPresent(String.self, forKey: .align) ?? "trailing"
+        higherIsBetter = try container.decodeIfPresent(Bool.self, forKey: .higherIsBetter)
+        punted = try container.decodeIfPresent(Bool.self, forKey: .punted) ?? false
+        signed = try container.decodeIfPresent(Bool.self, forKey: .signed) ?? false
+    }
+
+    /// One cell, formatted from the raw number the row carries.
+    ///
+    /// An absent key is an em dash and never a zero — `contracts/CONTRACT.md` §6's rule, which
+    /// matters here because a missing value and a genuine 0.0 look identical once rendered.
+    public func text(_ value: Double?) -> String {
+        guard let value = value, value.isFinite else { return Formatting.emDash }
+        if let format = format {
+            if signed && !format.isPercentage {
+                return Formatting.decimal(value, places: format.decimals, signed: true)
+            }
+            return Formatting.value(value, format: format)
+        }
+        return Formatting.decimal(value, places: 1, signed: signed)
+    }
+}
+
+/// One row of the draft-board table.
+public struct FantasyDraftRow: Codable, Hashable, Sendable, Identifiable {
+    public let rank: Int
     public let round: Int
     public let pickInRound: Int
+    public let player: PlayerRef?
     public let baselineRank: Int?
-    /// Weighted **sum** of the nine z. Not `score`, which is the mean — they differ by the
-    /// weight total, and a threshold written for one is wrong for the other by that factor.
     public let totalZ: Double?
-    public let score: Double?
-    /// Total z minus the replacement level: value over a waiver body, which is the unit a
-    /// roster spot is actually spent in.
     public let valueOverReplacement: Double?
-    /// What the board sorted on — total z, tilted for roster need.
     public let suggestion: Double?
     public let espnPoints: Double?
     public let yahooPoints: Double?
-    public let gamesPlayed: Int?
-    public let minutesPerGame: Double?
-    public let categories: [FantasyCategoryValue]
-    /// Categories this pick would shore up on the manager's own roster.
+    /// Every column's value by key. A dict rather than a parallel array, so a column this build
+    /// does not know about is skipped instead of shifting every cell after it by one.
+    public let values: [String: Double]
+    /// The one non-numeric cell: the team abbreviation.
+    public let team: String?
     public let fills: [String]
-    /// One sentence a reader can disagree with.
     public let reason: String?
     public let availability: MetricAvailability
 
-    public var id: Int { player?.playerId ?? overall }
-
+    public var id: Int { player?.playerId ?? rank }
     public var pickText: String { "R\(round)·\(pickInRound)" }
 
-    public func category(_ key: String) -> FantasyCategoryValue? {
-        categories.first { $0.category == key }
-    }
+    public func value(_ key: String) -> Double? { values[key] }
 
-    public init(player: PlayerRef? = nil, overall: Int = 0, round: Int = 1,
-                pickInRound: Int = 1, baselineRank: Int? = nil, totalZ: Double? = nil,
-                score: Double? = nil, valueOverReplacement: Double? = nil,
-                suggestion: Double? = nil, espnPoints: Double? = nil,
-                yahooPoints: Double? = nil, gamesPlayed: Int? = nil,
-                minutesPerGame: Double? = nil, categories: [FantasyCategoryValue] = [],
+    public init(rank: Int = 0, round: Int = 1, pickInRound: Int = 1, player: PlayerRef? = nil,
+                baselineRank: Int? = nil, totalZ: Double? = nil,
+                valueOverReplacement: Double? = nil, suggestion: Double? = nil,
+                espnPoints: Double? = nil, yahooPoints: Double? = nil,
+                values: [String: Double] = [:], team: String? = nil,
                 fills: [String] = [], reason: String? = nil,
                 availability: MetricAvailability = .estimated) {
-        self.player = player
-        self.overall = overall
+        self.rank = rank
         self.round = round
         self.pickInRound = pickInRound
+        self.player = player
         self.baselineRank = baselineRank
         self.totalZ = totalZ
-        self.score = score
         self.valueOverReplacement = valueOverReplacement
         self.suggestion = suggestion
         self.espnPoints = espnPoints
         self.yahooPoints = yahooPoints
-        self.gamesPlayed = gamesPlayed
-        self.minutesPerGame = minutesPerGame
-        self.categories = categories
+        self.values = values
+        self.team = team
         self.fills = fills
         self.reason = reason
         self.availability = availability
     }
 
     private enum CodingKeys: String, CodingKey {
-        case player, overall, round, pickInRound, baselineRank, totalZ, score
-        case valueOverReplacement, suggestion, espnPoints, yahooPoints
-        case gamesPlayed, minutesPerGame, categories, fills, reason, availability
+        case rank, round, pickInRound, player, baselineRank, totalZ, valueOverReplacement
+        case suggestion, espnPoints, yahooPoints, values, fills, reason, availability
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        player = try container.decodeIfPresent(PlayerRef.self, forKey: .player)
-        overall = try container.decodeIfPresent(Int.self, forKey: .overall) ?? 0
+        rank = try container.decodeIfPresent(Int.self, forKey: .rank) ?? 0
         round = try container.decodeIfPresent(Int.self, forKey: .round) ?? 1
         pickInRound = try container.decodeIfPresent(Int.self, forKey: .pickInRound) ?? 1
+        player = try container.decodeIfPresent(PlayerRef.self, forKey: .player)
         baselineRank = try container.decodeIfPresent(Int.self, forKey: .baselineRank)
         totalZ = try container.decodeIfPresent(Double.self, forKey: .totalZ)
-        score = try container.decodeIfPresent(Double.self, forKey: .score)
         valueOverReplacement = try container.decodeIfPresent(Double.self, forKey: .valueOverReplacement)
         suggestion = try container.decodeIfPresent(Double.self, forKey: .suggestion)
         espnPoints = try container.decodeIfPresent(Double.self, forKey: .espnPoints)
         yahooPoints = try container.decodeIfPresent(Double.self, forKey: .yahooPoints)
-        gamesPlayed = try container.decodeIfPresent(Int.self, forKey: .gamesPlayed)
-        minutesPerGame = try container.decodeIfPresent(Double.self, forKey: .minutesPerGame)
-        categories = try container.decodeIfPresent([FantasyCategoryValue].self, forKey: .categories) ?? []
         fills = try container.decodeIfPresent([String].self, forKey: .fills) ?? []
         reason = try container.decodeIfPresent(String.self, forKey: .reason)
-        // A valuation is not a record, so an absent or unreadable marker is `estimated`.
-        let raw = (try? container.decodeIfPresent(MetricAvailability.self, forKey: .availability)) ?? nil
-        availability = (raw == .full || raw == nil) ? .estimated : raw!
+        let rawAvailability = (try? container.decodeIfPresent(MetricAvailability.self, forKey: .availability)) ?? nil
+        availability = (rawAvailability == .full || rawAvailability == nil) ? .estimated : rawAvailability!
+        // `values` mixes numbers with one string (the team), so it is decoded through JSONValue
+        // and split rather than as [String: Double], which would throw on the team and cost the
+        // reader the entire row.
+        let raw = try container.decodeIfPresent([String: JSONValue].self, forKey: .values) ?? [:]
+        var numbers: [String: Double] = [:]
+        var abbreviation: String?
+        for (key, entry) in raw {
+            if let number = entry.doubleValue {
+                numbers[key] = number
+            } else if key == "team", let text = entry.stringValue {
+                abbreviation = text
+            }
+        }
+        values = numbers
+        team = abbreviation
     }
 }
 
 /// The draft board (`contracts/CONTRACT.md` §4, `fantasy_draft_board`).
+///
+/// A table, not a list of cards: the columns ship as data so the server decides the layout, and
+/// the client renders whatever arrives. The order follows a FanScout export — rank and player,
+/// a value, the identity block, the raw per-game line, then the nine z-scores — because that is
+/// the sheet a reader is most likely to be holding beside the app.
 public struct FantasyDraftBoardPayload: Codable, Hashable, Sendable {
     public let season: String
     public let seasonType: String
-    /// `"categories"`, `"espn_points"` or `"yahoo_points"`.
     public let scoring: String
     public let categories: [String]
     public let puntCategories: [String]
@@ -217,16 +250,29 @@ public struct FantasyDraftBoardPayload: Codable, Hashable, Sendable {
     public let rosterSpots: Int
     public let nextPick: FantasyNextPick
     public let poolSize: Int
-    /// What a freed roster spot refills at. Negative in a normal league, by construction.
     public let replacementValue: Double?
     public let weakestCategories: [String]
     public let rosterStrength: [String: Double]
-    public let picks: [FantasyDraftPick]
+    public let columns: [FantasyColumn]
+    public let rows: [FantasyDraftRow]
     public let note: String?
 
     public var isPointsLeague: Bool { scoring != "categories" }
 
-    /// `"12 teams · 13 spots · top 150"`.
+    public func columns(in group: String) -> [FantasyColumn] {
+        columns.filter { $0.group == group }
+    }
+
+    /// The groups present, in the order they first appear, so the strip toggle follows the
+    /// server's ordering rather than an alphabetical one.
+    public var groups: [String] {
+        var seen: [String] = []
+        for column in columns where !seen.contains(column.group) {
+            seen.append(column.group)
+        }
+        return seen
+    }
+
     public var contextText: String {
         var parts: [String] = []
         if teams > 0 { parts.append("\(teams) teams") }
@@ -240,8 +286,8 @@ public struct FantasyDraftBoardPayload: Codable, Hashable, Sendable {
                 puntCategories: [String] = [], teams: Int = 12, rosterSpots: Int = 13,
                 nextPick: FantasyNextPick = FantasyNextPick(), poolSize: Int = 0,
                 replacementValue: Double? = nil, weakestCategories: [String] = [],
-                rosterStrength: [String: Double] = [:], picks: [FantasyDraftPick] = [],
-                note: String? = nil) {
+                rosterStrength: [String: Double] = [:], columns: [FantasyColumn] = [],
+                rows: [FantasyDraftRow] = [], note: String? = nil) {
         self.season = season
         self.seasonType = seasonType
         self.scoring = scoring
@@ -254,14 +300,15 @@ public struct FantasyDraftBoardPayload: Codable, Hashable, Sendable {
         self.replacementValue = replacementValue
         self.weakestCategories = weakestCategories
         self.rosterStrength = rosterStrength
-        self.picks = picks
+        self.columns = columns
+        self.rows = rows
         self.note = note
     }
 
     private enum CodingKeys: String, CodingKey {
         case season, seasonType, scoring, categories, puntCategories, teams, rosterSpots
         case nextPick, poolSize, replacementValue, weakestCategories, rosterStrength
-        case picks, note
+        case columns, rows, note
     }
 
     public init(from decoder: Decoder) throws {
@@ -278,65 +325,74 @@ public struct FantasyDraftBoardPayload: Codable, Hashable, Sendable {
         replacementValue = try container.decodeIfPresent(Double.self, forKey: .replacementValue)
         weakestCategories = try container.decodeIfPresent([String].self, forKey: .weakestCategories) ?? []
         rosterStrength = try container.decodeIfPresent([String: Double].self, forKey: .rosterStrength) ?? [:]
-        picks = try container.decodeIfPresent([FantasyDraftPick].self, forKey: .picks) ?? []
+        columns = try container.decodeIfPresent([FantasyColumn].self, forKey: .columns) ?? []
+        rows = try container.decodeIfPresent([FantasyDraftRow].self, forKey: .rows) ?? []
         note = try container.decodeIfPresent(String.self, forKey: .note)
     }
 
-    public static let preview = FantasyDraftBoardPayload(
-        season: "2025-26",
-        scoring: "categories",
-        puntCategories: ["ft_pct"],
-        teams: 12, rosterSpots: 13,
-        nextPick: FantasyNextPick(overall: 5, round: 1, pickInRound: 5),
-        poolSize: 150,
-        replacementValue: -3.2,
-        weakestCategories: ["ast", "fg3m", "stl"],
-        rosterStrength: ["pts": 2.1, "reb": 4.4, "ast": -1.8],
-        picks: [
-            FantasyDraftPick(
-                player: .preview, overall: 5, round: 1, pickInRound: 5, baselineRank: 4,
-                totalZ: 6.82, score: 0.76, valueOverReplacement: 10.02, suggestion: 7.01,
-                espnPoints: 48.2, yahooPoints: 41.6, gamesPlayed: 72, minutesPerGame: 34.1,
-                categories: [
-                    FantasyCategoryValue(category: "pts", value: 26.8, z: 1.94),
-                    FantasyCategoryValue(category: "fg3m", value: 1.6, z: -0.31),
-                    FantasyCategoryValue(category: "reb", value: 12.2, z: 2.44),
-                    FantasyCategoryValue(category: "ast", value: 9.7, z: 2.81),
-                    FantasyCategoryValue(category: "stl", value: 1.5, z: 0.62),
-                    FantasyCategoryValue(category: "blk", value: 0.8, z: 0.11),
-                    FantasyCategoryValue(category: "tov", value: 3.2, z: -1.42),
-                    FantasyCategoryValue(category: "fg_pct", value: 0.571, z: 1.12,
-                                         attempts: 17.5, impact: 1.74, shrinkageWeight: 0.91),
-                    FantasyCategoryValue(category: "ft_pct", value: 0.817, z: 0.09,
-                                         attempts: 6.3, impact: 0.13, shrinkageWeight: 0.95),
-                ],
-                fills: ["ast"],
-                reason: "Best available; carries assists and rebounds; turns it over"
-            ),
-            FantasyDraftPick(
-                player: .previewSecondary, overall: 6, round: 1, pickInRound: 6,
-                baselineRank: 7, totalZ: 5.44, score: 0.60, valueOverReplacement: 8.64,
-                suggestion: 5.51, espnPoints: 44.0, yahooPoints: 38.2,
-                gamesPlayed: 66, minutesPerGame: 30.9,
-                categories: [
-                    FantasyCategoryValue(category: "pts", value: 25.9, z: 1.81),
-                    FantasyCategoryValue(category: "fg3m", value: 2.3, z: 0.54),
-                    FantasyCategoryValue(category: "reb", value: 12.1, z: 2.40),
-                    FantasyCategoryValue(category: "ast", value: 3.6, z: 0.12),
-                    FantasyCategoryValue(category: "stl", value: 1.1, z: 0.08),
-                    FantasyCategoryValue(category: "blk", value: 3.4, z: 3.02),
-                    FantasyCategoryValue(category: "tov", value: 2.9, z: -1.05),
-                    FantasyCategoryValue(category: "fg_pct", value: 0.495, z: -0.42,
-                                         attempts: 18.4, impact: -0.68, shrinkageWeight: 0.92),
-                    FantasyCategoryValue(category: "ft_pct", value: 0.823, z: 0.14,
-                                         attempts: 6.5, impact: 0.19, shrinkageWeight: 0.95),
-                ],
-                fills: [],
-                reason: "carries blocks and rebounds"
-            ),
-        ],
-        note: "Values are z-scores against the top 150 players of 2025-26; a projection is not involved."
-    )
+    public static let preview: FantasyDraftBoardPayload = {
+        let columns: [FantasyColumn] = [
+            FantasyColumn(key: "score", label: "Value", format: .decimal2, group: "summary",
+                          higherIsBetter: true, signed: true),
+            FantasyColumn(key: "team", label: "Team", format: nil, group: "summary",
+                          align: "leading"),
+            FantasyColumn(key: "gp", label: "GP", format: .integer, group: "summary",
+                          higherIsBetter: true),
+            FantasyColumn(key: "mpg", label: "MPG", format: .decimal1, group: "summary",
+                          higherIsBetter: true),
+            FantasyColumn(key: "pts", label: "PTS", format: .decimal1, higherIsBetter: true),
+            FantasyColumn(key: "fg3m", label: "TPM", format: .decimal1, higherIsBetter: true),
+            FantasyColumn(key: "reb", label: "REB", format: .decimal1, higherIsBetter: true),
+            FantasyColumn(key: "ast", label: "AST", format: .decimal1, higherIsBetter: true),
+            FantasyColumn(key: "stl", label: "STL", format: .decimal1, higherIsBetter: true),
+            FantasyColumn(key: "blk", label: "BLK", format: .decimal1, higherIsBetter: true),
+            FantasyColumn(key: "tov", label: "TOV", format: .decimal1, higherIsBetter: false),
+            FantasyColumn(key: "fg_pct", label: "FG%", format: .percent1, higherIsBetter: true),
+            FantasyColumn(key: "fga", label: "FGA", format: .decimal1),
+            FantasyColumn(key: "ft_pct", label: "FT%", format: .percent1, higherIsBetter: true),
+            FantasyColumn(key: "fta", label: "FTA", format: .decimal1),
+        ] + ["pts", "fg3m", "ast", "reb", "stl", "blk", "tov", "fg_pct", "ft_pct"].map { key in
+            FantasyColumn(key: "z_\(key)",
+                          label: "z" + FantasyCategory.shortLabel(key),
+                          format: .decimal2, group: "impact",
+                          higherIsBetter: true, signed: true)
+        }
+        let rows: [FantasyDraftRow] = [
+            FantasyDraftRow(
+                rank: 1, round: 1, pickInRound: 1, player: .preview, baselineRank: 1,
+                totalZ: 16.94, valueOverReplacement: 20.1, suggestion: 1.88,
+                espnPoints: 52.4, yahooPoints: 45.1,
+                values: ["score": 1.88, "gp": 68, "mpg": 31, "pts": 28.3, "fg3m": 1.96,
+                         "reb": 12.7, "ast": 3.9, "stl": 1.18, "blk": 3.54, "tov": 2.06,
+                         "fg_pct": 0.5355, "fga": 18.8, "ft_pct": 0.8428, "fta": 7.4,
+                         "z_pts": 2.29, "z_fg3m": -0.43, "z_ast": -0.37, "z_reb": 3.20,
+                         "z_stl": -0.19, "z_blk": 6.64, "z_tov": 0.20, "z_fg_pct": 2.82,
+                         "z_ft_pct": 2.77],
+                team: "SAS", fills: [],
+                reason: "Best available; carries blocks and rebounds"),
+            FantasyDraftRow(
+                rank: 2, round: 1, pickInRound: 2, player: .previewSecondary, baselineRank: 2,
+                totalZ: 9.17, valueOverReplacement: 12.4, suggestion: 1.02,
+                espnPoints: 49.8, yahooPoints: 44.0,
+                values: ["score": 1.02, "gp": 68, "mpg": 36, "pts": 34.6, "fg3m": 4.27,
+                         "reb": 7.8, "ast": 8.8, "stl": 1.31, "blk": 0.51, "tov": 4.03,
+                         "fg_pct": 0.4773, "fga": 23.5, "ft_pct": 0.78, "fta": 10.1,
+                         "z_pts": 3.64, "z_fg3m": 3.72, "z_ast": 2.68, "z_reb": 0.61,
+                         "z_stl": 0.26, "z_blk": -0.96, "z_tov": -2.96, "z_fg_pct": 0.73,
+                         "z_ft_pct": 1.45],
+                team: "LAL", fills: ["ast"],
+                reason: "carries points and threes; turns it over"),
+        ]
+        return FantasyDraftBoardPayload(
+            season: "2025-26", puntCategories: [], teams: 12, rosterSpots: 13,
+            nextPick: FantasyNextPick(overall: 1, round: 1, pickInRound: 1),
+            poolSize: 150, replacementValue: -3.2,
+            weakestCategories: ["ast", "fg3m", "stl"],
+            rosterStrength: ["pts": 2.1, "reb": 4.4, "ast": -1.8],
+            columns: columns, rows: rows,
+            note: "Values are z-scores against the top 150 players of 2025-26."
+        )
+    }()
 }
 
 // MARK: - fantasy_trade

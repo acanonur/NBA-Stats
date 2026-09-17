@@ -475,3 +475,124 @@ def test_nothing_here_translates_to_a_market() -> None:
     source = pathlib.Path(F.__file__).read_text(encoding="utf-8").lower()
     for word in ("odds", "vig", "juice", "kelly", "wager", "sportsbook", "payout", "stake"):
         assert word not in source, f"fantasy.py mentions {word}"
+
+
+# --------------------------------------------------------------------------- the board payload
+#
+# The board is a table whose columns ship as data. These guard the three properties that would
+# be invisible on screen if they broke: the value column agreeing with the rank beside it, the
+# column descriptors staying out of MetricDescriptor's way, and a punt greying the right cells.
+
+
+@pytest.fixture()
+def board_payload(seeded_db, monkeypatch):
+    """The resolved ``fantasy_draft_board`` payload from the seeded league."""
+    from nbastats import catalog
+    from nbastats.widgets import RESOLVERS, ResolveContext
+
+    def build(**overrides):
+        ctx = ResolveContext.from_request(seeded_db, None, request_id="test")
+        config, errors = catalog.validate_widget_config(
+            "fantasy_draft_board",
+            {**catalog.widget_config_defaults("fantasy_draft_board"), **overrides},
+        )
+        assert not errors, errors
+        payload, _availability, _notes = RESOLVERS["fantasy_draft_board"](config, ctx)
+        return payload
+
+    return build
+
+
+def test_the_board_is_a_table_of_columns_and_rows(board_payload) -> None:
+    payload = board_payload(limit=6)
+    assert payload["columns"] and payload["rows"]
+    assert "picks" not in payload, "the card-shaped payload is gone, not shipped alongside"
+    keys = {column["key"] for column in payload["columns"]}
+    for row in payload["rows"]:
+        # Every column must be answerable from the row, or a cell renders as a dash the server
+        # could have filled. `team` is the one text value.
+        assert keys - set(row["values"]) == set(), sorted(keys - set(row["values"]))
+
+
+def test_a_column_descriptor_is_not_a_metric_descriptor(board_payload) -> None:
+    """§2's marker: anything carrying these six keys together *is* a catalog entry.
+
+    Nine of these columns are pool-relative z-scores and three are identity; none is in
+    ``metrics.json``. Tripping the marker would fail the fixture contract test with a confusing
+    "describes unknown metric 'z_pts'" rather than here.
+    """
+    marker = {"key", "name", "shortName", "category", "format", "availability"}
+    for column in board_payload()["columns"]:
+        assert not marker <= set(column), f"{column['key']} looks like a MetricDescriptor"
+
+
+def test_the_value_column_is_monotonic_with_the_rank_beside_it(board_payload) -> None:
+    """A table that says it is sorted and visibly is not.
+
+    The board ranks on a weighted suggestion; the value column has to be computed with the same
+    weights or a punt makes rank 1 show a lower number than rank 5.
+    """
+    for punts in ([], ["ft_pct"], ["ft_pct", "tov"]):
+        payload = board_payload(limit=8, puntCategories=punts)
+        scores = [row["values"]["score"] for row in payload["rows"]]
+        assert scores == sorted(scores, reverse=True), f"punt={punts}: {scores}"
+        ranks = [row["rank"] for row in payload["rows"]]
+        assert ranks == sorted(ranks)
+
+
+def test_a_punt_greys_the_z_column_and_leaves_production_alone(board_payload) -> None:
+    """A punt zeroes a category's weight, not a player's rebounds.
+
+    Greying the raw column too would hide a fact rather than a judgement — the reader still
+    wants to see the nine rebounds, they just do not want them counted.
+    """
+    payload = board_payload(puntCategories=["ft_pct"])
+    punted = {column["key"] for column in payload["columns"] if column["punted"]}
+    assert punted == {"z_ft_pct"}
+    formats = {column["key"]: column for column in payload["columns"]}
+    assert formats["ft_pct"]["punted"] is False
+    assert formats["fta"]["punted"] is False
+
+
+def test_the_z_block_keeps_the_export_ordering(board_payload) -> None:
+    """Raw runs PTS TPM REB AST; the z block runs zPTS zTPM zAST zREB.
+
+    A quirk of the export this table is modelled on, reproduced so the two diff column by
+    column. If it is ever "fixed", that has to be a decision rather than a drift.
+    """
+    payload = board_payload()
+    impact = [c["label"] for c in payload["columns"] if c["group"] == "impact"]
+    assert impact == ["zPTS", "zTPM", "zAST", "zREB", "zSTL", "zBLK", "zTOV", "zFG%", "zFT%"]
+    production = [c["label"] for c in payload["columns"] if c["group"] == "production"]
+    assert production[:4] == ["PTS", "TPM", "REB", "AST"]
+
+
+def test_the_board_serves_no_contract_column_and_no_foreign_value(board_payload) -> None:
+    """Two columns an export has that this project cannot honestly produce.
+
+    Contract status is nowhere in the data model; a proprietary value is not reproducible from
+    the nine z-scores printed beside it. `score` occupies that slot and is this engine's own.
+    """
+    payload = board_payload()
+    keys = {column["key"] for column in payload["columns"]}
+    assert "contract" not in keys
+    assert "score" in keys
+    value_column = next(c for c in payload["columns"] if c["key"] == "score")
+    assert value_column["label"] == "Value"
+    # And it really is our number: the weighted mean, not something imported.
+    row = payload["rows"][0]
+    assert row["values"]["score"] == pytest.approx(row["totalZ"] / 9.0, abs=0.01)
+
+
+def test_minutes_are_labelled_for_what_they_are(board_payload) -> None:
+    """The export calls this "Total Minutes" and the values are 5-37, i.e. per game."""
+    payload = board_payload()
+    column = next(c for c in payload["columns"] if c["key"] == "mpg")
+    assert column["label"] == "MPG"
+    for row in payload["rows"]:
+        assert 0 <= row["values"]["mpg"] <= 48
+
+
+def test_every_row_is_marked_estimated(board_payload) -> None:
+    for row in board_payload()["rows"]:
+        assert row["availability"] == "estimated"
