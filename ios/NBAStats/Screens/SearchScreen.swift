@@ -121,13 +121,25 @@ struct SearchScreenContent: View {
         }
     }
 
+    /// What the search field can actually reach, which is not the same thing in both modes.
+    ///
+    /// This copy used to promise "4,900 players" and offer `"doncic" finds Dončić` as the
+    /// worked example, unconditionally. In demo mode both are false: `DemoAPIClient` builds its
+    /// index by harvesting the player refs embedded in the bundled widget fixtures, so it can
+    /// only find the couple of dozen players who appear on the sample dashboard — and Dončić is
+    /// not one of them. A reader who followed the app's own example got an empty result, which is
+    /// a worse failure than having no example at all.
     private var aboutSection: some View {
         Section {
             VStack(alignment: .leading, spacing: Spacing.sm) {
-                Text("Search 4,900 players, from 1946-47 to tonight.")
+                Text(environment.isDemoMode
+                     ? "Demo data: only the players on the sample dashboard are searchable."
+                     : "Search every player the server has loaded, from 1946-47 to tonight.")
                     .hardwoodText(.tableCell, color: Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
-                Text("Names match on any part and ignore accents, so “doncic” finds Dončić. Open a player to see their seasons, their career arc, and to put them straight onto a dashboard.")
+                Text(environment.isDemoMode
+                     ? "That is a few dozen names, not the league. Turn off \u{201C}Use bundled demo data\u{201D} in Settings, with the stats server running, to search the full roster."
+                     : "Names match on any part and ignore accents, so \u{201C}doncic\u{201D} finds Don\u{10D}i\u{107}. Open a player to see their seasons, their career arc, and to put them straight onto a dashboard.")
                     .hardwoodText(.caption)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -179,13 +191,21 @@ struct SearchScreenContent: View {
         .padding(.vertical, Spacing.xs)
     }
 
+    /// "No match" means two different things, and only one of them is about the spelling.
+    ///
+    /// On a live server it usually is a spelling or an over-long query. In demo mode it almost
+    /// always means the player exists but was never bundled, and "try a last name" is advice that
+    /// cannot work — so the row says which of the two the reader is looking at.
     private var emptyRow: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text("No players match “\(trimmedQuery)”.")
+            Text("No players match \u{201C}\(trimmedQuery)\u{201D}.")
                 .hardwoodText(.tableCell, color: Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Try a last name, or fewer letters.")
+            Text(environment.isDemoMode
+                 ? "Demo data only carries the players on the sample dashboard. Most of the league is missing, including current stars."
+                 : "Try a last name, or fewer letters.")
                 .hardwoodText(.caption)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.vertical, Spacing.xs)
     }
