@@ -11,8 +11,8 @@ final class CatalogTests: XCTestCase {
 
     /// The counts the contract commits to (`contracts/CONTRACT.md`, the table in its header).
     private let expectedMetricCount = 61
-    private let expectedWidgetCount = 14
-    private let expectedPresetCount = 11
+    private let expectedWidgetCount = 16
+    private let expectedPresetCount = 12
 
     /// The field types whose value is a subject the reader has to choose; the catalog gives them
     /// no default on purpose.

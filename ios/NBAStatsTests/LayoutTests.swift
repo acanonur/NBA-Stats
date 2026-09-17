@@ -161,7 +161,7 @@ final class LayoutTests: XCTestCase {
     }
 
     func testWidgetKindRawValuesMatchTheContract() {
-        XCTAssertEqual(WidgetKind.allCases.count, 14)
+        XCTAssertEqual(WidgetKind.allCases.count, 16)
         XCTAssertEqual(WidgetKind.statTile.rawValue, "stat_tile")
         XCTAssertEqual(WidgetKind.playerSnapshot.rawValue, "player_snapshot")
         XCTAssertEqual(WidgetKind.gameLog.rawValue, "game_log")
@@ -172,6 +172,8 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(WidgetKind.teamEfficiency.rawValue, "team_efficiency")
         XCTAssertEqual(WidgetKind.nextGameProjection.rawValue, "next_game_projection")
         XCTAssertEqual(WidgetKind.projectionBoard.rawValue, "projection_board")
+        XCTAssertEqual(WidgetKind.fantasyDraftBoard.rawValue, "fantasy_draft_board")
+        XCTAssertEqual(WidgetKind.fantasyTrade.rawValue, "fantasy_trade")
         XCTAssertEqual(WidgetKind.careerArc.rawValue, "career_arc")
         for kind in WidgetKind.allCases {
             XCTAssertFalse(kind.fallbackName.isEmpty)

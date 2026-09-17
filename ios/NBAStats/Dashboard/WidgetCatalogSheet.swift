@@ -58,6 +58,9 @@ public enum WidgetCatalogGroup: String, CaseIterable, Identifiable, Sendable {
             // The board is about tonight's slate, not about one player, so it belongs beside
             // the scoreboard rather than in the player section with the single projection.
             return .today
+        case .fantasyDraftBoard, .fantasyTrade:
+            // Ranked across the whole league, so the league group rather than the player one.
+            return .league
         case .fourFactors, .teamEfficiency:
             return .teams
         case .leaderboard:
@@ -103,6 +106,8 @@ struct WidgetThumbnail: View {
         case .teamEfficiency: return .columns
         case .nextGameProjection: return .headline
         case .projectionBoard: return .rows
+        case .fantasyDraftBoard: return .rows
+        case .fantasyTrade: return .split
         case .careerArc:      return .line
         }
     }

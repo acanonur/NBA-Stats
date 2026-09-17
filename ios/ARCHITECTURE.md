@@ -486,6 +486,11 @@ public struct WidgetHost: View {
 One view per kind, each taking its own payload type and a `WidgetSize`, each with an Xcode
 preview driven by a bundled fixture. Charts use Swift Charts (`import Charts`).
 
+**The fantasy widgets.** `FantasyDraftBoardWidget` and `FantasyTradeWidget` decode
+`Core/FantasyPayload.swift`. `FantasyCategory` is the shared vocabulary — short and long labels,
+and `isNegative(_:)`, which every piece of category wording must consult because turnovers are
+sign-flipped upstream. See [`docs/FANTASY.md`](../docs/FANTASY.md).
+
 **The broadsheet presentation.** `DashboardLayout.presentation` is `tiles` or `broadsheet`, and
 `DashboardScreen` pushes it down as `\.isBroadsheet`. On a broadsheet page `DashboardGrid`
 collapses to one column, `WidgetContainer` drops the card entirely (no fill, border, radius or

@@ -272,6 +272,34 @@ and era-gap tiles keep the app's treatment even on a broadsheet page.
 
 ---
 
+## The fantasy toolkit
+
+Two widgets built from the user's `Fantasy NBA 2026-27 Toolkit` workbook: `fantasy_draft_board`
+and `fantasy_trade`. `docs/FANTASY.md` has the mathematics; what matters on the client side is
+that three properties of the payload must survive any redesign.
+
+* **Turnovers are sign-flipped.** A positive z means *few* turnovers. `FantasyCategory` owns the
+  direction, and every phrase goes through `changePhrase(_:z:)` — a row that says "gains
+  turnovers" is praising the thing the category penalises, and the sign alone cannot tell you.
+* **`rosterAdjustment` renders as its own line.** Give two players and get one and the freed slot
+  refills from waivers below pool average, often outweighing the players themselves.
+  `rosterDominates` exists so the widget can say so. Showing only `netZ` leaves a reader unable
+  to tell a bad trade from slot arithmetic.
+* **`sensitivity` is a range and is never labelled an interval.** It is the same trade recomputed
+  under four named assumptions, with no probability anywhere in it, and
+  `FantasyPayloadTests` greps its wording for "confidence", "probability" and "%".
+  `flips` — the scenarios disagreeing about the sign — is what the widget leads with, because a
+  trade that only wins if everyone stays healthy is a different proposition from one that wins
+  either way.
+
+The nine-category strip is the reason a category league is not a single number: two players with
+the same `totalZ` can be opposite picks. Colour on that strip carries the sign and nothing else,
+since the z is printed beside it and a gradient would imply precision it does not have. At
+accessibility text sizes the strip is replaced by naming the two strongest categories, and
+VoiceOver gets a sentence rather than eighteen numbers.
+
+---
+
 ## Headshots
 
 `PlayerAvatar` draws a player's face where there is one and a designed mark where there is not.

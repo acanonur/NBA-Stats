@@ -1357,6 +1357,8 @@ public enum WidgetPayload: Hashable, Sendable {
     case teamEfficiency(TeamEfficiencyPayload)
     case nextGameProjection(NextGameProjectionPayload)
     case projectionBoard(ProjectionBoardPayload)
+    case fantasyDraftBoard(FantasyDraftBoardPayload)
+    case fantasyTrade(FantasyTradePayload)
     case careerArc(CareerArcPayload)
 
     public var kind: WidgetKind {
@@ -1374,6 +1376,8 @@ public enum WidgetPayload: Hashable, Sendable {
         case .teamEfficiency: return .teamEfficiency
         case .nextGameProjection: return .nextGameProjection
         case .projectionBoard: return .projectionBoard
+        case .fantasyDraftBoard: return .fantasyDraftBoard
+        case .fantasyTrade: return .fantasyTrade
         case .careerArc: return .careerArc
         }
     }
@@ -1409,6 +1413,10 @@ public enum WidgetPayload: Hashable, Sendable {
             return .nextGameProjection(try container.decode(NextGameProjectionPayload.self, forKey: payloadKey))
         case .projectionBoard:
             return .projectionBoard(try container.decode(ProjectionBoardPayload.self, forKey: payloadKey))
+        case .fantasyDraftBoard:
+            return .fantasyDraftBoard(try container.decode(FantasyDraftBoardPayload.self, forKey: payloadKey))
+        case .fantasyTrade:
+            return .fantasyTrade(try container.decode(FantasyTradePayload.self, forKey: payloadKey))
         case .careerArc:
             return .careerArc(try container.decode(CareerArcPayload.self, forKey: payloadKey))
         }
@@ -1443,6 +1451,10 @@ public enum WidgetPayload: Hashable, Sendable {
             return .nextGameProjection(try decoder.decode(NextGameProjectionPayload.self, from: data))
         case .projectionBoard:
             return .projectionBoard(try decoder.decode(ProjectionBoardPayload.self, from: data))
+        case .fantasyDraftBoard:
+            return .fantasyDraftBoard(try decoder.decode(FantasyDraftBoardPayload.self, from: data))
+        case .fantasyTrade:
+            return .fantasyTrade(try decoder.decode(FantasyTradePayload.self, from: data))
         case .careerArc:
             return .careerArc(try decoder.decode(CareerArcPayload.self, from: data))
         }
@@ -1464,6 +1476,8 @@ public enum WidgetPayload: Hashable, Sendable {
         case .teamEfficiency: return .teamEfficiency(.preview)
         case .nextGameProjection: return .nextGameProjection(.preview)
         case .projectionBoard: return .projectionBoard(.preview)
+        case .fantasyDraftBoard: return .fantasyDraftBoard(.preview)
+        case .fantasyTrade: return .fantasyTrade(.preview)
         case .careerArc: return .careerArc(.preview)
         }
     }
@@ -1488,6 +1502,8 @@ extension WidgetPayload: Encodable {
         case .teamEfficiency(let payload): try container.encode(payload)
         case .nextGameProjection(let payload): try container.encode(payload)
         case .projectionBoard(let payload): try container.encode(payload)
+        case .fantasyDraftBoard(let payload): try container.encode(payload)
+        case .fantasyTrade(let payload): try container.encode(payload)
         case .careerArc(let payload): try container.encode(payload)
         }
     }

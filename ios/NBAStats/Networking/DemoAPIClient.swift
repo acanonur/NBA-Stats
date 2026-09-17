@@ -231,7 +231,8 @@ public actor DemoAPIClient: APIClientProtocol {
     /// Both projection kinds need it, for the same reason and with the same force.
     private static func demoAvailability(for kind: WidgetKind) -> MetricAvailability {
         switch kind {
-        case .nextGameProjection, .projectionBoard: return .estimated
+        case .nextGameProjection, .projectionBoard, .fantasyDraftBoard, .fantasyTrade:
+            return .estimated
         default: return .full
         }
     }
@@ -342,6 +343,12 @@ public actor DemoAPIClient: APIClientProtocol {
             note(team: value.game?.opponent)
         case .projectionBoard(let value):
             for row in value.rows { note(player: row.player) }
+        case .fantasyDraftBoard(let value):
+            for pick in value.picks { note(player: pick.player) }
+        case .fantasyTrade(let value):
+            for side in [value.give, value.get] {
+                for entry in side.players { note(player: entry.player) }
+            }
         case .careerArc(let value):
             note(player: value.player)
         }

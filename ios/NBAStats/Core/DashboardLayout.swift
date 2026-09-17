@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-/// The fourteen widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
+/// The sixteen widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
 public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case statTile          = "stat_tile"
     case playerSnapshot    = "player_snapshot"
@@ -16,6 +16,8 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case teamEfficiency    = "team_efficiency"
     case nextGameProjection = "next_game_projection"
     case projectionBoard   = "projection_board"
+    case fantasyDraftBoard = "fantasy_draft_board"
+    case fantasyTrade      = "fantasy_trade"
     case careerArc         = "career_arc"
 
     /// The catalog holds the real name; this is what the UI falls back to when the bundled
@@ -35,6 +37,8 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .teamEfficiency: return "Team Efficiency"
         case .nextGameProjection: return "Next Game"
         case .projectionBoard: return "Tonight's Projections"
+        case .fantasyDraftBoard: return "Draft Board"
+        case .fantasyTrade: return "Trade Analyzer"
         case .careerArc: return "Career Arc"
         }
     }
@@ -55,6 +59,8 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .teamEfficiency: return "chart.bar.xaxis"
         case .nextGameProjection: return "function"
         case .projectionBoard: return "chart.dots.scatter"
+        case .fantasyDraftBoard: return "checklist"
+        case .fantasyTrade: return "arrow.left.arrow.right"
         case .careerArc: return "waveform.path.ecg"
         }
     }
