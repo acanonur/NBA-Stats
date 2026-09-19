@@ -29,11 +29,18 @@ export interface ProviderMethodStatus {
   readonly reason: string | null;
 }
 
+export interface MailStatus {
+  /** `false` on the default `HARDWOOD_MAILER=log`: the message is written to the server log,
+   * not sent. Every screen that would otherwise say "check your email" reads this first. */
+  readonly delivers: boolean;
+}
+
 /** `GET /v1/auth/methods` — read fresh on every call; never cache this across a page load. */
 export interface AuthMethods {
   readonly password: PasswordMethodStatus;
   readonly google: ProviderMethodStatus;
   readonly apple: ProviderMethodStatus;
+  readonly mail: MailStatus;
 }
 
 /** `routes_auth.py::_user_out` / `routes_me.py::_user_out` — the one `User` wire shape both

@@ -22,6 +22,10 @@ node_modules/
 # Local databases and ingest artifacts
 *.db
 *.db-journal
+# SQLite's write-ahead-log sidecars. `*.db` does not match `hardwood.db-wal`, so the first
+# `web.sh dev` used to leave two untracked files with cryptic names in `git status`.
+*.db-wal
+*.db-shm
 *.sqlite
 *.sqlite3
 /data/

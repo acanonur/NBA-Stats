@@ -53,7 +53,10 @@ _REPO_ROOT = Path(__file__).resolve().parents[3]
 #: A request under any of these is never the SPA's to answer, whether or not a real route
 #: happens to claim it right now — serving ``index.html`` for a mistyped ``/v1/`` path or a
 #: disabled ``/docs`` would look like the app loaded instead of like the 404 it should be.
-_NEVER_SPA_PREFIXES = ("v1/", "docs", "openapi.json", "redoc")
+#: Compared case-insensitively, and each entry matches the bare segment as well as anything
+#: beneath it: ``/v1`` and ``/V1/me`` used to fall through to ``index.html`` with a 200, which
+#: makes a mistyped API base URL look like "the app is up" rather than like the 404 it is.
+_NEVER_SPA_SEGMENTS = ("v1", "docs", "openapi.json", "redoc")
 
 _WELL_KNOWN_PREFIX = ".well-known/"
 
@@ -74,6 +77,15 @@ class _ImmutableStaticFiles(StaticFiles):
         response = super().file_response(*args, **kwargs)
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
         return response
+
+
+def _is_never_spa(normalized: str) -> bool:
+    """True when this path is the API's, the docs', or the schema's — never the SPA's."""
+    lowered = normalized.lower()
+    return any(
+        lowered == segment or lowered.startswith(f"{segment}/")
+        for segment in _NEVER_SPA_SEGMENTS
+    )
 
 
 def _is_safe_subpath(root: Path, candidate: Path) -> bool:
@@ -118,12 +130,12 @@ def mount_web(application: FastAPI) -> None:
 
     @application.get("/{full_path:path}", include_in_schema=False, name="web-spa")
     async def spa(full_path: str) -> Response:
-        """The SPA fallback: a real 404 for anything under :data:`_NEVER_SPA_PREFIXES`, the
+        """The SPA fallback: a real 404 for anything under :data:`_NEVER_SPA_SEGMENTS`, the
         matching file for ``/.well-known/*`` (Apple's domain-verification file lives there),
         and ``index.html`` — with ``Cache-Control: no-store`` — for every client route."""
         normalized = full_path.lstrip("/")
 
-        if normalized.startswith(_NEVER_SPA_PREFIXES):
+        if _is_never_spa(normalized):
             raise errors.ApiError("not_found", "Not found.", http_status=404)
 
         if normalized.startswith(_WELL_KNOWN_PREFIX):

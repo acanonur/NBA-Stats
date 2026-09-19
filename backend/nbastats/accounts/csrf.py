@@ -11,10 +11,28 @@ own local-development story is ``http://127.0.0.1:8000`` with the API and the SP
 origin. Any *other* process listening on ``127.0.0.1`` on any other port — another dev server,
 a container's exposed port, literally anything — can set a cookie for that host that a browser
 will happily attach to a request aimed at us, defeating a double-submit check outright. A
-synchroniser token has no such hole: it is compared against ``auth_sessions.csrf_hash``, a
-value an attacker who cannot read our database cannot produce, and it never travels as a
-cookie at all — see ``accounts/sessions.py::csrf_token_for`` for how the client gets hold of it
-(in the JSON body of ``GET /v1/auth/session``, held in memory, never in storage).
+synchroniser token is better: it is compared against ``auth_sessions.csrf_hash`` and never
+travels as a cookie at all — see ``accounts/sessions.py::csrf_token_for`` for how the client
+gets hold of it (in the JSON body of ``GET /v1/auth/session``, held in memory, never in
+storage).
+
+What this does **not** close, and nothing in this module can
+------------------------------------------------------------------
+That same sibling-process hole also lets a local attacker **overwrite** ``hw_session`` itself
+(``Set-Cookie``, unlike ``document.cookie``, is not stopped by the existing cookie's
+``HttpOnly`` flag), and on a ``HARDWOOD_ALLOW_INSECURE_COOKIES=1`` LAN deployment an on-path
+device can do the same by injecting the header into any plaintext response. That is *forced
+login*, not CSRF: the request is then genuinely authenticated as the attacker, and because
+``csrf_token_for`` derives the token from the cookie that arrived, the token matches it. There
+is no server-side check that can tell the two apart — the browser presents one cookie jar.
+
+Earlier revisions of this file claimed the synchroniser token closed this. It never did; when
+the token was random and row-stored, a swapped cookie merely broke every write with
+``csrf_failed``, which was an accidental alarm rather than a defence. The alarm now lives
+where it can actually say something useful: ``web/src/auth/AuthProvider.tsx`` pins the account
+it bootstrapped with and turns a mid-session identity change into a visible forced sign-out
+instead of a silent swap. The real fix is https, which is why a non-loopback plaintext base
+URL is a startup refusal.
 
 Why ``Origin`` is checked too, not just the token
 ------------------------------------------------------

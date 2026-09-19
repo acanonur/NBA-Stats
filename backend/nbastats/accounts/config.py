@@ -83,6 +83,8 @@ __all__ = [
     "get_auth_settings",
     "reset_auth_settings_cache",
     "load_dotenv",
+    "load_env_file",
+    "default_env_file",
     "startup_warnings",
     "startup_refusals",
     "LOOPBACK_HOSTS",
@@ -153,7 +155,7 @@ def _env_int(environ: Mapping[str, str], name: str, default: int) -> int:
         return default
     try:
         return int(raw)
-    except ValueError as exc:  # pragma: no cover - defensive
+    except ValueError as exc:
         raise ValueError(f"{name}={raw!r} is not an integer") from exc
 
 
@@ -301,6 +303,40 @@ def load_dotenv(path: Path) -> None:
             os.environ[key] = value
 
 
+def default_env_file() -> Path:
+    """The dotenv file this deployment reads: ``HARDWOOD_ENV_FILE`` if set, else
+    ``backend/.env`` beside the installed package.
+
+    ``config.py`` lives at ``backend/nbastats/accounts/config.py``, so ``parents[2]`` is
+    ``backend/`` — the directory ``scripts/web.sh setup`` writes ``.env`` into and the one
+    ``web.sh dev`` cds to before exec'ing uvicorn.
+    """
+    override = os.environ.get("HARDWOOD_ENV_FILE")
+    if override:
+        return Path(override)
+    return Path(__file__).resolve().parents[2] / ".env"
+
+
+def load_env_file(path: Path | None = None) -> Path | None:
+    """Populate ``os.environ`` from :func:`default_env_file` (or ``path``) and return the file
+    that was read, or ``None`` when there was none.
+
+    This is the *one* entry point both ``create_app()`` and ``scripts/web.sh doctor`` call, so
+    a setting written into ``backend/.env`` can never reach one and not the other. It used to
+    be called only by ``doctor``, which meant ``doctor`` cheerfully reported ``google:
+    enabled`` for credentials the running server had never seen.
+
+    The memoised settings cache is dropped whenever a file is actually read, so a caller that
+    happened to touch :func:`get_auth_settings` first still sees the file's values.
+    """
+    target = default_env_file() if path is None else path
+    if not target.is_file():
+        return None
+    load_dotenv(target)
+    reset_auth_settings_cache()
+    return target
+
+
 def startup_warnings(s: AuthSettings) -> list[str]:
     """Non-fatal configuration notes, surfaced at ``/v1/health.authWarnings`` and never
     raised — each one describes a feature that will silently be less useful than the operator
@@ -322,6 +358,15 @@ def startup_warnings(s: AuthSettings) -> list[str]:
             "Apple sign-in is configured (HARDWOOD_APPLE_*), but HARDWOOD_PUBLIC_BASE_URL is "
             "not https, so the Apple button will not be shown. Apple's response_mode="
             "form_post needs a Secure, SameSite=None cookie, which needs https."
+        )
+    if s.mailer in ("log", "file") and not s.is_loopback:
+        warnings.append(
+            f"HARDWOOD_MAILER={s.mailer} sends no mail: verification and password-reset links "
+            f"are written to this server's log. On a non-loopback deployment "
+            f"({s.public_base_url}) that means nobody but the operator can complete a reset, "
+            "and anyone who can read the log can take over any account. Set "
+            "HARDWOOD_MAILER=smtp, or hand out reset links yourself with "
+            "`python3 -m nbastats.accounts.admin reset-password`."
         )
     if s.google_client_id and not s.google_client_secret:
         warnings.append(
@@ -345,9 +390,12 @@ def startup_refusals(s: AuthSettings) -> list[str]:
         and not s.allow_insecure_cookies
     ):
         reasons.append(
-            "Session cookies would travel in clear text. Set HARDWOOD_PUBLIC_BASE_URL to an "
-            "https URL, or set HARDWOOD_ALLOW_INSECURE_COOKIES=1 if you accept that on a "
-            "trusted LAN."
+            "Session cookies would travel in clear text, and an on-path device could not "
+            "merely read them but *replace* them — injecting Set-Cookie into any plaintext "
+            "response signs the victim's tab into an account of the attacker's choosing. Set "
+            "HARDWOOD_PUBLIC_BASE_URL to an https URL, or set "
+            "HARDWOOD_ALLOW_INSECURE_COOKIES=1 if you accept session takeover by anyone on "
+            "the network path."
         )
 
     if s.signup_mode == "open" and not s.is_loopback and not s.invite_code:
@@ -369,6 +417,17 @@ def startup_refusals(s: AuthSettings) -> list[str]:
                 "group or other. An Apple signing key cannot be rotated in place if it "
                 "leaks: run `chmod 600` on it and restart."
             )
+
+    if s.mailer in ("log", "file") and s.public_base_url.startswith("https://"):
+        reasons.append(
+            f"HARDWOOD_MAILER={s.mailer} writes verification, password-reset and email-change "
+            "links to the server log (or to a directory on disk) instead of sending them. On a "
+            f"public deployment ({s.public_base_url}) that writes live, one-hour, single-use "
+            "account-takeover links to stdout, where journald or `docker logs` collects them "
+            "and ships them to whatever aggregates your logs — anyone with read access to that "
+            "takes over any account by pasting a URL. Set HARDWOOD_MAILER=smtp with "
+            "HARDWOOD_SMTP_URL and HARDWOOD_MAIL_FROM."
+        )
 
     if s.smtp_url and s.smtp_url.startswith("smtp://"):
         reasons.append(

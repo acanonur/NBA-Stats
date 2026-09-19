@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
 import hmac
 import json
 import os
@@ -327,21 +328,48 @@ def reset_rate_limiter() -> None:
         _limiter = None
 
 
+def _rate_limit_bucket(request: Request) -> str:
+    """Which bucket this request spends from.
+
+    The ``X-API-Key`` header is used **only after it has been checked against the configured
+    key**. Keying on the raw header turned the limiter off for anyone who bothered to vary it:
+    with ``HARDWOOD_API_KEY`` unset — the default, and the shape every web deployment runs —
+    nothing ever compared the header to anything, so ``X-API-Key: bucket-1``, ``bucket-2``, …
+    bought a fresh allowance per request and the one global brake in front of the single
+    worker was gone.
+
+    A validated key still gets its own bucket (a trusted integration should not share a
+    /24's budget with a browser), a signed-in caller is keyed on their session so one account
+    cannot spend a whole network's allowance, and everyone else falls back to the client
+    address.
+    """
+    settings = get_settings()
+    supplied = request.headers.get(API_KEY_HEADER)
+    if settings.requires_api_key and supplied:
+        expected = settings.api_key or ""
+        if hmac.compare_digest(supplied, expected):
+            return f"key:{hashlib.sha256(supplied.encode('utf-8')).hexdigest()[:32]}"
+
+    auth_session = getattr(request.state, "auth_session", None)
+    session_id = getattr(auth_session, "session_id", None)
+    if session_id:
+        return f"session:{session_id}"
+
+    return f"addr:{request.client.host if request.client else 'anonymous'}"
+
+
 def enforce_rate_limit(request: Request) -> None:
     """Dependency: 429 with ``Retry-After`` once a caller exceeds the window.
 
-    Callers are keyed by API key when one is presented and by client address otherwise, so
-    one noisy client cannot spend another's budget.
+    See :func:`_rate_limit_bucket` for how a caller is identified — in particular, why an
+    unvalidated ``X-API-Key`` header is never the bucket key.
     """
     if request.url.path in API_KEY_EXEMPT_PATHS:
         return
     limiter = get_rate_limiter()
     if not limiter.enabled:
         return
-    key = request.headers.get(API_KEY_HEADER) or (
-        request.client.host if request.client else "anonymous"
-    )
-    retry_after = limiter.check(key)
+    retry_after = limiter.check(_rate_limit_bucket(request))
     if retry_after:
         raise errors.rate_limited(retry_after)
 

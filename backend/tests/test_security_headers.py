@@ -64,6 +64,26 @@ def test_no_store_on_auth_session_and_every_me_path() -> None:
     assert b"cache-control" not in dict(security.security_headers_for("/v1/health"))
 
 
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/v1/dashboard/resolve",
+        "/v1/dashboard/resolve-preset/next_game",
+        "/v1/dashboards",
+        "/v1/dashboards/export",
+    ],
+)
+def test_no_store_and_vary_cookie_on_every_personalised_dashboard_path(path: str) -> None:
+    """The *resolver* lives at the singular ``/v1/dashboard`` and was missing from the
+    no-store list, which named only the plural router. Both responses substitute the signed-in
+    user's pinned player and team into every widget and echo them back in ``resolvedContext``,
+    so a shared proxy caching one and replaying it to the next visitor is the same bug the
+    plural path was fixed for."""
+    headers = dict(security.security_headers_for(path))
+    assert headers[b"cache-control"] == b"no-store"
+    assert headers[b"vary"] == b"Cookie"
+
+
 def test_live_app_responses_carry_the_headers() -> None:
     with TestClient(create_app()) as client:
         response = client.get("/v1/health")

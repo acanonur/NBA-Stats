@@ -44,10 +44,12 @@ Run it with ``uvicorn nbastats.api.app:app``.
 """
 from __future__ import annotations
 
+import asyncio
 import importlib
 import logging
 import os
-from contextlib import asynccontextmanager
+import sys
+from contextlib import asynccontextmanager, suppress
 from typing import AsyncIterator
 
 from fastapi import Depends, FastAPI
@@ -55,7 +57,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, select
 
 from .. import API_VERSION
-from ..accounts.config import get_auth_settings, startup_refusals, startup_warnings
+from ..accounts.config import (
+    get_auth_settings,
+    load_env_file,
+    startup_refusals,
+    startup_warnings,
+)
 from ..config import get_settings
 from ..db import get_sessionmaker, init_db
 from ..models import Team
@@ -127,6 +134,50 @@ def _prepare_database() -> None:
         )
 
 
+#: How often the lifespan's retention job runs after its first pass at startup.
+RETENTION_PURGE_INTERVAL_SECONDS = 24 * 60 * 60
+
+
+def _run_retention_purge_once() -> None:
+    """One pass of the 30-day erasure the Privacy page promises. Never raises: a locked
+    database or a half-migrated store must degrade to "not purged this time", not to a
+    service that will not start."""
+    try:
+        from ..accounts import retention
+
+        with get_sessionmaker()() as db:
+            summary = retention.purge(db)
+            db.commit()
+    except Exception:  # noqa: BLE001 - a retention sweep must never take the process down
+        logger.exception("the retention purge failed; it will be retried on the next pass")
+        return
+    if not summary.is_empty:
+        logger.info(
+            "retention purge: %s users, %s dashboards, %s expired sessions erased",
+            summary.users,
+            summary.dashboards,
+            summary.sessions,
+        )
+
+
+def _start_retention_purge() -> "asyncio.Task | None":
+    """Kick off the daily retention job, or return ``None`` when the accounts feature is not
+    installed. ``/legal/privacy`` and the Settings screen both state that a deleted account is
+    "erased permanently after 30 days"; before this, only an operator command nobody was told
+    to schedule ever did that, so the sentence was false on every default deployment."""
+    try:
+        importlib.import_module("..accounts.retention", __package__)
+    except ImportError:  # pragma: no cover - a stats-only deployment
+        return None
+
+    async def loop() -> None:
+        while True:
+            await asyncio.to_thread(_run_retention_purge_once)
+            await asyncio.sleep(RETENTION_PURGE_INTERVAL_SECONDS)
+
+    return asyncio.create_task(loop())
+
+
 def _guards_for(name: str) -> list:
     """The dependency list one optional router module is included with (see
     :data:`OPTIONAL_ROUTE_GUARDS`)."""
@@ -191,7 +242,24 @@ def _startup_log_line(auth_settings) -> str:
 
 def create_app() -> FastAPI:
     """Build the Hardwood API application."""
-    auth_settings = get_auth_settings()
+    # Before anything reads a setting: `backend/.env` is the file `scripts/web.sh setup`
+    # writes and tells the operator to edit, and until this call existed *nothing in the
+    # server read it*. Only `web.sh doctor` did, so doctor reported `google: enabled` for
+    # credentials the running process had never seen. Both now go through the same
+    # `load_env_file`, so they cannot disagree again.
+    env_file = load_env_file()
+    try:
+        auth_settings = get_auth_settings()
+    except ValueError as exc:
+        # `HARDWOOD_SESSION_DAYS=thirty` and friends. The message from `_env_int`/`_env_bool`
+        # names the variable and the bad value; wrap it in the same operator-facing shape the
+        # refusals use rather than letting a bare ValueError become twenty lines of
+        # interpreter internals under `python -m uvicorn`.
+        where = f" in {env_file}" if env_file is not None else ""
+        raise RuntimeError(
+            f"Hardwood Web refuses to start:\n- {exc}\n"
+            f"  Fix that line{where} (or in the environment) and try again."
+        ) from exc
     refusals = startup_refusals(auth_settings)
     if refusals:
         raise RuntimeError(
@@ -199,12 +267,21 @@ def create_app() -> FastAPI:
         )
     for warning in startup_warnings(auth_settings):
         logger.warning(warning)
+    if env_file is not None:
+        logger.info("read configuration from %s", env_file)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         _prepare_database()
         logger.info(_startup_log_line(auth_settings))
-        yield
+        purge_task = _start_retention_purge()
+        try:
+            yield
+        finally:
+            if purge_task is not None:
+                purge_task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await purge_task
 
     # Swagger UI loads its assets from a CDN with no CSP exception carved for them, so an
     # interactive-docs page left reachable on a non-loopback origin is an avoidable enlargement
@@ -276,4 +353,14 @@ def create_app() -> FastAPI:
 
 
 #: Module-level application so ``uvicorn nbastats.api.app:app`` works unchanged.
-app = create_app()
+#:
+#: The refusals in ``create_app()`` are written to be read by a person ("Set
+#: HARDWOOD_PUBLIC_BASE_URL to an https URL, or ..."). Because this line runs at *import*
+#: time and ``scripts/web.sh dev`` ``exec``s uvicorn, a bare ``RuntimeError`` reached the
+#: operator as forty-odd lines of runpy/click/importlib frames with the one useful sentence
+#: last. Printing the reasons and exiting 2 is the same failure with the noise removed.
+try:
+    app = create_app()
+except RuntimeError as exc:
+    print(str(exc), file=sys.stderr, flush=True)
+    raise SystemExit(2) from None

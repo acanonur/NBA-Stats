@@ -13,7 +13,7 @@ export default function Terms(): JSX.Element {
       <Text as="p" style="tableCell">
         Hardwood is a private stats and fantasy-analysis tool. Statistics shown here come from
         stats.nba.com and are used for private, non-commercial purposes only, with attribution in
-        every page's footer. Hardwood does not run a fantasy league, keep scores, publish odds,
+        every page's footer. Hardwood does not run a fantasy league, keep scores, price anything,
         or depict a game in real time.
       </Text>
       <Text as="p" style="tableCell">

@@ -1,4 +1,4 @@
-# Hardwood — an editable NBA advanced-stats dashboard for iOS
+# Hardwood — an editable NBA advanced-stats dashboard for iOS and the browser
 
 A SwiftUI app whose home screen you build yourself: pick from nine ready-made dashboards or
 assemble your own out of twelve widget types, each configurable down to the metric. Behind it
@@ -12,7 +12,10 @@ Built from the acquisition and architecture research in
 ```
 ┌── contracts/ ── the shared truth: 61 metrics, 16 widgets, 12 presets, golden fixtures ──┐
 │                                                                                         │
-│   backend/  ingest → SQLite/Postgres → FastAPI   ⇄   ios/  SwiftUI dashboard + sync    │
+│                                                  ⇄   ios/  SwiftUI dashboard + sync     │
+│   backend/  ingest → SQLite/Postgres → FastAPI                                          │
+│                                                  ──►  web/  the same dashboards, served │
+│                                                             from the same process at /  │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -72,6 +75,33 @@ Real data, licensing, the residential-IP requirement and the nightly cron line a
 
 ---
 
+## Hardwood Web
+
+The same dashboards in a browser, served by the same FastAPI process — SPA at `/`, API
+unchanged at `/v1`, one origin, no second server to deploy.
+
+```bash
+./scripts/web.sh setup     # venv, pip install, npm ci, npm run build
+./scripts/web.sh dev       # http://127.0.0.1:8000
+cd backend && .venv/bin/python3 -m nbastats.accounts.admin invite --note "me"
+```
+
+Accounts are email-and-password out of the box, with Google and Apple sign-in when you
+configure them — the buttons simply do not render until you do. Sessions are opaque ids in the
+database, not tokens in the browser; CSRF is a synchroniser token checked against the session
+row. Sign-up defaults to `invite`, and the server refuses to start in several configurations
+that would quietly be unsafe.
+
+[`docs/WEB.md`](docs/WEB.md) is the whole story: configuration, Google in fifteen minutes,
+what Apple costs, the threat model, backups, and the four first-hour failures that all look
+identical from the browser. [`web/README.md`](web/README.md) is for working in the SPA itself.
+
+**Accounts change the legal position**, and not as a formality: they replace a property of the
+codebase with a property of your deployment, and they mean the project now holds personal data
+belonging to whoever signs in. [`docs/LEGAL.md`](docs/LEGAL.md) §2b and §2c.
+
+---
+
 ## Repository map
 
 | Path | What lives there |
@@ -79,7 +109,8 @@ Real data, licensing, the residential-IP requirement and the nightly cron line a
 | `contracts/` | **Start here.** `CONTRACT.md` is the API and payload spec; `metrics.json`, `widgets.json` and `presets.json` are consumed by *both* sides; `fixtures/` holds golden payloads both sides test against |
 | `backend/` | Ingest pipeline, advanced-stat formulas, schema, FastAPI service, tests |
 | `ios/` | The SwiftUI app. `ios/ARCHITECTURE.md` is its binding Swift type surface |
-| `docs/` | [Architecture](docs/ARCHITECTURE.md) · [Data sources](docs/DATA_SOURCES.md) · [Projection](docs/PROJECTION.md) · [Broadsheet](docs/BROADSHEET.md) · [Fantasy](docs/FANTASY.md) · [Legal](docs/LEGAL.md) · [Runbook](docs/RUNBOOK.md) |
+| `web/` | The React SPA the backend serves at `/`. See [`web/README.md`](web/README.md) |
+| `docs/` | [Architecture](docs/ARCHITECTURE.md) · [Web](docs/WEB.md) · [Data sources](docs/DATA_SOURCES.md) · [Projection](docs/PROJECTION.md) · [Broadsheet](docs/BROADSHEET.md) · [Fantasy](docs/FANTASY.md) · [Legal](docs/LEGAL.md) · [Runbook](docs/RUNBOOK.md) |
 | `sql/` | The original BigQuery-flavoured queries this project grew out of |
 | `scripts/` | `check_contracts.py` (CI drift guard), `sync_contracts.sh` |
 
@@ -110,17 +141,24 @@ Two traps worth knowing before you deploy:
    this repository and there must not be one. The PER / Win Shares / BPM / VORP implementations
    are written from the published formulas, with Basketball-Reference credited as their origin.
 
-Stats via NBA.com. Not endorsed by or affiliated with the NBA. **This is a private,
-non-commercial project** — which is what NBA.com's terms allow. Shipping or monetizing it means
-licensing a feed first; [`docs/LEGAL.md`](docs/LEGAL.md) spells out exactly what changes.
+Stats via NBA.com. Not endorsed by or affiliated with the NBA. **In its default configuration
+this is a private, non-commercial project** — which is what NBA.com's terms allow. The thing
+that ends that is not a store submission; it is **leaving the private configuration**, which
+now means a web deployment people you did not invite can reach or sign up for. Monetizing it in
+any form crosses the same line for a different reason. Either way you license a feed first;
+[`docs/LEGAL.md`](docs/LEGAL.md) §2b draws the line, and §2c covers the personal data the
+account system collects from your own users.
 
 ---
 
 ## Testing
 
 ```bash
-cd backend && python3 -m pytest -q     # metrics, schema, ingest, API, all 12 widget resolvers
-python3 scripts/check_contracts.py     # catalogs, presets, registry and bundled copies agree
+cd backend && python3 -m pytest -q     # 888 tests: metrics, schema, ingest, API, accounts, every widget resolver
+python3 scripts/check_contracts.py     # 12 checks: catalogs, presets, registry, bundled and generated copies agree
+
+cd web && npm test                     # 502 tests: design system, widgets, dashboard editor, auth flows
+npm run build                          # and CI then fails on any diff in the committed web/dist
 
 cd ios && xcodebuild test -scheme Hardwood \
     -destination 'platform=iOS Simulator,name=iPhone 16'

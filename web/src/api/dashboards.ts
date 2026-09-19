@@ -181,7 +181,13 @@ export async function listTeams(includeHistorical = false): Promise<readonly Tea
  * twice.
  */
 export async function getAttribution(): Promise<string> {
-  const meta = await fetchJson<{ readonly attribution: string }>("/meta");
+  // `onUnauthorized: "ignore"`: the footer is on every page including `/`, `/sign-in` and the
+  // legal pages. With `HARDWOOD_API_KEY` configured, anonymous `GET /v1/meta` answers 401, and
+  // the default redirect would bounce every signed-out visitor to `/sign-in` the moment the
+  // footer mounted.
+  const meta = await fetchJson<{ readonly attribution: string }>("/meta", {
+    onUnauthorized: "ignore",
+  });
   return meta.attribution;
 }
 

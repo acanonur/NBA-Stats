@@ -49,7 +49,15 @@ function AccountSection(): JSX.Element {
         type="button"
         className={styles.button}
         onClick={() => {
-          void updateProfile({ displayName }).then(() => setStatus("Saved."));
+          // The `.catch` is the point: `updateProfile` goes through `fetchJson`, which throws
+          // on any non-2xx (a name the server rejects) and on a stale CSRF token after a
+          // session rotation. Without it the PATCH failed, "Saved." never appeared, no error
+          // appeared either, and the field went on showing a name that was not saved.
+          void updateProfile({ displayName })
+            .then(() => setStatus("Saved."))
+            .catch((cause: unknown) =>
+              setStatus(cause instanceof ApiError ? cause.message : "Could not save that name."),
+            );
         }}
       >
         Save name
@@ -203,11 +211,19 @@ function IdentitiesSection(): JSX.Element {
 
 function SessionsSection(): JSX.Element {
   const { data, refetch } = useQuery({ queryKey: ["me", "sessions"], queryFn: listSessions });
+  const [revokeError, setRevokeError] = useState<string | null>(null);
   return (
     <div className={styles.section}>
       <Text as="p" style="sectionTitle">
         Sessions
       </Text>
+      {revokeError && (
+        <p role="alert">
+          <Text style="caption" color="negative">
+            {revokeError}
+          </Text>
+        </p>
+      )}
       {(data ?? []).map((session) => (
         <div key={session.sessionId} className={styles.row}>
           <div>
@@ -221,7 +237,14 @@ function SessionsSection(): JSX.Element {
               type="button"
               className={styles.button}
               onClick={() => {
-                void revokeSession(session.sessionId).then(() => refetch());
+                setRevokeError(null);
+                void revokeSession(session.sessionId)
+                  .then(() => refetch())
+                  .catch((cause: unknown) =>
+                    setRevokeError(
+                      cause instanceof ApiError ? cause.message : "Could not sign that device out.",
+                    ),
+                  );
               }}
             >
               Sign out
@@ -286,7 +309,8 @@ function DeleteAccountSection(): JSX.Element {
         Delete account
       </Text>
       <Text as="p" style="caption" color="secondary">
-        Your account is disabled immediately and erased permanently after 30 days.
+        Your account is disabled immediately, every session is signed out, and it is erased
+        permanently 30 days later. Until then the operator can restore it.
       </Text>
       {!confirming ? (
         <button type="button" className={`${styles.button} ${styles.dangerButton}`} onClick={() => setConfirming(true)}>

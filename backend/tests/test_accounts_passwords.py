@@ -186,3 +186,38 @@ def test_kdf_semaphore_bounds_concurrency(monkeypatch: pytest.MonkeyPatch) -> No
 
     assert peak == 4
     assert passwords._KDF_SEMAPHORE._initial_value == 4  # type: ignore[attr-defined]
+
+
+@pytest.mark.parametrize(
+    "email,password",
+    [
+        ("a@example.com", "correct-horse-battery-staple"),   # local part "a" is in "battery"
+        ("jo@example.com", "a-jolly-good-passphrase"),        # "jo" is in "jolly"
+        ("me@example.com", "remember-the-alamo-please"),      # "me" is in "remember"
+    ],
+)
+def test_a_short_email_local_part_does_not_veto_a_good_passphrase(
+    email: str, password: str
+) -> None:
+    """A substring test with no length floor rejects good passwords and blames the reader.
+
+    The local part of ``a@example.com`` is one character, so ``"a" in password`` is true of
+    almost every passphrase anyone would choose. The first person to try signing up hit exactly
+    this and was told "Password must not contain part of your email address" about a password
+    that contains no such thing.
+    """
+    assert passwords.policy_problem(password, email=email) is None
+
+
+@pytest.mark.parametrize(
+    "email,password",
+    [
+        ("acan@example.com", "my-acan-password-here"),
+        ("hardwood@example.com", "hardwood-forever-and-ever"),
+    ],
+)
+def test_a_real_local_part_is_still_denied(email: str, password: str) -> None:
+    """The floor must not have disarmed the rule: a guessable local part is still refused."""
+    assert passwords.policy_problem(password, email=email) == (
+        "Password must not contain part of your email address."
+    )

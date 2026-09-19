@@ -25,7 +25,7 @@ Four rules this resolver is built around
     rather than hiding it (§7 rule 4). A missing input produces a neutral factor whose
     *explanation says it is missing*, never a guess.
 
-4.  **No market translation.** No implied probability, no vig, no expected value, no staking,
+4.  **No market translation.** No implied probability, no margin, no expected value, no money,
     nowhere. ``docs/PROJECTION.md`` §6: NBA.com's terms forbid gambling use of their
     statistics, and the source paper makes no profitability claim.
 

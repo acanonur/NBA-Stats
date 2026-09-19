@@ -231,7 +231,7 @@ W = [
  {
   "kind": "projection_board",
   "name": "Tonight's Projections",
-  "summary": "Tonight's projected lines for several players, each as a range with the season average marked.",
+  "summary": "Tonight's projected ranges for several players, each with the season average marked.",
   "icon": "chart.dots.scatter",
   "sizes": ["large"],
   "defaultSize": "large",
@@ -245,7 +245,7 @@ W = [
     f("playerIds", "playerList", "Players", default=[], maxItems=12,
       help="Used when Players is set to a specific list; otherwise the scope decides."),
     f("teamId", "team", "Team", default=None),
-    f("metrics", "metricList", "Lines", required=True, metricScope="player",
+    f("metrics", "metricList", "Stats", required=True, metricScope="player",
       default=["pts", "reb", "ast"], maxItems=6),
     f("limit", "int", "Rows", default=6, min=3, max=20),
     f("minMinutes", "double", "Minimum Projected Minutes", default=20.0, min=0.0, max=48.0),

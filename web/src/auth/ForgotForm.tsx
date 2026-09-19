@@ -1,9 +1,14 @@
 import { useState, type FormEvent, type JSX } from "react";
 import { ApiError, forgotPassword } from "../api/session";
 import { Text } from "../design/Text";
+import { useProviders } from "./useProviders";
 import styles from "./forms.module.css";
 
 export function ForgotForm(): JSX.Element {
+  // On the default `HARDWOOD_MAILER=log` nothing is sent; the link goes to the server's log.
+  // `devLink` only comes back for a loopback caller with HARDWOOD_DEV_LINKS on, so on a LAN
+  // deployment this screen used to promise an email that did not exist and offer no way out.
+  const { deliversMail } = useProviders();
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,7 +34,16 @@ export function ForgotForm(): JSX.Element {
     return (
       <div className={styles.form}>
         <Text as="p" style="tableCell">
-          If {email} has a Hardwood account with a password, we sent a link to reset it.
+          {deliversMail === false ? (
+            <>
+              This deployment has no mail server, so nothing was emailed. If {email} has a
+              Hardwood account with a password, a reset link is now in the server's log — ask
+              whoever runs this Hardwood for it, or have them run{" "}
+              <code>python3 -m nbastats.accounts.admin reset-password {email}</code>.
+            </>
+          ) : (
+            <>If {email} has a Hardwood account with a password, we sent a link to reset it.</>
+          )}
         </Text>
         {devLink && (
           <Text as="p" style="caption" color="secondary">

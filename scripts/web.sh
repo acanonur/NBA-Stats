@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# web.sh — the one entry point for building and running Hardwood Web (WEB_DESIGN.md §12.1).
+# web.sh — the one entry point for building and running Hardwood Web (docs/WEB.md §2).
 #
-# Single-origin is the whole point of this project's design (WEB_DESIGN.md §0): the browser
+# Single-origin is the whole point of this project's design (docs/WEB.md §1): the browser
 # never makes a cross-origin request, because `uvicorn` serves both `/v1` and the built SPA
 # from one process on one port. That means there is no separate "frontend server" to run in
 # development the way a typical React app has one — the workflow is build the static bundle,
@@ -45,7 +45,7 @@ usage() {
 # --------------------------------------------------------------------------------- guard rails
 #
 # "Fail gracefully with a clear message when Node is missing, not a stack trace" is a literal
-# requirement of this file (WEB_DESIGN.md's WP0 build order); the same courtesy is extended to
+# requirement of this file (docs/WEB.md §12, "The first hour"); the same courtesy is extended to
 # a missing Python, since `dev` and `doctor` need one just as much as `setup` and `build` need
 # Node.
 
@@ -124,9 +124,12 @@ cmd_setup() {
 
   cat <<EOF
 web.sh setup: done.
-  Next: python3 -m nbastats.accounts.admin invite --note "me"   (signup mode is invite by default)
-        $0 dev                                                  (serve http://127.0.0.1:${PORT})
-        $0 doctor                                                (what is/isn't configured, and why)
+  Next: (cd "$BACKEND_DIR" && .venv/bin/python3 -m nbastats.accounts.admin invite --note "me")
+              mint yourself an invite code — signup mode is 'invite' by default, so this is
+              the one thing standing between you and an account. Run it from backend/ with
+              the venv's interpreter, as printed: the database lives at backend/hardwood.db.
+        $0 dev      serve http://127.0.0.1:${PORT}
+        $0 doctor   what is/isn't configured, and why
 EOF
 }
 
@@ -157,7 +160,15 @@ EOF
   # opening on a machine with no ingested data. A value already exported by the caller wins.
   export HARDWOOD_DEMO_MODE="${HARDWOOD_DEMO_MODE:-1}"
 
-  echo "web.sh dev: serving http://127.0.0.1:${PORT} (Ctrl-C to stop) ..."
+  # Same pattern, for the setting that silently breaks every POST when it disagrees with the
+  # port we are about to bind. HARDWOOD_PUBLIC_BASE_URL is the sole source for the CSRF Origin
+  # check, and it defaults to http://127.0.0.1:8000 — so `PORT=8123 web.sh dev` used to serve a
+  # site that loaded, rendered and read perfectly while sign in, sign up and forgot-password
+  # all failed with "This request could not be verified. Reload the page and try again.",
+  # which reloading never fixed. An exported value from the caller still wins.
+  export HARDWOOD_PUBLIC_BASE_URL="${HARDWOOD_PUBLIC_BASE_URL:-http://127.0.0.1:${PORT}}"
+
+  echo "web.sh dev: serving ${HARDWOOD_PUBLIC_BASE_URL} (Ctrl-C to stop) ..."
   # cd into backend/ first: DATABASE_URL's default (nbastats/config.py) and backend/.env are
   # both relative to it, same as backend/scripts/serve_dev.sh — running uvicorn from the repo
   # root instead would create hardwood.db one directory up from where every other script and
@@ -214,28 +225,60 @@ cmd_doctor() {
   echo "== Accounts configuration =="
   local py
   py="$(resolve_python)"
-  PYTHONPATH="$BACKEND_DIR${PYTHONPATH:+:$PYTHONPATH}" "$py" - "$BACKEND_DIR" <<'PYEOF'
+  PYTHONPATH="$BACKEND_DIR${PYTHONPATH:+:$PYTHONPATH}" "$py" - "$BACKEND_DIR" "$0" "$PORT" <<'PYEOF'
 import sys
 from pathlib import Path
 
 backend_dir = Path(sys.argv[1])
+# `python3 -` sets __file__ to the literal string "<stdin>", so printing Path(__file__).name
+# told an un-set-up reader to run "'<stdin>' setup". The script's own name is passed in.
+script_name = sys.argv[2]
+port = sys.argv[3]
 
 try:
     from nbastats.accounts import config as auth_config
 except ImportError as exc:
     print(f"nbastats.accounts.config is not importable yet ({exc}).")
-    print(f"Run 'pip install -e \"{backend_dir}[serve,web]\"' (or '{Path(__file__).name} setup').")
+    print(f"Run '{script_name} setup' (it creates backend/.venv and installs the backend),")
+    print(f"or install it yourself: pip install -e \"{backend_dir}[serve,web]\"")
     raise SystemExit(0)
 
-env_path = backend_dir / ".env"
-if env_path.is_file():
-    auth_config.load_dotenv(env_path)
-    print(f"backend/.env: loaded ({env_path})")
+# The same call `api/app.py::create_app` makes, so doctor and the running server can never
+# disagree about what backend/.env contains.
+loaded = auth_config.load_env_file(backend_dir / ".env")
+if loaded is not None:
+    print(f"backend/.env: loaded ({loaded}) — the server reads this same file.")
 else:
     print("backend/.env: absent — every setting below is a built-in default.")
 
-settings = auth_config.AuthSettings.from_env()
+try:
+    settings = auth_config.AuthSettings.from_env()
+except ValueError as exc:
+    # A typo in one of the numeric or boolean settings. doctor is the tool you run *because*
+    # something is wrong; aborting mid-report with a Python traceback is the one thing it must
+    # never do (see this script's header).
+    print()
+    print(f"configuration error: {exc}")
+    print(f"Fix that line in {backend_dir / '.env'} (or unset it in your shell) and re-run")
+    print(f"'{script_name} doctor'. Nothing below could be checked until it parses.")
+    raise SystemExit(0)
 print(f"\n{settings!r}")
+
+configured_port = None
+try:
+    from urllib.parse import urlsplit
+
+    configured_port = urlsplit(settings.public_base_url).port or (
+        443 if settings.public_base_url.startswith("https://") else 80
+    )
+except ValueError:
+    configured_port = None
+if configured_port is not None and str(configured_port) != str(port):
+    print(
+        f"\nNOTE: HARDWOOD_PUBLIC_BASE_URL names port {configured_port}, but PORT={port}. "
+        f"'{script_name} dev' exports a matching base URL for you; anything else that binds "
+        f"port {port} will fail every sign-in with 'csrf_failed'."
+    )
 
 refusals = auth_config.startup_refusals(settings)
 warnings = auth_config.startup_warnings(settings)

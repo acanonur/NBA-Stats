@@ -306,7 +306,17 @@ function decodeLine(raw: unknown, context: string): NextGameProjectionLine {
     halfLifeGames: nullableNum(obj, "halfLifeGames", context),
     dispersionAlpha: nullableNum(obj, "dispersionAlpha", context),
     dispersionMultiplier: nullableNum(obj, "dispersionMultiplier", context),
-    availability: availability(obj, "availability", context),
+    // INVARIANT: a projected value is never a record. `index.tsx`'s rule 5 has always claimed
+    // this was "clamped client-side even if a future server build ever says otherwise"; it was
+    // not, and the field was passed straight to the badge. The server emits `"estimated"` for
+    // every line today, so this changes nothing on screen — it is the clamp the docstring
+    // promised, so a future backend change cannot make a projection render as a measurement
+    // with no marker at all. The field is still validated first, so a garbage shape is still a
+    // decode failure rather than something silently overwritten.
+    availability: (() => {
+      availability(obj, "availability", context);
+      return "estimated" as const;
+    })(),
   };
 }
 

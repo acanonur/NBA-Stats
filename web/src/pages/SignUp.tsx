@@ -1,11 +1,14 @@
 import type { JSX } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { SignUpForm } from "../auth/SignUpForm";
+import { safeNext } from "../auth/safeNext";
 import { Text } from "../design/Text";
 
 export default function SignUp(): JSX.Element {
   const [params] = useSearchParams();
-  const next = params.get("next") ?? "/";
+  // `?next=` reaches `ProviderButtons`' OAuth start URL from here; validated for the same
+  // reason `SignIn` validates it.
+  const next = safeNext(params.get("next"));
 
   return (
     <div style={{ maxWidth: 360, display: "flex", flexDirection: "column", gap: "var(--hw-space-md)" }}>

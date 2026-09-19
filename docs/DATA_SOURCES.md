@@ -23,7 +23,7 @@ of thousands of calls and days of runtime at safe rate limits.
                    └───────────────► serving database ◄────────────┘
                         (SQLite / Postgres — see docs/ARCHITECTURE.md)
                                         │
-                                 Hardwood API  ──►  iOS app
+                          Hardwood API  ──►  iOS app + web app
 ```
 
 Implemented in `backend/nbastats/ingest/`: `backfill.py` for the left arm, `daily.py` +
@@ -148,13 +148,28 @@ renders an em dash and explains why. This is a correctness requirement, not a po
   depiction, or a database product.
 * **Sports Reference** forbids building tools or websites on scraped data.
 
-So: **this repository as configured is a private, non-commercial project.** Running it for
-yourself is fine. Shipping it to the App Store, adding ads or a subscription, or wiring it to a
-sportsbook is not — at that point you license a feed (Sportradar for real scale, API-NBA or
-balldontlie GOAT for hobby scale) and stop relying on scraped stats.nba.com data in production.
+So: **this repository in its default configuration is a private, non-commercial project.**
+Running it for yourself is fine.
 
-The app carries the attribution string returned by `/v1/meta`:
+The trigger is not a store submission. It is **leaving the private configuration** — a
+deployment people you did not invite can reach or sign up for. A store submission is one shape
+of that; putting the web app on a public DNS name is another, and since the web release it is
+two environment variables away. Monetizing in any form — ads, a subscription, an in-app
+purchase — crosses the same line for a different reason. At any of those points you license a
+feed (Sportradar for real scale, API-NBA or balldontlie GOAT for hobby scale) and stop relying
+on scraped stats.nba.com data in production. [LEGAL.md](LEGAL.md) §2b draws the line properly.
+
+Every surface carries the attribution string returned by `/v1/meta` — the iOS Settings screen,
+and the footer of every page of the web app:
 *"Stats via NBA.com. Not endorsed by or affiliated with the NBA."*
+
+### One category this document does not cover
+
+Everything above is about data Hardwood takes *in*, and what its providers allow. Since the web
+release the project also collects data from its own users — email addresses, OAuth subject
+identifiers, a truncated IP prefix and a user-agent string per session. That is a different
+kind of obligation, running the other way, and it is written up in [LEGAL.md](LEGAL.md) §2c
+along with what is kept, for how long, and the export and deletion endpoints that exist for it.
 
 ---
 

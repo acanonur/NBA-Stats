@@ -9,7 +9,7 @@
  * supported mechanism"). This build ships buttons only — see `EditingToolbar.tsx`'s docstring
  * for why `@dnd-kit` drag is not wired up here.
  */
-import { useEffect, useMemo, type CSSProperties, type JSX } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type JSX } from "react";
 import clsx from "clsx";
 import { REGISTRY } from "../generated/registry";
 import { SIZE_SPANS, type WidgetSizeKey } from "../generated/tokens";
@@ -20,6 +20,7 @@ import { Text } from "../design/Text";
 import { TileSurface } from "../design/TileSurface";
 import { StalenessDot } from "../design/StalenessDot";
 import { ErrorTile, LoadingTile, PendingTile } from "../design/StateViews";
+import { TileErrorBoundary } from "../design/ErrorBoundary";
 import { useDashboardResolveActions, useWidgetResult } from "./DashboardResolveContext";
 import styles from "./WidgetContainer.module.css";
 
@@ -53,6 +54,16 @@ function UnbuiltTile({ size, kind }: { readonly size: WidgetSizeKey; readonly ki
   );
 }
 
+/** When this result stops being fresh, as an epoch millisecond, or `null` when it never does
+ * (no `generatedAt`, no `ttlSeconds`, or an unparseable timestamp — the three cases
+ * `isResultStale` also treats as never-stale). */
+function expiryOf(result: { readonly generatedAt: string | null; readonly ttlSeconds: number | null } | undefined): number | null {
+  if (!result || !result.generatedAt || result.ttlSeconds === null) return null;
+  const generatedAt = Date.parse(result.generatedAt);
+  if (Number.isNaN(generatedAt)) return null;
+  return generatedAt + result.ttlSeconds * 1000;
+}
+
 function nextSize(currentSize: WidgetSizeKey, allowed: readonly WidgetSizeKey[]): WidgetSizeKey {
   if (allowed.length === 0) return currentSize;
   const index = allowed.indexOf(currentSize);
@@ -76,6 +87,24 @@ export function WidgetContainer({
   const entry = REGISTRY[widget.kind];
   const result = useWidgetResult(widget);
   const { refetchOne } = useDashboardResolveActions();
+
+  // Staleness used to be a plain render-time computation, and nothing re-rendered a tile as
+  // time passed: `refetchOnWindowFocus` is off globally, `useWidgetResult` sets
+  // `staleTime: Infinity`, and the only timer in the app exists solely when a `scoreboard` or
+  // `daily_movers` tile is on the page. A dashboard left open at 7pm still read "Updated just
+  // now" at 11pm, over four-hour-old numbers, and had never refetched. `tick` is a one-shot
+  // timer armed for the exact moment this result expires, so the tile wakes itself.
+  const [, setTick] = useState(0);
+  const staleAt = useMemo(() => expiryOf(result), [result]);
+  useEffect(() => {
+    if (staleAt === null) return;
+    const delay = staleAt - Date.now();
+    if (delay <= 0) return;
+    // `setTimeout` clamps at ~24.8 days; a longer TTL than that is not worth arming for.
+    if (delay > 2_000_000_000) return;
+    const id = window.setTimeout(() => setTick((value) => value + 1), delay + 250);
+    return () => window.clearTimeout(id);
+  }, [staleAt]);
 
   const stale = result ? isResultStale(result) : false;
   useEffect(() => {
@@ -170,7 +199,17 @@ export function WidgetContainer({
           <StalenessDot isStale={stale} updatedAt={result.generatedAt} />
         </div>
         <div className={styles.body}>
-          <Component kind={widget.kind} size={size} payload={result.payload} />
+          {/* Two layers, because eleven of the sixteen widgets decode inside their own
+              try/catch and five (`scoreboard`, `stat_tile`, `comparison`, `daily_movers`,
+              `shot_profile`) called their decoder bare in render. A decoder throws on any
+              shape deviation — a score serialised as the string "112", a `topPerformers` that
+              came back null for a game with no box score yet — and with no boundary anywhere
+              in the app that throw unmounted RootLayout, taking the header, the nav, every
+              other tile and the NBA attribution footer with it. This boundary is the one that
+              cannot be forgotten per widget. */}
+          <TileErrorBoundary size={size} resetKey={result} onRetry={() => refetchOne(widget)}>
+            <Component kind={widget.kind} size={size} payload={result.payload} />
+          </TileErrorBoundary>
         </div>
         {result.status === "partial" && result.notes.length > 0 && (
           <Text as="p" style="caption" color="secondary">

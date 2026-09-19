@@ -16,7 +16,8 @@
         "/lch\\(/",
         "/oklab\\(/",
         "/oklch\\(/",
-        "/color\\(/"
+        "/color\\(/",
+        "/(?<![\\w-])(?:white|black|red|green|blue|orange|yellow|purple|gray|grey|silver|maroon|olive|lime|aqua|teal|navy|fuchsia|magenta|cyan|pink|brown|gold|coral|crimson|indigo|violet|turquoise|tomato)(?![\\w-])/"
       ],
       "box-shadow": [
         "/^(?!var\\(--hw-shadow-[a-z-]+\\)$|none$).+/"

@@ -24,10 +24,18 @@ state lives in its own table (``accounts.models.OAuthTransaction``) under its ow
 (``hw_oauth``), so session fixation — planting a session id in a victim's browser before they
 authenticate, then reusing it once they do — has no session to plant. The neighbouring attack,
 *forced login* (planting a session that is already authenticated as the **attacker**, so the
-victim's subsequent work lands in the attacker's account), is closed separately: no ``GET``
-route mints a session (``GET /v1/auth/verify`` used to, and no longer does), and the session
-cookie is read under exactly one name per configuration (:func:`_read_cookie`) so a sibling host
-cannot write one. Rotation on top of that
+victim's subsequent work lands in the attacker's account), is **narrowed, not closed**: no
+``GET`` route mints a session (``GET /v1/auth/verify`` used to, and no longer does), and on an
+https deployment the cookie is read under the ``__Host-`` name only (:func:`_read_cookie`), so
+a sibling *host* cannot write one. On an http deployment — the ``http://127.0.0.1:8000``
+default, and every ``HARDWOOD_ALLOW_INSECURE_COOKIES=1`` LAN deployment — the bare name is
+still accepted and nothing server-side can stop another process on the same host, or an
+on-path device on the same network, from replacing the cookie outright with ``Set-Cookie``.
+Cookies are scoped by host, not by port, and ``__Host-`` does not change that. The countermeasure
+is not in this module: ``web/src/auth/AuthProvider.tsx`` pins the account the tab bootstrapped
+with and forces a visible sign-out when ``GET /v1/auth/session`` starts answering with a
+different one. See ``accounts/csrf.py``'s docstring for why the CSRF token is not that
+countermeasure. Rotation on top of all of it
 means that even a session an attacker *did* observe (over someone's shoulder, in a proxy log
 before HTTPS was configured, whatever) stops working the moment its owner does anything that
 should have ended it.

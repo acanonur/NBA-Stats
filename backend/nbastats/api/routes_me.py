@@ -683,7 +683,10 @@ async def bounded_import_payload(request: Request) -> Any:
         )
     try:
         raw: Any = json.loads(raw_body)
-    except ValueError as exc:
+    except (ValueError, RecursionError) as exc:
+        # `RecursionError` subclasses `RuntimeError`, not `ValueError`, so 120 KB of nested
+        # brackets — well under MAX_IMPORT_BYTES — escaped this guard and became a 500 with a
+        # server-side traceback instead of the contracted 400.
         raise errors.bad_request("That import file is not valid JSON.", "body") from exc
     if not isinstance(raw, (dict, list)):
         raise errors.bad_request("That import file does not contain any dashboards.", "body")

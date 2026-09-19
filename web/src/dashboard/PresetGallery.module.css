@@ -20,7 +20,7 @@
   border: none;
   border-radius: var(--hw-radius-control);
   background: var(--hw-accent-orange);
-  color: white;
+  color: var(--hw-on-accent-orange);
   padding: var(--hw-space-xxs) var(--hw-space-sm);
   font-size: 13px;
   font-weight: 600;

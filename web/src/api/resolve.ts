@@ -77,6 +77,87 @@ export interface ResolveDashboardOptions {
   readonly knownSyncVersion?: number | null;
 }
 
+//: A monotonically increasing stamp per `resolveDashboard` call, and the stamp that last wrote
+//: each widget's cache entry. Overlapping resolves were last-write-wins: the 60s clock refresh
+//: firing while an earlier `refetchAll` was still in flight meant the earlier request, finishing
+//: second under load, overwrote the fresher slate with a 60-second-old one — and it stayed that
+//: way until the next tick. A write whose stamp is older than the entry's is now dropped.
+let resolveGeneration = 0;
+const lastWrittenGeneration = new Map<string, number>();
+
+function writeResult(
+  queryClient: QueryClient,
+  widget: ResolveWidgetRequest,
+  result: ResolveResult,
+  generation: number,
+): void {
+  const key = JSON.stringify(widgetQueryKey(widget));
+  const written = lastWrittenGeneration.get(key);
+  if (written !== undefined && written > generation) return;
+  lastWrittenGeneration.set(key, generation);
+  queryClient.setQueryData(widgetQueryKey(widget), result);
+}
+
+/** The `status: "error"` result a caller writes when the whole request failed — the shape
+ * `WidgetContainer` already knows how to render as a retryable `ErrorTile`. Exported because
+ * `DashboardResolveContext` is what catches a rejected resolve; nothing else may build one. */
+export function errorResultFor(
+  widget: ResolveWidgetRequest,
+  message: string,
+  recoverable = true,
+): ResolveResult {
+  return {
+    widgetId: widget.id,
+    kind: widget.kind,
+    status: "error",
+    payload: null,
+    error: { code: "resolve_failed", message, recoverable, field: null, requestId: null },
+    generatedAt: null,
+    ttlSeconds: null,
+    availability: null,
+    notes: [],
+  };
+}
+
+/** Writes one synthesised error result per widget, respecting the same generation guard as a
+ * real response so a late success cannot be clobbered by an earlier failure. */
+export function applyResolveFailure(
+  queryClient: QueryClient,
+  widgets: readonly ResolveWidgetRequest[],
+  message: string,
+  generation: number,
+): void {
+  for (const widget of widgets) {
+    writeResult(queryClient, widget, errorResultFor(widget, message), generation);
+  }
+}
+
+/** The stamp the next `resolveDashboard` call will use. `DashboardResolveContext` takes one
+ * before awaiting so its `.catch` can write failures under the same stamp. */
+export function nextResolveGeneration(): number {
+  resolveGeneration += 1;
+  return resolveGeneration;
+}
+
+//: The newest `syncVersion` any resolve response has reported. No caller ever supplied
+//: `knownSyncVersion`, so the whole "the server may answer `unchanged` and we keep what we
+//: hold" path could never fire and every refresh re-resolved every cached widget from scratch.
+//: The client already learns the version on every response; it just never remembered it.
+let lastSeenSyncVersion: number | null = null;
+
+/** The newest sync version this client has observed, for a caller that wants to pass it back
+ * explicitly (or a test that wants to assert it). */
+export function observedSyncVersion(): number | null {
+  return lastSeenSyncVersion;
+}
+
+/** Forget it — called on sign-out, since the next account's cache starts empty and claiming to
+ * already hold every widget at version N would make the server answer `unchanged` for payloads
+ * this client does not have. */
+export function resetObservedSyncVersion(): void {
+  lastSeenSyncVersion = null;
+}
+
 const UNCHANGED_WITHOUT_CACHE_ERROR = {
   code: "unchanged_without_cache",
   message: "This widget could not be refreshed. Reload the page to try again.",
@@ -135,6 +216,7 @@ export async function resolveDashboard(
   queryClient: QueryClient,
   widgets: readonly ResolveWidgetRequest[],
   options: ResolveDashboardOptions = {},
+  generation: number = nextResolveGeneration(),
 ): Promise<void> {
   if (widgets.length === 0) return;
   const { clockDependent, rest } = partitionClockDependent(widgets);
@@ -144,13 +226,16 @@ export async function resolveDashboard(
     ...chunk(rest, MAX_WIDGETS_PER_REQUEST),
   ];
 
-  await Promise.all(chunks.map((oneChunk) => resolveChunk(queryClient, oneChunk, options)));
+  await Promise.all(
+    chunks.map((oneChunk) => resolveChunk(queryClient, oneChunk, options, generation)),
+  );
 }
 
 async function resolveChunk(
   queryClient: QueryClient,
   widgets: readonly ResolveWidgetRequest[],
   options: ResolveDashboardOptions,
+  generation: number,
 ): Promise<void> {
   if (widgets.length === 0) return;
 
@@ -159,10 +244,13 @@ async function resolveChunk(
   const isClockDependent = CLOCK_DEPENDENT_KINDS.has(widgets[0].kind);
   const everyWidgetCached = widgets.every((widget) => cachedResult(queryClient, widget) !== undefined);
   const knownSyncVersion =
-    !isClockDependent && everyWidgetCached ? (options.knownSyncVersion ?? null) : null;
+    !isClockDependent && everyWidgetCached
+      ? (options.knownSyncVersion ?? lastSeenSyncVersion)
+      : null;
 
   const response = await postResolve(widgets, options, knownSyncVersion);
-  await applyResults(queryClient, widgets, response.results, options);
+  lastSeenSyncVersion = response.syncVersion;
+  await applyResults(queryClient, widgets, response.results, options, generation);
 }
 
 async function applyResults(
@@ -170,6 +258,7 @@ async function applyResults(
   requested: readonly ResolveWidgetRequest[],
   results: readonly ResolveResult[],
   options: ResolveDashboardOptions,
+  generation: number,
 ): Promise<void> {
   const byId = new Map(requested.map((widget) => [widget.id, widget] as const));
   const retryNeeded: ResolveWidgetRequest[] = [];
@@ -186,11 +275,11 @@ async function applyResults(
       retryNeeded.push(widget);
       continue;
     }
-    queryClient.setQueryData(widgetQueryKey(widget), result);
+    writeResult(queryClient, widget, result, generation);
   }
 
   if (retryNeeded.length > 0) {
-    await retryUnchangedWithoutCache(queryClient, retryNeeded, options);
+    await retryUnchangedWithoutCache(queryClient, retryNeeded, options, generation);
   }
 }
 
@@ -200,6 +289,7 @@ async function retryUnchangedWithoutCache(
   queryClient: QueryClient,
   widgets: readonly ResolveWidgetRequest[],
   options: ResolveDashboardOptions,
+  generation: number,
 ): Promise<void> {
   const response = await postResolve(widgets, options, null);
   const byId = new Map(widgets.map((widget) => [widget.id, widget] as const));
@@ -220,10 +310,10 @@ async function retryUnchangedWithoutCache(
         availability: null,
         notes: [],
       };
-      queryClient.setQueryData(widgetQueryKey(widget), errorResult);
+      writeResult(queryClient, widget, errorResult, generation);
       continue;
     }
-    queryClient.setQueryData(widgetQueryKey(widget), result);
+    writeResult(queryClient, widget, result, generation);
   }
 }
 

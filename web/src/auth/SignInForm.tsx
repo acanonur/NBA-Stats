@@ -3,6 +3,7 @@ import { ApiError } from "../api/session";
 import { Text } from "../design/Text";
 import { useAuth } from "./AuthProvider";
 import { ProviderButtons } from "./ProviderButtons";
+import { useProviders } from "./useProviders";
 import styles from "./forms.module.css";
 
 export interface SignInFormProps {
@@ -14,6 +15,12 @@ export interface SignInFormProps {
 
 export function SignInForm({ onSuccess, next }: SignInFormProps): JSX.Element {
   const { login } = useAuth();
+  // `ProviderButtons` returns null when neither provider is configured — the default, and what
+  // everyone sees in their first hour. The divider was rendered unconditionally above it, so
+  // the page ended with the submit button, a full-width rule labelled "or", and nothing under
+  // it: a page that reads as having failed to finish loading.
+  const { isGoogleEnabled, isAppleEnabled } = useProviders();
+  const hasProviders = isGoogleEnabled || isAppleEnabled;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -75,11 +82,13 @@ export function SignInForm({ onSuccess, next }: SignInFormProps): JSX.Element {
           {isSubmitting ? "Signing in…" : "Sign in"}
         </button>
       </form>
-      <div className={styles.divider}>
-        <Text style="caption" color="tertiary">
-          or
-        </Text>
-      </div>
+      {hasProviders && (
+        <div className={styles.divider}>
+          <Text style="caption" color="tertiary">
+            or
+          </Text>
+        </div>
+      )}
       <ProviderButtons next={next} />
     </div>
   );

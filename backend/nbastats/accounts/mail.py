@@ -34,6 +34,7 @@ from .config import AuthSettings, get_auth_settings
 
 __all__ = [
     "Mail",
+    "delivers_mail",
     "send",
     "send_verification_email",
     "send_reset_email",
@@ -59,14 +60,25 @@ class Mail:
     text: str
 
 
+def delivers_mail(settings: AuthSettings | None = None) -> bool:
+    """True when a message handed to :func:`send` actually leaves this machine.
+
+    ``log`` and ``file`` do not deliver anything: they write the message where the *operator*
+    can read it. The SPA reads this (through ``GET /v1/auth/methods``) so "Check your email"
+    is never shown to someone whose reset link is sitting in a terminal they cannot see.
+    """
+    settings = settings or get_auth_settings()
+    return settings.mailer == "smtp"
+
+
 def send(mail: Mail, *, settings: AuthSettings | None = None) -> None:
     """Dispatch ``mail`` through the configured backend."""
     settings = settings or get_auth_settings()
     mailer = settings.mailer
     if mailer == "log":
-        _send_log(mail)
+        _send_log(mail, settings)
     elif mailer == "file":
-        _send_log(mail)
+        _send_log(mail, settings)
         _send_file(mail)
     elif mailer == "smtp":
         _send_smtp(mail, settings)
@@ -94,12 +106,18 @@ def _logger_would_emit() -> bool:
     return False
 
 
-def _send_log(mail: Mail) -> None:
+def _send_log(mail: Mail, settings: AuthSettings) -> None:
     logger.info("mail -> %s: %s\n%s", mail.to, mail.subject, mail.text)
-    if not _logger_would_emit():
+    if not _logger_would_emit() and settings.is_loopback:
         # Last resort, so the console still shows the link. `print` rather than a handler this
         # module installs on the root logger: a library that reconfigures global logging on
         # import is a worse surprise than one extra line on stdout.
+        #
+        # Gated on a loopback deployment. Off localhost, an unconditional `print` wrote live
+        # single-use reset links to stdout *outside* logging configuration entirely, so an
+        # operator who had turned this module's logger down could not stop them reaching
+        # journald. A non-loopback deployment with `HARDWOOD_MAILER=log` is now a startup
+        # refusal anyway (`config.startup_refusals`); this is the second belt.
         print(f"mail -> {mail.to}: {mail.subject}\n{mail.text}", flush=True)
 
 

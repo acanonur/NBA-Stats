@@ -20,8 +20,8 @@ export default function Landing(): JSX.Element {
         Hardwood
       </Text>
       <Text as="p" style="tableCell" color="secondary">
-        Daily stats, last night's results, the player you follow, and fantasy numbers that never
-        pretend to be a betting line — all from the box score, back to 1946.
+        Daily stats, last night's results, the player you follow, and fantasy numbers that come
+        straight from the box score, back to 1946.
       </Text>
     </div>
   );

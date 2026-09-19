@@ -24,6 +24,25 @@ const METRIC_LOOKUP = new Map(
   ),
 );
 
+//: Worst-first, so `weakestAvailability` can take the first match.
+const AVAILABILITY_RANK: readonly BoxScorePlayerLine["availability"][] = [
+  "unavailable",
+  "partial",
+  "estimated",
+  "full",
+];
+
+/** The weakest availability on one team's lines — what a single badge for the whole side is
+ * honestly allowed to claim. */
+function weakestAvailability(
+  players: readonly BoxScorePlayerLine[],
+): BoxScorePlayerLine["availability"] {
+  for (const level of AVAILABILITY_RANK) {
+    if (players.some((player) => player.availability === level)) return level;
+  }
+  return "full";
+}
+
 function columnsFor(players: readonly BoxScorePlayerLine[]): readonly string[] {
   const seen = new Set<string>();
   const ordered: string[] = [];
@@ -98,19 +117,45 @@ export default function GameBox(): JSX.Element {
             const value = row.values[key];
             const format = (METRIC_LOOKUP.get(key)?.format ?? "decimal1") as MetricFormat;
             return (
-              <Text style="tableCell" tabularNums>
-                {formatValue(value, format)}
-              </Text>
+              <span className={styles.cell}>
+                <Text
+                  style="tableCell"
+                  tabularNums
+                  color={row.availability === "unavailable" ? "tertiary" : undefined}
+                >
+                  {formatValue(value, format)}
+                </Text>
+                {/* The real per-line availability the payload has always carried
+                    (`routes_games.py::combined_availability`). This page used to hardcode
+                    `availability="full"` on one badge per team and never read `row.availability`
+                    at all — and `AvailabilityBadge` renders nothing for `"full"`, so a
+                    pre-1996-97 box score whose every line comes back `"partial"` looked exactly
+                    like a 2024-25 one, with the only badge on screen positively asserting that
+                    the numbers were measured. */}
+                <AvailabilityBadge
+                  availability={row.availability}
+                  showsText={false}
+                  isInteractive={false}
+                  metricName={METRIC_LOOKUP.get(key)?.shortName ?? key}
+                  season={data.game.season}
+                />
+              </span>
             );
           },
         }));
+
+        // One interactive badge per team side, carrying the explainer for the whole table —
+        // the per-cell markers above are deliberately non-interactive (a dense table must not
+        // turn every cell into a tap target). It reports the weakest availability on the side,
+        // not an unconditional "full".
+        const sideAvailability = weakestAvailability(side.players);
 
         return (
           <div key={side.team.teamId} className={styles.side}>
             <div style={{ display: "flex", alignItems: "center", gap: "var(--hw-space-sm)", marginBottom: "var(--hw-space-sm)" }}>
               <TeamBadge abbreviation={side.team.abbr} name={side.team.name} size="medium" />
               <Text style="widgetTitle">{side.team.name}</Text>
-              <AvailabilityBadge availability="full" showsText={false} isInteractive={false} />
+              <AvailabilityBadge availability={sideAvailability} season={data.game.season} />
             </div>
             <PinnedColumnTable
               rows={side.players}

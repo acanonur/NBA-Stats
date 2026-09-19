@@ -17,6 +17,7 @@ import { StatValue } from "../../design/StatValue";
 import { DeltaChip } from "../../design/DeltaChip";
 import { EM_DASH, formatValue, mediumGameDate } from "../../design/format";
 import { decodeDailyMoversPayload } from "./decode";
+import { ErrorTile } from "../../design/StateViews";
 import styles from "./index.module.css";
 
 const ROW_LIMIT: Readonly<Record<WidgetViewProps["size"], number>> = { small: 2, medium: 3, large: 5 };
@@ -116,7 +117,22 @@ function MoverRow({ row, payload, showsSeasonAverage }: { readonly row: DailyMov
 }
 
 export default function DailyMoversWidget({ size, payload }: WidgetViewProps): JSX.Element {
-  const data = decodeDailyMoversPayload(payload);
+  // Decoded inside a try/catch, like the other widgets: these decoders throw on any
+  // shape deviation, and a bare call here meant one off-contract field took the whole
+  // page down. `WidgetContainer`'s `TileErrorBoundary` is the backstop; this is the
+  // message worth showing.
+  let data: DailyMoversPayload;
+  try {
+    data = decodeDailyMoversPayload(payload);
+  } catch {
+    return (
+      <ErrorTile
+        size={size}
+        isRetryable={false}
+        message="The data behind these daily movers did not match what the app expected."
+      />
+    );
+  }
   const limit = ROW_LIMIT[size];
   const rows = data.rows.slice(0, Math.max(limit, 0));
   const showsSeasonAverage = size === "large";

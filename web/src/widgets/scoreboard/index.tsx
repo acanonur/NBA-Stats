@@ -21,6 +21,7 @@ import { PlayerAvatar } from "../../design/PlayerAvatar";
 import { TeamBadge } from "../../design/TeamBadge";
 import { EM_DASH, formatInteger, mediumGameDate } from "../../design/format";
 import { decodeScoreboardPayload } from "./decode";
+import { ErrorTile } from "../../design/StateViews";
 import styles from "./index.module.css";
 
 const GAME_LIMIT: Readonly<Record<WidgetViewProps["size"], number>> = { small: 2, medium: 4, large: 8 };
@@ -194,7 +195,22 @@ function Performers({ performers }: { readonly performers: readonly ScoreboardTo
 }
 
 export default function ScoreboardWidget({ size, payload }: WidgetViewProps): JSX.Element {
-  const data = decodeScoreboardPayload(payload);
+  // Decoded inside a try/catch, like the other widgets: these decoders throw on any
+  // shape deviation, and a bare call here meant one off-contract field took the whole
+  // page down. `WidgetContainer`'s `TileErrorBoundary` is the backstop; this is the
+  // message worth showing.
+  let data: ScoreboardPayload;
+  try {
+    data = decodeScoreboardPayload(payload);
+  } catch {
+    return (
+      <ErrorTile
+        size={size}
+        isRetryable={false}
+        message="The data behind this scoreboard did not match what the app expected."
+      />
+    );
+  }
   const limit = GAME_LIMIT[size];
   const games = data.games.slice(0, Math.max(limit, 0));
   const showsPerformers = size === "large";

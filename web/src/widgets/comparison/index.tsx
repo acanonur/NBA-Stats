@@ -42,6 +42,7 @@ import { EM_DASH, formatValue, seasonContext } from "../../design/format";
 import { valueTreatmentClassName } from "../../design/availability";
 import { chartColorVar } from "../../design/valueColor";
 import { decodeComparisonPayload } from "./decode";
+import { ErrorTile } from "../../design/StateViews";
 import styles from "./index.module.css";
 
 type Presentation = "bars" | "table" | "radar";
@@ -379,7 +380,22 @@ function ComparisonTable({
 }
 
 export default function ComparisonWidget({ size, payload }: WidgetViewProps): JSX.Element {
-  const data: ComparisonPayload = decodeComparisonPayload(payload);
+  // Decoded inside a try/catch, like the other widgets: these decoders throw on any
+  // shape deviation, and a bare call here meant one off-contract field took the whole
+  // page down. `WidgetContainer`'s `TileErrorBoundary` is the backstop; this is the
+  // message worth showing.
+  let data: ComparisonPayload;
+  try {
+    data = decodeComparisonPayload(payload);
+  } catch {
+    return (
+      <ErrorTile
+        size={size}
+        isRetryable={false}
+        message="The data behind this comparison did not match what the app expected."
+      />
+    );
+  }
   const subjectInfos = buildSubjectInfos(data.subjects);
   const metricLimit = METRIC_LIMIT[size];
   const metrics = data.metrics.slice(0, Math.max(metricLimit, 0));

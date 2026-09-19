@@ -60,7 +60,15 @@ __all__ = ["SecurityHeadersMiddleware", "ProxyHeadersGuard", "security_headers_f
 #: dashboards replayed to the next on the same URL, and single-user it is the export sitting in
 #: the browser's on-disk cache after sign-out.
 _NO_STORE_EXACT = frozenset({"/v1/auth/session"})
-_NO_STORE_PREFIXES = ("/v1/me", "/v1/dashboards")
+#: ``/v1/dashboard`` (singular) is the *resolver* — ``/v1/dashboard/resolve`` and
+#: ``/v1/dashboard/resolve-preset/{key}`` — and it was missing for the same reason the plural
+#: path was: the tuple named the router people think of as "dashboards". Those two responses
+#: substitute the signed-in user's ``favoritePlayerId``/``favoriteTeamId`` into every widget and
+#: echo them back in ``resolvedContext``, so they are as personal as anything under ``/v1/me``.
+#: The singular prefix subsumes the plural one; both are listed anyway, because a reader
+#: checking "is /v1/dashboards covered" should not have to notice that it is a prefix of
+#: nothing.
+_NO_STORE_PREFIXES = ("/v1/me", "/v1/dashboard", "/v1/dashboards")
 
 #: Headers a forged reverse-proxy hop could use to lie about the caller's address or scheme.
 #: Stripped from the ASGI scope wholesale when the immediate TCP peer is not a trusted proxy —

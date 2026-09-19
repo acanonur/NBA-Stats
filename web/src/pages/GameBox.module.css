@@ -17,10 +17,19 @@
 
 .tabActive {
   background: var(--hw-accent-orange);
-  color: white;
+  color: var(--hw-on-accent-orange);
   border-color: transparent;
 }
 
 .side {
   margin-bottom: var(--hw-space-xl);
+}
+
+/* A value and its availability marker on one line. `AvailabilityBadge` renders zero nodes for
+   a measured value, so a modern box score's cells are laid out exactly as before. */
+.cell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+  justify-content: flex-end;
 }

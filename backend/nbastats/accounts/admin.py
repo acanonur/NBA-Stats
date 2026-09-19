@@ -57,9 +57,9 @@ from uuid import uuid4
 import httpx
 from sqlalchemy import inspect, select
 
-from ..db import get_sessionmaker, utcnow
-from . import passwords, tokens
-from .config import get_auth_settings
+from ..db import get_sessionmaker, init_db, utcnow
+from . import passwords, retention, tokens
+from .config import get_auth_settings, load_env_file
 from .models import (
     AccountBase,
     User,
@@ -141,7 +141,8 @@ def cmd_reset_password(args: argparse.Namespace) -> int:
         raw = tokens.mint(db, user.user_id, "reset")
         db.commit()
         base = get_auth_settings().public_base_url.rstrip("/")
-        print(f"{base}/reset?token={raw}")
+        # Fragment, not query string — see routes_auth._link_for for why.
+        print(f"{base}/reset#token={raw}")
         return 0
 
 
@@ -199,32 +200,18 @@ def cmd_delete_user(args: argparse.Namespace) -> int:
 
 
 def cmd_purge(args: argparse.Namespace) -> int:
+    """Hard-delete what the retention window has run out on.
+
+    The body lives in :mod:`nbastats.accounts.retention` because ``api/app.py``'s lifespan runs
+    exactly the same job daily — the Privacy page promises erasure after 30 days, and an
+    operator command nobody was told to schedule did not deliver that."""
     factory = get_sessionmaker()
     with factory() as db:
-        cutoff = utcnow() - timedelta(days=args.older_than_days)
-        stale_users = db.execute(
-            select(User).where(User.deleted_at.isnot(None), User.deleted_at < cutoff)
-        ).scalars().all()
-        deleted_user_count = 0
-        for user in stale_users:
-            delete_user(db, user.user_id)
-            deleted_user_count += 1
-
-        stale_dashboards = db.execute(
-            select(UserDashboard).where(
-                UserDashboard.deleted_at.isnot(None), UserDashboard.deleted_at < cutoff
-            )
-        ).scalars().all()
-        for dashboard in stale_dashboards:
-            db.delete(dashboard)
-
-        from .sessions import sweep
-
-        swept = sweep(db)
+        summary = retention.purge(db, older_than_days=args.older_than_days)
         db.commit()
         print(
-            f"purged {deleted_user_count} users, {len(stale_dashboards)} dashboards, "
-            f"{swept} expired sessions, oauth transactions and tokens"
+            f"purged {summary.users} users, {summary.dashboards} dashboards, "
+            f"{summary.sessions} expired sessions, oauth transactions and tokens"
         )
         return 0
 
@@ -341,6 +328,14 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
+    # `web.sh setup` prints `... admin invite --note "me"` as the very next thing to run, and
+    # on a fresh checkout there is no database yet: every subcommand died with sixty lines of
+    # `sqlalchemy.exc.OperationalError: no such table: web_invites` until the server had been
+    # started once. `init_db` is `create_all` — idempotent, and the same call `api/app.py`'s
+    # lifespan makes — so making it unconditional here costs nothing and removes a hidden
+    # ordering requirement from the first command a new operator is told to type.
+    load_env_file()
+    init_db()
     return int(args.func(args))
 
 

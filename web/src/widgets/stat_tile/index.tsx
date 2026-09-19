@@ -17,6 +17,7 @@ import { Sparkline } from "../../design/svg/Sparkline";
 import { formatValue } from "../../design/format";
 import { chartColorVar } from "../../design/valueColor";
 import { decodeStatTilePayload } from "./decode";
+import { ErrorTile } from "../../design/StateViews";
 import styles from "./index.module.css";
 
 const ALL_METRICS = METRICS_DOCUMENT.metrics as readonly MetricDescriptor[];
@@ -101,7 +102,22 @@ function SubjectBadge({ subject }: { readonly subject: SubjectRef }): JSX.Elemen
 }
 
 export default function StatTileWidget({ size, payload }: WidgetViewProps): JSX.Element {
-  const data: StatTilePayload = decodeStatTilePayload(payload);
+  // Decoded inside a try/catch, like the other widgets: these decoders throw on any
+  // shape deviation, and a bare call here meant one off-contract field took the whole
+  // page down. `WidgetContainer`'s `TileErrorBoundary` is the backstop; this is the
+  // message worth showing.
+  let data: StatTilePayload;
+  try {
+    data = decodeStatTilePayload(payload);
+  } catch {
+    return (
+      <ErrorTile
+        size={size}
+        isRetryable={false}
+        message="The data behind this stat tile did not match what the app expected."
+      />
+    );
+  }
   const primaryDescriptor = METRIC_BY_KEY.get(data.primary.metric);
   const sparklineDescriptor = METRIC_BY_KEY.get(data.sparklineMetric);
   const season = seasonHint(data.context);

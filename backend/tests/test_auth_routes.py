@@ -218,8 +218,39 @@ def test_invite_mode_requires_a_valid_code(monkeypatch: pytest.MonkeyPatch, auth
         json={"email": "signer@example.com", "password": "a reasonable password"},
         headers=ORIGIN,
     )
+    # An absent code and a wrong code are different mistakes and get different messages: the
+    # sign-up form used to tell someone who deliberately left the field blank that the code
+    # they had not supplied "is not valid", and named nothing they could do about it. The
+    # default TestClient is not a loopback caller (its client host is "testclient"), which is
+    # the hosted shape — the person signing up is not the operator and cannot run anything.
     assert no_code.status_code == 400
-    assert no_code.json()["error"]["code"] == "invalid_invite"
+    missing = no_code.json()["error"]
+    assert missing["code"] == "invite_required"
+    assert missing["field"] == "inviteCode"
+    assert "not valid" not in missing["message"]
+    assert "Ask whoever runs this Hardwood" in missing["message"]
+
+    # From loopback — the operator's own laptop — it names the command that mints one.
+    local = TestClient(app, client=("127.0.0.1", 54321))
+    local_missing = local.post(
+        "/v1/auth/signup",
+        json={"email": "local@example.com", "password": "a reasonable password"},
+        headers=ORIGIN,
+    )
+    assert local_missing.status_code == 400
+    assert "nbastats.accounts.admin invite" in local_missing.json()["error"]["message"]
+
+    wrong_code = client.post(
+        "/v1/auth/signup",
+        json={
+            "email": "signer@example.com",
+            "password": "a reasonable password",
+            "inviteCode": "not-a-real-code",
+        },
+        headers=ORIGIN,
+    )
+    assert wrong_code.status_code == 400
+    assert wrong_code.json()["error"]["code"] == "invalid_invite"
 
     factory = db_module.get_sessionmaker()
     with factory() as db:

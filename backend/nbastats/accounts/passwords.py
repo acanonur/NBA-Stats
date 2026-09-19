@@ -190,6 +190,16 @@ def dummy_verify() -> None:
     verify_password(_DUMMY_PASSWORD, _dummy_hash(n_exp))
 
 
+#: The shortest email local part worth denying inside a password.
+#:
+#: Three, not one. A substring test with no floor is a trap: the local part of "a@example.com"
+#: is "a", so every password containing the letter A is refused, and the reader is told their
+#: password contains part of their email address when it plainly does not. Three still denies
+#: "ada" inside "adaLovelace123!", which is the case the rule exists for. It is a floor on
+#: nonsense, not a weakening of the denylist.
+MIN_LOCAL_PART_FOR_DENY = 3
+
+
 def policy_problem(password: str, *, email: str | None) -> str | None:
     """``None`` when ``password`` is acceptable; otherwise a message to show the user.
 
@@ -208,6 +218,9 @@ def policy_problem(password: str, *, email: str | None) -> str | None:
     if email:
         local_part = email.split("@", 1)[0]
         local_normalized = unicodedata.normalize("NFKC", local_part).casefold()
-        if local_normalized and local_normalized in normalized:
+        # Only when the local part is long enough to be worth denying — see
+        # MIN_LOCAL_PART_FOR_DENY. Below it the "local part" is a letter or two, not a guess
+        # anyone would make, and denying it costs a real user their password for nothing.
+        if len(local_normalized) >= MIN_LOCAL_PART_FOR_DENY and local_normalized in normalized:
             return "Password must not contain part of your email address."
     return None

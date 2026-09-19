@@ -13,11 +13,12 @@
  *    prose explanation.
  * 4. A rate that leans on the league prior, or one with thin exposure behind it, is flagged on
  *    its own line.
- * 5. Every projected value is `availability: "estimated"`, clamped client-side even if a future
- *    server build ever says otherwise — a projection is never a record.
+ * 5. Every projected value is `availability: "estimated"`, clamped in `decode.ts` even if a
+ *    future server build ever says otherwise — a projection is never a record. The clamp is at
+ *    the decode boundary, not here, so nothing downstream of it can see another value.
  *
- * There is deliberately nothing here about odds, implied probability, expected value or staking,
- * and no place to put it.
+ * Nothing here translates to a market — no prices, no implied probabilities, nothing anyone
+ * could put money behind — and there is no place to put it.
  */
 import type { JSX } from "react";
 import type { WidgetViewProps } from "../../generated/registry";

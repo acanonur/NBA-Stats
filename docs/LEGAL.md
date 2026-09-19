@@ -9,7 +9,9 @@ research, written so that nobody has to rediscover them later.
 
 | You want to… | Verdict |
 | --- | --- |
-| Run Hardwood privately for yourself, on your own machine, with data from stats.nba.com | **Fine.** This is the configuration in this repository. |
+| Run Hardwood privately for yourself, on your own machine, with data from stats.nba.com | **Fine.** This is the *default* configuration — and, since the web release, a configuration you can leave. See §2b. |
+| Run the web app for yourself or your household, invite-only, on a machine or LAN you control | **Fine**, on the same footing. Keep `HARDWOOD_SIGNUP_MODE=invite`. |
+| Put the web app on a public DNS name, free, no ads, accounts and all | **Unresolved, and the licensing conversation comes first.** This is the step that ends the private/non-commercial predicate §2 rests on. See §2b. |
 | Share the repository, its code, its schema and its formulas | **Fine.** Code and formulas are yours; the data is not redistributed. |
 | Put Hardwood on the App Store, free, with scraped NBA.com data | **Offside.** NBA.com's terms restrict statistics to private, non-commercial purposes. |
 | Add ads, a subscription, or an IAP | **Offside** on scraped data. License a feed first. |
@@ -48,8 +50,11 @@ The operative restrictions on NBA statistics:
 
 ### How this repository complies
 
-* Default deployment is private and single-user; the API binds to localhost and ships with no
-  hosting configuration.
+* **The default deployment is private.** The API binds to loopback, `HARDWOOD_PUBLIC_BASE_URL`
+  defaults to `http://127.0.0.1:8000`, web sign-up defaults to `invite`, and nothing here ships
+  a hosting configuration. Since the web release this is a property of how you have deployed
+  Hardwood rather than of what has been written, and it can be left by editing two environment
+  variables — which is what §2b is about. Every bullet below depends on it.
 * `/v1/meta` returns, and the iOS Settings screen displays,
   *"Stats via NBA.com. Not endorsed by or affiliated with the NBA."*
 * No sponsorship, advertising, payment or betting surface exists anywhere in the codebase.
@@ -71,8 +76,8 @@ That is analysis of statistics for a private, non-commercial purpose, which is t
 paragraph permits. The distinction is real, but it is a distinction, not an exemption, and three
 things follow that are worth writing down rather than discovering later:
 
-1. **Publishing is the trigger, and this feature raises the stakes of it.** Everything in §3
-   above depends on the deployment staying private and single-user. A fantasy toolkit is the part
+1. **Publishing is the trigger, and this feature raises the stakes of it.** Everything in §2
+   above depends on the deployment staying private. A fantasy toolkit is the part
    of this app most likely to make someone want to share it, and it is also the part whose
    compliance argument is thinnest. Publishing the API, shipping the app, or putting the board in
    front of anyone who is not the person who built it needs the licensing conversation first —
@@ -87,8 +92,123 @@ things follow that are worth writing down rather than discovering later:
 
 ### What would break compliance
 
-Publishing the API, putting the app in a store, monetizing in any form, adding odds or fantasy
-scoring as a product feature, or redistributing the ingested database.
+Leaving the private configuration — a site people you did not invite can reach or sign up for —
+putting the app in a store, monetizing in any form, adding contest scoring or any
+gambling-adjacent feature, or redistributing the ingested database. A store submission is one
+shape of publishing, not the definition of it; §2b draws the line where it actually falls.
+
+## 2b. The web surface, and what "private" now has to mean
+
+Hardwood Web is a browser client with user accounts, served by the same process at `/` with the
+API unchanged at `/v1`. That does not by itself break anything in §2. A web app on
+`127.0.0.1` that only you sign into is the same private, non-commercial use a native app on
+your own phone is, and an invite-only site for a household is not obviously different from one
+person with two devices.
+
+What accounts changed is where the predicate lives. Before the web release, "private and
+single-user" was a property of what had been *written*: there was no sign-in, no multi-user
+anything, and no way to deploy one without writing it. Now it is a property of how you have
+*deployed* it, and it can be left by editing two environment variables. The sentence this
+document's compliance argument used to rest on is no longer a fact about the repository, so it
+has stopped being allowed to do that work.
+
+**The line, as precisely as it can be drawn here: §2 holds while the deployment is private —
+you, or a household, on a machine or a network you control, with accounts you personally
+issued. It stops holding the moment the site is reachable by people you did not invite.** A
+public DNS name is the clearest way to cross it and the one to assume you have crossed if you
+are unsure, but the test is who can reach the thing, not what the URL looks like.
+
+What this repository carries as code rather than as intention:
+
+* `HARDWOOD_SIGNUP_MODE` defaults to `invite`. `open` on a non-loopback base URL is a **startup
+  refusal** unless a backstop invite code is also set, so an open public sign-up cannot happen
+  by forgetting a setting.
+* `HARDWOOD_PUBLIC_BASE_URL` defaults to `http://127.0.0.1:8000`, and the server refuses to
+  start on a non-loopback `http` URL unless you explicitly accept cleartext session cookies.
+  Leaving loopback is a decision you have to make out loud.
+* The NBA attribution string is in the **footer of every page**, not a settings row. A surface
+  more people can see raises what "prominent" has to mean, and a footer is the honest reading.
+* **No request the browser can make reaches stats.nba.com.** Every user-facing read is served
+  from Hardwood's own store; only the scheduled ingest worker talks upstream. That is now an
+  architectural rule enforced by where the network client is imported, not inherited discipline.
+* `/fantasy` carries the no-contest notice, and the fantasy tools stay what §2a describes:
+  analysis of one manager's own roster, never the operation of a game.
+
+What none of that resolves, and cannot: whether a free, ad-free, account-gated site counts as
+"private, non-commercial", and how far "database product" reaches when what you are running is
+a queryable store of NBA statistics behind a login. Those need a lawyer, not a repository. The
+controls above exist so the question can still be asked later, rather than being answered
+wrongly by accident in the meantime.
+
+## 2c. Personal data Hardwood collects from its own users
+
+Everything above this line concerns obligations to the people the *data* came from. Accounts
+created a second, unrelated set: obligations to the people who sign in. The repository had none
+of these before the web release, and neither this document nor
+[DATA_SOURCES.md](DATA_SOURCES.md) addressed them.
+
+### What is stored
+
+| Data | Where | Why it exists |
+| --- | --- | --- |
+| Email address, and a normalised lookup copy | `users.email`, `users.email_lookup` | Sign-in identity, password reset, email-change confirmation |
+| scrypt password hash | `users.password_hash` | Never the password itself |
+| Display name; given and family name | `users` | Shown in the UI. The name fields are populated only when a provider sends them |
+| Favourite player and team, theme, selected dashboard | `users` | Product preferences |
+| Provider subject identifier, and the email at the time of linking | `user_identities` | The stable id Google or Apple uses for you — the thing that makes "sign in with Google" the same account next time |
+| Saved dashboards | `user_dashboards.document_json` | The thing an account exists to keep |
+| One row per signed-in browser | `auth_sessions` | A hash of the session secret, timestamps, the sign-in method, a **truncated IP prefix** and a **user-agent string** (first 255 characters) — so you can see and revoke your own sessions, and so rate limiting has something to key on |
+| Single-use tokens | `auth_tokens` | Password reset and email verification: hashed, expiring |
+| In-flight sign-ins | `oauth_transactions` | A ten-minute record of an OAuth round trip, deleted when consumed or expired |
+
+The IP prefix is truncated to `/24` (IPv4) or `/48` (IPv6) *before* it is written. It is honest
+minimisation and deliberately not pseudonymisation: a salted hash of a 32-bit address space is
+reversible by brute force in seconds, so storing one and calling it anonymous would be a claim
+that does not survive scrutiny. A truncated prefix cannot be reversed to the original address
+at all.
+
+There is no analytics, no advertising identifier, and no third-party script of any kind on the
+site — the Content-Security-Policy is `script-src 'self'` with no exceptions, which is a
+mechanism rather than a promise. The only outbound requests are to Google or Apple, during a
+sign-in you started.
+
+### How long it is kept
+
+* Sessions expire after 30 days idle and 90 days absolute; expired rows are deleted, both
+  opportunistically on use and by `admin.py purge`.
+* OAuth transactions live ten minutes and are deleted on first use.
+* Reset and verification tokens are deleted once they expire.
+* Account data is kept until the account is deleted. `DELETE /v1/me` disables it and revokes
+  every session immediately; the rows are erased permanently thirty days later. That erasure
+  runs by itself — the server sweeps once at startup and every twenty-four hours after — so a
+  deletion completes without anyone remembering to do anything. `admin.py purge` forces a pass
+  early, and a cron entry ([WEB.md](WEB.md) §11) is worth adding anyway if the process stays
+  up for months at a time, because the in-process job is a task in a single worker rather than
+  a real scheduler.
+
+### Access and erasure
+
+* `GET /v1/me/export` returns the account record and every saved dashboard as JSON.
+* `DELETE /v1/me` deletes the account, behind a typed confirmation and a re-authentication
+  requirement.
+* The operator equivalents, for someone who asks by email, are `admin.py export-user` and
+  `admin.py delete-user`.
+
+These are in the first release rather than on a roadmap, because the alternative is answering a
+real request by hand against a SQLite file, and that is how a promise quietly becomes a lie.
+
+### Where this needs a lawyer, and not this file
+
+If the only account is yours, this section is housekeeping. The moment somebody else signs in,
+you are handling another person's personal data, and which rules apply depends on where you are
+and where they are. That is not a question this repository can answer, and naming statutes here
+would be pretending to an authority this document does not have.
+
+What can be said without guessing: you should be able to state what you collect, why, and for
+how long — that is the table above; you should be able to produce a copy of it and delete it on
+request — those are the endpoints above; and `/legal/privacy` is a page that has to stay true
+as the schema changes, which means it is maintenance, not decoration. Any deployment beyond
+your own household should get real advice **before** its first outside sign-up, not after.
 
 ---
 

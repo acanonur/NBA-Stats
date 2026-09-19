@@ -105,6 +105,42 @@ def _rgba(hex_color: str, alpha: float) -> str:
     return f"rgba({r},{g},{b},{alpha_text})"
 
 
+#: The two candidates for label text sitting *on* an accent fill. Near-black rather than pure
+#: black so it matches the dark palette's own `background` step instead of punching a hole.
+_ON_ACCENT_CANDIDATES = ("#0C0E12", "#FFFFFF")
+
+
+def _relative_luminance(hex_color: str) -> float:
+    """WCAG 2.1 relative luminance."""
+
+    def channel(raw: int) -> float:
+        c = raw / 255
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    r, g, b = _hex_to_rgb(hex_color)
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+
+
+def _contrast(a: str, b: str) -> float:
+    la, lb = _relative_luminance(a), _relative_luminance(b)
+    lighter, darker = max(la, lb), min(la, lb)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def _on_accent(hex_color: str) -> str:
+    """The label colour to put on top of ``hex_color``, whichever of near-black and white has
+    more contrast against it.
+
+    This exists because five components hard-coded ``color: white`` on
+    ``background: var(--hw-accent-orange)`` — fine at 5.18:1 in light mode, and 2.26:1 in dark,
+    where the accent lightens to ``#FB923C``. That failed AA on the sign-in button, the
+    editor's primary toolbar button, every preset card's "Use this", and the *selected* tab on
+    /fantasy and on a box score. `stylelint`'s hex/rgba ban does not catch the bare keyword
+    ``white``, which is why nothing reported it.
+    """
+    return max(_ON_ACCENT_CANDIDATES, key=lambda candidate: _contrast(hex_color, candidate))
+
+
 def _px(value: float) -> str:
     return f"{value:g}px"
 
@@ -146,6 +182,7 @@ def _mode_declarations(theme: dict[str, Any], mode: str) -> list[str]:
         soft_alpha = entry[f"soft{mode.capitalize()}Alpha"]
         lines.append(f"  --hw-accent-{name}:{entry[mode]};")
         lines.append(f"  --hw-accent-{name}-soft:{_rgba(entry[mode], soft_alpha)};")
+        lines.append(f"  --hw-on-accent-{name}:{_on_accent(entry[mode])};")
 
     broadsheet = theme["broadsheet"]
     for key in BROADSHEET_COLOR_ORDER:
@@ -210,6 +247,7 @@ def render_css(theme: dict[str, Any]) -> str:
     default_accent = [
         "  --hw-accent:var(--hw-accent-orange);",
         "  --hw-accent-soft:var(--hw-accent-orange-soft);",
+        "  --hw-on-accent:var(--hw-on-accent-orange);",
     ]
 
     parts = [

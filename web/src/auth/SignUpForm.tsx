@@ -15,16 +15,22 @@ export interface SignUpFormProps {
   readonly next?: string;
 }
 
+// There is no email allowlist in this product and there never was — `routes_auth._check_invite`
+// reads no email at all. The old invite copy told people the code was "optional if your email
+// is already on the list", so the reasonable thing to do (leave it blank) produced "That invite
+// code is not valid." on a field they had deliberately left empty, and nothing named the one
+// command that mints a code.
 const SIGNUP_MODE_COPY: Record<"open" | "invite" | "closed", string> = {
   open: "Anyone can create a Hardwood account.",
   invite:
-    "Hardwood is invite-only right now. Enter the invite code someone sent you, or leave it " +
-    "blank if you already know your email is on the list.",
+    "Hardwood is invite-only right now. You need an invite code — whoever runs this Hardwood " +
+    "mints one with `python3 -m nbastats.accounts.admin invite`.",
   closed: "New sign-ups are not open right now.",
 };
 
 export function SignUpForm({ next }: SignUpFormProps): JSX.Element {
-  const { signupMode } = useProviders();
+  const { signupMode, isGoogleEnabled, isAppleEnabled, deliversMail } = useProviders();
+  const hasProviders = isGoogleEnabled || isAppleEnabled;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -53,10 +59,25 @@ export function SignUpForm({ next }: SignUpFormProps): JSX.Element {
   }
 
   if (isDone) {
+    // `deliversMail === false` is the default deployment (`HARDWOOD_MAILER=log`): the
+    // verification message is written to the operator's terminal and sent nowhere. Telling
+    // someone to check an inbox that will never receive anything is the kind of lie that makes
+    // a person conclude the product is broken rather than unconfigured.
     return (
       <Text as="p" style="tableCell">
-        Check your email for a link to verify {email}. You can sign in before you click it —
-        Hardwood does not require a verified email to use the product.
+        {deliversMail === false ? (
+          <>
+            Your account is created. This deployment has no mail server, so no verification
+            email was sent — the link is in the server's log, and whoever runs this Hardwood
+            can pass it on. You can sign in without it: Hardwood does not require a verified
+            email to use the product.
+          </>
+        ) : (
+          <>
+            Check your email for a link to verify {email}. You can sign in before you click it —
+            Hardwood does not require a verified email to use the product.
+          </>
+        )}
       </Text>
     );
   }
@@ -117,12 +138,13 @@ export function SignUpForm({ next }: SignUpFormProps): JSX.Element {
           {signupMode === "invite" && (
             <label className={styles.field}>
               <Text style="tableHeader" as="span">
-                Invite code (optional if your email is already on the list)
+                Invite code
               </Text>
               <input
                 className={styles.input}
                 type="text"
                 name="inviteCode"
+                required
                 value={inviteCode}
                 onChange={(event) => setInviteCode(event.target.value)}
               />
@@ -140,11 +162,13 @@ export function SignUpForm({ next }: SignUpFormProps): JSX.Element {
           </button>
         </form>
       )}
-      <div className={styles.divider}>
-        <Text style="caption" color="tertiary">
-          or
-        </Text>
-      </div>
+      {hasProviders && (
+        <div className={styles.divider}>
+          <Text style="caption" color="tertiary">
+            or
+          </Text>
+        </div>
+      )}
       <ProviderButtons next={next} />
     </div>
   );

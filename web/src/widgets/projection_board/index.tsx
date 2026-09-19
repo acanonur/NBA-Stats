@@ -1,8 +1,8 @@
 /**
- * `projection_board` — tonight's projected lines, each drawn as a range against the player's own
+ * `projection_board` — tonight's projected ranges, each drawn against the player's own
  * season average. Ported from `ios/NBAStats/Widgets/ProjectionBoardWidget.swift`.
  *
- * Nothing here is a book line, a price or an over/under: the tick on every bar is the row's own
+ * Nothing here is a market quote of any kind: the tick on every bar is the row's own
  * `referenceValue` (the player's season average), labelled as such every time, never a market
  * line. Rows arrive from the server already sorted by `|deltaZ|` and are rendered in that order —
  * re-sorting by raw `|delta|` here would silently break the disagreement ranking a points row and

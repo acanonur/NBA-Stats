@@ -33,7 +33,7 @@
 
 .primary {
   background: var(--hw-accent-orange);
-  color: white;
+  color: var(--hw-on-accent-orange);
   border-color: transparent;
 }
 

@@ -276,7 +276,7 @@ export default function Fantasy(): JSX.Element {
       </Text>
       <div className={styles.banner}>
         <Text as="p" style="tableCell">
-          Hardwood does not run a fantasy league, keep scores, or publish odds. These are your
+          Hardwood does not run a fantasy league, keep scores, or price anything. These are your
           own roster's numbers. Tonight's points, the nine-category draft board, and a trade
           verdict are three unrelated scoring systems — never added together, never shown as one
           number.

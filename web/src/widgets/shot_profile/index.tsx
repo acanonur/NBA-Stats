@@ -27,6 +27,7 @@ import { EM_DASH, formatValue, seasonContext } from "../../design/format";
 import { chartColorVar } from "../../design/valueColor";
 import { GroupedBars, type GroupedBarGroup } from "../../design/svg/GroupedBars";
 import { decodeShotProfilePayload } from "./decode";
+import { ErrorTile } from "../../design/StateViews";
 import { useChartWidth } from "../../design/useChartWidth";
 import styles from "./index.module.css";
 
@@ -164,8 +165,36 @@ function Chart({
   );
 }
 
+/**
+ * Decoded in a wrapper rather than in the view, because the view calls `useChartWidth` and a
+ * hook may not sit after an early return. These decoders throw on any shape deviation, and a
+ * bare call in render meant one off-contract field took the whole page down;
+ * `WidgetContainer`'s `TileErrorBoundary` is the backstop, and this is the message worth
+ * showing.
+ */
 export default function ShotProfileWidget({ size, payload }: WidgetViewProps): JSX.Element {
-  const data: ShotProfilePayload = decodeShotProfilePayload(payload);
+  let data: ShotProfilePayload;
+  try {
+    data = decodeShotProfilePayload(payload);
+  } catch {
+    return (
+      <ErrorTile
+        size={size}
+        isRetryable={false}
+        message="The data behind this shot profile did not match what the app expected."
+      />
+    );
+  }
+  return <ShotProfileView size={size} data={data} />;
+}
+
+function ShotProfileView({
+  size,
+  data,
+}: {
+  readonly size: WidgetSizeKey;
+  readonly data: ShotProfilePayload;
+}): JSX.Element {
   const subjectName = subjectDisplayName(data.subject);
   const context = seasonContext(data.season, data.seasonType);
 

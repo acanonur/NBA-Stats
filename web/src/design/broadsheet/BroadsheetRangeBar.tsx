@@ -1,6 +1,6 @@
 /**
  * `ProjectionIntervalBar` dressed for the broadsheet — the design's colour logic (cyan above the
- * reference mark, magenta below, neutral with no mark) carried over without its betting meaning
+ * reference mark, magenta below, neutral with no mark) carried over without its market meaning
  * (`ios/NBAStats/DesignSystem/RangeBar.swift`'s own docstring, ported).
  */
 import type { JSX } from "react";

@@ -30,7 +30,17 @@ export default defineConfig({
   build: {
     outDir: "dist",
     modulePreload: { polyfill: false },
-    sourcemap: true,
+    // The shipped bundle carries no source map. `web/dist` is served by the FastAPI process
+    // at `/assets`, unauthenticated, with `max-age=31536000, immutable` — so `sourcemap: true`
+    // published 2.8 MB of `sourcesContent` (131 files under `src/`, every page, every widget,
+    // every docstring describing the CSRF header, the in-memory-token model and the
+    // 401-redirect contract) to anyone who asked, and pinned it in caches for a year. No
+    // credentials were in it; the annotated client half of the auth surface was.
+    //
+    // `"hidden"` is the setting to use if these ever go to an error tracker: it still writes
+    // the map but omits the `sourceMappingURL` comment. `false` keeps it out of `dist/`
+    // entirely, which is what a committed bundle wants.
+    sourcemap: false,
   },
   server: {
     proxy: {

@@ -3,7 +3,7 @@
  * §7.9). `RootLayout` is every route's element ancestor (it owns `AuthProvider` and the shared
  * chrome — header, `<Outlet>`, footer); `RequireAuth` gates the `session`-tier routes.
  */
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import { RootLayout } from "./pages/RootLayout";
 import { RequireAuth } from "./auth/RequireAuth";
 import Landing from "./pages/Landing";
@@ -25,11 +25,20 @@ import Team from "./pages/Team";
 import Fantasy from "./pages/Fantasy";
 import Leaders from "./pages/Leaders";
 import Settings from "./pages/Settings";
+import NotFound from "./pages/NotFound";
 
-export const router = createBrowserRouter([
+/** The route objects, separately from the browser router built from them, so a test can mount
+ * the real table in a memory router (a browser router cannot be pointed at an arbitrary URL). */
+export const ROUTES: RouteObject[] = [
   {
     path: "/",
     element: <RootLayout />,
+    // Without this, a throw anywhere below — a widget whose payload drifted, a rejected
+    // `navigate`, a mistyped URL the server answered with index.html — unmounted `RootLayout`
+    // itself and replaced the whole document, footer and all, with React Router's default
+    // "Unexpected Application Error!" page. `errorElement` on the root route renders in
+    // `RootLayout`'s `<Outlet>` instead, so the chrome and the NBA attribution survive.
+    errorElement: <RootLayout hasError />,
     children: [
       { index: true, element: <Landing /> },
       { path: "sign-in", element: <SignIn /> },
@@ -55,6 +64,10 @@ export const router = createBrowserRouter([
           { path: "settings", element: <Settings /> },
         ],
       },
+      // Last, so it only ever catches what nothing above claimed.
+      { path: "*", element: <NotFound /> },
     ],
   },
-]);
+];
+
+export const router = createBrowserRouter(ROUTES);

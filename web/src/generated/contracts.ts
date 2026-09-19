@@ -2441,7 +2441,7 @@ export const WIDGETS_DOCUMENT = {
     {
       "kind": "projection_board",
       "name": "Tonight's Projections",
-      "summary": "Tonight's projected lines for several players, each as a range with the season average marked.",
+      "summary": "Tonight's projected ranges for several players, each with the season average marked.",
       "icon": "chart.dots.scatter",
       "sizes": [
         "large"
@@ -2489,7 +2489,7 @@ export const WIDGETS_DOCUMENT = {
         {
           "key": "metrics",
           "type": "metricList",
-          "label": "Lines",
+          "label": "Stats",
           "required": true,
           "default": [
             "pts",

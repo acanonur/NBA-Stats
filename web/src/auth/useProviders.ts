@@ -13,6 +13,10 @@ export interface ProvidersState {
   readonly isGoogleEnabled: boolean;
   readonly isAppleEnabled: boolean;
   readonly signupMode: "open" | "invite" | "closed" | null;
+  /** Whether account mail actually leaves the machine. `null` until `GET /v1/auth/methods`
+   * has answered — copy that would promise an email must wait for a real answer rather than
+   * guess, so callers treat `null` as "do not promise". */
+  readonly deliversMail: boolean | null;
 }
 
 export function useProviders(): ProvidersState {
@@ -23,5 +27,6 @@ export function useProviders(): ProvidersState {
     isGoogleEnabled: methods?.google.enabled ?? false,
     isAppleEnabled: methods?.apple.enabled ?? false,
     signupMode: methods?.password.signupMode ?? null,
+    deliversMail: methods?.mail?.delivers ?? null,
   };
 }

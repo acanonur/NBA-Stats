@@ -10,7 +10,7 @@
  * ```
  *
  * **The tick is a projection's own season average, never a market line.** Nothing in this
- * component knows what odds are, and nothing here should ever be asked to learn — see the house
+ * component knows anything about markets, and nothing here should ever be asked to learn — see the house
  * rule against gambling vocabulary. The caller supplies the caption that names the tick
  * ({@link ProjectionIntervalBar} does exactly that); this component only draws.
  *
@@ -81,8 +81,8 @@ const VARIANT_STYLE: Readonly<Record<RangeBarVariant, CSSProperties>> = {
 export interface RangeBarProps {
   readonly model: RangeBarModel;
   /** The tick's colour — cyan-above/magenta-below in the broadsheet handoff, carried over
-   * without its betting meaning (WEB_DESIGN.md §7.7's `next_game_projection`/`projection_board`
-   * notes: a signed comparison against a reference, not an odds display). */
+   * without its market meaning (§7.7's `next_game_projection`/`projection_board` notes: a
+   * signed comparison against a reference, never a price). */
   readonly accent: string;
   readonly height?: number;
   readonly variant?: RangeBarVariant;

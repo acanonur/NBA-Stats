@@ -16,12 +16,17 @@ import {
 } from "react";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  applyResolveFailure,
   CLOCK_DEPENDENT_KINDS,
   CLOCK_DEPENDENT_REFRESH_MS,
+  nextResolveGeneration,
+  observedSyncVersion,
   resolveDashboard,
   widgetQueryKey,
   type ResolveDashboardOptions,
 } from "../api/resolve";
+import { ApiError } from "../api/session";
+import { subscribeToSync } from "../api/sync";
 import type { ResolveResult, ResolveWidgetRequest } from "../api/types";
 import type { WidgetKind } from "../generated/contracts";
 
@@ -65,15 +70,38 @@ export function DashboardResolveProvider({
   );
   const optionsKey = JSON.stringify(options ?? {});
 
+  // `POST /v1/dashboard/resolve` failing — the process restarted, the SQLite file is locked by
+  // an ingest run, the wifi dropped for one request — used to be a `void` on a promise that
+  // rejects. Nothing wrote an error into the cache, so `useWidgetResult` kept returning
+  // `undefined` and every tile shimmered indefinitely: no message, no retry, no way to tell a
+  // slow server from a dead one. The rejection is now turned into the `status: "error"` result
+  // `WidgetContainer` already renders as a retryable `ErrorTile`.
+  const run = useCallback(
+    (widgets: readonly ResolveWidgetRequest[]): void => {
+      if (widgets.length === 0) return;
+      const generation = nextResolveGeneration();
+      void resolveDashboard(queryClient, widgets, optionsRef.current, generation).catch(
+        (cause: unknown) => {
+          const message =
+            cause instanceof ApiError
+              ? cause.message
+              : "Could not reach Hardwood. Check your connection and try again.";
+          applyResolveFailure(queryClient, widgets, message, generation);
+        },
+      );
+    },
+    [queryClient],
+  );
+
   const refetchAll = useCallback((): void => {
-    void resolveDashboard(queryClient, widgetsRef.current, optionsRef.current);
-  }, [queryClient]);
+    run(widgetsRef.current);
+  }, [run]);
 
   const refetchOne = useCallback(
     (widget: ResolveWidgetRequest): void => {
-      void resolveDashboard(queryClient, [widget], optionsRef.current);
+      run([widget]);
     },
-    [queryClient],
+    [run],
   );
 
   useEffect(() => {
@@ -83,12 +111,39 @@ export function DashboardResolveProvider({
     refetchAll();
   }, [widgetsKey, optionsKey, refetchAll]);
 
+  // `hasClockDependent` is derived here rather than inside the effect so `widgets` — rebuilt
+  // fresh on every render by `Dashboard.tsx` — stays out of the dependency array. With it in,
+  // any state change in the editor (toggling ?edit=1, opening the config sheet, an isSaving
+  // flip from the debounced PUT) tore the interval down and re-armed it, so an actively edited
+  // dashboard's scoreboard could go a long time without its guaranteed 60s refresh.
+  const hasClockDependent = useMemo(
+    () => widgets.some((widget) => CLOCK_DEPENDENT_KINDS.has(widget.kind)),
+    [widgets],
+  );
   useEffect(() => {
-    const hasClockDependent = widgets.some((widget) => CLOCK_DEPENDENT_KINDS.has(widget.kind));
     if (!hasClockDependent) return;
     const id = window.setInterval(refetchAll, CLOCK_DEPENDENT_REFRESH_MS);
     return () => window.clearInterval(id);
-  }, [widgetsKey, refetchAll, widgets]);
+  }, [widgetsKey, refetchAll, hasClockDependent]);
+
+  // `GET /v1/sync/stream` — the server tells us when an ingest lands, instead of every tab
+  // guessing on a timer. `api/sync.ts` shipped with no importer at all, so the whole
+  // freshness path §7.6 describes was dead code that read as implemented. Guarded on
+  // `EventSource` existing (it does not in jsdom, and not in every embedded webview) and on
+  // the constructor not throwing, because a dashboard must work without it — it is an
+  // optimisation over the per-tile expiry timers, never a requirement.
+  useEffect(() => {
+    if (typeof EventSource === "undefined") return;
+    let dispose: (() => void) | null = null;
+    try {
+      dispose = subscribeToSync((payload) => {
+        if (payload.hasChanges) refetchAll();
+      }, observedSyncVersion());
+    } catch {
+      return;
+    }
+    return () => dispose?.();
+  }, [refetchAll]);
 
   const value = useMemo<DashboardResolveContextValue>(
     () => ({ refetchOne, refetchAll }),

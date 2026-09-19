@@ -22,8 +22,10 @@ export default function Privacy(): JSX.Element {
       </Text>
       <Text as="p" style="tableCell">
         You can download a copy of everything stored about your account, and every dashboard you
-        have saved, from Settings at any time. Deleting your account disables it immediately and
-        erases it permanently after 30 days.
+        have saved, from Settings at any time. Deleting your account disables it immediately,
+        signs out every session, and erases it permanently 30 days later — the server runs that
+        erasure itself, daily, so it happens whether or not anyone remembers to. Until then the
+        operator can restore it if you ask.
       </Text>
     </div>
   );

@@ -30,7 +30,7 @@
   border: none;
   border-radius: var(--hw-radius-control);
   background: var(--hw-accent-orange);
-  color: white;
+  color: var(--hw-on-accent-orange);
   padding: var(--hw-space-sm) var(--hw-space-md);
   font-size: 15px;
   font-weight: 600;

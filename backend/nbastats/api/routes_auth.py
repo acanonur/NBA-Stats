@@ -198,20 +198,40 @@ def _user_out(db: Session, user: User) -> dict:
 
 
 def _methods_payload(settings: AuthSettings) -> dict:
+    """What the sign-in and sign-up screens are allowed to promise.
+
+    ``mail.delivers`` is the one the SPA needs and never had: with the default
+    ``HARDWOOD_MAILER=log`` nothing is sent anywhere, so "Check your email for a link to
+    verify …" and "we sent a link to reset it" were both false on every default deployment.
+    The client swaps that copy for the operator-run instruction when this is ``false``.
+    """
     status = provider_status(settings)
     return {
         "password": {"enabled": True, "signupMode": settings.signup_mode},
         "google": status["google"],
         "apple": status["apple"],
+        "mail": {"delivers": mail.delivers_mail(settings)},
     }
 
 
 def _link_for(settings: AuthSettings, purpose: str, token: str) -> str:
+    """The URL that goes in the mail.
+
+    The reset token travels in the URL **fragment**, not the query string. ``/reset`` is an SPA
+    route served by the catch-all, and ``GET`` on it does not consume the token — so a query
+    parameter put a still-live, single-use, one-hour account-takeover credential into uvicorn's
+    access log (and into any reverse proxy's, and into ``Referer`` on anything the page later
+    loads) and left it there until the person finished the flow. A fragment is never sent to
+    the server at all. ``web/src/pages/Reset.tsx`` reads it from ``location.hash``.
+
+    ``/v1/auth/verify`` is a real backend route that must read its token server-side, and it
+    consumes the token on use, so it stays a query parameter.
+    """
     base = settings.public_base_url.rstrip("/")
     if purpose == "verify":
         return f"{base}/v1/auth/verify?token={token}"
     if purpose == "reset":
-        return f"{base}/reset?token={token}"
+        return f"{base}/reset#token={token}"
     raise ValueError(f"routes_auth mints no link for token purpose {purpose!r}")
 
 
@@ -220,14 +240,40 @@ def _mint_link(db: Session, user_id: str, purpose: str, settings: AuthSettings) 
     return _link_for(settings, purpose, raw)
 
 
-def _invalid_invite() -> ApiError:
+def _invalid_invite(*, missing: bool = False, from_loopback: bool = False) -> ApiError:
+    """The invite-mode rejection.
+
+    Split in two because one message was wrong in both halves of the common case: a person who
+    left the field blank was told the code they had not supplied "is not valid", and nothing
+    anywhere named the command that mints one. ``admin invite`` is only suggested to a
+    loopback caller — on a hosted deployment the person signing up is not the operator and
+    cannot run anything.
+    """
+    if missing:
+        message = "An invite code is required to create an account here."
+        if from_loopback:
+            message += (
+                " Mint one with: python3 -m nbastats.accounts.admin invite --note \"me\""
+            )
+        else:
+            message += " Ask whoever runs this Hardwood for one."
+        return ApiError(
+            "invite_required", message, http_status=400, field="inviteCode"
+        )
     return ApiError(
-        "invalid_invite", "That invite code is not valid.", http_status=400, field="inviteCode"
+        "invalid_invite",
+        "That invite code is not valid. It may have already been used, or expired.",
+        http_status=400,
+        field="inviteCode",
     )
 
 
 def _check_invite(
-    db: Session, settings: AuthSettings, supplied: str | None
+    db: Session,
+    settings: AuthSettings,
+    supplied: str | None,
+    *,
+    from_loopback: bool = False,
 ) -> WebInvite | None:
     """Enforce ``HARDWOOD_SIGNUP_MODE`` and return the ``web_invites`` row to burn, if any.
 
@@ -256,7 +302,7 @@ def _check_invite(
 
     if settings.signup_mode == "open":
         if settings.invite_code and not shared_ok:
-            raise _invalid_invite()
+            raise _invalid_invite(missing=not supplied, from_loopback=from_loopback)
         return None
 
     # invite mode
@@ -272,7 +318,7 @@ def _check_invite(
         and (row.expires_at is None or row.expires_at > now)
     )
     if not row_ok and not shared_ok:
-        raise _invalid_invite()
+        raise _invalid_invite(missing=not supplied, from_loopback=from_loopback)
     return row if row_ok else None
 
 
@@ -331,7 +377,9 @@ def signup(
     if problem:
         raise errors.bad_request(problem, field="password")
 
-    invite = _check_invite(db, settings, body.invite_code)
+    invite = _check_invite(
+        db, settings, body.invite_code, from_loopback=_is_loopback(request)
+    )
 
     # Hash unconditionally, before branching on whether the address is taken — see the
     # docstring above.
