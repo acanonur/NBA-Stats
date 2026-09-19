@@ -1,0 +1,100 @@
+/*
+ * `player_snapshot` — one player's season at a glance. Mirrors
+ * `ios/NBAStats/Widgets/PlayerSnapshotWidget.swift`: a header with a real portrait, a usage line,
+ * a rule, and a metric slate where the percentile bar is the point — a metric with no percentile
+ * still shows its value and simply leaves the bar empty rather than inventing a position for it.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.playerName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.usageLine {
+  display: block;
+}
+
+.rule {
+  height: 1px;
+  background-color: var(--hw-separator);
+  flex: none;
+}
+
+.slate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+}
+
+.metricRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+}
+
+.metricLabel {
+  width: var(--hw-snapshot-label-w, 58px);
+  flex: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metricValue {
+  width: var(--hw-snapshot-value-w, 64px);
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xxs);
+}
+
+.metricBar {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.metricSpacer {
+  flex: 1 1 auto;
+}
+
+.emptyNote {
+  display: block;
+}
+
+.eraNote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hw-space-xs);
+}
+
+.eraNoteIcon {
+  flex: none;
+  color: var(--hw-warning);
+  margin-top: 2px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

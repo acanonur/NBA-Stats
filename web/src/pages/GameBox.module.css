@@ -1,0 +1,26 @@
+.tabs {
+  display: flex;
+  gap: var(--hw-space-sm);
+  margin: var(--hw-space-md) 0;
+}
+
+.tab {
+  appearance: none;
+  border: 1px solid var(--hw-separator);
+  background: var(--hw-surface);
+  color: var(--hw-text-secondary);
+  border-radius: var(--hw-radius-pill);
+  padding: var(--hw-space-xxs) var(--hw-space-md);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.tabActive {
+  background: var(--hw-accent-orange);
+  color: white;
+  border-color: transparent;
+}
+
+.side {
+  margin-bottom: var(--hw-space-xl);
+}

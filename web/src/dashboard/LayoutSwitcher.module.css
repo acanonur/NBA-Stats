@@ -1,0 +1,27 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  flex-wrap: wrap;
+  padding-bottom: var(--hw-space-sm);
+}
+
+.select {
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-control);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  font-size: 14px;
+  max-width: 220px;
+}
+
+.link {
+  color: var(--hw-selection);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

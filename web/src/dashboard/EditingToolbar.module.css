@@ -1,0 +1,50 @@
+.bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--hw-space-sm);
+  padding: var(--hw-space-sm) 0;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.button {
+  appearance: none;
+  border: 1px solid var(--hw-separator);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}
+
+.primary {
+  background: var(--hw-accent-orange);
+  color: white;
+  border-color: transparent;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--hw-space-sm);
+  background: var(--hw-surface-raised);
+  border: 1px solid var(--hw-warning);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-sm);
+  margin-bottom: var(--hw-space-sm);
+}

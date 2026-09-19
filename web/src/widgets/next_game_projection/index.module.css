@@ -1,0 +1,155 @@
+/*
+ * `next_game_projection`'s own layout: header (subject + game line), the bordered minutes block,
+ * the stat lines, an optional combo block, the context factors, and the note list —
+ * `ios/NBAStats/Widgets/NextGameProjectionWidget.swift`, ported. `WidgetContainer` already draws
+ * the tile surface, the widget's configured title and the staleness dot; this is everything
+ * inside that body.
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-md);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+}
+
+.subjectRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.gameLine {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.gameLineRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  flex-wrap: wrap;
+}
+
+.gameWarning {
+  margin: 0;
+}
+
+.minutesBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+  padding: var(--hw-space-sm);
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-control);
+  background-color: var(--hw-surface-sunken);
+}
+
+.minutesHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--hw-space-sm);
+}
+
+.minutesComparison {
+  text-align: right;
+}
+
+.minutesHero {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+}
+
+.minutesRationale {
+  margin: 0;
+}
+
+.linesSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+}
+
+.lineRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.lineHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-sm);
+}
+
+.lineLabel {
+  min-width: 40px;
+}
+
+.lineValue {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xxs);
+  margin-right: auto;
+}
+
+.cautionLine {
+  display: flex;
+  margin: 0;
+}
+
+.comboBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  padding: var(--hw-space-sm);
+  border-radius: var(--hw-radius-control);
+  background-color: var(--hw-surface-sunken);
+}
+
+.comboRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-sm);
+  flex-wrap: wrap;
+}
+
+.factorsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+}
+
+.factorRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.factorExplanation {
+  margin: 0;
+}
+
+.notesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.noteRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hw-space-xs);
+}

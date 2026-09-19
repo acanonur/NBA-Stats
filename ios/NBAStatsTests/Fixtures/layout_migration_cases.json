@@ -22,10 +22,46 @@
       "sourceLine": "LayoutMigrator.swift:168-170"
     },
     {
+      "error": {
+        "message": "This dashboard was made with a newer version of Hardwood (format 2; this build reads 1). Update the app to edit it.",
+        "type": "LayoutTooNew"
+      },
+      "expect": null,
+      "input": {
+        "id": "b1",
+        "name": "Future Board",
+        "schemaVersion": 2.0,
+        "widgets": []
+      },
+      "name": "schema_version_too_new_as_a_json_float",
+      "notes": [],
+      "outcome": "error",
+      "sourceLine": "LayoutMigrator.swift:168-170"
+    },
+    {
+      "error": {
+        "message": "This dashboard file could not be read.",
+        "type": "UnreadableLayout"
+      },
+      "expect": null,
+      "input": {
+        "id": "b1",
+        "name": "Future Board",
+        "schemaVersion": "2",
+        "widgets": []
+      },
+      "name": "schema_version_as_a_string_is_unreadable",
+      "notes": [],
+      "outcome": "error",
+      "sourceLine": "LayoutMigrator.swift:79-86"
+    },
+    {
       "error": null,
       "expect": {
         "accent": "orange",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 0,
         "widgets": []
       },
@@ -58,6 +94,21 @@
     },
     {
       "error": {
+        "message": "This dashboard was made with a newer version of Hardwood (format 2; this build reads 1). Update the app to edit it.",
+        "type": "LayoutTooNew"
+      },
+      "expect": null,
+      "input": {
+        "schemaVersion": 2,
+        "tagline": "nothing layout-shaped here"
+      },
+      "name": "too_new_is_reported_before_not_a_layout",
+      "notes": [],
+      "outcome": "error",
+      "sourceLine": "LayoutMigrator.swift:168-173"
+    },
+    {
+      "error": {
         "message": "This dashboard file could not be read.",
         "type": "UnreadableLayout"
       },
@@ -73,7 +124,9 @@
       "error": null,
       "expect": {
         "accent": "orange",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 0,
         "widgets": []
       },
@@ -98,7 +151,9 @@
       "error": null,
       "expect": {
         "accent": "orange",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 0,
         "widgets": []
       },
@@ -124,7 +179,9 @@
       "error": null,
       "expect": {
         "accent": "orange",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 1,
         "widgets": [
           {
@@ -157,7 +214,78 @@
       "error": null,
       "expect": {
         "accent": "orange",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
+        "widgetCount": 1,
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "medium"
+          }
+        ]
+      },
+      "input": {
+        "id": "b1",
+        "name": "Board",
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "jumbo"
+          }
+        ]
+      },
+      "name": "untitled_widget_with_an_unrecognised_size_is_named_from_the_catalog_fallback",
+      "notes": [
+        "“Stat Tile”: the size “jumbo” is unknown, so it is medium now."
+      ],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:195"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "createdAt": "2024-01-02T03:04:05Z",
+        "schemaVersion": 1,
+        "updatedAt": "2026-02-02T03:04:05Z",
+        "widgetCount": 1,
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "small"
+          }
+        ]
+      },
+      "input": {
+        "createdAt": "2024-01-02T03:04:05Z",
+        "id": "b1",
+        "name": "Board",
+        "schemaVersion": 1,
+        "updatedAt": "2026-02-02T03:04:05Z",
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "small"
+          }
+        ]
+      },
+      "name": "created_and_updated_timestamps_survive_a_migration",
+      "notes": [],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:222-234"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "createdAt": null,
+        "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 2,
         "widgets": [
           {
@@ -199,7 +327,9 @@
       "error": null,
       "expect": {
         "accent": "orange",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 1,
         "widgets": [
           {
@@ -228,7 +358,9 @@
       "error": null,
       "expect": {
         "accent": "orange",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 0,
         "widgets": []
       },
@@ -247,7 +379,9 @@
       "error": null,
       "expect": {
         "accent": "teal",
+        "createdAt": null,
         "schemaVersion": 1,
+        "updatedAt": null,
         "widgetCount": 1,
         "widgets": [
           {
@@ -300,6 +434,29 @@
         "Removed “Old Shot Chart”: this version of Hardwood no longer has that widget."
       ],
       "sourceLine": "LayoutMigrator.swift:132-136"
+    },
+    {
+      "catalogKinds": [
+        "stat_tile",
+        "leaderboard"
+      ],
+      "expect": {
+        "widgetCount": 0
+      },
+      "input": [
+        {
+          "config": {},
+          "kind": "career_arc",
+          "size": "medium",
+          "title": null
+        }
+      ],
+      "name": "untitled_kind_removed_from_catalog_is_named_from_the_catalog_fallback",
+      "note": "An untitled widget must be named with WidgetKind.fallbackName, never the raw snake_case kind — the same rule tier 1's size note follows.",
+      "notes": [
+        "Removed “Career Arc”: this version of Hardwood no longer has that widget."
+      ],
+      "sourceLine": "LayoutMigrator.swift:134"
     },
     {
       "expect": {

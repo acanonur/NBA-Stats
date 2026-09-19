@@ -1,0 +1,89 @@
+/*
+ * `trend_chart` — a metric game by game, with a rolling average and an optional league baseline.
+ * Mirrors `ios/NBAStats/Widgets/TrendChartWidget.swift`'s header + readout + chart + legend stack.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.headerSpacer {
+  flex: 1 1 auto;
+}
+
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.readoutLine {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.readoutSwatch {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--hw-radius-pill);
+  flex: none;
+}
+
+.readoutLabel {
+  max-width: 40%;
+}
+
+.readoutSpacer {
+  flex: 1 1 auto;
+}
+
+.chartWrap {
+  width: 100%;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hw-space-sm);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xxs);
+}
+
+.legendSwatch {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--hw-radius-pill);
+  flex: none;
+}
+
+.legendDashSwatch {
+  width: 12px;
+  height: 0;
+  border-top-width: 2px;
+  border-top-style: dashed;
+  flex: none;
+}
+
+.emptyNote {
+  display: block;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

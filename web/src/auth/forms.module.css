@@ -1,0 +1,67 @@
+/* Shared field chrome for every auth form (SignIn/SignUp/Forgot/Reset). */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.input {
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-control);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  padding: var(--hw-space-sm) var(--hw-space-sm);
+  font-size: 15px;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 1px;
+}
+
+.submit {
+  appearance: none;
+  border: none;
+  border-radius: var(--hw-radius-control);
+  background: var(--hw-accent-orange);
+  color: white;
+  padding: var(--hw-space-sm) var(--hw-space-md);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}
+
+.errorText {
+  color: var(--hw-negative);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  color: var(--hw-text-tertiary);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--hw-separator);
+}

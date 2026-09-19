@@ -1,0 +1,35 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-md);
+  margin-bottom: var(--hw-space-lg);
+}
+
+.section {
+  margin-bottom: var(--hw-space-xl);
+}
+
+.metricRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-md);
+  padding: var(--hw-space-xs) 0;
+}
+
+.pinButton {
+  appearance: none;
+  border: 1px solid var(--hw-separator);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  cursor: pointer;
+}
+
+.zoneRow {
+  display: grid;
+  grid-template-columns: 1fr repeat(3, 72px);
+  gap: var(--hw-space-sm);
+  padding: var(--hw-space-xxs) 0;
+  align-items: center;
+}

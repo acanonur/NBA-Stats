@@ -1,0 +1,166 @@
+/*
+ * `comparison`'s own layout. `WidgetContainer` already draws the tile surface, the widget's
+ * configured title and the staleness dot (`design/TileSurface.tsx`, `dashboard/WidgetContainer.tsx`)
+ * — everything here is the content *inside* that body: the subject header, the chosen
+ * presentation (bars/table/radar), the legend and the footnote.
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.headerContext {
+  align-self: flex-start;
+}
+
+.subjectChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hw-space-sm);
+  align-items: center;
+}
+
+.subjectChip {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.subjectChipName {
+  min-width: 0;
+}
+
+.avatarRing {
+  display: inline-flex;
+  border-radius: var(--hw-radius-pill);
+  border: 2px solid var(--ring-color, var(--hw-separator));
+  padding: 1px;
+}
+
+/* Bars */
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.barsRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  min-width: 0;
+}
+
+.barsRowLabel {
+  min-width: 0;
+}
+
+.barsRowTracks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.barTrack {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.barTrackFill {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 8px;
+  border-radius: var(--hw-radius-pill);
+  background-color: var(--hw-track);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  min-width: 3px;
+  border-radius: var(--hw-radius-pill);
+}
+
+.barValue {
+  flex: 0 0 auto;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Radar */
+
+.radarWrap {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* Table */
+
+.metricLabelCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.directionArrow {
+  color: var(--hw-text-tertiary);
+  flex: 0 0 auto;
+}
+
+.subjectHeaderCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hw-space-xxs);
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.tableCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  justify-content: flex-end;
+}
+
+/* Shared */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hw-space-md);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hw-space-xxs);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--hw-radius-pill);
+  flex: 0 0 auto;
+}
+
+.footnote {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}

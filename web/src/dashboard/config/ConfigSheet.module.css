@@ -1,0 +1,55 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* A separate element rather than a `background` on `.backdrop` itself: CSS opacity applies to
+ * an element's whole subtree, and `.sheet` is `.backdrop`'s child, so opacity on the shared
+ * parent would fade the sheet too. This is also why no raw `rgba()` scrim colour is used —
+ * `--hw-text-primary` is a real token, dimmed with `opacity` instead of a literal alpha value
+ * the stylelint rule in `.stylelintrc.json` would reject. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--hw-text-primary);
+  opacity: 0.45;
+}
+
+@media (width >= 834px) {
+  .backdrop {
+    align-items: center;
+  }
+}
+
+.sheet {
+  /* box-shadow is set inline in ConfigSheet.tsx, not here: the stylelint
+     `declaration-property-value-disallowed-list` rule only allows a literal
+     `var(--hw-shadow-*)` value in a stylesheet, and this surface's raised shadow is
+     `--hw-card-shadow-raised` — the same reason `Card.tsx` sets its own `box-shadow` inline
+     (see that component's docstring). */
+  position: relative;
+  background: var(--hw-surface-raised);
+  border-radius: var(--hw-radius-sheet) var(--hw-radius-sheet) 0 0;
+  padding: var(--hw-space-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@media (width >= 834px) {
+  .sheet {
+    border-radius: var(--hw-radius-sheet);
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--hw-space-sm);
+  margin-top: var(--hw-space-md);
+}

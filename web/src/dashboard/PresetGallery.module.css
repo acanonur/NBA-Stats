@@ -1,0 +1,38 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--hw-space-md);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-card);
+  background: var(--hw-surface);
+  padding: var(--hw-space-md);
+}
+
+.button {
+  align-self: flex-start;
+  appearance: none;
+  border: none;
+  border-radius: var(--hw-radius-control);
+  background: var(--hw-accent-orange);
+  color: white;
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

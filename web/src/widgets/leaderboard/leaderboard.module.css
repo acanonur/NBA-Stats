@@ -1,0 +1,120 @@
+/*
+ * `leaderboard` — a ranked list of players or teams for one metric. Mirrors
+ * `ios/NBAStats/Widgets/LeaderboardWidget.swift`'s `compactRow`/`columnHeader` layout: a leading
+ * rank + subject, a trailing primary value, and up to three trailing secondary columns that only
+ * appear at `size === "large"`, at which point the avatar gives up its space to them.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+  height: 100%;
+}
+
+.contextLine {
+  display: block;
+  margin-top: var(--hw-space-xxs);
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+}
+
+.columnHeaderSpacer {
+  flex: 1 1 auto;
+}
+
+.columnHeaderCell {
+  width: var(--hw-leaderboard-col-w, 52px);
+  text-align: right;
+}
+
+.valueHeaderCell {
+  width: var(--hw-leaderboard-value-w, 66px);
+  text-align: right;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  padding: var(--hw-space-xxs) var(--hw-space-xs);
+  border-radius: var(--hw-radius-chip);
+}
+
+.rowFavorite {
+  background-color: color-mix(in sRGB, var(--hw-selection) 12%, transparent);
+}
+
+.rank {
+  min-width: 22px;
+  text-align: right;
+  flex: none;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  flex: none;
+}
+
+.subject {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.subjectName {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xxs);
+  min-width: 0;
+}
+
+.subjectNameText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.primaryValue {
+  flex: none;
+  width: var(--hw-leaderboard-value-w, 66px);
+}
+
+.primaryValueWide {
+  flex: none;
+  width: auto;
+}
+
+.secondaryCell {
+  width: var(--hw-leaderboard-col-w, 52px);
+  text-align: right;
+  flex: none;
+}
+
+.emptyNote {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+}
+
+.qualifier {
+  display: block;
+  margin-top: var(--hw-space-xxs);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

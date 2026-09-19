@@ -1,0 +1,20 @@
+.panels {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--hw-space-lg);
+  margin-top: var(--hw-space-md);
+}
+
+@media (width >= 834px) {
+  .panels {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  padding: var(--hw-space-xs) 0;
+  border-bottom: 1px solid var(--hw-separator);
+}

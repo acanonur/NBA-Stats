@@ -1,0 +1,128 @@
+/*
+ * `scoreboard`'s own layout. `WidgetContainer` already draws the tile surface, the widget's
+ * configured title and the staleness dot (`design/TileSurface.tsx`, `dashboard/WidgetContainer.tsx`)
+ * — everything here is the content *inside* that body: the slate's own date/subhead, one row per
+ * game, and (at `large`) the top performers under each row.
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+  padding: var(--hw-space-xxs) 0;
+}
+
+.row + .row {
+  border-top: var(--hw-space-hairline) solid var(--hw-separator);
+}
+
+.matchup {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.teamLines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.teamLine {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+/* Reserved on both lines whether or not this one won, so the badge and name always start at the
+ * same x position — WEB_DESIGN.md §7.7: the winner is marked by weight, colour AND a leading
+ * caret "reserved on both lines, so it survives a greyscale screenshot". */
+.winnerMark {
+  display: inline-block;
+  width: 9px;
+  flex: 0 0 auto;
+  color: var(--hw-positive);
+  visibility: hidden;
+}
+
+.winnerMarkActive {
+  visibility: visible;
+}
+
+.teamName {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.points {
+  flex: 0 0 auto;
+}
+
+.winner {
+  font-weight: 600;
+}
+
+.status {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 56px;
+  text-align: right;
+}
+
+.liveStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hw-space-xxs);
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--hw-radius-pill);
+  background: var(--hw-negative);
+  flex: 0 0 auto;
+}
+
+.performers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  padding-left: calc(9px + var(--hw-space-sm));
+}
+
+.performerRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.performerLine {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+}

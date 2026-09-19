@@ -126,7 +126,17 @@ def render_registry(widgets: dict[str, Any]) -> str:
         if _widget_has_index_file(kind):
             local_name = "widget_" + kind
             imports.append(f'import {local_name} from "../widgets/{kind}/index";')
-            component_expr = f"{local_name} as WidgetComponent"
+            # No `as WidgetComponent` here. A widget's default export already *is* a
+            # `WidgetComponent` — that is the contract `REGISTRY`'s `Record<WidgetKind,
+            # RegistryEntry>` annotation checks — so the assertion was redundant, and
+            # `@typescript-eslint/no-unnecessary-type-assertion` (a type-aware rule, so it can
+            # tell) raised one error per widget. That stayed invisible for as long as every
+            # `component` was `null` and no cast was emitted at all; the first sync after the
+            # sixteen widget directories landed turned `npm run lint` red with sixteen errors in
+            # a generated file nobody is allowed to hand-edit. Worse, the assertion was actively
+            # harmful: it would have *silenced* a genuine signature mismatch in a widget's
+            # default export, which is exactly the compile error this registry exists to produce.
+            component_expr = local_name
         else:
             component_expr = "null"
         entries.append(

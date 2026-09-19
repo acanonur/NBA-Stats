@@ -1,0 +1,52 @@
+/*
+ * `stat_tile`'s own layout: header (subject + context), the headline `StatValue`, an optional row
+ * of supporting metrics, and an optional sparkline — `ios/NBAStats/Widgets/StatTileWidget.swift`,
+ * ported. `WidgetContainer` already draws the tile surface, the widget's configured title and the
+ * staleness dot; this is everything inside that body.
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.subjectRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.subjectName {
+  min-width: 0;
+}
+
+.fallbackLabel {
+  margin-top: calc(-1 * var(--hw-space-xxs));
+}
+
+.secondaryRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hw-space-md);
+  flex-wrap: wrap;
+}
+
+.sparklineBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  margin-top: auto;
+}
+
+.sparklineWrap {
+  width: 100%;
+}

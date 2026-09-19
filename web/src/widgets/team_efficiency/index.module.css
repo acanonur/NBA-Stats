@@ -1,0 +1,77 @@
+/*
+ * `team_efficiency` — the league table, or the offense-vs-defense scatter. Mirrors
+ * `ios/NBAStats/Widgets/TeamEfficiencyWidget.swift`.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.tableWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+}
+
+.pinnedHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+}
+
+.pinnedCell {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.pinnedRank {
+  width: 16px;
+  flex: none;
+  text-align: right;
+}
+
+.valueCell {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.moreNote {
+  display: block;
+}
+
+.emptyNote {
+  display: block;
+}
+
+.scatterColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+}
+
+.scatterCaption {
+  display: block;
+}
+
+.scatterWrap {
+  width: 100%;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

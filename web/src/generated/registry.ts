@@ -7,6 +7,22 @@
 
 import type { WidgetKind } from "./contracts";
 import type { WidgetSizeKey } from "./tokens";
+import widget_stat_tile from "../widgets/stat_tile/index";
+import widget_player_snapshot from "../widgets/player_snapshot/index";
+import widget_leaderboard from "../widgets/leaderboard/index";
+import widget_game_log from "../widgets/game_log/index";
+import widget_trend_chart from "../widgets/trend_chart/index";
+import widget_four_factors from "../widgets/four_factors/index";
+import widget_shot_profile from "../widgets/shot_profile/index";
+import widget_comparison from "../widgets/comparison/index";
+import widget_scoreboard from "../widgets/scoreboard/index";
+import widget_daily_movers from "../widgets/daily_movers/index";
+import widget_team_efficiency from "../widgets/team_efficiency/index";
+import widget_next_game_projection from "../widgets/next_game_projection/index";
+import widget_projection_board from "../widgets/projection_board/index";
+import widget_fantasy_draft_board from "../widgets/fantasy_draft_board/index";
+import widget_fantasy_trade from "../widgets/fantasy_trade/index";
+import widget_career_arc from "../widgets/career_arc/index";
 
 export interface WidgetViewProps {
   readonly kind: WidgetKind;
@@ -23,20 +39,20 @@ export interface RegistryEntry {
 }
 
 export const REGISTRY: Readonly<Record<WidgetKind, RegistryEntry>> = {
-  stat_tile: { component: null, sizes: ["small", "medium", "large"], defaultSize: "small" },
-  player_snapshot: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  leaderboard: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  game_log: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  trend_chart: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  four_factors: { component: null, sizes: ["medium", "large"], defaultSize: "medium" },
-  shot_profile: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  comparison: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  scoreboard: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  daily_movers: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  team_efficiency: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  next_game_projection: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  projection_board: { component: null, sizes: ["large"], defaultSize: "large" },
-  fantasy_draft_board: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
-  fantasy_trade: { component: null, sizes: ["large"], defaultSize: "large" },
-  career_arc: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
+  stat_tile: { component: widget_stat_tile, sizes: ["small", "medium", "large"], defaultSize: "small" },
+  player_snapshot: { component: widget_player_snapshot, sizes: ["medium", "large"], defaultSize: "large" },
+  leaderboard: { component: widget_leaderboard, sizes: ["medium", "large"], defaultSize: "large" },
+  game_log: { component: widget_game_log, sizes: ["medium", "large"], defaultSize: "large" },
+  trend_chart: { component: widget_trend_chart, sizes: ["medium", "large"], defaultSize: "large" },
+  four_factors: { component: widget_four_factors, sizes: ["medium", "large"], defaultSize: "medium" },
+  shot_profile: { component: widget_shot_profile, sizes: ["medium", "large"], defaultSize: "large" },
+  comparison: { component: widget_comparison, sizes: ["medium", "large"], defaultSize: "large" },
+  scoreboard: { component: widget_scoreboard, sizes: ["medium", "large"], defaultSize: "large" },
+  daily_movers: { component: widget_daily_movers, sizes: ["medium", "large"], defaultSize: "large" },
+  team_efficiency: { component: widget_team_efficiency, sizes: ["medium", "large"], defaultSize: "large" },
+  next_game_projection: { component: widget_next_game_projection, sizes: ["medium", "large"], defaultSize: "large" },
+  projection_board: { component: widget_projection_board, sizes: ["large"], defaultSize: "large" },
+  fantasy_draft_board: { component: widget_fantasy_draft_board, sizes: ["medium", "large"], defaultSize: "large" },
+  fantasy_trade: { component: widget_fantasy_trade, sizes: ["large"], defaultSize: "large" },
+  career_arc: { component: widget_career_arc, sizes: ["medium", "large"], defaultSize: "large" },
 };

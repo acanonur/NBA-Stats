@@ -1,0 +1,156 @@
+/*
+ * `fantasy_trade`'s own layout: the verdict, the give/get sides, the category read-out, the
+ * points block, the sensitivity scenarios, and the roster-spot note —
+ * `ios/NBAStats/Widgets/FantasyTradeWidget.swift`, ported. `WidgetContainer` already draws the
+ * tile surface, the widget's configured title and the staleness dot; this is everything inside
+ * that body.
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.verdictRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-sm);
+  flex-wrap: wrap;
+}
+
+.verdictWord {
+  min-width: 0;
+}
+
+.sides {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hw-space-md);
+}
+
+.divider {
+  align-self: stretch;
+  width: 1px;
+  background-color: var(--hw-separator);
+}
+
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.playerRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.playerName {
+  min-width: 0;
+}
+
+.sideTotal {
+  padding-top: var(--hw-space-xxs);
+}
+
+/*
+ * Nine categories across. `repeat(9, minmax(0, 1fr))` fits them on a regular-width tile, but on a
+ * phone this widget is `large`-only and spans the full compact grid — about 311px of content box
+ * — which is ~33px per track. A cell's value is a signed two-decimal z-score ("-1.76") set in
+ * `tableCell` (13px tabular figures, ~39px wide), so every one of the nine overflowed its track
+ * and collided with its neighbour. `auto-fit` with a floor wide enough for that string wraps to
+ * five-across and then nine-across instead, and `justify-content: center` keeps the final short
+ * row from hanging left of the block above it.
+ */
+.categoryTable {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+  justify-content: center;
+  gap: var(--hw-space-xxs);
+}
+
+@media (width >= 834px) {
+  .categoryTable {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+  }
+}
+
+.categoryCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.punted {
+  opacity: 0.5;
+}
+
+.categorySummary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.pointsBlock {
+  display: flex;
+  gap: var(--hw-space-md);
+  flex-wrap: wrap;
+}
+
+.pointsEntry {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xxs);
+}
+
+.sensitivity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  padding-top: var(--hw-space-xxs);
+  border-top: 1px solid var(--hw-separator);
+}
+
+.sensitivityHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--hw-space-sm);
+}
+
+.scenarioList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scenarioRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--hw-space-sm);
+}
+
+.scenarioLabel {
+  min-width: 0;
+}

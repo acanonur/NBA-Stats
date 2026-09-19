@@ -1,0 +1,93 @@
+/*
+ * `four_factors` — offence, and the defensive mirror at `size === "large"`. Mirrors
+ * `ios/NBAStats/Widgets/FourFactorsWidget.swift`'s vertical stack of labelled bars.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-md);
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hw-space-xs);
+}
+
+.rule {
+  height: 1px;
+  background-color: var(--hw-separator);
+  flex: none;
+}
+
+.factorRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.factorHeader {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.factorLabel {
+  flex: none;
+  max-width: 96px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.directionHint {
+  white-space: nowrap;
+}
+
+.factorSpacer {
+  flex: 1 1 auto;
+}
+
+.emptyTrack {
+  height: 16px;
+  border: 1px dashed var(--hw-separator);
+  border-radius: var(--hw-radius-pill);
+}
+
+.emptyNote {
+  display: block;
+}
+
+.footnote {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

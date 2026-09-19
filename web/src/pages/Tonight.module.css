@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  margin-bottom: var(--hw-space-md);
+}
+
+.button {
+  appearance: none;
+  border: 1px solid var(--hw-separator);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}

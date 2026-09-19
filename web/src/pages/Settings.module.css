@@ -1,0 +1,34 @@
+.section {
+  margin-bottom: var(--hw-space-xl);
+  max-width: 480px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hw-space-sm);
+  padding: var(--hw-space-xs) 0;
+  border-bottom: 1px solid var(--hw-separator);
+}
+
+.button {
+  appearance: none;
+  border: 1px solid var(--hw-separator);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.dangerButton {
+  color: var(--hw-negative);
+  border-color: var(--hw-negative);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}
