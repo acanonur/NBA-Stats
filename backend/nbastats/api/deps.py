@@ -16,6 +16,27 @@ courtesy brake for a single-instance deployment, not a distributed quota. Tune i
 ``HARDWOOD_RATE_LIMIT`` (requests per window, ``0`` disables) and
 ``HARDWOOD_RATE_WINDOW_SECONDS``; both are read here rather than in ``config.py`` because
 they are an HTTP-layer concern.
+
+Identity, added for Hardwood Web without touching a byte of the above
+--------------------------------------------------------------------------
+``require_api_key`` stays exactly as it was — existing tests import it, and the five original
+routers plus the widget layer keep working with zero API-key configuration exactly as they do
+today. What is new is layered *beside* it: :func:`current_session`, :func:`require_user`,
+:func:`require_fresh_user` and :func:`require_write` are re-exported from
+``nbastats.accounts`` (WP1's package) rather than implemented here — this module is the one
+place that imports them, so every route file reaches identity through ``nbastats.api.deps``
+and never has to know which WP1 module actually owns a session row.
+
+That import is wrapped in a ``try/except ImportError`` on purpose. ``nbastats.accounts``
+ships its real session/password/OIDC machinery on its own schedule; until it lands (or on a
+deployment that never installs the ``[web]`` extra at all), every name below still exists and
+behaves exactly like "there is no session" — which is precisely today's behaviour, since today
+there is no session mechanism at all. :func:`require_api_key_or_session` is what makes that
+concrete: it calls :func:`current_session` first so ``request.state.user`` is populated
+whenever a live session exists, then falls back to the *same* key check
+:func:`require_api_key` already performs. A deployment with no ``HARDWOOD_API_KEY`` and no
+accounts feature therefore behaves byte-for-byte as it did before this module grew a session
+concept at all.
 """
 from __future__ import annotations
 
@@ -35,6 +56,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .. import catalog
+from ..accounts.models import User
 from ..config import get_settings
 from ..db import get_session
 from ..models import SEASON_TYPES, Game
@@ -45,6 +67,9 @@ __all__ = [
     "API_KEY_EXEMPT_PATHS",
     "DEFAULT_RATE_LIMIT",
     "DEFAULT_RATE_WINDOW_SECONDS",
+    "DEFAULT_AUTH_RATE_LIMIT",
+    "DEFAULT_AUTH_RATE_WINDOW_SECONDS",
+    "FRESH_SESSION_SECONDS",
     "CAREER_TOKENS",
     "SessionDep",
     "RateLimiter",
@@ -53,6 +78,13 @@ __all__ = [
     "enforce_rate_limit",
     "get_rate_limiter",
     "reset_rate_limiter",
+    "current_session",
+    "require_api_key_or_session",
+    "require_user",
+    "require_fresh_user",
+    "require_write",
+    "get_auth_limiter",
+    "reset_auth_limiter",
     "loaded_seasons",
     "current_season",
     "resolve_season",
@@ -106,6 +138,119 @@ def require_api_key(request: Request) -> None:
     expected = settings.api_key or ""
     if not supplied or not hmac.compare_digest(supplied, expected):
         raise errors.unauthorized()
+
+
+# --------------------------------------------------------------------------- identity
+
+#: How long after ``authenticated_at`` a session counts as "fresh" for a sensitive action
+#: (linking or unlinking a provider, changing a password or email, deleting the account).
+#: ``WEB_DESIGN.md`` §2.13 fixes this at ten minutes.
+FRESH_SESSION_SECONDS = 600
+
+try:  # pragma: no cover - exercised by whichever branch this checkout actually has
+    from ..accounts import current_session as _accounts_current_session
+    from ..accounts import require_fresh_user as _accounts_require_fresh_user
+    from ..accounts import require_user as _accounts_require_user
+    from ..accounts import require_write as _accounts_require_write
+
+    current_session = _accounts_current_session
+    require_user = _accounts_require_user
+    require_fresh_user = _accounts_require_fresh_user
+    require_write = _accounts_require_write
+except ImportError:  # nbastats.accounts has not landed its session machinery yet.
+
+    def current_session(request: Request) -> None:
+        """No accounts feature is installed: there is never a session to find.
+
+        Still stashes ``request.state.user = None`` / ``request.state.auth_session = None`` so
+        every downstream read of ``request.state.user`` (``routes_dashboard.py``'s favourites
+        substitution, in particular) can use ``getattr(request.state, "user", None)`` without
+        caring which branch of this ``try`` ran.
+        """
+        request.state.user = None
+        request.state.auth_session = None
+        return None
+
+    def require_user(request: Request) -> "User":
+        """401 always: there is no session mechanism to have signed anyone in with."""
+        current_session(request)
+        raise errors.unauthorized("Sign in to use this feature.")
+
+    def require_fresh_user(request: Request) -> "User":
+        return require_user(request)
+
+    def require_write(request: Request) -> None:
+        raise errors.unauthorized("Sign in to use this feature.")
+
+
+def require_api_key_or_session(request: Request) -> None:
+    """The guard for the five original routers plus ``routes_dashboard`` / ``routes_leaders``
+    / ``routes_fantasy``: an ``X-API-Key`` **or** a live browser session, either is enough.
+
+    Order matters, and it is the whole point of this function rather than a second copy of
+    :func:`require_api_key` with one more ``or``: identity is resolved *before* the early
+    return that a keyless deployment takes on every request. ``HARDWOOD_API_KEY`` is unset on
+    a normal laptop, so a guard that checked the key first and returned immediately when none
+    is configured would never populate ``request.state.user`` — and "pin my player" (which
+    reads that state from inside a resolver) would silently do nothing in the default
+    configuration, the one nearly everyone runs.
+    """
+    current_session(request)  # always, so request.state.user is set whenever it can be
+    settings = get_settings()
+    if not settings.requires_api_key:
+        return
+    if request.url.path in API_KEY_EXEMPT_PATHS:
+        return
+    supplied = request.headers.get(API_KEY_HEADER)
+    expected = settings.api_key or ""
+    if supplied and hmac.compare_digest(supplied, expected):
+        return
+    if getattr(request.state, "auth_session", None) is not None:
+        return
+    raise errors.unauthorized()
+
+
+# --------------------------------------------------------------------------- auth rate limit
+
+
+_auth_limiter: "RateLimiter | None" = None
+_auth_limiter_lock = threading.Lock()
+
+#: The most common bucket in ``WEB_DESIGN.md`` §4.8's table (``login:ip:<prefix>``). Auth
+#: routes that need a different cadence (``signup:ip`` at 5/hour, ``export:user`` at 5/hour) key
+#: their own bucket string but currently share this window; see that module's own docstring
+#: once it exists for the exact per-bucket accounting.
+DEFAULT_AUTH_RATE_LIMIT = 30
+DEFAULT_AUTH_RATE_WINDOW_SECONDS = 900
+
+
+def get_auth_limiter() -> "RateLimiter":
+    """A **second**, independent :class:`RateLimiter` for auth-sensitive endpoints
+    (``/v1/auth/*``, ``/v1/me/export``), so a burst of anonymous login attempts cannot spend the
+    budget every other ``/v1`` route shares via :func:`get_rate_limiter`."""
+    global _auth_limiter
+    if _auth_limiter is None:
+        with _auth_limiter_lock:
+            if _auth_limiter is None:
+                _auth_limiter = RateLimiter(
+                    limit=int(
+                        os.environ.get("HARDWOOD_AUTH_RATE_LIMIT", DEFAULT_AUTH_RATE_LIMIT)
+                    ),
+                    window=int(
+                        os.environ.get(
+                            "HARDWOOD_AUTH_RATE_WINDOW_SECONDS", DEFAULT_AUTH_RATE_WINDOW_SECONDS
+                        )
+                    ),
+                )
+    return _auth_limiter
+
+
+def reset_auth_limiter() -> None:
+    """Drop the auth limiter so the next call rebuilds it from the environment — mirrors
+    :func:`reset_rate_limiter`; tests that exercise auth rate limiting must call this too."""
+    global _auth_limiter
+    with _auth_limiter_lock:
+        _auth_limiter = None
 
 
 # --------------------------------------------------------------------------- rate limit

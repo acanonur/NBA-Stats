@@ -18,6 +18,24 @@ payload and the client keeps what it has.
 
 ``resolvedContext`` echoes the subjects that were actually used, so a client that sent no
 favourite learns who the dashboard ended up being about and can offer "pin this player".
+
+The one exception to "one bad tile degrades one tile" is identity, not data
+--------------------------------------------------------------------------------
+Hardwood Web signs in over a session, and a signed-in user's own stored
+``favoritePlayerId`` / ``favoriteTeamId`` (``accounts.models.User``) fill in for a request's
+``context.favoritePlayerId`` / ``context.favoriteTeamId`` whenever the client left them
+``null`` — a client-sent value always wins, so an iOS request (which always sends its own
+favourites) is byte-identical to today's, and every existing widget-layer test is untouched.
+That substitution happens once, at the single :meth:`~nbastats.widgets.base.ResolveContext.
+from_request` call site below, by reading ``request.state.user`` (populated by
+``deps.require_api_key_or_session``, which every router carrying this route already depends
+on) — nowhere inside :mod:`nbastats.widgets` needs to know a user exists at all.
+
+A **401** on this route (no key, no session, and the service requires one) is a real
+request-level failure, never a per-widget ``status: "error"``: the "one bad tile" rule governs
+*data* a resolver could not produce, not *who is asking*, and the correct client action for an
+expired session is to route to sign-in, not to retry twenty-four grey tiles. See
+``contracts/CONTRACT.md`` §3 for the same note written for API consumers.
 """
 from __future__ import annotations
 
@@ -62,6 +80,13 @@ def resolve_dashboard(
 
     request_id = errors.request_id_of(request)
     ctx = ResolveContext.from_request(session, body.context, request_id=request_id)
+
+    user = getattr(request.state, "user", None)
+    if user is not None:
+        if ctx.favorite_player_id is None:
+            ctx.favorite_player_id = user.favorite_player_id
+        if ctx.favorite_team_id is None:
+            ctx.favorite_team_id = user.favorite_team_id
 
     results = [
         resolve_one(widget, ctx, known_sync_version=body.known_sync_version)

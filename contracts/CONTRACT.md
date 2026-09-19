@@ -140,8 +140,17 @@ before the game starts. `clock` is a display string such as `"4:21"` while live.
 
 ```json
 { "status": "ok", "version": "1.0.0", "syncVersion": 412, "dataThrough": "2026-01-02",
-  "databaseReady": true, "seededDemoData": false }
+  "databaseReady": true, "seededDemoData": false, "authReady": true, "authWarnings": [] }
 ```
+
+`authReady` / `authWarnings` describe the Hardwood Web accounts feature and are computed with
+no database read (see `nbastats/api/routes_meta.py`): `authReady` is true once `/v1/auth/*` is
+actually mounted (false — with an empty `authWarnings` — on a stats-only deployment that never
+installed the accounts feature at all, which is not itself a degraded state), and
+`authWarnings` are the non-fatal configuration notes from `nbastats.accounts.config.
+startup_warnings` (an `HARDWOOD_APPLE_*` set with an http base URL, a `HARDWOOD_GOOGLE_CLIENT_ID`
+with no matching secret, and so on). Neither field ever changes `status` or the HTTP status
+code — a misconfigured or absent accounts feature is not a database being down.
 
 Never requires an API key. `200` when healthy, `503` with the same body when `databaseReady`
 is false.
@@ -262,9 +271,37 @@ Query: `view` ∈ `basic` | `advanced` | `both` (default `both`).
 { "game": { "...GameRef" },
   "teams": [ { "team": { "...TeamRef" }, "values": { "off_rtg": 118.2 },
                "players": [ { "player": { "...PlayerRef" }, "started": true, "minutes": 34.5,
-                              "values": { "pts": 32, "ts_pct": 0.641 },
+                              "values": { "pts": 32, "ts_pct": 0.641, "fantasy_pts": 47.4 },
                               "availability": "full" } ] } ] }
 ```
+
+`fantasy_pts` (NBA's own `PTS + 1.2·REB + 1.5·AST + 3·STL + 3·BLK − TOV` formula, recorded on
+the box score at ingest) is included in `values` alongside every other basic metric; it is
+`null`, like any other era-limited column, on a game whose steals/blocks/turnovers were never
+recorded (before 1977-78).
+
+### `GET /v1/fantasy/night`
+
+Per-game fantasy points for one night's slate, under a scoring system of the caller's choosing —
+a page, not a dashboard widget (there is no 17th widget kind for this; see §10 of
+`WEB_DESIGN.md`). API-key-or-session, same as the five original routers.
+
+Query: `date` (ISO or `"latest"`, default `"latest"`), `scoring` (`"nba"` | `"espn_points"` |
+`"yahoo_points"`, default `"nba"`), `limit` (3-50, default 25), `minMinutes` (0-48, default 12).
+
+```json
+{ "date": "2026-03-14", "scoring": "espn_points",
+  "formulaLabel": "ESPN points scoring, applied to this game's box score.",
+  "rows": [ { "rank": 1, "player": { "...PlayerRef" }, "gameId": "0022500512",
+              "opponentAbbr": "BOS", "isHome": true, "points": 58.5, "displayValue": "58.5",
+              "minutes": 36.2, "line": "32 PTS · 8 REB · 11 AST", "availability": "full" } ] }
+```
+
+`availability` is `"full"` for `scoring: "nba"` (a recorded box-score value) and `"estimated"`
+for `espn_points` / `yahoo_points` (a re-scoring of the box score, not a record). A player whose
+game is missing a component the chosen scoring system weights (steals/blocks before 1973-74,
+three-pointers before 1979-80, individual turnovers before 1977-78) is **omitted** from `rows`
+entirely, never scored as though the missing value were zero.
 
 ### `POST /v1/dashboard/resolve`
 
@@ -320,6 +357,16 @@ Response:
 **and** `notes` explaining what is missing (for example a pre-1997 season with no per-game
 ratings).
 
+**Signed-in favourites (Hardwood Web).** When the caller holds a live session and
+`context.favoritePlayerId` / `context.favoriteTeamId` are omitted or `null`, the server fills
+them in from that account's own stored favourites (`GET /v1/me`'s same fields) before resolving
+any widget. A value the client *did* send always wins, so an iOS request — which always sends
+its own favourites — is unaffected. This is also the one place a `401` on this endpoint is a
+real request-level failure rather than a per-widget `status: "error"`: an expired or missing
+session is a question about *who is asking*, which "one bad tile degrades one tile" was never
+meant to paper over, and the right client response is to route to sign-in, not to retry every
+tile.
+
 ### `GET /v1/sync`
 
 Query: `since` (integer sync version, optional).
@@ -342,6 +389,69 @@ widget **kinds** whose cached payloads must be dropped.
 
 Emits `event: sync` with the `/v1/sync` body each time a game finalizes. The client uses it
 only while the dashboard is foregrounded; everything still works without it.
+
+### `/v1/me/*` — account settings, sessions and identities (Hardwood Web)
+
+Session required (`401` with no live `hw_session` cookie); every unsafe method additionally
+needs `X-Hardwood-CSRF` (`403 csrf_failed` without it — see §5 below) and the four rows marked
+**fresh** need a session less than ten minutes past sign-in (`403 reauthentication_required`
+otherwise). `GET /v1/me`, `GET /v1/me/email/confirm` and `GET /v1/me/sessions` responses carry
+`Cache-Control: no-store` and `Vary: Cookie`, as does every `/v1/dashboards/*` response
+(including the `Layouts.json` export) — see `nbastats/api/security.py`.
+
+| Method | Path | Extra auth | Success |
+| --- | --- | --- | --- |
+| GET | `/v1/me` | — | `200 User` |
+| PATCH | `/v1/me` | CSRF | `{"displayName","favoritePlayerId","favoriteTeamId","theme","selectedDashboardId"}` (an explicit allowlist; `email` is not settable here) → `200 User` |
+| POST | `/v1/me/password` | CSRF + fresh | `{"currentPassword?","newPassword"}` → `200 {"csrfToken":"…"}`; rotates this session and revokes every other one |
+| POST | `/v1/me/email` | CSRF + fresh | `{"newEmail","currentPassword?"}` → `202 {"status":"checkYourEmail"}`, identical whether or not the address is already in use |
+| GET | `/v1/me/email/confirm` | token | `?token=` → `303` to `/settings?emailChanged=1`; sets `email`/`emailVerified`, rotates the caller's session and revokes every other one. `303` to `/settings?emailTaken=1` if the address was claimed by somebody else in the meantime |
+| GET | `/v1/me/sessions` | — | `200 {"sessions":[{"sessionId","createdAt","lastSeenAt","userAgent","ipPrefix","authMethod","current"}]}` |
+| DELETE | `/v1/me/sessions/{sessionId}` | CSRF | `204` |
+| POST | `/v1/me/identities/{provider}/start` | CSRF + fresh | `200 {"redirectUrl":"…"}` + `Set-Cookie: hw_oauth` (`intent=link`); `404 provider_not_configured` |
+| DELETE | `/v1/me/identities/{provider}` | CSRF + fresh | `200 {"csrfToken":"…"}`; rotates this session and revokes every other one (unlinking is a privilege change); `409 last_credential` if it would leave the account with no way to sign in |
+| GET | `/v1/me/export` | — | `200` the account plus every dashboard (GDPR access); its own limiter, 5/hour |
+| DELETE | `/v1/me` | CSRF + fresh | `{"confirm":"DELETE"}` → `204`; soft-deletes and revokes every session |
+
+`User` on the wire:
+
+```json
+{ "userId": "…", "email": "a@b.c", "emailVerified": true, "displayName": "Ada",
+  "isPrivateRelay": false, "hasPassword": true, "identities": ["google"],
+  "favoritePlayerId": 2544, "favoriteTeamId": 1610612747, "selectedDashboardId": "…",
+  "theme": "system", "createdAt": "2026-09-19T00:00:00Z" }
+```
+
+Linking a *new* provider from inside a signed-in session is a **POST** that returns a
+`redirectUrl`, never a bare `GET /start`: that is what makes it CSRF-protected and
+freshness-gated, which is how §6.4's link-flow account-capture attack is closed.
+
+### `/v1/dashboards/*` — user-scoped saved dashboards (Hardwood Web)
+
+Session required throughout; every unsafe method needs `X-Hardwood-CSRF`. Every write goes
+through the same layout migrator (`nbastats.accounts.layouts`) `POST /v1/dashboards/import`
+does, so the store can never hold a dashboard the resolver cannot resolve. Whole-document `PUT`,
+never per-widget `PATCH` — every mutation re-encodes the whole layout, matching iOS.
+
+| Method | Path | Body | Success | Errors |
+| --- | --- | --- | --- | --- |
+| GET | `/v1/dashboards` | — | `200 {"dashboards":[{"layoutId","name","icon","accent","presentation","presetKey","isPreset","widgetCount","position","updatedAt","revision"}]}` | — |
+| POST | `/v1/dashboards` | `{"layout":{…}}` **or** `{"presetKey":"daily_recap"}` | `201 {"layout":{…},"revision":1,"notes":[]}` | `409 too_many_dashboards`, `409 layout_too_new`, `400 not_a_layout` |
+| GET | `/v1/dashboards/{layoutId}` | — | `200 {"layout":{…},"revision":N,"notes":[]}`, `ETag: "N"` | `404` (another user's id is a 404, never a 403 — a 403 would confirm the id exists) |
+| PUT | `/v1/dashboards/{layoutId}` | `{"layout":{…}}` + header `If-Match: N` | `200 {"layout":{…},"revision":N+1,"notes":[…]}` | `428 precondition_required` (no `If-Match`), `409 stale_write` **with the server's current document in the body**, `409 layout_too_new` |
+| DELETE | `/v1/dashboards/{layoutId}` | — | `204` | `404` |
+| POST | `/v1/dashboards/{layoutId}/restore` | — | `200` the restored summary | `404` |
+| PUT | `/v1/dashboards/order` | `{"layoutIds":["…"]}` | `204` | — |
+| POST | `/v1/dashboards/import` | the iOS envelope, a bare array, or one bare layout | `200 {"imported":[…],"notes":[…],"failures":[…]}` | `413 payload_too_large` |
+| GET | `/v1/dashboards/export` | — | `200` the exact iOS `{"schemaVersion":1,"updatedAt":"…","layouts":[…]}` envelope, `Content-Disposition: attachment; filename="Layouts.json"` | — |
+
+A `409 stale_write` body:
+
+```json
+{ "error": { "code": "stale_write", "message": "This dashboard changed on another device.",
+             "recoverable": true, "field": null, "requestId": "…" },
+  "layout": { "...the server's current document" }, "revision": 3 }
+```
 
 ---
 
@@ -772,6 +882,22 @@ per-game rating against a modern one without the badge.
 
 Inside `POST /v1/dashboard/resolve`, per-widget failures never change the HTTP status — the
 response is `200` with `status: "error"` on the individual result.
+
+Accounts and dashboards (Hardwood Web) add these codes to the same table and the same envelope:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `csrf_failed` | 403 | The synchroniser token or the `Origin` check failed on an unsafe method |
+| `reauthentication_required` | 403 | The action needs a session less than ten minutes old |
+| `invalid_credentials` | 401 | A login attempt, or a `currentPassword` check, did not match |
+| `invalid_token` | 400 | A verify/reset/email-change token was unknown, expired or already used |
+| `last_credential` | 409 | Unlinking this identity would leave the account with no way to sign in |
+| `not_a_layout` | 400 | The document has none of `name`, `widgets` or `id`, or is not valid JSON |
+| `layout_too_new` | 409 | The layout's `schemaVersion` is newer than this build reads |
+| `too_many_dashboards` | 409 | The account already holds the maximum number of dashboards |
+| `precondition_required` | 428 | `PUT /v1/dashboards/{layoutId}` with no `If-Match` header |
+| `stale_write` | 409 | `If-Match` did not match the dashboard's current revision (§3's own body shape) |
+| `payload_too_large` | 413 | A dashboard document, or an import payload, exceeds its byte cap |
 
 ---
 

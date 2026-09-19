@@ -1,0 +1,34 @@
+/*
+ * `ios/NBAStats/DesignSystem/Components.swift`'s `TeamBadge`, ported. Unlike `PlayerAvatar`
+ * (fixed pixel diameters, so a column of rows stays aligned), this badge's `min-width` is in
+ * `rem` — it scales with the page's root font size, the nearest web equivalent of the Swift
+ * original's `@ScaledMetric` tied to Dynamic Type. A player's face is a fixed landmark a list
+ * relies on for alignment; a team's three-letter mark is just text that should grow the way any
+ * other text on the page does when a reader asks for larger type.
+ */
+
+.badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--hw-space-xxs) var(--hw-space-xs);
+  border-radius: var(--hw-radius-pill);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.small {
+  min-width: 2.125rem;
+}
+
+.medium {
+  min-width: 2.625rem;
+}
+
+.large {
+  min-width: 3.375rem;
+}

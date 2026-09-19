@@ -1,0 +1,8 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  padding: 1px var(--hw-space-xs);
+  border-radius: var(--hw-radius-pill);
+  line-height: 1;
+}

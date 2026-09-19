@@ -459,7 +459,15 @@ class SyncResponse(ContractModel):
 
 
 class HealthResponse(ContractModel):
-    """``GET /v1/health``. Served with ``503`` when ``databaseReady`` is false."""
+    """``GET /v1/health``. Served with ``503`` when ``databaseReady`` is false.
+
+    ``authReady`` / ``authWarnings`` (WEB_DESIGN.md §4.5) are computed with no database read —
+    they describe whether the web accounts feature is actually mounted and what, if anything,
+    is misconfigured about it, following the route's existing "answer with a body even when
+    degraded" pattern rather than raising. A stats-only deployment with no accounts feature at
+    all reports ``authReady: false`` and an empty ``authWarnings``, which is simply true rather
+    than an error.
+    """
 
     status: str = "ok"
     version: str
@@ -467,6 +475,8 @@ class HealthResponse(ContractModel):
     data_through: Optional[CalendarDate] = None
     database_ready: bool = True
     seeded_demo_data: bool = False
+    auth_ready: bool = False
+    auth_warnings: list[str] = Field(default_factory=list)
 
 
 # --------------------------------------------------------------------------- §7 errors

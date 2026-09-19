@@ -1,0 +1,70 @@
+/*
+ * `ios/NBAStats/DesignSystem/PercentileBar.swift`'s `FactorBar`, ported: a value bar over a
+ * fixed per-family domain, with the league average marked as a **1.5px rule in the primary text
+ * colour** rather than a second hue, so the comparison survives a greyscale screenshot.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+}
+
+.headerSpacer {
+  flex: 1 1 auto;
+}
+
+.track {
+  position: relative;
+}
+
+.trackFill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  border-radius: var(--hw-radius-pill);
+  background-color: var(--hw-track);
+  width: 100%;
+}
+
+/* A null value: a dashed, unfilled track — never a zero-length bar, which would read as "the
+   worst possible value" rather than "we do not have this number" (the em-dash rule extended to
+   a bar chart). */
+.trackEmpty {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  border-radius: var(--hw-radius-pill);
+  border: 1px dashed var(--hw-separator);
+  box-sizing: border-box;
+}
+
+.fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  border-radius: var(--hw-radius-pill);
+  background-color: var(--hw-bar-color, var(--hw-selection));
+}
+
+.averageTick {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.5px;
+  background-color: var(--hw-text-primary);
+}
+
+.legend {
+  margin: 0;
+}

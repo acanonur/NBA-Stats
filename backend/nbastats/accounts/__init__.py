@@ -19,38 +19,64 @@ Two decisions bind everything placed under here, both recorded (and verified) in
   dataclass as ``DATABASE_URL`` would force every caller of ``nbastats.config.get_settings()``
   to reason about them regardless.
 
-What lives here now, and what WP1 adds next
---------------------------------------------
-This package is filled in across two work packages that never touch the same file. WP0
-(Foundation) lands first and owns exactly ``models.py``, ``config.py`` and this file — as a
-docstring plus the stub below, nothing more. WP1 (Accounts, auth and identity) lands next and
-owns everything that actually touches a live session, a password or an identity provider:
-``passwords.py``, ``sessions.py``, ``csrf.py``, ``tokens.py``, ``mail.py``, ``linking.py``,
-``admin.py`` and the ``providers/`` package. This file deliberately implements none of that —
-its only job is to be the one place WP2's ``nbastats/api/deps.py`` imports the public
-identity surface from, so ``deps.py`` never has to know WP1's internal module layout.
+What lives here now, and what WP1 added
+------------------------------------------
+This package was filled in across two work packages that never touched the same file. WP0
+(Foundation) landed first and owns exactly ``models.py``, ``config.py`` and this file's
+docstring. WP1 (Accounts, auth and identity) landed next and owns everything that actually
+touches a live session, a password or an identity provider: ``passwords.py``, ``sessions.py``,
+``csrf.py``, ``tokens.py``, ``mail.py``, ``linking.py``, ``admin.py`` and the ``providers/``
+package. This file implements none of that itself — it only re-exports the public identity
+surface, the same pattern ``nbastats/models.py`` uses for ``Base`` — so that
+``nbastats/api/deps.py`` (WP2) can import ``require_user`` and friends without knowing WP1's
+internal module layout, and so a future reshuffle of *which* WP1 module defines
+``current_session`` never touches a caller outside this package.
 
-Do not implement auth logic in this file. If you are WP1, add real imports where the
-placeholder section below says to, and nowhere else in this file.
+Nothing else belongs in this file: no session verification, no password handling, no route
+logic — all of that lives in the modules imported below.
 """
 from __future__ import annotations
 
-__all__: list[str] = []
+from typing import Any
 
-# ---------------------------------------------------------------------------------------
-# WP1 fills in the exports below once the modules that define them exist. Per WEB_DESIGN.md's
-# WP1 section: "WP1 exports require_user, require_fresh_user, require_write and
-# current_session from accounts/__init__.py; WP2 re-exports them through deps.py."
-#
-# Re-export the names from the module that actually owns the implementation — the same
-# pattern nbastats/models.py uses for Base — rather than defining them here:
-#
-#     from .sessions import current_session                       # noqa: F401
-#     from .deps_support import require_user, require_fresh_user, require_write  # noqa: F401
-#
-# __all__ = ["current_session", "require_user", "require_fresh_user", "require_write"]
-#
-# (Module names above are illustrative — WP1's own file layout in §2 of WEB_DESIGN.md is
-# authoritative.) Nothing else belongs in this file: no session verification, no password
-# handling, no route logic.
-# ---------------------------------------------------------------------------------------
+__all__ = ["current_session", "require_user", "require_fresh_user", "require_write"]
+
+#: Which submodule actually defines each re-exported name. Resolved on first access, never at
+#: import time — see :func:`__getattr__`.
+_LAZY_EXPORTS = {
+    "current_session": ".sessions",
+    "require_user": ".sessions",
+    "require_fresh_user": ".sessions",
+    "require_write": ".csrf",
+}
+
+
+def __getattr__(name: str) -> Any:
+    """Resolve the re-exported identity surface on first use (PEP 562).
+
+    These used to be plain ``from .csrf import …`` / ``from .sessions import …`` statements at
+    module scope, which meant that importing *anything* from this package —
+    ``accounts.config`` in ``api/app.py``, ``accounts.models`` in ``api/deps.py``,
+    ``accounts.config`` again in ``api/routes_meta.py`` — first executed ``csrf`` and
+    ``sessions`` in full. ``deps.py`` carries a documented ``try/except ImportError`` fallback
+    for "the accounts feature has not landed", and WEB_DESIGN.md §4.5 promises that in that case
+    "the service is byte-identically today's service"; with eager re-exports here that fallback
+    was unreachable, because three unconditional module-scope imports had already crashed the
+    whole service before the ``try`` was reached.
+
+    Deferring costs one ``sys.modules`` lookup per attribute access and makes
+    ``accounts.{config,models}`` importable without pulling in the session machinery, so a
+    checkout missing a session dependency degrades the way it is documented to.
+    """
+    target = _LAZY_EXPORTS.get(name)
+    if target is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from importlib import import_module
+
+    value = getattr(import_module(target, __name__), name)
+    globals()[name] = value  # cache, so this runs once per name per process
+    return value
+
+
+def __dir__() -> list[str]:
+    return sorted({*globals(), *_LAZY_EXPORTS})

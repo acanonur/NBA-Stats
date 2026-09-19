@@ -228,6 +228,7 @@ public enum LayoutMigrator {
             isPreset: document.isPreset ?? false,
             presetKey: document.presetKey,
             tagline: document.tagline,
+            presentation: document.presentation.flatMap(LayoutPresentation.init(rawValue:)) ?? .tiles,
             createdAt: Formatting.parseTimestamp(document.createdAt),
             updatedAt: Formatting.parseTimestamp(document.updatedAt),
             widgets: widgets
@@ -258,6 +259,13 @@ private struct RawLayout: Decodable {
     let isPreset: Bool?
     let presetKey: String?
     let tagline: String?
+    /// Read as a raw string, like `accent` and `size`, so a presentation this build does not
+    /// know falls back rather than throwing the whole document out. It has to be *here* and not
+    /// only on `DashboardLayout`: `migrateResult(_:)` decodes into this struct, so a field this
+    /// struct omits is lost on every migration — a reader who chose Broadsheet had it silently
+    /// reset to Tiles the next time the file was opened. (`nbastats/accounts/layouts.py` has
+    /// always carried it through, so the two clients disagreed on the same bytes.)
+    let presentation: String?
     let createdAt: String?
     let updatedAt: String?
     let widgets: [RawWidget]?

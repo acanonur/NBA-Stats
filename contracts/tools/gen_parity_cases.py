@@ -193,6 +193,34 @@ DEFAULT_SIZE = "medium"
 #: would just be one more thing a future diff has to explain.
 GENERATED = "<generated>"
 
+#: `WidgetKind.fallbackName` (`ios/NBAStats/Core/DashboardLayout.swift`). Tier 1 is catalog-free
+#: in Swift, so a note about an *untitled* widget prints this compile-time name, never the raw
+#: `snake_case` kind. Transcribed here for the same reason the FNV fold above is.
+FALLBACK_WIDGET_NAMES = {
+    "stat_tile": "Stat Tile",
+    "player_snapshot": "Player Snapshot",
+    "leaderboard": "Leaderboard",
+    "game_log": "Game Log",
+    "trend_chart": "Trend",
+    "four_factors": "Four Factors",
+    "shot_profile": "Shot Profile",
+    "comparison": "Comparison",
+    "scoreboard": "Scoreboard",
+    "daily_movers": "Daily Movers",
+    "team_efficiency": "Team Efficiency",
+    "next_game_projection": "Next Game",
+    "projection_board": "Tonight's Projections",
+    "fantasy_draft_board": "Draft Board",
+    "fantasy_trade": "Trade Analyzer",
+    "career_arc": "Career Arc",
+}
+
+
+def _display_name(kind: str) -> str:
+    """`WidgetKind(rawValue:)?.fallbackName`, with the raw kind as the last resort (a kind no
+    `WidgetKind` case covers can only reach this through tier 2's narrowed-catalog seam)."""
+    return FALLBACK_WIDGET_NAMES.get(kind, kind)
+
 
 def _list_phrase(items: list[str]) -> str:
     """`listPhrase` (`LayoutMigrator.swift`): `["a"]` -> `"a"`, `["a","b","c"]` -> `"a", "b" and
@@ -223,9 +251,20 @@ def tier1_migrate(
     the real ``migrateResult(_:)``). ``uuid_source`` supplies fresh ids in call order, standing in
     for `UUID().uuidString` so a fixture case is reproducible.
     """
-    found_version = raw.get("schemaVersion", CURRENT_SCHEMA_VERSION)
-    if found_version is None:
+    # `RawLayout.schemaVersion` is an `Int?`: an absent or null value means "this build's
+    # version", an integral JSON number (`2` or `2.0`) decodes to that Int, and anything else
+    # (a string, a fractional number) fails to decode at all — which `migrateResult(_:)` turns
+    # into `.unreadable`, and which the Python port reports as UnreadableLayout for the same reason:
+    # the ratchet must never be bypassed by a value that merely is not an `int`.
+    raw_version = raw.get("schemaVersion")
+    if raw_version is None:
         found_version = CURRENT_SCHEMA_VERSION
+    elif isinstance(raw_version, bool) or not isinstance(raw_version, (int, float)):
+        raise Tier1Error("UnreadableLayout", "This dashboard file could not be read.")
+    elif isinstance(raw_version, float) and not raw_version.is_integer():
+        raise Tier1Error("UnreadableLayout", "This dashboard file could not be read.")
+    else:
+        found_version = int(raw_version)
     if found_version > CURRENT_SCHEMA_VERSION:
         raise Tier1Error(
             "LayoutTooNew",
@@ -258,7 +297,7 @@ def tier1_migrate(
                 size = size_raw
             else:
                 size = DEFAULT_SIZE
-                title_or_fallback = raw_widget.get("title") or kind_raw
+                title_or_fallback = raw_widget.get("title") or _display_name(kind_raw)
                 notes.append(
                     f"“{title_or_fallback}”: the size “{size_raw}” is unknown, "
                     "so it is medium now."
@@ -294,6 +333,11 @@ def tier1_migrate(
         "isPreset": raw.get("isPreset") or False,
         "presetKey": raw.get("presetKey"),
         "tagline": raw.get("tagline"),
+        **{
+            key: raw[key]
+            for key in ("createdAt", "updatedAt")
+            if isinstance(raw.get(key), str) and raw.get(key)
+        },
         "widgets": widgets,
     }
     if found_version < CURRENT_SCHEMA_VERSION:
@@ -322,8 +366,8 @@ def tier2_normalize(
         title = widget.get("title")
         if kind not in available:
             notes.append(
-                f"Removed “{title or kind}”: this version of Hardwood no longer has "
-                "that widget."
+                f"Removed “{title or _display_name(kind)}”: this version of Hardwood no "
+                "longer has that widget."
             )
             continue
 
@@ -394,6 +438,8 @@ def _tier1_case(
         "expect": {
             "schemaVersion": layout["schemaVersion"],
             "accent": layout["accent"],
+            "createdAt": layout.get("createdAt"),
+            "updatedAt": layout.get("updatedAt"),
             "widgetCount": len(layout["widgets"]),
             "widgets": [
                 {"id": w["id"], "kind": w["kind"], "size": w["size"]} for w in layout["widgets"]
@@ -410,6 +456,16 @@ def build_tier1_cases() -> list[dict[str, Any]]:
             {"schemaVersion": 2, "id": "b1", "name": "Future Board", "widgets": []},
         ),
         _tier1_case(
+            "schema_version_too_new_as_a_json_float",
+            "LayoutMigrator.swift:168-170",
+            {"schemaVersion": 2.0, "id": "b1", "name": "Future Board", "widgets": []},
+        ),
+        _tier1_case(
+            "schema_version_as_a_string_is_unreadable",
+            "LayoutMigrator.swift:79-86",
+            {"schemaVersion": "2", "id": "b1", "name": "Future Board", "widgets": []},
+        ),
+        _tier1_case(
             "schema_version_upgraded_silently_with_a_note",
             "LayoutMigrator.swift:236-238",
             {"schemaVersion": 0, "id": "b1", "name": "Old Board", "widgets": []},
@@ -418,6 +474,11 @@ def build_tier1_cases() -> list[dict[str, Any]]:
             "not_a_layout_when_name_widgets_and_id_are_all_absent",
             "LayoutMigrator.swift:171-173",
             {"tagline": "just a stray tagline, nothing else"},
+        ),
+        _tier1_case(
+            "too_new_is_reported_before_not_a_layout",
+            "LayoutMigrator.swift:168-173",
+            {"schemaVersion": 2, "tagline": "nothing layout-shaped here"},
         ),
         {
             "name": "unreadable_bytes_are_not_json_at_all",
@@ -457,6 +518,24 @@ def build_tier1_cases() -> list[dict[str, Any]]:
                 "id": "b1", "name": "Board", "widgets": [
                     {"id": "w1", "kind": "stat_tile", "title": "Points", "size": "jumbo"},
                 ],
+            },
+        ),
+        _tier1_case(
+            "untitled_widget_with_an_unrecognised_size_is_named_from_the_catalog_fallback",
+            "LayoutMigrator.swift:195",
+            {
+                "id": "b1", "name": "Board", "widgets": [
+                    {"id": "w1", "kind": "stat_tile", "size": "jumbo"},
+                ],
+            },
+        ),
+        _tier1_case(
+            "created_and_updated_timestamps_survive_a_migration",
+            "LayoutMigrator.swift:222-234",
+            {
+                "id": "b1", "name": "Board", "schemaVersion": 1,
+                "createdAt": "2024-01-02T03:04:05Z", "updatedAt": "2026-02-02T03:04:05Z",
+                "widgets": [{"id": "w1", "kind": "stat_tile", "size": "small"}],
             },
         ),
         _tier1_case(
@@ -512,6 +591,26 @@ def build_tier2_cases() -> list[dict[str, Any]]:
             "schema still allows but a live catalog has stopped serving.",
             "catalogKinds": ["stat_tile", "leaderboard"],
             "input": [legacy_widget],
+            "notes": notes,
+            "expect": {"widgetCount": len(kept)},
+        }
+    )
+
+    untitled_legacy = {
+        "kind": "career_arc", "title": None, "size": "medium", "config": {},
+    }
+    kept, notes = tier2_normalize(
+        [untitled_legacy],
+        catalog_kinds=("stat_tile", "leaderboard"),
+    )
+    cases.append(
+        {
+            "name": "untitled_kind_removed_from_catalog_is_named_from_the_catalog_fallback",
+            "sourceLine": "LayoutMigrator.swift:134",
+            "note": "An untitled widget must be named with WidgetKind.fallbackName, never the "
+            "raw snake_case kind — the same rule tier 1's size note follows.",
+            "catalogKinds": ["stat_tile", "leaderboard"],
+            "input": [untitled_legacy],
             "notes": notes,
             "expect": {"widgetCount": len(kept)},
         }

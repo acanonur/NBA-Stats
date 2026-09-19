@@ -1,0 +1,127 @@
+/*
+ * One class per `HardwoodTextStyleName`, each pulling every value — size, weight, tracking,
+ * numeric variant, default colour — from `generated/tokens.css`'s `--hw-font-<slug>-*`
+ * properties (CONTRACT-FOR-AGENTS.md §1). No literal size, weight or colour belongs here; the
+ * eight names and their slugs are fixed by that contract, so they are spelled out rather than
+ * generated a second time from `tokens.ts` at runtime for eight rules that never change shape.
+ *
+ * Per WEB_DESIGN.md §7.4: no style applies `text-transform` — a metric's short name (`eFG%`,
+ * `WS/48`) arrives from the catalog already cased the way the sport writes it, and upper-casing
+ * it here would destroy that.
+ */
+
+.text {
+  margin: 0;
+  padding: 0;
+}
+
+.displayValue {
+  font-size: var(--hw-font-display-size);
+  font-weight: var(--hw-font-display-weight);
+  letter-spacing: var(--hw-font-display-tracking);
+  font-variant-numeric: var(--hw-font-display-numeric);
+  color: var(--hw-text-primary);
+}
+
+.statValue {
+  font-size: var(--hw-font-stat-size);
+  font-weight: var(--hw-font-stat-weight);
+  letter-spacing: var(--hw-font-stat-tracking);
+  font-variant-numeric: var(--hw-font-stat-numeric);
+  color: var(--hw-text-primary);
+}
+
+.statLabel {
+  font-size: var(--hw-font-stat-label-size);
+  font-weight: var(--hw-font-stat-label-weight);
+  letter-spacing: var(--hw-font-stat-label-tracking);
+  font-variant-numeric: var(--hw-font-stat-label-numeric);
+  color: var(--hw-text-secondary);
+}
+
+.tableHeader {
+  font-size: var(--hw-font-table-header-size);
+  font-weight: var(--hw-font-table-header-weight);
+  letter-spacing: var(--hw-font-table-header-tracking);
+  font-variant-numeric: var(--hw-font-table-header-numeric);
+  color: var(--hw-text-secondary);
+}
+
+.tableCell {
+  font-size: var(--hw-font-table-cell-size);
+  font-weight: var(--hw-font-table-cell-weight);
+  letter-spacing: var(--hw-font-table-cell-tracking);
+  font-variant-numeric: var(--hw-font-table-cell-numeric);
+  color: var(--hw-text-primary);
+}
+
+.caption {
+  font-size: var(--hw-font-caption-size);
+  font-weight: var(--hw-font-caption-weight);
+  letter-spacing: var(--hw-font-caption-tracking);
+  font-variant-numeric: var(--hw-font-caption-numeric);
+  color: var(--hw-text-tertiary);
+}
+
+.sectionTitle {
+  font-size: var(--hw-font-section-title-size);
+  font-weight: var(--hw-font-section-title-weight);
+  letter-spacing: var(--hw-font-section-title-tracking);
+  font-variant-numeric: var(--hw-font-section-title-numeric);
+  color: var(--hw-text-primary);
+}
+
+.widgetTitle {
+  font-size: var(--hw-font-widget-title-size);
+  font-weight: var(--hw-font-widget-title-weight);
+  letter-spacing: var(--hw-font-widget-title-tracking);
+  font-variant-numeric: var(--hw-font-widget-title-numeric);
+  color: var(--hw-text-primary);
+}
+
+/* Color overrides — applied after a style's own default so a caller can recolor a value
+   (an availability-tinted number, a positive/negative delta) without picking a new style. */
+.colorPrimary {
+  color: var(--hw-text-primary);
+}
+
+.colorSecondary {
+  color: var(--hw-text-secondary);
+}
+
+.colorTertiary {
+  color: var(--hw-text-tertiary);
+}
+
+.colorPositive {
+  color: var(--hw-positive);
+}
+
+.colorNegative {
+  color: var(--hw-negative);
+}
+
+.colorNeutral {
+  color: var(--hw-neutral);
+}
+
+.colorWarning {
+  color: var(--hw-warning);
+}
+
+.colorSelection {
+  color: var(--hw-selection);
+}
+
+/* The opt-in for a non-numeric style that still has to line up in a column (WEB_DESIGN.md
+   §7.4 item 4) — `displayValue`/`statValue`/`tableCell` already carry tabular figures via their
+   own `--hw-font-*-numeric` token. */
+.tabularNums {
+  font-variant-numeric: tabular-nums;
+}
+
+.truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

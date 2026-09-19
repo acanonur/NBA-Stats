@@ -1,0 +1,57 @@
+/*
+ * `StatValue` — `ios/NBAStats/DesignSystem/Components.swift`'s `StatValueView`, ported. Renders
+ * one `MetricValue` with the right typography, era treatment, and optional rank/delta chips.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.alignLeading {
+  align-items: flex-start;
+}
+
+.alignTrailing {
+  align-items: flex-end;
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.spacingDisplay {
+  gap: var(--hw-space-xs);
+}
+
+.spacingStat {
+  gap: var(--hw-space-xxs);
+}
+
+.spacingCell {
+  gap: 0;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.chipRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+}

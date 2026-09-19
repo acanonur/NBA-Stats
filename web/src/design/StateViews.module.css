@@ -1,0 +1,102 @@
+/*
+ * `ios/NBAStats/DesignSystem/StateViews.swift`, ported: the placeholder every widget shows while
+ * resolving, on failure, when genuinely empty, or when its metric does not exist for the
+ * requested era — plus `PendingTile` for a kind `PENDING.txt` has not shipped yet.
+ */
+
+.skeletonColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  height: 100%;
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+}
+
+.skeletonSpacer {
+  flex: 1 1 auto;
+}
+
+.skeletonBar {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--hw-radius-chip);
+  background-color: var(--hw-skeleton);
+  flex: none;
+}
+
+.skeletonBarFlex {
+  flex: 1 1 auto;
+}
+
+/* The travelling highlight — a `@media (prefers-reduced-motion: no-preference)` guard, not a
+   `prefers-reduced-motion: reduce` override: a reader who has NOT asked for less motion gets the
+   sweep; anyone else gets a static bar, which is the correct default rather than an opt-out. */
+@media (prefers-reduced-motion: no-preference) {
+  .skeletonBar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--hw-skeleton-highlight),
+      transparent
+    );
+    animation: hw-skeleton-sweep 1.4s linear infinite;
+  }
+}
+
+@keyframes hw-skeleton-sweep {
+  from {
+    transform: translateX(-80%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hw-space-sm);
+  height: 100%;
+  text-align: center;
+}
+
+.centeredText {
+  margin: 0;
+}
+
+.icon {
+  color: var(--hw-text-tertiary);
+  flex: none;
+}
+
+.iconWarning {
+  color: var(--hw-warning);
+}
+
+.retryButton {
+  appearance: none;
+  border: 1px solid var(--hw-selection);
+  color: var(--hw-selection);
+  background: none;
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-xs) var(--hw-space-md);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.unavailableGlyph {
+  color: var(--hw-text-tertiary);
+}

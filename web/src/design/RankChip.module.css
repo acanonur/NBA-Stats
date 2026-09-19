@@ -1,0 +1,28 @@
+/*
+ * The pill `RankChip` and `DeltaChip` share — `color-mix()` computes each chip's soft background
+ * from its own foreground colour at render time, the same "12% of the tint" `Components.swift`
+ * gets from `Color.opacity(0.12)`. `color-mix()` is not in the stylelint
+ * `declaration-property-value-disallowed-list` (WEB_DESIGN.md §7.9 bans `#hex`, `rgba()`,
+ * `hsla()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`), so this stays a token
+ * reference all the way down rather than needing `gen_web_tokens.py` to pre-bake a `-soft`
+ * variant for every semantic and chart colour the way it already does for the nine accents.
+ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  padding: 1px var(--hw-space-xs);
+  border-radius: var(--hw-radius-pill);
+  line-height: 1;
+}
+
+.rank {
+  color: var(--hw-text-secondary);
+  background-color: color-mix(in sRGB, var(--hw-text-secondary) 12%, transparent);
+}
+
+.rankTopTen {
+  color: var(--hw-selection);
+  background-color: color-mix(in sRGB, var(--hw-selection) 12%, transparent);
+}

@@ -325,6 +325,8 @@ def test_every_fixture_is_indented_json_in_declaration_order(
         "dataThrough",
         "databaseReady",
         "seededDemoData",
+        "authReady",
+        "authWarnings",
     ]
 
 

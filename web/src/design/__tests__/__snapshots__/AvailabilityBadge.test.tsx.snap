@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AvailabilityBadge > renders a visible marker for "estimated" and matches its snapshot 1`] = `"<button type="button" class="_trigger_c477c9" aria-label="Usage %: estimated from the box score" title="Explains how this number was produced."><span class="_capsule_c477c9 _capsuleEstimated_c477c9">est.</span></button>"`;
+
+exports[`AvailabilityBadge > renders a visible marker for "partial" and matches its snapshot 1`] = `"<button type="button" class="_trigger_c477c9" aria-label="Usage %: partial, some games are missing inputs" title="Explains how this number was produced."><span class="_capsule_c477c9 _capsulePartial_c477c9">^</span></button>"`;
+
+exports[`AvailabilityBadge > renders a visible marker for "unavailable" and matches its snapshot 1`] = `"<button type="button" class="_trigger_c477c9" aria-label="Usage %: not tracked in this era" title="Explains how this number was produced."><span class="_capsuleUnavailable_c477c9">—</span></button>"`;

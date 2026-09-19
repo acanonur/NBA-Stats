@@ -1,0 +1,16 @@
+.circle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--hw-radius-pill);
+  overflow: hidden;
+  flex: none;
+}
+
+.initials {
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}

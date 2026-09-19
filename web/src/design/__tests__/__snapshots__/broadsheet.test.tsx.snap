@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BroadsheetPage > sets data-presentation="broadsheet" on its root and matches its snapshot 1`] = `"<div class="hw-bs-page" data-presentation="broadsheet"><div class="hw-bs-column"><p class="hw-bs-kicker">Tonight's projections</p></div></div>"`;

@@ -36,9 +36,12 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence
 
 from . import projection_constants as C
+
+if TYPE_CHECKING:  # pragma: no cover - typing only, no runtime dependency on the ORM
+    from .models import Player, PlayerGameBasic
 
 __all__ = [
     "CATEGORIES",
@@ -71,6 +74,7 @@ __all__ = [
     "trade_sensitivity",
     "build_draft_board",
     "STANDARD_SCENARIOS",
+    "single_game_line",
 ]
 
 # --------------------------------------------------------------------------- categories
@@ -211,6 +215,58 @@ class SeasonLine:
             ftm=self.ftm * scale,
             fta=self.fta * scale,
         )
+
+
+#: Every counting stat some scoring system in this module weights (``ESPN_POINTS`` and
+#: ``YAHOO_POINTS`` combined). :func:`single_game_line` guards on all of them, not just the
+#: caller's chosen system, because the ``SeasonLine`` it returns is generic — a caller who reads
+#: NBA's own ``fantasy_pts`` today may re-score the same line under ESPN's formula tomorrow, and
+#: a line that was safe to score one way must be safe to score every way this module offers.
+_SINGLE_GAME_REQUIRED_STATS: tuple[str, ...] = (
+    "pts", "fg3m", "fgm", "fga", "ftm", "fta", "reb", "ast", "stl", "blk", "tov",
+)
+
+
+def single_game_line(row: "PlayerGameBasic", player: "Player") -> Optional["SeasonLine"]:
+    """Map one game's box-score row onto a :class:`SeasonLine` so the existing pure
+    :func:`fantasy_points` can score it.
+
+    Returns ``None`` — never a partially-zeroed line — when any component a scoring system in
+    this module weights is ``NULL`` on the row (blocks and steals before 1973-74, three-pointers
+    before 1979-80, individual turnovers before 1977-78: ``player_game_basic``'s own docstring
+    lists the exact boundaries). :func:`fantasy_points` itself coerces a missing attribute to
+    ``0.0`` (``float(getattr(line, stat, 0.0) or 0.0)``) because a hand-built ``SeasonLine`` for
+    a *shortened* stat line — a punt category deliberately left at its dataclass default of
+    ``0.0``, say — is a legitimate input to that function and 0.0 is the right value for it. A
+    per-game adapter reading a *real, possibly era-incomplete* row is a different situation: here
+    a missing value means "unrecorded", not "recorded as zero", so the null guard has to live in
+    the adapter, before ``fantasy_points`` ever sees the row — which is exactly what this
+    function is for. ``games_played`` and ``games_projected`` are both ``1``: this is one game,
+    not a season average.
+    """
+    for stat in _SINGLE_GAME_REQUIRED_STATS:
+        if getattr(row, stat, None) is None:
+            return None
+    return SeasonLine(
+        player_id=int(row.player_id),
+        name=getattr(player, "full_name", None) or "",
+        team_abbr=None,
+        position=getattr(player, "position", None),
+        games_played=1,
+        games_projected=1.0,
+        minutes_per_game=float(row.minutes or 0.0),
+        pts=float(row.pts),
+        fg3m=float(row.fg3m),
+        reb=float(row.reb),
+        ast=float(row.ast),
+        stl=float(row.stl),
+        blk=float(row.blk),
+        tov=float(row.tov),
+        fgm=float(row.fgm),
+        fga=float(row.fga),
+        ftm=float(row.ftm),
+        fta=float(row.fta),
+    )
 
 
 # --------------------------------------------------------------------------- percentages
