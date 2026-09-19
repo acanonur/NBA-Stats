@@ -7,7 +7,7 @@ iOS app — three copies of the same truth, each of which can be edited independ
 of which fails loudly when it stops agreeing with the others. This script is what makes that
 failure loud, and it is the first job in ``.github/workflows/backend.yml``.
 
-Eight checks, one summary line each, exit 1 if any of them fails:
+Twelve checks, one summary line each, exit 1 if any of them fails:
 
 a. the three catalogs regenerate **byte-identically** from their generators, so nobody has
    hand-edited a generated file;
@@ -18,11 +18,30 @@ d. the widget kinds the service implements are exactly the kinds the catalog dec
 e. the copies bundled in the iOS app are byte-identical to ``contracts/``;
 f. every golden fixture parses as JSON;
 g. no two files bound for the app bundle share a basename;
-h. the hand-written Xcode project still resolves, and nothing is produced twice.
+h. the hand-written Xcode project still resolves, and nothing is produced twice;
+i. the generated web artifacts (design tokens, the web's typed contracts, the cross-language
+   parity fixtures) regenerate **byte-identically** from their generators, the same guarantee
+   check (a) gives the three JSON catalogs;
+j. the widget kinds ``widgets.json`` declares, the directories under ``web/src/widgets/``, and
+   the ``*Widget.swift`` files under ``ios/NBAStats/Widgets/`` all name the same sixteen kinds,
+   tolerating whatever ``web/src/widgets/PENDING.txt`` (or, before that file exists, simply "no
+   directory yet") says the web has not ported;
+k. every widget kind has a ``contracts/fixtures/widget_<kind>.json`` payload fixture, and — once
+   the web test that enumerates them exists — that it lists every one;
+l. each cross-language parity fixture (§8's ``gen_parity_cases.py`` output) is referenced by
+   name from the test file(s) meant to assert it, once those files exist.
 
 Checks (g) and (h) are here because the iOS half of this repository is written on a machine
 with no Xcode. Both encode a build failure that otherwise only appears on someone's Mac, as a
 DerivedData path with no indication of which two files are at fault.
+
+Checks (i)-(l) police the web half the same way (a)-(h) police the iOS half, added alongside it
+rather than folded into it: ``web/src/generated/**`` and ``web/src/widgets/**`` are built by
+work packages that land after this script does (WP1-WP5, WEB_DESIGN.md §9), so unlike (a)-(h),
+which have every input already in this checkout, (j)-(l) start in a state where most of what they
+would police does not exist yet. Each is written to report that plainly and pass anyway — a
+missing *file* here means "not built yet", the thing this whole contract-check exists to make
+loud is a *disagreement* between two things that do exist.
 
 Nothing here needs the network, and nothing writes to the repository.
 """
@@ -33,6 +52,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
@@ -41,6 +61,11 @@ CONTRACTS = ROOT / "contracts"
 TOOLS = CONTRACTS / "tools"
 FIXTURES = CONTRACTS / "fixtures"
 IOS_CONTRACTS = ROOT / "ios" / "NBAStats" / "Resources" / "Contracts"
+IOS_WIDGETS = ROOT / "ios" / "NBAStats" / "Widgets"
+IOS_TESTS = ROOT / "ios" / "NBAStatsTests"
+WEB = ROOT / "web"
+WEB_WIDGETS = WEB / "src" / "widgets"
+WEB_GENERATED = WEB / "src" / "generated"
 BACKEND = ROOT / "backend"
 
 #: The generated catalogs, and the generator that owns each.
@@ -48,6 +73,29 @@ CATALOGS: tuple[tuple[str, str], ...] = (
     ("metrics.json", "gen_metrics.py"),
     ("widgets.json", "gen_widgets.py"),
     ("presets.json", "gen_presets.py"),
+)
+
+#: Generated web artifacts, and the generator that owns each — a SEPARATE tuple from CATALOGS on
+#: purpose (§0.1-B): check (e) builds its required iOS-bundle set straight from ``CATALOGS``, and
+#: none of these ship inside the iOS app, so adding them to ``CATALOGS`` would make check (e)
+#: demand an ``ios/.../Resources/Contracts/tokens.css`` that is never meant to exist.
+WEB_ARTIFACTS: tuple[tuple[str, str], ...] = (
+    ("contracts/theme.json", "gen_theme.py"),
+    ("web/src/generated/tokens.css", "gen_web_tokens.py"),
+    ("web/src/generated/tokens.ts", "gen_web_tokens.py"),
+    ("web/src/generated/contracts.ts", "gen_web_contracts.py"),
+    ("web/src/generated/registry.ts", "gen_web_contracts.py"),
+    ("contracts/fixtures/layout_migration_cases.json", "gen_parity_cases.py"),
+    ("contracts/fixtures/monogram_cases.json", "gen_parity_cases.py"),
+    ("contracts/fixtures/format_cases.json", "gen_parity_cases.py"),
+)
+
+#: ``gen_theme.py`` prints one file to stdout, exactly like every ``CATALOGS`` generator, so
+#: check (i) diffs its stdout the way check (a) already does. The other three each own more than
+#: one output file living in the same directory, so they take ``--out DIR`` instead and check (i)
+#: diffs a scratch directory against the committed files — see ``gen_web_tokens.py``'s docstring.
+_WEB_ARTIFACT_DIR_GENERATORS = frozenset(
+    {"gen_web_tokens.py", "gen_web_contracts.py", "gen_parity_cases.py"}
 )
 
 #: Config field types whose value is one metric key, and those whose value is a list of them.
@@ -442,6 +490,276 @@ def check_xcode_project_is_sound() -> str:
     )
 
 
+# --------------------------------------------------------------------------- i. web artifacts
+
+
+def check_web_artifacts_regenerate() -> str:
+    """(i) Every ``WEB_ARTIFACTS`` entry is byte-identical to a fresh run of its generator.
+
+    The multi-file generators run once each (not once per file they own) into a scratch
+    directory, mirroring how ``sync_contracts.sh`` runs them for real; ``gen_theme.py`` runs the
+    same stdout-diff way check (a) already diffs the three JSON catalogs.
+    """
+    problems: list[str] = []
+    generators = sorted({generator for _, generator in WEB_ARTIFACTS})
+    for generator in generators:
+        owned = [ROOT / filename for filename, gen in WEB_ARTIFACTS if gen == generator]
+        script = TOOLS / generator
+        if not script.is_file():
+            problems.append(f"{generator} does not exist")
+            continue
+
+        if generator in _WEB_ARTIFACT_DIR_GENERATORS:
+            with tempfile.TemporaryDirectory(prefix="hardwood-contracts-") as scratch:
+                result = subprocess.run(
+                    [sys.executable, str(script), "--out", scratch],
+                    capture_output=True, text=True, cwd=ROOT,
+                )
+                if result.returncode != 0:
+                    detail = result.stderr.strip().splitlines() or ["(no output)"]
+                    problems.append(
+                        f"{generator} exited {result.returncode}: " + " / ".join(detail[:6])
+                    )
+                    continue
+                for target in owned:
+                    fresh = Path(scratch) / target.name
+                    if not target.is_file():
+                        problems.append(f"{target.relative_to(ROOT)} is missing")
+                    elif not fresh.is_file():
+                        problems.append(f"{generator} did not produce {target.name}")
+                    else:
+                        committed_text = target.read_text(encoding="utf-8")
+                        fresh_text = fresh.read_text(encoding="utf-8")
+                        if committed_text != fresh_text:
+                            problems.append(
+                                f"{target.relative_to(ROOT)} differs from a fresh "
+                                f"`python3 contracts/tools/{generator} --out <dir>` "
+                                f"({_first_difference(committed_text, fresh_text)})"
+                            )
+        else:
+            result = subprocess.run(
+                [sys.executable, str(script)], capture_output=True, text=True, cwd=ROOT,
+            )
+            if result.returncode != 0:
+                detail = result.stderr.strip().splitlines() or ["(no output)"]
+                problems.append(
+                    f"{generator} exited {result.returncode}: " + " / ".join(detail[:6])
+                )
+                continue
+            for target in owned:
+                if not target.is_file():
+                    problems.append(f"{target.relative_to(ROOT)} is missing")
+                    continue
+                committed_text = target.read_text(encoding="utf-8")
+                if result.stdout != committed_text:
+                    problems.append(
+                        f"{target.relative_to(ROOT)} differs from "
+                        f"`python3 contracts/tools/{generator}` "
+                        f"({_first_difference(committed_text, result.stdout)})"
+                    )
+    if problems:
+        raise CheckFailure(*problems)
+    return f"{len(WEB_ARTIFACTS)} web artifacts regenerate byte-identically"
+
+
+# --------------------------------------------------------------------------- j. widget kinds (web)
+
+#: The escape hatch (§8.4) cannot become permanent: once more than this many kinds are still
+#: unported, the check itself starts failing so the tolerance list has to shrink, not just grow.
+MAX_TOLERATED_PENDING_WIDGETS = 12
+
+
+def _kind_from_swift_widget_filename(filename: str) -> str:
+    """``StatTileWidget.swift`` -> ``stat_tile``: strip ``Widget.swift``, then PascalCase to
+    snake_case — the same spelling ``contracts/widgets.json`` already uses for ``kind``."""
+    stem = filename[: -len("Widget.swift")]
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", stem).lower()
+
+
+def check_widget_kinds_agree() -> str:
+    """(j) ``widgets.json``, ``web/src/widgets/``, and ``ios/.../Widgets/*Widget.swift`` name the
+    same kinds, tolerating whatever is still pending on the web."""
+    catalog_kinds = {widget["kind"] for widget in _load("widgets.json")["widgets"]}
+
+    if not IOS_WIDGETS.is_dir():
+        raise CheckFailure(f"{IOS_WIDGETS.relative_to(ROOT)} does not exist")
+    ios_kinds = {
+        _kind_from_swift_widget_filename(path.name) for path in IOS_WIDGETS.glob("*Widget.swift")
+    }
+
+    pending_path = WEB_WIDGETS / "PENDING.txt"
+    existing_web_dirs = (
+        {p.name for p in WEB_WIDGETS.iterdir() if p.is_dir() and p.name != "__tests__"}
+        if WEB_WIDGETS.is_dir() else set()
+    )
+    if pending_path.is_file():
+        pending = {
+            line.strip() for line in pending_path.read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.strip().startswith("#")
+        }
+        pending_source = "web/src/widgets/PENDING.txt"
+        unknown_pending = sorted(pending - catalog_kinds)
+        if unknown_pending:
+            raise CheckFailure(
+                f"{pending_source} names kinds widgets.json does not: {unknown_pending}"
+            )
+        # The ceiling only binds once there is a file that is actually supposed to shrink: WP5
+        # empties it one widget at a time (WEB_DESIGN.md §9), and this is what stops "12" from
+        # becoming a number nobody ever has to make true.
+        if len(pending) > MAX_TOLERATED_PENDING_WIDGETS:
+            raise CheckFailure(
+                f"{pending_source} tolerates {len(pending)} kinds, more than the "
+                f"{MAX_TOLERATED_PENDING_WIDGETS} the escape hatch allows: {sorted(pending)}"
+            )
+    else:
+        # No PENDING.txt: every kind with no web/src/widgets/<kind>/ directory is implicitly
+        # pending, and the filesystem is the list. This is deliberately not the same as having
+        # no ceiling.
+        #
+        # A written PENDING.txt naming all sixteen kinds would fail the ceiling on the very
+        # commit that created it, so the gate cannot ship one. But dropping the ceiling whenever
+        # the file is absent would mean a web client with four widgets passes this check
+        # forever, which is the exact outcome the ceiling exists to prevent. The ratchet
+        # therefore binds on the first widget instead: while no web widget exists at all, the
+        # web client is "not started" and sixteen pending kinds is the honest reading; the
+        # moment one lands, the work is underway and at most MAX_TOLERATED_PENDING_WIDGETS may
+        # still be missing. Nothing has to be hand-maintained, and the number has to be made
+        # true by the same commit that first claims progress.
+        pending = catalog_kinds - existing_web_dirs
+        pending_source = "implicit (no web/src/widgets/PENDING.txt; the filesystem is the list)"
+        if existing_web_dirs and len(pending) > MAX_TOLERATED_PENDING_WIDGETS:
+            raise CheckFailure(
+                f"{len(existing_web_dirs)} web widget(s) exist, so the web client has started, "
+                f"but {len(pending)} kinds are still missing — more than the "
+                f"{MAX_TOLERATED_PENDING_WIDGETS} the escape hatch allows: {sorted(pending)}"
+            )
+
+    expected_web = catalog_kinds - pending
+    missing_web = sorted(expected_web - existing_web_dirs)
+    extra_web = sorted(existing_web_dirs - catalog_kinds)
+    missing_ios = sorted(catalog_kinds - ios_kinds)
+    extra_ios = sorted(ios_kinds - catalog_kinds)
+
+    problems: list[str] = []
+    if missing_web:
+        problems.append(
+            f"no web/src/widgets/ directory, and not tolerated as pending: {missing_web}"
+        )
+    if extra_web:
+        problems.append(f"web/src/widgets/ has directories widgets.json does not know: {extra_web}")
+    if missing_ios:
+        problems.append(f"no ios/.../Widgets/*Widget.swift for: {missing_ios}")
+    if extra_ios:
+        problems.append(
+            f"ios/.../Widgets/ implements kinds widgets.json does not know: {extra_ios}"
+        )
+    if problems:
+        raise CheckFailure(*problems)
+    pending_list = ", ".join(sorted(pending)) if pending else "none"
+    return (
+        f"{len(catalog_kinds)} widget kinds agree across widgets.json, web and iOS "
+        f"(pending on the web: {pending_list})"
+    )
+
+
+# --------------------------------------------------------------------------- k. widget fixtures
+
+
+def check_widget_fixtures_exist() -> str:
+    """(k) A ``contracts/fixtures/widget_<kind>.json`` exists for every kind, and — once
+    ``web/src/widgets/__tests__/fixtures.test.ts`` exists — that it enumerates every one."""
+    catalog_kinds = sorted(widget["kind"] for widget in _load("widgets.json")["widgets"])
+    missing = [kind for kind in catalog_kinds if not (FIXTURES / f"widget_{kind}.json").is_file()]
+    if missing:
+        raise CheckFailure(f"contracts/fixtures/widget_<kind>.json missing for: {missing}")
+
+    fixtures_test = WEB_WIDGETS / "__tests__" / "fixtures.test.ts"
+    if not fixtures_test.is_file():
+        return (
+            f"{len(catalog_kinds)} widget payload fixtures exist "
+            "(web/src/widgets/__tests__/fixtures.test.ts not written yet)"
+        )
+    text = fixtures_test.read_text(encoding="utf-8")
+    not_enumerated = [kind for kind in catalog_kinds if f"widget_{kind}" not in text]
+    if not_enumerated:
+        raise CheckFailure(
+            f"web/src/widgets/__tests__/fixtures.test.ts does not enumerate: {not_enumerated}"
+        )
+    return f"{len(catalog_kinds)} widget payload fixtures exist and are enumerated by the web test"
+
+
+# --------------------------------------------------------------------------- l. parity wiring
+
+#: For each parity fixture: exact test files the design names by path (checked directly, and
+#: required to reference the fixture once they exist), and test DIRECTORIES to scan for any file
+#: that mentions it (used where no exact filename is specified — the web test tree, whose files
+#: are WP3's to name).
+PARITY_WIRING: tuple[tuple[str, tuple[Path, ...], tuple[Path, ...]], ...] = (
+    (
+        "layout_migration_cases.json",
+        (BACKEND / "tests" / "test_layout_parity.py", IOS_TESTS / "LayoutParityTests.swift"),
+        (),
+    ),
+    (
+        "monogram_cases.json",
+        (IOS_TESTS / "MonogramParityTests.swift",),
+        (WEB / "src" / "design" / "__tests__",),
+    ),
+    (
+        "format_cases.json",
+        (BACKEND / "tests" / "test_format_parity.py", IOS_TESTS / "FormatParityTests.swift"),
+        (WEB / "src" / "design" / "__tests__",),
+    ),
+)
+
+
+def check_parity_cases_are_wired() -> str:
+    """(l) Each parity fixture is referenced by name from the test(s) meant to assert it.
+
+    A test file or directory that does not exist yet is reported in the summary, not failed on:
+    ``backend/tests/test_layout_parity.py``, the two other backend parity tests, and every Swift
+    and web parity test belong to work packages that build after this one (WEB_DESIGN.md §9). A
+    file or directory that DOES exist and fails to mention the fixture is a real finding — that
+    is the drift this check exists to catch once there is anything to drift.
+    """
+    problems: list[str] = []
+    wired = 0
+    not_yet: list[str] = []
+    for fixture_name, exact_paths, scan_dirs in PARITY_WIRING:
+        if not (FIXTURES / fixture_name).is_file():
+            problems.append(f"{fixture_name} does not exist")
+            continue
+        for test_path in exact_paths:
+            if not test_path.is_file():
+                not_yet.append(str(test_path.relative_to(ROOT)))
+                continue
+            if fixture_name not in test_path.read_text(encoding="utf-8"):
+                problems.append(
+                    f"{test_path.relative_to(ROOT)} does not reference {fixture_name!r}"
+                )
+                continue
+            wired += 1
+        for directory in scan_dirs:
+            if not directory.is_dir():
+                not_yet.append(str(directory.relative_to(ROOT)) + "/*")
+                continue
+            hits = [
+                path for path in directory.rglob("*")
+                if path.is_file()
+                and fixture_name in path.read_text(encoding="utf-8", errors="ignore")
+            ]
+            if not hits:
+                problems.append(
+                    f"nothing under {directory.relative_to(ROOT)}/ references {fixture_name!r}"
+                )
+                continue
+            wired += 1
+    if problems:
+        raise CheckFailure(*problems)
+    detail = f", not yet written: {', '.join(not_yet)}" if not_yet else ""
+    return f"{wired} parity-fixture/test pair(s) wired{detail}"
+
+
 # --------------------------------------------------------------------------- runner
 
 CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
@@ -453,6 +771,10 @@ CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
     ("f", "golden fixtures parse", check_fixtures_parse),
     ("g", "app bundle has no resource name collision", check_app_bundle_has_no_name_collision),
     ("h", "Xcode project is structurally sound", check_xcode_project_is_sound),
+    ("i", "web artifacts regenerate from contracts/tools", check_web_artifacts_regenerate),
+    ("j", "widget kinds agree across widgets.json, web and iOS", check_widget_kinds_agree),
+    ("k", "a payload fixture exists per widget kind", check_widget_fixtures_exist),
+    ("l", "parity fixtures are wired into their tests", check_parity_cases_are_wired),
 )
 
 

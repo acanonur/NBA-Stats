@@ -3,9 +3,23 @@ name: Backend
 on:
   push:
     branches: ["**"]
-    paths: ["backend/**", "contracts/**", "scripts/**", ".github/workflows/backend.yml"]
+    paths:
+      - "backend/**"
+      - "contracts/**"
+      - "scripts/**"
+      - "web/**"
+      - "ios/NBAStats/DesignSystem/**"
+      - "ios/NBAStats/Core/DashboardLayout.swift"
+      - ".github/workflows/backend.yml"
   pull_request:
-    paths: ["backend/**", "contracts/**", "scripts/**", ".github/workflows/backend.yml"]
+    paths:
+      - "backend/**"
+      - "contracts/**"
+      - "scripts/**"
+      - "web/**"
+      - "ios/NBAStats/DesignSystem/**"
+      - "ios/NBAStats/Core/DashboardLayout.swift"
+      - ".github/workflows/backend.yml"
 
 jobs:
   test:
@@ -21,7 +35,10 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install fastapi "pydantic>=2" "sqlalchemy>=2" uvicorn httpx pytest pytest-asyncio python-dateutil
+          # Editable install of the real package + extras, not a hand-copied dependency list:
+          # a dependency added to pyproject.toml (e.g. the [web] extra's pyjwt) now actually
+          # arrives here instead of silently passing CI while failing on every other machine.
+          pip install -e "backend[test,serve,web]"
 
       - name: Contract drift guard
         run: python scripts/check_contracts.py

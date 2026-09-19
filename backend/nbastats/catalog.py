@@ -305,6 +305,12 @@ def format_value(format_key: str, value: float | int | None) -> str:
 
     Percent formats multiply by 100 (values are fractions everywhere in the data layer),
     ``plusMinus1`` is signed, and ``None`` renders as an em dash.
+
+    A signed format does **not** sign a value that rounds to exactly zero. A plus/minus of zero
+    is neither positive nor negative, so ``"+0.0"`` asserts a direction the number does not have.
+    ``Formatting.swift`` has always done this (``signed: value != 0``); this function did not, so
+    a net rating of exactly zero rendered as ``"+0.0"`` when the server formatted it and ``"0.0"``
+    when the iOS client did. ``contracts/fixtures/format_cases.json`` pins the zero case now.
     """
     if value is None:
         return EM_DASH
@@ -322,8 +328,10 @@ def format_value(format_key: str, value: float | int | None) -> str:
     quantum = Decimal(1).scaleb(-decimals)
     number = number.quantize(quantum, rounding=ROUND_HALF_UP)
     signed = bool(spec.get("signed"))
-    if number == 0:  # a value that rounds to zero must not render as "-0.0"
+    if number == 0:
+        # Neither "-0.0" nor "+0.0": a value that rounds away to zero has no sign to show.
         number = abs(number)
+        signed = False
     text = f"{number:+.{decimals}f}" if signed else f"{number:.{decimals}f}"
     suffix = spec.get("suffix")
     return f"{text}{suffix}" if suffix else text

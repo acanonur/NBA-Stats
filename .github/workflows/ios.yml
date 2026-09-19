@@ -18,11 +18,23 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
-      - name: Bundled contracts match contracts/
+      # check_contracts.py supersedes the old three-file `diff -q`: its check (e) makes the
+      # same byte-for-byte comparison, and its other checks catch what the diff never could —
+      # in particular a Theme.swift edit that never made it into contracts/theme.json (check i).
+      # It needs the backend package importable (check d imports nbastats.widgets to compare
+      # resolvers against the catalog), so this is the only place ios.yml touches Python.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install backend (for the contract checker's imports)
         run: |
-          for f in metrics.json widgets.json presets.json; do
-            diff -q "contracts/$f" "ios/NBAStats/Resources/Contracts/$f"
-          done
+          python3 -m pip install --upgrade pip
+          pip install -e "backend[test,serve,web]"
+
+      - name: Contract drift guard
+        run: python3 scripts/check_contracts.py
 
       - name: Build
         working-directory: ios

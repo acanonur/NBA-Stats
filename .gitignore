@@ -5,10 +5,19 @@ __pycache__/
 .eggs/
 build/
 dist/
+!web/dist/
+!web/dist/**
 .venv/
 venv/
 .pytest_cache/
 .ruff_cache/
+
+# Node (web/) — not part of the original 3-line dist/ patch (WEB_DESIGN.md §0.1-A) or its
+# owner's own edits, but its absence is a real gap: without it `npm install`/`npm ci` in web/
+# leaves ~300 packages' worth of files untracked, one `git add -A` away from committing the
+# entire dependency tree. `web/package-lock.json` is what CI restores from; `node_modules/`
+# itself never belongs in git regardless of which subdirectory it grows in.
+node_modules/
 
 # Local databases and ingest artifacts
 *.db
@@ -17,6 +26,11 @@ venv/
 *.sqlite3
 /data/
 backend/hardwood.db
+
+# Hardwood Web secrets and local-only account state (WEB_DESIGN.md §0.1-A, §2.1, §4.6)
+backend/.env
+*.p8
+.hardwood-mail/
 
 # Xcode
 xcuserdata/

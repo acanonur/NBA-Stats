@@ -39,6 +39,18 @@ def repo_root() -> Path:
 CONTRACT_PATH = repo_root() / "contracts" / "CONTRACT.md"
 FIXTURES_DIR = repo_root() / "contracts" / "fixtures"
 
+#: Cross-language parity fixtures ``contracts/tools/gen_parity_cases.py`` writes into this same
+#: directory (WEB_DESIGN.md §8.3) — a fixed set of input/output cases asserted by Python,
+#: TypeScript and Swift, not a snapshot of one API response. They share a directory with
+#: :mod:`nbastats.fixtures_export`'s fixtures because that is where the design document and
+#: ``scripts/sync_contracts.sh`` put them (the iOS test target needs them alongside the fixtures
+#: it already copies from here), but they have their own generator, their own on-disk shape
+#: (``sort_keys=True``, unlike the exporter's declaration-order dumps) and their own drift check
+#: (``scripts/check_contracts.py`` check (i)). Every test below assumes ``committed`` is exactly
+#: what :func:`nbastats.fixtures_export.fixture_names` would produce, so these are excluded at
+#: the source rather than special-cased in each one.
+PARITY_FIXTURE_NAMES = frozenset({"layout_migration_cases", "monogram_cases", "format_cases"})
+
 
 # --------------------------------------------------------------------------- CONTRACT.md
 
@@ -201,7 +213,10 @@ def contract_key_sets() -> dict[str, set[str]]:
 
 @pytest.fixture(scope="module")
 def committed() -> dict[str, str]:
-    """Every committed fixture, as raw text keyed by fixture name."""
+    """Every committed *exporter* fixture, as raw text keyed by fixture name.
+
+    Excludes ``PARITY_FIXTURE_NAMES`` — see the module-level comment by that name.
+    """
     assert FIXTURES_DIR.is_dir(), (
         f"{FIXTURES_DIR} does not exist; run "
         "`python3 -m nbastats.fixtures_export --out contracts/fixtures`"
@@ -209,6 +224,7 @@ def committed() -> dict[str, str]:
     return {
         path.stem: path.read_text(encoding="utf-8")
         for path in sorted(FIXTURES_DIR.glob("*.json"))
+        if path.stem not in PARITY_FIXTURE_NAMES
     }
 
 

@@ -1,0 +1,358 @@
+{
+  "algorithm": "FNV-1a-32 (offset 0x811C9DC5, prime 0x01000193) folded over text.uppercased() bytes, then hash % modulo",
+  "cases": [
+    {
+      "index": 4,
+      "key": "ATL",
+      "kind": "team"
+    },
+    {
+      "index": 8,
+      "key": "BKN",
+      "kind": "team"
+    },
+    {
+      "index": 11,
+      "key": "BOS",
+      "kind": "team"
+    },
+    {
+      "index": 5,
+      "key": "CHA",
+      "kind": "team"
+    },
+    {
+      "index": 1,
+      "key": "CHI",
+      "kind": "team"
+    },
+    {
+      "index": 1,
+      "key": "CLE",
+      "kind": "team"
+    },
+    {
+      "index": 10,
+      "key": "DAL",
+      "kind": "team"
+    },
+    {
+      "index": 0,
+      "key": "DEN",
+      "kind": "team"
+    },
+    {
+      "index": 2,
+      "key": "DET",
+      "kind": "team"
+    },
+    {
+      "index": 0,
+      "key": "GSW",
+      "kind": "team"
+    },
+    {
+      "index": 3,
+      "key": "HOU",
+      "kind": "team"
+    },
+    {
+      "index": 10,
+      "key": "IND",
+      "kind": "team"
+    },
+    {
+      "index": 7,
+      "key": "LAC",
+      "kind": "team"
+    },
+    {
+      "index": 6,
+      "key": "LAL",
+      "kind": "team"
+    },
+    {
+      "index": 2,
+      "key": "MEM",
+      "kind": "team"
+    },
+    {
+      "index": 2,
+      "key": "MIA",
+      "kind": "team"
+    },
+    {
+      "index": 1,
+      "key": "MIL",
+      "kind": "team"
+    },
+    {
+      "index": 3,
+      "key": "MIN",
+      "kind": "team"
+    },
+    {
+      "index": 6,
+      "key": "NOP",
+      "kind": "team"
+    },
+    {
+      "index": 1,
+      "key": "NYK",
+      "kind": "team"
+    },
+    {
+      "index": 4,
+      "key": "OKC",
+      "kind": "team"
+    },
+    {
+      "index": 8,
+      "key": "ORL",
+      "kind": "team"
+    },
+    {
+      "index": 0,
+      "key": "PHI",
+      "kind": "team"
+    },
+    {
+      "index": 7,
+      "key": "PHX",
+      "kind": "team"
+    },
+    {
+      "index": 2,
+      "key": "POR",
+      "kind": "team"
+    },
+    {
+      "index": 10,
+      "key": "SAC",
+      "kind": "team"
+    },
+    {
+      "index": 2,
+      "key": "SAS",
+      "kind": "team"
+    },
+    {
+      "index": 6,
+      "key": "TOR",
+      "kind": "team"
+    },
+    {
+      "index": 11,
+      "key": "UTA",
+      "kind": "team"
+    },
+    {
+      "index": 2,
+      "key": "WAS",
+      "kind": "team"
+    },
+    {
+      "index": 7,
+      "key": "player1",
+      "kind": "player"
+    },
+    {
+      "index": 6,
+      "key": "player2",
+      "kind": "player"
+    },
+    {
+      "index": 5,
+      "key": "player3",
+      "kind": "player"
+    },
+    {
+      "index": 4,
+      "key": "player4",
+      "kind": "player"
+    },
+    {
+      "index": 3,
+      "key": "player5",
+      "kind": "player"
+    },
+    {
+      "index": 2,
+      "key": "player6",
+      "kind": "player"
+    },
+    {
+      "index": 1,
+      "key": "player7",
+      "kind": "player"
+    },
+    {
+      "index": 0,
+      "key": "player8",
+      "kind": "player"
+    },
+    {
+      "index": 11,
+      "key": "player9",
+      "kind": "player"
+    },
+    {
+      "index": 1,
+      "key": "player10",
+      "kind": "player"
+    },
+    {
+      "index": 2,
+      "key": "player11",
+      "kind": "player"
+    },
+    {
+      "index": 3,
+      "key": "player12",
+      "kind": "player"
+    },
+    {
+      "index": 4,
+      "key": "player13",
+      "kind": "player"
+    },
+    {
+      "index": 9,
+      "key": "player14",
+      "kind": "player"
+    },
+    {
+      "index": 10,
+      "key": "player15",
+      "kind": "player"
+    },
+    {
+      "index": 11,
+      "key": "player16",
+      "kind": "player"
+    },
+    {
+      "index": 0,
+      "key": "player17",
+      "kind": "player"
+    },
+    {
+      "index": 5,
+      "key": "player18",
+      "kind": "player"
+    },
+    {
+      "index": 6,
+      "key": "player19",
+      "kind": "player"
+    },
+    {
+      "index": 6,
+      "key": "player20",
+      "kind": "player"
+    },
+    {
+      "index": 5,
+      "key": "player21",
+      "kind": "player"
+    },
+    {
+      "index": 8,
+      "key": "player22",
+      "kind": "player"
+    },
+    {
+      "index": 7,
+      "key": "player23",
+      "kind": "player"
+    },
+    {
+      "index": 10,
+      "key": "player24",
+      "kind": "player"
+    },
+    {
+      "index": 9,
+      "key": "player25",
+      "kind": "player"
+    },
+    {
+      "index": 0,
+      "key": "player26",
+      "kind": "player"
+    },
+    {
+      "index": 11,
+      "key": "player27",
+      "kind": "player"
+    },
+    {
+      "index": 10,
+      "key": "player28",
+      "kind": "player"
+    },
+    {
+      "index": 9,
+      "key": "player29",
+      "kind": "player"
+    },
+    {
+      "index": 11,
+      "key": "player30",
+      "kind": "player"
+    },
+    {
+      "index": 0,
+      "key": "player31",
+      "kind": "player"
+    },
+    {
+      "index": 9,
+      "key": "player32",
+      "kind": "player"
+    },
+    {
+      "index": 10,
+      "key": "player33",
+      "kind": "player"
+    },
+    {
+      "index": 7,
+      "key": "player34",
+      "kind": "player"
+    },
+    {
+      "index": 8,
+      "key": "player35",
+      "kind": "player"
+    },
+    {
+      "index": 5,
+      "key": "player36",
+      "kind": "player"
+    },
+    {
+      "index": 6,
+      "key": "player37",
+      "kind": "player"
+    },
+    {
+      "index": 7,
+      "key": "player38",
+      "kind": "player"
+    },
+    {
+      "index": 8,
+      "key": "player39",
+      "kind": "player"
+    },
+    {
+      "index": 4,
+      "key": "player40",
+      "kind": "player"
+    }
+  ],
+  "modulo": 12,
+  "schemaVersion": 1,
+  "source": "ios/NBAStats/DesignSystem/Theme.swift::Palette.monogramColor(for:)"
+}

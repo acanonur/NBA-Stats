@@ -1,0 +1,390 @@
+{
+  "currentSchemaVersion": 1,
+  "generatedIdSentinel": "<generated>",
+  "schemaVersion": 1,
+  "source": "ios/NBAStats/Core/LayoutMigrator.swift",
+  "tier1": [
+    {
+      "error": {
+        "message": "This dashboard was made with a newer version of Hardwood (format 2; this build reads 1). Update the app to edit it.",
+        "type": "LayoutTooNew"
+      },
+      "expect": null,
+      "input": {
+        "id": "b1",
+        "name": "Future Board",
+        "schemaVersion": 2,
+        "widgets": []
+      },
+      "name": "schema_version_too_new",
+      "notes": [],
+      "outcome": "error",
+      "sourceLine": "LayoutMigrator.swift:168-170"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "schemaVersion": 1,
+        "widgetCount": 0,
+        "widgets": []
+      },
+      "input": {
+        "id": "b1",
+        "name": "Old Board",
+        "schemaVersion": 0,
+        "widgets": []
+      },
+      "name": "schema_version_upgraded_silently_with_a_note",
+      "notes": [
+        "Updated this dashboard from format 0 to 1."
+      ],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:236-238"
+    },
+    {
+      "error": {
+        "message": "This file does not contain a dashboard.",
+        "type": "NotALayout"
+      },
+      "expect": null,
+      "input": {
+        "tagline": "just a stray tagline, nothing else"
+      },
+      "name": "not_a_layout_when_name_widgets_and_id_are_all_absent",
+      "notes": [],
+      "outcome": "error",
+      "sourceLine": "LayoutMigrator.swift:171-173"
+    },
+    {
+      "error": {
+        "message": "This dashboard file could not be read.",
+        "type": "UnreadableLayout"
+      },
+      "expect": null,
+      "input": "{not valid json",
+      "inputIsRawText": true,
+      "name": "unreadable_bytes_are_not_json_at_all",
+      "notes": [],
+      "outcome": "error",
+      "sourceLine": "LayoutMigrator.swift:79-86"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "schemaVersion": 1,
+        "widgetCount": 0,
+        "widgets": []
+      },
+      "input": {
+        "id": "b1",
+        "name": "Board",
+        "widgets": [
+          {
+            "id": "w1",
+            "title": "Mystery Tile"
+          }
+        ]
+      },
+      "name": "widget_with_no_kind_is_dropped",
+      "notes": [
+        "Removed a widget that had no type."
+      ],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:180-183"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "schemaVersion": 1,
+        "widgetCount": 0,
+        "widgets": []
+      },
+      "input": {
+        "id": "b1",
+        "name": "Board",
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "holo_projector",
+            "title": "Holo"
+          }
+        ]
+      },
+      "name": "widget_with_an_unknown_kind_is_dropped",
+      "notes": [
+        "Removed a “holo_projector” widget: this version of Hardwood does not have that widget."
+      ],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:184-187"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "schemaVersion": 1,
+        "widgetCount": 1,
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "medium"
+          }
+        ]
+      },
+      "input": {
+        "id": "b1",
+        "name": "Board",
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "jumbo",
+            "title": "Points"
+          }
+        ]
+      },
+      "name": "widget_with_an_unrecognised_size_falls_back_to_medium_with_a_note",
+      "notes": [
+        "“Points”: the size “jumbo” is unknown, so it is medium now."
+      ],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:189-199"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "schemaVersion": 1,
+        "widgetCount": 2,
+        "widgets": [
+          {
+            "id": "dup",
+            "kind": "stat_tile",
+            "size": "medium"
+          },
+          {
+            "id": "<generated>-0",
+            "kind": "leaderboard",
+            "size": "medium"
+          }
+        ]
+      },
+      "input": {
+        "id": "b1",
+        "name": "Board",
+        "widgets": [
+          {
+            "id": "dup",
+            "kind": "stat_tile",
+            "title": "First"
+          },
+          {
+            "id": "dup",
+            "kind": "leaderboard",
+            "title": "Second"
+          }
+        ]
+      },
+      "name": "duplicate_widget_ids_the_second_gets_a_fresh_one",
+      "notes": [
+        "Two widgets shared an id; one of them was given a new one."
+      ],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:201-206"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "schemaVersion": 1,
+        "widgetCount": 1,
+        "widgets": [
+          {
+            "id": "<generated>-0",
+            "kind": "stat_tile",
+            "size": "medium"
+          }
+        ]
+      },
+      "input": {
+        "id": "b1",
+        "name": "Board",
+        "widgets": [
+          {
+            "kind": "stat_tile",
+            "title": "No Id"
+          }
+        ]
+      },
+      "name": "missing_widget_id_gets_a_fresh_one_silently",
+      "notes": [],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:201"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "orange",
+        "schemaVersion": 1,
+        "widgetCount": 0,
+        "widgets": []
+      },
+      "input": {
+        "accent": "neon_pink",
+        "id": "b1",
+        "name": "Board",
+        "widgets": []
+      },
+      "name": "unrecognised_accent_falls_back_to_orange_silently",
+      "notes": [],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:215-220"
+    },
+    {
+      "error": null,
+      "expect": {
+        "accent": "teal",
+        "schemaVersion": 1,
+        "widgetCount": 1,
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "small"
+          }
+        ]
+      },
+      "input": {
+        "accent": "teal",
+        "id": "b1",
+        "name": "Board",
+        "schemaVersion": 1,
+        "widgets": [
+          {
+            "id": "w1",
+            "kind": "stat_tile",
+            "size": "small",
+            "title": "Points"
+          }
+        ]
+      },
+      "name": "a_well_formed_layout_migrates_with_no_notes_at_all",
+      "notes": [],
+      "outcome": "migrated",
+      "sourceLine": "LayoutMigrator.swift:166-240"
+    }
+  ],
+  "tier2": [
+    {
+      "catalogKinds": [
+        "stat_tile",
+        "leaderboard"
+      ],
+      "expect": {
+        "widgetCount": 0
+      },
+      "input": [
+        {
+          "config": {},
+          "kind": "shot_chart_legacy",
+          "size": "medium",
+          "title": "Old Shot Chart"
+        }
+      ],
+      "name": "kind_removed_from_catalog",
+      "note": "Uses a narrowed catalogKinds (not the real 16) to exercise a kind the schema still allows but a live catalog has stopped serving.",
+      "notes": [
+        "Removed “Old Shot Chart”: this version of Hardwood no longer has that widget."
+      ],
+      "sourceLine": "LayoutMigrator.swift:132-136"
+    },
+    {
+      "expect": {
+        "config": {
+          "comparison": "league",
+          "season": "latest",
+          "seasonType": "Regular Season",
+          "showOpponent": true,
+          "teamId": 1610612737
+        }
+      },
+      "input": [
+        {
+          "config": {
+            "extraJunk": true,
+            "season": "latest",
+            "teamId": 1610612737
+          },
+          "id": "w1",
+          "kind": "four_factors",
+          "size": "medium",
+          "title": "Hawks Defense"
+        }
+      ],
+      "name": "unknown_config_key_dropped_and_missing_keys_filled_from_defaults",
+      "notes": [
+        "“Hawks Defense”: removed “extraJunk”, which this widget no longer uses.",
+        "“Hawks Defense”: filled in “comparison”, “seasonType” and “showOpponent” from the defaults."
+      ],
+      "sourceLine": "LayoutMigrator.swift:139-149"
+    },
+    {
+      "expect": {
+        "size": "medium"
+      },
+      "input": [
+        {
+          "config": {
+            "comparison": "league",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "showOpponent": true,
+            "teamId": 1610612737
+          },
+          "id": "w1",
+          "kind": "four_factors",
+          "size": "small",
+          "title": "Hawks Defense"
+        }
+      ],
+      "name": "size_not_offered_by_the_kind_resizes_to_the_default_with_a_note",
+      "notes": [
+        "“Hawks Defense”: resized to Medium, the only size it supports now."
+      ],
+      "sourceLine": "LayoutMigrator.swift:151-154"
+    },
+    {
+      "expect": {
+        "config": {
+          "comparison": "league",
+          "season": "latest",
+          "seasonType": "Regular Season",
+          "showOpponent": true,
+          "teamId": 1610612737
+        },
+        "size": "medium"
+      },
+      "input": [
+        {
+          "config": {
+            "comparison": "league",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "showOpponent": true,
+            "teamId": 1610612737
+          },
+          "id": "w1",
+          "kind": "four_factors",
+          "size": "medium",
+          "title": "Hawks Defense"
+        }
+      ],
+      "name": "a_widget_that_already_matches_the_catalog_gets_no_notes",
+      "notes": [],
+      "sourceLine": "LayoutMigrator.swift:128-162"
+    }
+  ]
+}
