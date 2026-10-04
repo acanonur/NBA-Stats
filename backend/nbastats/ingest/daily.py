@@ -448,6 +448,33 @@ def write_player_basic_row(
     Era rules apply here, not only to the season rollups: a 1995-96 box score has
     no plus/minus, so the column is written ``NULL`` even if the upstream row
     offers a zero for it.
+
+    ``started`` is written only when the source line *says* something about it
+    --------------------------------------------------------------------------
+    Two kinds of source reach this function, and only one of them knows who
+    started. The per-game ``BoxScoreTraditionalV3`` marks a starter by giving him
+    a position (``normalize`` turns that into ``started=True``/``False``), so its
+    lines always carry the key. The bulk ``PlayerGameLogs`` rows that
+    :func:`ingest_day` and the nightly correction window use have no starter
+    column at all, so their lines do not carry the key.
+
+    The old code wrote ``bool(line.get("started"))`` for both, which turns "this
+    source does not know" into ``False``. The first correction pass over a game
+    then overwrote every recorded starter with a bench player, ``games_started``
+    collapsed to zero for everyone, and the flip was reported as a revision to a
+    box score that had not moved. A missing value is not a ``False``: when the key
+    is absent (or ``None``) the column is left out of the upsert, so a stored flag
+    survives and a fresh insert stays ``NULL`` ("not recorded", an em dash on
+    screen), never a guessed bench player.
+
+    A line that carries an explicit ``True`` or ``False`` still wins, including
+    over an earlier value: that is a source stating a fact, which is how a real
+    correction to the starting five lands. Only silence is ignored.
+
+    Nothing here rewrites history. A database whose flags were already flattened
+    to ``False`` is restored only by a source that knows, which means the per-game
+    V3 path (:func:`ingest_game`) run again over the affected games; the bulk
+    correction window cannot restore them, because its lines carry no flag.
     """
     player_id = line.get("player_id")
     team_id = line.get("team_id")
@@ -460,9 +487,11 @@ def write_player_basic_row(
 
     values: dict[str, Any] = {
         "team_id": team_id,
-        "started": bool(line.get("started")),
         "data_source": LIVE_SOURCE,
     }
+    started = line.get("started")
+    if started is not None:
+        values["started"] = bool(started)
     for column in _BASIC_COLUMNS:
         values[column] = line.get(column)
     if season:

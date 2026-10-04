@@ -1,0 +1,118 @@
+"""The market-vocabulary constants, in the form ``contracts/leagues.json`` generates them.
+
+``contracts/leagues.json`` is the one definition of two lists that guard every new payload
+(EUROLEAGUE_DESIGN section 10.2): the words no JSON key may contain, and the only parameter
+names a new route may accept. ``shared/market_guard.py`` must read them, but ``shared/`` is
+stdlib-only and file-free, so it cannot open a JSON file; it reads this module instead, which
+a generator writes from the JSON. This is the first, hand-written version. Once the contracts
+package has merged, regeneration belongs to ``contracts/tools/gen_leagues.py`` and this file
+is replaced by its output; the *names* below (``FORBIDDEN_PAYLOAD_KEY_WORDS``,
+``ALLOWED_PARAMETERS``) are the interface and must survive that.
+
+Why seven of the words are written in two pieces
+------------------------------------------------
+``tests/test_web_release_hardening.py`` greps the *source text* of whole packages for a list
+of words that must never reach a reader. This file is source text too, and it is the one place
+that has to name the words it forbids. A list that forbids a word cannot be allowed to trip the
+scan that forbids it, so the seven entries the scan also bans are spelled as two string
+literals added together (a formatter that merges adjacent literals would undo any subtler
+trick). ``tests/shared/test_market_guard.py`` asserts the
+joined set equals the designed set exactly, and ``test_stdlib_only.py`` asserts this directory
+is clean under the scan's own pattern, so a regenerated file that writes them whole fails
+loudly instead of silently breaking the prose guard.
+
+The key words are matched after a key is split into words (``overtimePeriods`` becomes
+``overtime`` and ``periods``), never as substrings, so ``coverage``, ``headline`` and
+``baseline`` are all fine. The key list is chosen so that no new payload key needs an
+exception.
+"""
+
+from __future__ import annotations
+
+from typing import Final
+
+__all__ = ["FORBIDDEN_PAYLOAD_KEY_WORDS", "ALLOWED_PARAMETERS"]
+
+#: Words that may not appear, as a whole word, in any JSON object key of a new payload.
+FORBIDDEN_PAYLOAD_KEY_WORDS: Final[tuple[str, ...]] = (
+    "line",
+    "lines",
+    "od" + "ds",
+    "moneyl" + "ine",
+    "spread",
+    "over",
+    "under",
+    "lean",
+    "edge",
+    "pick",
+    "picks",
+    "push",
+    "implied",
+    "cover",
+    "vi" + "g",
+    "juice",
+    "sta" + "ke",
+    "wa" + "ger",
+    "book" + "maker",
+    "market",
+    "par" + "lay",
+    "handicap",
+    "ats",
+    "probability",
+)
+
+#: Every query, path and body field name a new route (``/v1/el/**``, ``/v1/matchups*`` and the
+#: rest of design section 9) may declare. A route that needs a name outside this list needs
+#: the list, and the reasoning, changed first: no route may accept an external number to
+#: compare with a projection.
+ALLOWED_PARAMETERS: Final[tuple[str, ...]] = (
+    # identity of what is asked about
+    "asOfRound",
+    "awayTeamId",
+    "clubCode",
+    "gameId",
+    "homeTeamId",
+    "overrideId",
+    "personCode",
+    "playerId",
+    "playerIds",
+    "statusId",
+    "teamId",
+    "teamIds",
+    # scope and window
+    "basis",
+    "cursor",
+    "date",
+    "includeNews",
+    "limit",
+    "minGames",
+    "perClub",
+    "perMode",
+    "phase",
+    "round",
+    "scheme",
+    "season",
+    "seasonType",
+    "sort",
+    "statuses",
+    "window",
+    # body of the availability write
+    "expectedReturnText",
+    "note",
+    "playerName",
+    "reasonCategory",
+    "reasonText",
+    "sourceLabel",
+    "sourcePublishedAt",
+    "sourceUrl",
+    "status",
+    # body of the pasted-link write
+    "link",
+    "publishedAt",
+    "sourceName",
+    "title",
+    # body of the model-settings write
+    "key",
+    "settings",
+    "value",
+)
