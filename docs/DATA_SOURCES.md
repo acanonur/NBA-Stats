@@ -193,3 +193,196 @@ along with what is kept, for how long, and the export and deletion endpoints tha
 * Endpoints deprecated without notice; pin `nba_api` and watch its releases.
 * Post-hoc stat corrections — hence the three-day re-pull window.
 * `PlayerGameLogs` `MeasureType` coverage varies by era.
+
+---
+
+## 7. Sources added for the EuroLeague, injuries and headlines
+
+Everything above is about the NBA stats store. This section covers what the EuroLeague,
+availability and headline work adds, source by source: what Hardwood takes, where it goes, how
+politely, and the posture it is used under. [LEGAL.md](LEGAL.md) §2d and §2e state the same
+posture; this is the operational version. [RUNBOOK.md](RUNBOOK.md) §1c is how to run it.
+
+### What was and was not verified
+
+The terms and the live behaviour of every source in this section **could not be checked from
+the development environment**: every NBA, ESPN, EuroLeague and news host was refused at the
+build sandbox's network proxy, so no terms page was read and no live response was fetched. What
+the code is built on instead is each source's documented shape, an MIT-licensed SDK's source
+and fixtures for the EuroLeague endpoints, and the content of the EuroLeague workbook you
+supplied. Three consequences, all deliberate:
+
+* every parser fails closed: an unexpected shape becomes an explicit "unreadable" or
+  "unavailable" state, never a guess;
+* the endpoint shapes are marked unverified until a recording made on your Mac says otherwise
+  (the probe commands, below);
+* the posture below is the conservative one, not a reading of anyone's terms.
+
+### The posture applied to all of them
+
+Private, personal and non-commercial use on one machine; nothing redistributed; nothing used for
+gambling or to operate a fantasy game; every screen carries attribution. That is the posture
+[LEGAL.md](LEGAL.md) §2 already established for NBA.com data, extended to these sources.
+**Sharing or publishing Hardwood changes every one of these answers**, and the worker enforces
+the private half: it refuses to fetch EuroLeague data, injury reports or headlines when
+`HARDWOOD_PUBLIC_BASE_URL` is not a loopback address.
+
+There is no review date, terms URL or "outcome" to record before a source runs. Each has an
+on/off switch in `hardwood.env` instead, and every source reports its state, its last success
+and the reason it is off or blocked in `GET /v1/sources` (`/v1/el/sources` for the EuroLeague).
+
+Attribution strings every client shows:
+
+* NBA: *"Stats via NBA.com. Injury status from the NBA's official injury report."*
+* EuroLeague: *"EuroLeague statistics from the EuroLeague's data service. Availability
+  researched from the linked sources."*
+
+### The sources
+
+| # | Source | What Hardwood takes | Switch | `/v1/sources` key |
+| --- | --- | --- | --- | --- |
+| A | EuroLeague data service, `api-live.euroleague.net/v2` | Round calendar, fixtures, results, box scores, clubs, rosters and listed positions | `HARDWOOD_EL_LIVE` | `el.dataService` |
+| B | Your EuroLeague workbook (a file you supply) | Rounds' results and box scores, fixtures, club ratings inputs, squads, sourced availability statuses | none: a file you drop in the inbox | `el.workbook` |
+| C | The NBA's official injury report, `ak-static.cms.nba.com` | Per-player status, reason and team report state | `HARDWOOD_NBA_INJURIES` | `nba.injuryReport` |
+| D | NBA `CommonTeamRoster` (through `nba_api`) | The position each rostered player is listed at | none | `nba.rosters` |
+| E | NBA scoreboard tip-off and arena fields | Tip-off time, arena name and city, where present | none | `nba.stats` |
+| F | Headline feeds (`eurohoops.net/feed`, `talkbasket.net/feed` as shipped candidates) | Title, link, date and the source's name | `HARDWOOD_NEWS` | `nba.news.<feed>`, `el.news.<feed>` |
+| G | Hand-entered availability (a pasted link, label and date) | What you type | none | `el.manual` |
+
+### A. The EuroLeague data service
+
+`GET https://api-live.euroleague.net/v2/competitions/E/seasons/{season}/...` for five fixed
+endpoints: the round calendar, a round's games (fixtures, results, game codes, partials, tip-off,
+venue, audience), one game's box score with the embedded registration (position and starting
+five), the season's clubs, and a club's people. **Only these URL templates can be requested; any
+other URL raises before a request is made.** None has been verified against the live service.
+
+Not used, and why: `live.euroleague.net` (Cloudflare rate-limited and carries no positions), the
+v1 XML feeds (they would add a dependency), and v3 statistics (shape unknown).
+
+How it behaves:
+
+* at least one second between requests on every host, at most two in flight;
+* a User-Agent that names Hardwood and says it is for personal use: `Hardwood/<version>
+  (private single-user analytics)`;
+* a 20-second timeout, up to three attempts on 429 or 5xx honouring `Retry-After` (capped at 600
+  seconds) and otherwise backing off exponentially, and conditional requests whenever an ETag or
+  Last-Modified is offered;
+* a 401, a 403, a Cloudflare 1015 or three 429s in a row opens a **circuit breaker**: that
+  source is paused for six hours and `/v1/sources` says `blocked`, with the time it will retry;
+* raw responses are kept gzipped under `el-raw/` (the last three per URL) for diagnosis and are
+  never served.
+
+Expected volume is about 90 requests a week, and about 150 in a week with two rounds. A full
+season backfill is deliberately a command you run on purpose
+(`backfill --season E2025 --yes`), and it prints the request count before it starts.
+
+`python -m nbastats.euroleague.ingest probe` records real responses to `recordings/` in your
+data folder, so the endpoint shapes can be checked against reality. Recordings never enter git.
+
+### B. Your workbook
+
+The workbook is yours and its contents never enter the repository: it is imported into the
+EuroLeague store on your Mac and nowhere else. The importer reads only named columns of named
+sheets (Settings, Team Ratings, Squads, the round box scores, R2 Review, the round fixture
+sheets, Injury Report) and reads cached cell values only, never formulas. It refuses a file
+containing a document-type declaration, caps the file at 25 MB and the unpacked size at 200 MB,
+and rejects any club code it does not recognise rather than guessing.
+
+* **Not imported:** Latest Games and Game Logs (those rows come from sources whose terms nobody
+  has read, and the official rows duplicate the box scores), Season Stats (derived), R3 Scorers,
+  Start Here and Method. The report at the end of an import counts what was skipped.
+* **The workbook's betting columns and settings are not read.** The importer carries an explicit
+  list of those headers and settings and a test proves a workbook full of sentinel values in
+  them leaves nothing in the store ([EUROLEAGUE.md](EUROLEAGUE.md) §7).
+* **"est." lines are imported** and marked estimated everywhere they are shown: their origin is
+  not recorded in the workbook, so they are labelled "your estimate; source not recorded".
+* A newer workbook adds its later rounds and appends new statuses; history is never rewritten,
+  and a workbook never overwrites a row that came from the data service.
+
+### C. The NBA injury report
+
+`https://ak-static.cms.nba.com/referee/injury/Injury-Report_<YYYY-MM-DD>_<hh>_<mm><AM|PM>.pdf`,
+published in Eastern-time quarter-hour slots. It is NBA.com content, used under §2 of
+[LEGAL.md](LEGAL.md): fetched by the worker only, never by a browser.
+
+* **When:** only when a game is scheduled within 36 hours; every 15 minutes inside the reporting
+  windows (the day before after 17:00 ET, and game day from 08:00 ET to the last tip-off), and
+  hourly otherwise. Each run tries the newest quarter-hour slot and steps back only until the
+  newest slot it already has, at most eight steps, so in practice one or two requests. A 404 is
+  normal (not every slot is published) and an unchanged file is skipped.
+* **Parsing:** text runs with coordinates are read from the PDF with `pypdf` (the optional
+  `injuries` extra; `install.sh` installs it), columns are found from the header on every page,
+  and wrapped reasons and rows split across a page are rejoined. `NOT YET SUBMITTED` is recorded
+  as exactly that. **A header that does not match the seven expected names produces no
+  entries and the state "unreadable"**: the layout has changed three times since 2021-22, and
+  wrong data is worse than none.
+* **Matching:** "Last, First" is matched against players with games for that team this season. A
+  name that matches more than one player, or none, is left unmatched and goes to a review queue;
+  a player is never guessed.
+* **Not shown next to a demo league:** the job refuses a store that holds the seeded league.
+* **Verification:** `/v1/sources` reports this parser as *not yet confirmed against a real
+  report* until it has parsed one successfully on your Mac. There are no 2026-27 reports before
+  about 19 October. `backend/scripts/probe_nba_injury_report.py` records real PDFs to
+  `recordings/`.
+* The report is not linked to the fantasy toolkit and never will be by default: that would widen
+  the argument [LEGAL.md](LEGAL.md) §2a already calls thin.
+
+### D and E. NBA rosters and the scoreboard's extra fields
+
+`CommonTeamRoster` is called once per team (30 calls) weekly, to learn the position each player
+is listed at; defence by position uses it as its one position basis. Its `POSITION` field is
+unverified: if it is absent the job logs that, writes nothing, and the source shows
+`unreadable`, which makes defence by position withhold itself league-wide with the reason, not
+guess. Current-season positions from a Kaggle backfill are used only as a fallback. The
+scoreboard's tip-off and arena fields are written only when the response actually contains them.
+The NBA odds endpoint (`odds_todaysGames.json`) is not callable from the client at all, and a
+test proves it.
+
+### F. Headlines
+
+Off the shelf, two candidate feeds are configured and **both are unverified**. For each enabled
+feed Hardwood:
+
+* reads `robots.txt` with Python's `urllib.robotparser` before fetching, caches the answer for
+  24 hours, and on a disallow switches that feed off, with the reason shown in `/v1/sources`;
+* fetches at most hourly, honours `Retry-After`, caps the response at 2 MB, and refuses an XML
+  document with a document-type or entity declaration;
+* parses RSS 2.0 or Atom and stores **a title, a link, a date and the source's name** and nothing
+  else. `description` and `content:encoded` are never read into storage and **article bodies are
+  never fetched**;
+* keeps feed items 30 days (a link you pasted yourself is kept), and links a headline to a team
+  or player only when the name is unambiguous within that league's own store.
+
+A headline never becomes an availability status on its own: "Set from headline" pre-fills the
+link, label and date and a person confirms the status.
+
+### G. Hand-entered availability
+
+The EuroLeague publishes no injury list through its data service, so the statuses in the
+workbook were researched by a person, each with its own link and date, and new ones are entered
+the same way: a status, a link, a label and the source's publication date. Rows are append-only
+(a correction is a retraction plus a new row), every status shows how old its source is, and a
+status stops driving projections once it is out of date. Links to betting-operator sites are
+withheld and only the label and date are kept; a club whose name contains one is never affected.
+
+### Deliberately not used
+
+* **ESPN's unofficial API**, because of the automation clause in its terms, whatever the use.
+* **Basketball-Reference**, as in §2B above, and **RotoWire, CBS, NBC and balldontlie**.
+* **Scraping BasketNews**, which sits behind a paywall.
+* **Article bodies** from any source.
+* **The `euroleague-api` Python package** is GPLv3: its endpoint list was read as documentation,
+  and none of its code is used.
+
+### Verification records
+
+Two checks are recorded rather than enforced, because they need your Mac's real data and
+network. Hardwood runs without them; they say what has and has not been confirmed.
+
+* **G1, the Round 3 replay:** the ten Round 3 projections recomputed from the imported inputs
+  against the workbook's own cells (to nine decimals). Result recorded in
+  [EUROLEAGUE.md](EUROLEAGUE.md) §9.
+* **G2, the injury report parser:** `/v1/sources` shows it as unconfirmed until it has read one
+  real report. Steps in [RUNBOOK.md](RUNBOOK.md) §1c.
+
