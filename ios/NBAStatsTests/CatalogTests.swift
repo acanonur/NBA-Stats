@@ -10,7 +10,7 @@ import XCTest
 final class CatalogTests: XCTestCase {
 
     /// The counts the contract commits to (`contracts/CONTRACT.md`, the table in its header).
-    private let expectedMetricCount = 61
+    private let expectedMetricCount = 62
     private let expectedWidgetCount = 16
     private let expectedPresetCount = 12
 

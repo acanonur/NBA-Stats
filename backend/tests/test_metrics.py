@@ -641,7 +641,7 @@ def _metric_catalog():
 def test_contract_catalog_is_readable():
     catalog = _metric_catalog()
     assert catalog["schemaVersion"] == 1
-    assert len(catalog["metrics"]) == 61
+    assert len(catalog["metrics"]) == 62
 
 
 #: Keys resolved by reading the column straight off the row because no box score

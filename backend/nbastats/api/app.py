@@ -40,6 +40,35 @@ defaults with no environment variables set at all, and every accounts-specific o
 still goes through the same ``ImportError``-tolerant path ``routes_dashboard`` and
 ``routes_leaders`` already used.
 
+Two leagues, one process, and a wall between them
+-------------------------------------------------
+Hardwood now serves the EuroLeague beside the NBA, and the way this module wires it is the half
+of the isolation that no other file can provide (the rest is in ``tests/test_league_isolation``).
+Everything new goes through the optional-router path above, so a checkout without the new
+modules, or with one of them half-written, serves exactly what it served before:
+
+* The NBA's matchup, defence, projection, availability, news, league and sources routes
+  (``routes_leagues``, ``routes_matchups``, ``routes_defense``, ``routes_projections``,
+  ``routes_availability``, ``routes_sources``) are ordinary optional routers under ``/v1`` with
+  the standard guards.
+* The EuroLeague is ``routes_euroleague``, a three-line shim over a router with ``prefix="/el"``,
+  so it lands at ``/v1/el``. The league is chosen by the URL, never by a header, which is half of
+  why a EuroLeague row cannot reach an NBA view. It is not a mounted sub-app: it shares this
+  application's lifespan, error envelope, middleware and guards, so there is no second startup
+  to forget and no second set of guards to get subtly different.
+* ``HARDWOOD_EL_ENABLED=0`` skips the EuroLeague entirely: its router is not mounted, its store
+  is not opened, and ``GET /v1/leagues`` reports it as disabled. The switch is named in
+  :data:`ROUTE_SWITCHES`, and read straight from the environment here because this module must
+  never import the EuroLeague package to find out whether it should.
+* **This module never imports ``nbastats.euroleague``.** Nothing outside that package may (an AST
+  test enforces it, with one named exception: the shim ``routes_euroleague``), so the start-up
+  hook below reaches the EuroLeague's bootstrap through :func:`importlib.import_module` by string
+  name, inside a ``try`` that turns any failure into "the EuroLeague is off, and here is why".
+  A broken EuroLeague store therefore cannot stop the NBA from serving.
+* ``/v1/el/health`` answers without a key (it joins ``deps.API_KEY_EXEMPT_PATHS``), because the
+  EuroLeague's state is its payload and a load balancer or the Mac's own launch agent must be
+  able to ask whether it is up.
+
 Run it with ``uvicorn nbastats.api.app:app``.
 """
 from __future__ import annotations
@@ -83,6 +112,7 @@ __all__ = [
     "API_PREFIX",
     "OPTIONAL_ROUTE_MODULES",
     "OPTIONAL_ROUTE_GUARDS",
+    "ROUTE_SWITCHES",
 ]
 
 logger = logging.getLogger("nbastats.api")
@@ -94,7 +124,34 @@ API_PREFIX = "/v1"
 #: service down. ``routes_auth`` and ``routes_me`` are here rather than in the mandatory list
 #: below for the same reason ``routes_dashboard`` always has been: a missing ``pyjwt``, or a
 #: checkout mid-build, must leave the rest of the service exactly as useful as it is today.
-OPTIONAL_ROUTE_MODULES = ("routes_dashboard", "routes_leaders", "routes_auth", "routes_me")
+#:
+#: The last seven are the matchup, defence, projection, availability and league features
+#: (``routes_euroleague`` being the EuroLeague's whole router, mounted at ``/v1/el``). They are
+#: listed here, and not in the mandatory tuple in :func:`create_app`, because they are written
+#: by separate packages: a module that is absent is skipped, one that is broken is logged and
+#: skipped, and the rest of the service is exactly as useful as it was without them.
+OPTIONAL_ROUTE_MODULES = (
+    "routes_dashboard",
+    "routes_leaders",
+    "routes_auth",
+    "routes_me",
+    "routes_leagues",
+    "routes_matchups",
+    "routes_defense",
+    "routes_projections",
+    "routes_availability",
+    "routes_sources",
+    "routes_euroleague",
+)
+
+#: Optional router module to the environment variable that can switch it off. A value that is
+#: plainly false (``0``, ``false``, ``no``, ``off``) skips the module; anything else, including
+#: unset, mounts it, so the EuroLeague is on by default on the user's machine and a typo does not
+#: silently disable it (the EuroLeague's own settings report a malformed value as an error).
+ROUTE_SWITCHES: dict[str, str] = {"routes_euroleague": "HARDWOOD_EL_ENABLED"}
+
+#: The strings an on/off environment variable may use to say "off".
+_FALSE_STRINGS = frozenset({"0", "false", "f", "no", "n", "off"})
 
 #: Per-module override of the dependency list ``_include_optional_routers`` applies. Anything
 #: not named here gets :data:`_STANDARD_GUARDS` (API key or session, plus the rate limiter) —
@@ -114,9 +171,47 @@ DESCRIPTION = (
 )
 
 
+def _switched_off(module_name: str) -> bool:
+    """True when ``module_name`` has an environment switch (:data:`ROUTE_SWITCHES`) set to off."""
+    variable = ROUTE_SWITCHES.get(module_name)
+    if variable is None:
+        return False
+    return os.environ.get(variable, "").strip().lower() in _FALSE_STRINGS
+
+
+def _prepare_euroleague() -> None:
+    """Start the EuroLeague's own store, or leave it off with a logged reason. Never raises.
+
+    The EuroLeague keeps its own SQLite file with its own tables, and its bootstrap decides what
+    that file should hold (nothing, the invented demo league, or the user's workbook) and stamps
+    it. This hook only *calls* it, by string name through :func:`importlib.import_module`, because
+    nothing outside ``nbastats/euroleague`` may import that package (see the module docstring).
+    Every failure mode is the same to the NBA: log it and carry on, so a misconfigured or broken
+    EuroLeague turns the EuroLeague off and nothing else. The bootstrap itself never raises; the
+    ``try`` is for the import and for the day that stops being true.
+    """
+    if _switched_off("routes_euroleague"):
+        logger.info("HARDWOOD_EL_ENABLED is off: the EuroLeague is not started")
+        return
+    try:
+        bootstrap = importlib.import_module("..euroleague.bootstrap", __package__)
+        result = bootstrap.prepare()
+    except ImportError:
+        logger.info("the EuroLeague package is not present; /v1/el is not served")
+        return
+    except Exception:  # noqa: BLE001 - the EuroLeague must never take the NBA down
+        logger.exception("the EuroLeague could not start; the NBA is unaffected")
+        return
+    state = getattr(result, "state", "unknown")
+    reason = getattr(result, "reason", None)
+    logger.info("EuroLeague: %s%s", state, f" ({reason})" if reason else "")
+
+
 def _prepare_database() -> None:
-    """Create the schema, and seed the demo league when asked and the store is empty."""
+    """Create the schema, start the EuroLeague's store, and seed the NBA demo league when asked
+    and the store is empty."""
     init_db()
+    _prepare_euroleague()
     settings = get_settings()
     if not settings.demo_mode:
         return
@@ -190,6 +285,11 @@ def _guards_for(name: str) -> list:
 def _include_optional_routers(application: FastAPI) -> None:
     mounted: set[str] = set()
     for name in OPTIONAL_ROUTE_MODULES:
+        if _switched_off(name):
+            logger.info(
+                "%s is switched off by %s; its routes are not served", name, ROUTE_SWITCHES[name]
+            )
+            continue
         try:
             module = importlib.import_module(f".{name}", __package__)
         except ImportError:

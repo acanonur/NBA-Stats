@@ -170,7 +170,7 @@ the drift check:
 python3 scripts/check_contracts.py
 ```
 
-`CatalogTests` asserts the counts the contract commits to — **61 metrics, 16 widgets, 12 presets**
+`CatalogTests` asserts the counts the contract commits to — **62 metrics, 16 widgets, 12 presets**
 — so a catalog change that the app has not been told about fails the iOS suite too.
 
 ---

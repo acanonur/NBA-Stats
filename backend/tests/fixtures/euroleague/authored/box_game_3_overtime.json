@@ -1,0 +1,2378 @@
+{
+ "local": {
+  "coach": {
+   "code": "CZZB",
+   "name": "COACH, ZZB"
+  },
+  "players": [
+   {
+    "player": {
+     "person": {
+      "code": "900200",
+      "name": "MARROWBY, DARIO",
+      "alias": "Marrowby",
+      "aliasRaw": "Marrowby",
+      "passportName": "DARIO",
+      "passportSurname": "MARROWBY",
+      "jerseyName": "MARROWBY",
+      "abbreviatedName": "Marrowby, D.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 185,
+      "weight": 80,
+      "birthDate": "1998-03-12T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "4",
+     "dorsalRaw": "4",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800200,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1903.0,
+     "valuation": 13.0,
+     "points": 11.0,
+     "fieldGoalsMade2": 3.0,
+     "fieldGoalsAttempted2": 5.0,
+     "fieldGoalsMade3": 1.0,
+     "fieldGoalsAttempted3": 3.0,
+     "freeThrowsMade": 2.0,
+     "freeThrowsAttempted": 3.0,
+     "fieldGoalsMadeTotal": 4.0,
+     "fieldGoalsAttemptedTotal": 8.0,
+     "accuracyMade": 11.0,
+     "accuracyAttempted": 11.0,
+     "totalRebounds": 5.0,
+     "defensiveRebounds": 3.0,
+     "offensiveRebounds": 2.0,
+     "assistances": 2.0,
+     "steals": 1.0,
+     "turnovers": 2.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 2.0,
+     "foulsReceived": 3.0,
+     "plusMinus": 1.0,
+     "dorsal": 4,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900201",
+      "name": "DEWBERRY, WYSTAN",
+      "alias": "Dewberry",
+      "aliasRaw": "Dewberry",
+      "passportName": "WYSTAN",
+      "passportSurname": "DEWBERRY",
+      "jerseyName": "DEWBERRY",
+      "abbreviatedName": "Dewberry, W.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 188,
+      "weight": 85,
+      "birthDate": "1999-04-13T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "6",
+     "dorsalRaw": "6",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800201,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1841.0,
+     "valuation": 22.0,
+     "points": 19.0,
+     "fieldGoalsMade2": 5.0,
+     "fieldGoalsAttempted2": 7.0,
+     "fieldGoalsMade3": 2.0,
+     "fieldGoalsAttempted3": 5.0,
+     "freeThrowsMade": 3.0,
+     "freeThrowsAttempted": 5.0,
+     "fieldGoalsMadeTotal": 7.0,
+     "fieldGoalsAttemptedTotal": 12.0,
+     "accuracyMade": 19.0,
+     "accuracyAttempted": 17.0,
+     "totalRebounds": 8.0,
+     "defensiveRebounds": 5.0,
+     "offensiveRebounds": 3.0,
+     "assistances": 3.0,
+     "steals": 2.0,
+     "turnovers": 3.0,
+     "blocksFavour": 1.0,
+     "blocksAgainst": 1.0,
+     "foulsCommited": 4.0,
+     "foulsReceived": 4.0,
+     "plusMinus": 2.0,
+     "dorsal": 6,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900202",
+      "name": "UNDERHILL, JASPER",
+      "alias": "Underhill",
+      "aliasRaw": "Underhill",
+      "passportName": "JASPER",
+      "passportSurname": "UNDERHILL",
+      "jerseyName": "UNDERHILL",
+      "abbreviatedName": "Underhill, J.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 191,
+      "weight": 90,
+      "birthDate": "2000-05-14T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "8",
+     "dorsalRaw": "8",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800202,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1800.0,
+     "valuation": 13.0,
+     "points": 11.0,
+     "fieldGoalsMade2": 3.0,
+     "fieldGoalsAttempted2": 5.0,
+     "fieldGoalsMade3": 1.0,
+     "fieldGoalsAttempted3": 3.0,
+     "freeThrowsMade": 2.0,
+     "freeThrowsAttempted": 3.0,
+     "fieldGoalsMadeTotal": 4.0,
+     "fieldGoalsAttemptedTotal": 8.0,
+     "accuracyMade": 11.0,
+     "accuracyAttempted": 11.0,
+     "totalRebounds": 5.0,
+     "defensiveRebounds": 3.0,
+     "offensiveRebounds": 2.0,
+     "assistances": 3.0,
+     "steals": 1.0,
+     "turnovers": 2.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 3.0,
+     "foulsReceived": 3.0,
+     "plusMinus": 2.0,
+     "dorsal": 8,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900203",
+      "name": "HAWTHORNE-LEE, SILAS",
+      "alias": "Hawthorne-Lee",
+      "aliasRaw": "Hawthorne-Lee",
+      "passportName": "SILAS",
+      "passportSurname": "HAWTHORNE-LEE",
+      "jerseyName": "HAWTHORNE-LEE",
+      "abbreviatedName": "Hawthorne-Lee, S.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 194,
+      "weight": 95,
+      "birthDate": "2001-06-15T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "10",
+     "dorsalRaw": "10",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800203,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1764.0,
+     "valuation": 16.0,
+     "points": 12.0,
+     "fieldGoalsMade2": 3.0,
+     "fieldGoalsAttempted2": 5.0,
+     "fieldGoalsMade3": 1.0,
+     "fieldGoalsAttempted3": 3.0,
+     "freeThrowsMade": 3.0,
+     "freeThrowsAttempted": 3.0,
+     "fieldGoalsMadeTotal": 4.0,
+     "fieldGoalsAttemptedTotal": 8.0,
+     "accuracyMade": 12.0,
+     "accuracyAttempted": 11.0,
+     "totalRebounds": 5.0,
+     "defensiveRebounds": 3.0,
+     "offensiveRebounds": 2.0,
+     "assistances": 3.0,
+     "steals": 1.0,
+     "turnovers": 2.0,
+     "blocksFavour": 1.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 3.0,
+     "foulsReceived": 3.0,
+     "plusMinus": 2.0,
+     "dorsal": 10,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900204",
+      "name": "UMBERFIELD, ULRIC",
+      "alias": "Umberfield",
+      "aliasRaw": "Umberfield",
+      "passportName": "ULRIC",
+      "passportSurname": "UMBERFIELD",
+      "jerseyName": "UMBERFIELD",
+      "abbreviatedName": "Umberfield, U.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 197,
+      "weight": 100,
+      "birthDate": "1990-07-16T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "12",
+     "dorsalRaw": "12",
+     "position": 3,
+     "positionName": "Center",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800204,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1744.0,
+     "valuation": 25.0,
+     "points": 19.0,
+     "fieldGoalsMade2": 5.0,
+     "fieldGoalsAttempted2": 6.0,
+     "fieldGoalsMade3": 2.0,
+     "fieldGoalsAttempted3": 4.0,
+     "freeThrowsMade": 3.0,
+     "freeThrowsAttempted": 4.0,
+     "fieldGoalsMadeTotal": 7.0,
+     "fieldGoalsAttemptedTotal": 10.0,
+     "accuracyMade": 19.0,
+     "accuracyAttempted": 14.0,
+     "totalRebounds": 6.0,
+     "defensiveRebounds": 4.0,
+     "offensiveRebounds": 2.0,
+     "assistances": 3.0,
+     "steals": 2.0,
+     "turnovers": 2.0,
+     "blocksFavour": 1.0,
+     "blocksAgainst": 1.0,
+     "foulsCommited": 3.0,
+     "foulsReceived": 4.0,
+     "plusMinus": 2.0,
+     "dorsal": 12,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900205",
+      "name": "UNDERHILL, MERRICK",
+      "alias": "Underhill",
+      "aliasRaw": "Underhill",
+      "passportName": "MERRICK",
+      "passportSurname": "UNDERHILL",
+      "jerseyName": "UNDERHILL",
+      "abbreviatedName": "Underhill, M.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 200,
+      "weight": 105,
+      "birthDate": "1991-08-17T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "14",
+     "dorsalRaw": "14",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800205,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 959.0,
+     "valuation": 6.0,
+     "points": 5.0,
+     "fieldGoalsMade2": 2.0,
+     "fieldGoalsAttempted2": 2.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 2.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 2.0,
+     "fieldGoalsMadeTotal": 2.0,
+     "fieldGoalsAttemptedTotal": 4.0,
+     "accuracyMade": 5.0,
+     "accuracyAttempted": 6.0,
+     "totalRebounds": 3.0,
+     "defensiveRebounds": 2.0,
+     "offensiveRebounds": 1.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 1.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 2.0,
+     "plusMinus": 1.0,
+     "dorsal": 14,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900206",
+      "name": "UNDERHILL, TARN",
+      "alias": "Underhill",
+      "aliasRaw": "Underhill",
+      "passportName": "TARN",
+      "passportSurname": "UNDERHILL",
+      "jerseyName": "UNDERHILL",
+      "abbreviatedName": "Underhill, T.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 203,
+      "weight": 110,
+      "birthDate": "1992-09-18T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "16",
+     "dorsalRaw": "16",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800206,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 899.0,
+     "valuation": 3.0,
+     "points": 3.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 2.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 3.0,
+     "accuracyMade": 3.0,
+     "accuracyAttempted": 4.0,
+     "totalRebounds": 2.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 1.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 1.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": 1.0,
+     "dorsal": 16,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900207",
+      "name": "TANSLEY, YORICK",
+      "alias": "Tansley",
+      "aliasRaw": "Tansley",
+      "passportName": "YORICK",
+      "passportSurname": "TANSLEY",
+      "jerseyName": "TANSLEY",
+      "abbreviatedName": "Tansley, Y.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 206,
+      "weight": 80,
+      "birthDate": "1993-01-10T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "18",
+     "dorsalRaw": "18",
+     "position": 3,
+     "positionName": "Center",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800207,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 802.0,
+     "valuation": 3.0,
+     "points": 3.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 2.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 3.0,
+     "accuracyMade": 3.0,
+     "accuracyAttempted": 4.0,
+     "totalRebounds": 1.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": 1.0,
+     "dorsal": 18,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900208",
+      "name": "ROOKWOOD, OREN",
+      "alias": "Rookwood",
+      "aliasRaw": "Rookwood",
+      "passportName": "OREN",
+      "passportSurname": "ROOKWOOD",
+      "jerseyName": "ROOKWOOD",
+      "abbreviatedName": "Rookwood, O.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 209,
+      "weight": 85,
+      "birthDate": "1994-02-11T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "20",
+     "dorsalRaw": "20",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800208,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 663.0,
+     "valuation": 4.0,
+     "points": 3.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 1.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 2.0,
+     "accuracyMade": 3.0,
+     "accuracyAttempted": 3.0,
+     "totalRebounds": 1.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": 1.0,
+     "dorsal": 20,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900209",
+      "name": "ASHGROVE, ANDRO",
+      "alias": "Ashgrove",
+      "aliasRaw": "Ashgrove",
+      "passportName": "ANDRO",
+      "passportSurname": "ASHGROVE",
+      "jerseyName": "ASHGROVE",
+      "abbreviatedName": "Ashgrove, A.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 212,
+      "weight": 90,
+      "birthDate": "1995-03-12T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "22",
+     "dorsalRaw": "22",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800209,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 650.0,
+     "valuation": 2.0,
+     "points": 3.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 2.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 3.0,
+     "accuracyMade": 3.0,
+     "accuracyAttempted": 4.0,
+     "totalRebounds": 1.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 1.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": 1.0,
+     "dorsal": 22,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900210",
+      "name": "ELDERFIELD, IVOR",
+      "alias": "Elderfield",
+      "aliasRaw": "Elderfield",
+      "passportName": "IVOR",
+      "passportSurname": "ELDERFIELD",
+      "jerseyName": "ELDERFIELD",
+      "abbreviatedName": "Elderfield, I.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 185,
+      "weight": 95,
+      "birthDate": "1996-04-13T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "24",
+     "dorsalRaw": "24",
+     "position": 3,
+     "positionName": "Center",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800210,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 475.0,
+     "valuation": 2.0,
+     "points": 2.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 1.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 0.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 0.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 1.0,
+     "accuracyMade": 2.0,
+     "accuracyAttempted": 1.0,
+     "totalRebounds": 0.0,
+     "defensiveRebounds": 0.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 0.0,
+     "foulsReceived": 0.0,
+     "plusMinus": 1.0,
+     "dorsal": 24,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900211",
+      "name": "UNDERHILL, FENN",
+      "alias": "Underhill",
+      "aliasRaw": "Underhill",
+      "passportName": "FENN",
+      "passportSurname": "UNDERHILL",
+      "jerseyName": "UNDERHILL",
+      "abbreviatedName": "Underhill, F.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 188,
+      "weight": 100,
+      "birthDate": "1997-05-14T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "26",
+     "dorsalRaw": "26",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800211,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZB",
+      "name": "Brightmoor Falcons",
+      "abbreviatedName": "Brightmoor",
+      "editorialName": "Brightmoor",
+      "tvCode": "BMF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZB.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 0.0,
+     "valuation": 0.0,
+     "points": 0.0,
+     "fieldGoalsMade2": 0.0,
+     "fieldGoalsAttempted2": 0.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 0.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 0.0,
+     "fieldGoalsMadeTotal": 0.0,
+     "fieldGoalsAttemptedTotal": 0.0,
+     "accuracyMade": 0.0,
+     "accuracyAttempted": 0.0,
+     "totalRebounds": 0.0,
+     "defensiveRebounds": 0.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 0.0,
+     "foulsReceived": 0.0,
+     "plusMinus": 0.0,
+     "dorsal": 26,
+     "startFive": false,
+     "startFive2": false
+    }
+   }
+  ],
+  "team": {
+   "timePlayed": 0.0,
+   "valuation": 4.0,
+   "points": 0.0,
+   "fieldGoalsMade2": 0.0,
+   "fieldGoalsAttempted2": 0.0,
+   "fieldGoalsMade3": 0.0,
+   "fieldGoalsAttempted3": 0.0,
+   "freeThrowsMade": 0.0,
+   "freeThrowsAttempted": 0.0,
+   "fieldGoalsMadeTotal": 0.0,
+   "fieldGoalsAttemptedTotal": 0.0,
+   "accuracyMade": 0.0,
+   "accuracyAttempted": 0.0,
+   "totalRebounds": 4.0,
+   "defensiveRebounds": 3.0,
+   "offensiveRebounds": 1.0,
+   "assistances": 0.0,
+   "steals": 0.0,
+   "turnovers": 0.0,
+   "blocksFavour": 0.0,
+   "blocksAgainst": 0.0,
+   "foulsCommited": 0.0,
+   "foulsReceived": 0.0,
+   "plusMinus": 0.0
+  },
+  "total": {
+   "timePlayed": 2700.0,
+   "valuation": 113.0,
+   "points": 91.0,
+   "fieldGoalsMade2": 26.0,
+   "fieldGoalsAttempted2": 38.0,
+   "fieldGoalsMade3": 7.0,
+   "fieldGoalsAttempted3": 24.0,
+   "freeThrowsMade": 18.0,
+   "freeThrowsAttempted": 24.0,
+   "fieldGoalsMadeTotal": 33.0,
+   "fieldGoalsAttemptedTotal": 62.0,
+   "accuracyMade": 91.0,
+   "accuracyAttempted": 86.0,
+   "totalRebounds": 41.0,
+   "defensiveRebounds": 27.0,
+   "offensiveRebounds": 14.0,
+   "assistances": 19.0,
+   "steals": 7.0,
+   "turnovers": 14.0,
+   "blocksFavour": 3.0,
+   "blocksAgainst": 2.0,
+   "foulsCommited": 20.0,
+   "foulsReceived": 23.0,
+   "plusMinus": 15.0
+  }
+ },
+ "road": {
+  "coach": {
+   "code": "CZZC",
+   "name": "COACH, ZZC"
+  },
+  "players": [
+   {
+    "player": {
+     "person": {
+      "code": "900300",
+      "name": "PRIMROSE, URI",
+      "alias": "Primrose",
+      "aliasRaw": "Primrose",
+      "passportName": "URI",
+      "passportSurname": "PRIMROSE",
+      "jerseyName": "PRIMROSE",
+      "abbreviatedName": "Primrose, U.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 185,
+      "weight": 90,
+      "birthDate": "1990-04-13T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "4",
+     "dorsalRaw": "4",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800300,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 2102.0,
+     "valuation": 19.0,
+     "points": 17.0,
+     "fieldGoalsMade2": 4.0,
+     "fieldGoalsAttempted2": 7.0,
+     "fieldGoalsMade3": 2.0,
+     "fieldGoalsAttempted3": 5.0,
+     "freeThrowsMade": 3.0,
+     "freeThrowsAttempted": 4.0,
+     "fieldGoalsMadeTotal": 6.0,
+     "fieldGoalsAttemptedTotal": 12.0,
+     "accuracyMade": 17.0,
+     "accuracyAttempted": 16.0,
+     "totalRebounds": 7.0,
+     "defensiveRebounds": 4.0,
+     "offensiveRebounds": 3.0,
+     "assistances": 3.0,
+     "steals": 2.0,
+     "turnovers": 3.0,
+     "blocksFavour": 1.0,
+     "blocksAgainst": 1.0,
+     "foulsCommited": 4.0,
+     "foulsReceived": 4.0,
+     "plusMinus": 0.0,
+     "dorsal": 4,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900301",
+      "name": "YEWDALE, ALDER",
+      "alias": "Yewdale",
+      "aliasRaw": "Yewdale",
+      "passportName": "ALDER",
+      "passportSurname": "YEWDALE",
+      "jerseyName": "YEWDALE",
+      "abbreviatedName": "Yewdale, A.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 188,
+      "weight": 95,
+      "birthDate": "1991-05-14T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "6",
+     "dorsalRaw": "6",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800301,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1954.0,
+     "valuation": 15.0,
+     "points": 14.0,
+     "fieldGoalsMade2": 3.0,
+     "fieldGoalsAttempted2": 5.0,
+     "fieldGoalsMade3": 2.0,
+     "fieldGoalsAttempted3": 4.0,
+     "freeThrowsMade": 2.0,
+     "freeThrowsAttempted": 3.0,
+     "fieldGoalsMadeTotal": 5.0,
+     "fieldGoalsAttemptedTotal": 9.0,
+     "accuracyMade": 14.0,
+     "accuracyAttempted": 12.0,
+     "totalRebounds": 5.0,
+     "defensiveRebounds": 3.0,
+     "offensiveRebounds": 2.0,
+     "assistances": 3.0,
+     "steals": 1.0,
+     "turnovers": 2.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 1.0,
+     "foulsCommited": 3.0,
+     "foulsReceived": 3.0,
+     "plusMinus": -2.0,
+     "dorsal": 6,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900302",
+      "name": "UNDERHILL, KELLAN",
+      "alias": "Underhill",
+      "aliasRaw": "Underhill",
+      "passportName": "KELLAN",
+      "passportSurname": "UNDERHILL",
+      "jerseyName": "UNDERHILL",
+      "abbreviatedName": "Underhill, K.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 191,
+      "weight": 100,
+      "birthDate": "1992-06-15T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "8",
+     "dorsalRaw": "8",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800302,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1703.0,
+     "valuation": 20.0,
+     "points": 17.0,
+     "fieldGoalsMade2": 4.0,
+     "fieldGoalsAttempted2": 6.0,
+     "fieldGoalsMade3": 2.0,
+     "fieldGoalsAttempted3": 5.0,
+     "freeThrowsMade": 3.0,
+     "freeThrowsAttempted": 3.0,
+     "fieldGoalsMadeTotal": 6.0,
+     "fieldGoalsAttemptedTotal": 11.0,
+     "accuracyMade": 17.0,
+     "accuracyAttempted": 14.0,
+     "totalRebounds": 6.0,
+     "defensiveRebounds": 4.0,
+     "offensiveRebounds": 2.0,
+     "assistances": 3.0,
+     "steals": 2.0,
+     "turnovers": 2.0,
+     "blocksFavour": 1.0,
+     "blocksAgainst": 1.0,
+     "foulsCommited": 4.0,
+     "foulsReceived": 3.0,
+     "plusMinus": -2.0,
+     "dorsal": 8,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900303",
+      "name": "EASTMOOR, ZANE",
+      "alias": "Eastmoor",
+      "aliasRaw": "Eastmoor",
+      "passportName": "ZANE",
+      "passportSurname": "EASTMOOR",
+      "jerseyName": "EASTMOOR",
+      "abbreviatedName": "Eastmoor, Z.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 194,
+      "weight": 105,
+      "birthDate": "1993-07-16T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "10",
+     "dorsalRaw": "10",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800303,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1695.0,
+     "valuation": 12.0,
+     "points": 11.0,
+     "fieldGoalsMade2": 3.0,
+     "fieldGoalsAttempted2": 4.0,
+     "fieldGoalsMade3": 1.0,
+     "fieldGoalsAttempted3": 3.0,
+     "freeThrowsMade": 2.0,
+     "freeThrowsAttempted": 2.0,
+     "fieldGoalsMadeTotal": 4.0,
+     "fieldGoalsAttemptedTotal": 7.0,
+     "accuracyMade": 11.0,
+     "accuracyAttempted": 9.0,
+     "totalRebounds": 3.0,
+     "defensiveRebounds": 2.0,
+     "offensiveRebounds": 1.0,
+     "assistances": 2.0,
+     "steals": 1.0,
+     "turnovers": 1.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 3.0,
+     "foulsReceived": 2.0,
+     "plusMinus": -2.0,
+     "dorsal": 10,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900304",
+      "name": "TUMBLEWEED, ULRIC",
+      "alias": "Tumbleweed",
+      "aliasRaw": "Tumbleweed",
+      "passportName": "ULRIC",
+      "passportSurname": "TUMBLEWEED",
+      "jerseyName": "TUMBLEWEED",
+      "abbreviatedName": "Tumbleweed, U.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 197,
+      "weight": 110,
+      "birthDate": "1994-08-17T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "12",
+     "dorsalRaw": "12",
+     "position": 3,
+     "positionName": "Center",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800304,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 1609.0,
+     "valuation": 11.0,
+     "points": 11.0,
+     "fieldGoalsMade2": 3.0,
+     "fieldGoalsAttempted2": 5.0,
+     "fieldGoalsMade3": 1.0,
+     "fieldGoalsAttempted3": 4.0,
+     "freeThrowsMade": 2.0,
+     "freeThrowsAttempted": 3.0,
+     "fieldGoalsMadeTotal": 4.0,
+     "fieldGoalsAttemptedTotal": 9.0,
+     "accuracyMade": 11.0,
+     "accuracyAttempted": 12.0,
+     "totalRebounds": 5.0,
+     "defensiveRebounds": 3.0,
+     "offensiveRebounds": 2.0,
+     "assistances": 2.0,
+     "steals": 1.0,
+     "turnovers": 2.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 3.0,
+     "foulsReceived": 3.0,
+     "plusMinus": -2.0,
+     "dorsal": 12,
+     "startFive": true,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900305",
+      "name": "YEWDALE, SILAS",
+      "alias": "Yewdale",
+      "aliasRaw": "Yewdale",
+      "passportName": "SILAS",
+      "passportSurname": "YEWDALE",
+      "jerseyName": "YEWDALE",
+      "abbreviatedName": "Yewdale, S.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 200,
+      "weight": 80,
+      "birthDate": "1995-09-18T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "14",
+     "dorsalRaw": "14",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800305,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 765.0,
+     "valuation": 8.0,
+     "points": 8.0,
+     "fieldGoalsMade2": 2.0,
+     "fieldGoalsAttempted2": 2.0,
+     "fieldGoalsMade3": 1.0,
+     "fieldGoalsAttempted3": 2.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 3.0,
+     "fieldGoalsAttemptedTotal": 4.0,
+     "accuracyMade": 8.0,
+     "accuracyAttempted": 5.0,
+     "totalRebounds": 2.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 1.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 1.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 2.0,
+     "foulsReceived": 1.0,
+     "plusMinus": -1.0,
+     "dorsal": 14,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900306",
+      "name": "MOSSGATE, LORCAN",
+      "alias": "Mossgate",
+      "aliasRaw": "Mossgate",
+      "passportName": "LORCAN",
+      "passportSurname": "MOSSGATE",
+      "jerseyName": "MOSSGATE",
+      "abbreviatedName": "Mossgate, L.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 203,
+      "weight": 85,
+      "birthDate": "1996-01-10T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "16",
+     "dorsalRaw": "16",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800306,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 762.0,
+     "valuation": 2.0,
+     "points": 3.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 2.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 2.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 4.0,
+     "accuracyMade": 3.0,
+     "accuracyAttempted": 5.0,
+     "totalRebounds": 2.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 1.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 1.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": -1.0,
+     "dorsal": 16,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900307",
+      "name": "YARROWBY, MAREK",
+      "alias": "Yarrowby",
+      "aliasRaw": "Yarrowby",
+      "passportName": "MAREK",
+      "passportSurname": "YARROWBY",
+      "jerseyName": "YARROWBY",
+      "abbreviatedName": "Yarrowby, M.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 206,
+      "weight": 90,
+      "birthDate": "1997-02-11T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "18",
+     "dorsalRaw": "18",
+     "position": 3,
+     "positionName": "Center",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800307,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 744.0,
+     "valuation": 3.0,
+     "points": 3.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 2.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 1.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 3.0,
+     "accuracyMade": 3.0,
+     "accuracyAttempted": 4.0,
+     "totalRebounds": 1.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 1.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": -1.0,
+     "dorsal": 18,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900308",
+      "name": "APPLEGARTH, SILAS",
+      "alias": "Applegarth",
+      "aliasRaw": "Applegarth",
+      "passportName": "SILAS",
+      "passportSurname": "APPLEGARTH",
+      "jerseyName": "APPLEGARTH",
+      "abbreviatedName": "Applegarth, S.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 209,
+      "weight": 95,
+      "birthDate": "1998-03-12T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "20",
+     "dorsalRaw": "20",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800308,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 657.0,
+     "valuation": 1.0,
+     "points": 2.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 1.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 2.0,
+     "accuracyMade": 2.0,
+     "accuracyAttempted": 3.0,
+     "totalRebounds": 1.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": -1.0,
+     "dorsal": 20,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900309",
+      "name": "SPARROWHAWK, SILAS",
+      "alias": "Sparrowhawk",
+      "aliasRaw": "Sparrowhawk",
+      "passportName": "SILAS",
+      "passportSurname": "SPARROWHAWK",
+      "jerseyName": "SPARROWHAWK",
+      "abbreviatedName": "Sparrowhawk, S.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 212,
+      "weight": 100,
+      "birthDate": "1999-04-13T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "22",
+     "dorsalRaw": "22",
+     "position": 1,
+     "positionName": "Guard",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800309,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 522.0,
+     "valuation": 1.0,
+     "points": 2.0,
+     "fieldGoalsMade2": 1.0,
+     "fieldGoalsAttempted2": 1.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 1.0,
+     "fieldGoalsMadeTotal": 1.0,
+     "fieldGoalsAttemptedTotal": 2.0,
+     "accuracyMade": 2.0,
+     "accuracyAttempted": 3.0,
+     "totalRebounds": 1.0,
+     "defensiveRebounds": 1.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 1.0,
+     "foulsReceived": 1.0,
+     "plusMinus": -1.0,
+     "dorsal": 22,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900310",
+      "name": "MOSSGATE, WYSTAN",
+      "alias": "Mossgate",
+      "aliasRaw": "Mossgate",
+      "passportName": "WYSTAN",
+      "passportSurname": "MOSSGATE",
+      "jerseyName": "MOSSGATE",
+      "abbreviatedName": "Mossgate, W.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 185,
+      "weight": 105,
+      "birthDate": "2000-05-14T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "24",
+     "dorsalRaw": "24",
+     "position": 3,
+     "positionName": "Center",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800310,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 496.0,
+     "valuation": -2.0,
+     "points": 0.0,
+     "fieldGoalsMade2": 0.0,
+     "fieldGoalsAttempted2": 1.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 0.0,
+     "fieldGoalsMadeTotal": 0.0,
+     "fieldGoalsAttemptedTotal": 2.0,
+     "accuracyMade": 0.0,
+     "accuracyAttempted": 2.0,
+     "totalRebounds": 0.0,
+     "defensiveRebounds": 0.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 0.0,
+     "foulsReceived": 0.0,
+     "plusMinus": -1.0,
+     "dorsal": 24,
+     "startFive": false,
+     "startFive2": false
+    }
+   },
+   {
+    "player": {
+     "person": {
+      "code": "900311",
+      "name": "YEWDALE, NIALL",
+      "alias": "Yewdale",
+      "aliasRaw": "Yewdale",
+      "passportName": "NIALL",
+      "passportSurname": "YEWDALE",
+      "jerseyName": "YEWDALE",
+      "abbreviatedName": "Yewdale, N.",
+      "country": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "height": 188,
+      "weight": 110,
+      "birthDate": "2001-06-15T00:00:00",
+      "birthCountry": {
+       "code": "UTO",
+       "name": "Utopia"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "J",
+     "typeName": "Player",
+     "active": true,
+     "startDate": "2031-08-15T09:00:00.000",
+     "endDate": "2032-06-30T00:00:00",
+     "order": 0,
+     "dorsal": "26",
+     "dorsalRaw": "26",
+     "position": 2,
+     "positionName": "Forward",
+     "lastTeam": "INVENTED CLUB",
+     "externalId": 1800311,
+     "images": {
+      "action": "https://example.org/a.png",
+      "headshot": "https://example.org/h.png"
+     },
+     "club": {
+      "code": "ZZC",
+      "name": "Copperfield Stags",
+      "abbreviatedName": "Copperfield",
+      "editorialName": "Copperfield",
+      "tvCode": "CPF",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://example.org/crest/ZZC.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2031-32",
+      "code": "E2031",
+      "alias": "2031-32",
+      "competitionCode": "E",
+      "year": 2031,
+      "startDate": "2031-07-01T00:00:00"
+     }
+    },
+    "stats": {
+     "timePlayed": 491.0,
+     "valuation": -2.0,
+     "points": 0.0,
+     "fieldGoalsMade2": 0.0,
+     "fieldGoalsAttempted2": 1.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 1.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 0.0,
+     "fieldGoalsMadeTotal": 0.0,
+     "fieldGoalsAttemptedTotal": 2.0,
+     "accuracyMade": 0.0,
+     "accuracyAttempted": 2.0,
+     "totalRebounds": 0.0,
+     "defensiveRebounds": 0.0,
+     "offensiveRebounds": 0.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 0.0,
+     "foulsReceived": 0.0,
+     "plusMinus": -1.0,
+     "dorsal": 26,
+     "startFive": false,
+     "startFive2": false
+    }
+   }
+  ],
+  "team": {
+   "timePlayed": 0.0,
+   "valuation": 4.0,
+   "points": 0.0,
+   "fieldGoalsMade2": 0.0,
+   "fieldGoalsAttempted2": 0.0,
+   "fieldGoalsMade3": 0.0,
+   "fieldGoalsAttempted3": 0.0,
+   "freeThrowsMade": 0.0,
+   "freeThrowsAttempted": 0.0,
+   "fieldGoalsMadeTotal": 0.0,
+   "fieldGoalsAttemptedTotal": 0.0,
+   "accuracyMade": 0.0,
+   "accuracyAttempted": 0.0,
+   "totalRebounds": 4.0,
+   "defensiveRebounds": 3.0,
+   "offensiveRebounds": 1.0,
+   "assistances": 0.0,
+   "steals": 0.0,
+   "turnovers": 0.0,
+   "blocksFavour": 0.0,
+   "blocksAgainst": 0.0,
+   "foulsCommited": 0.0,
+   "foulsReceived": 0.0,
+   "plusMinus": 0.0
+  },
+  "total": {
+   "timePlayed": 2700.0,
+   "valuation": 92.0,
+   "points": 88.0,
+   "fieldGoalsMade2": 23.0,
+   "fieldGoalsAttempted2": 37.0,
+   "fieldGoalsMade3": 9.0,
+   "fieldGoalsAttempted3": 30.0,
+   "freeThrowsMade": 15.0,
+   "freeThrowsAttempted": 20.0,
+   "fieldGoalsMadeTotal": 32.0,
+   "fieldGoalsAttemptedTotal": 67.0,
+   "accuracyMade": 88.0,
+   "accuracyAttempted": 87.0,
+   "totalRebounds": 37.0,
+   "defensiveRebounds": 24.0,
+   "offensiveRebounds": 13.0,
+   "assistances": 16.0,
+   "steals": 7.0,
+   "turnovers": 12.0,
+   "blocksFavour": 2.0,
+   "blocksAgainst": 3.0,
+   "foulsCommited": 23.0,
+   "foulsReceived": 20.0,
+   "plusMinus": -15.0
+  }
+ }
+}

@@ -31,6 +31,30 @@ node_modules/
 /data/
 backend/hardwood.db
 
+# Real EuroLeague and injury-report data never enters git (EUROLEAGUE_DESIGN §0.6; the "Repository
+# hygiene" note at the end of docs/LEGAL.md §2e). This repository is public. Recorded API responses,
+# NBA injury-report PDFs and the user's workbook live under $HARDWOOD_DATA_DIR on the machine that
+# made them, or in backend/tests/local/, whose *contents* are ignored. The design names the
+# directory itself; ignoring only its contents lets the few files that must be committed stay
+# committable (the replay test, which reads the real workbook at run time and holds none of it,
+# and the .gitkeep that keeps nba_injury/ in a fresh clone). Git cannot re-include a file whose
+# parent directory is excluded, hence the four-line pattern:
+#   1 ignore everything directly under local/        3 look inside its sub-directories
+#   2 except Python files (test modules)             4 but ignore what is in them, except .gitkeep
+backend/tests/local/*
+!backend/tests/local/*.py
+!backend/tests/local/*/
+backend/tests/local/*/*
+!backend/tests/local/*/.gitkeep
+# Probe output (euroleague probe, probe_nba_injury_report) and the gzipped raw payload store, wherever
+# a data directory happens to sit.
+**/recordings/
+**/el-raw/
+# The user's workbook is real data (and a gambling tool's output). It is read from the inbox or from
+# HARDWOOD_WORKBOOK_PATH; no test fixture is a workbook, they are built in memory.
+*.xlsx
+*.xlsm
+
 # Hardwood Web secrets and local-only account state (WEB_DESIGN.md §0.1-A, §2.1, §4.6)
 backend/.env
 *.p8

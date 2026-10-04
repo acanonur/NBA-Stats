@@ -1,0 +1,109 @@
+{
+ "data": [
+  {
+   "code": "ZZA",
+   "name": "Zenith Harbour BC",
+   "abbreviatedName": "Harbour",
+   "editorialName": "Harbour",
+   "tvCode": "ZHB",
+   "isVirtual": false,
+   "images": {
+    "crest": "https://example.org/crest/ZZA.png"
+   },
+   "sponsor": "Zenith Harbour BC",
+   "clubPermanentName": "Zenith Harbour BC",
+   "clubPermanentAlias": "Harbour",
+   "country": {
+    "code": "UTO",
+    "name": "Utopia"
+   },
+   "address": "1 Invented Street",
+   "website": "https://example.org",
+   "ticketsUrl": "https://example.org/tickets",
+   "twitterAccount": "",
+   "venueCode": "ZHD",
+   "city": "INVENTEDVILLE",
+   "president": "Invented President",
+   "phone": "+00 000 000 000"
+  },
+  {
+   "code": "ZZB",
+   "name": "Brightmoor Falcons",
+   "abbreviatedName": "Brightmoor",
+   "editorialName": "Brightmoor",
+   "tvCode": "BMF",
+   "isVirtual": false,
+   "images": {
+    "crest": "https://example.org/crest/ZZB.png"
+   },
+   "sponsor": "Brightmoor Falcons",
+   "clubPermanentName": "Brightmoor Falcons",
+   "clubPermanentAlias": "Brightmoor",
+   "country": {
+    "code": "UTO",
+    "name": "Utopia"
+   },
+   "address": "1 Invented Street",
+   "website": "https://example.org",
+   "ticketsUrl": "https://example.org/tickets",
+   "twitterAccount": "",
+   "venueCode": "BMA",
+   "city": "INVENTEDVILLE",
+   "president": "Invented President",
+   "phone": "+00 000 000 000"
+  },
+  {
+   "code": "ZZC",
+   "name": "Copperfield Stags",
+   "abbreviatedName": "Copperfield",
+   "editorialName": "Copperfield",
+   "tvCode": "CPF",
+   "isVirtual": false,
+   "images": {
+    "crest": "https://example.org/crest/ZZC.png"
+   },
+   "sponsor": "Copperfield Stags",
+   "clubPermanentName": "Copperfield Stags",
+   "clubPermanentAlias": "Copperfield",
+   "country": {
+    "code": "UTO",
+    "name": "Utopia"
+   },
+   "address": "1 Invented Street",
+   "website": "https://example.org",
+   "ticketsUrl": "https://example.org/tickets",
+   "twitterAccount": "",
+   "venueCode": "CFA",
+   "city": "INVENTEDVILLE",
+   "president": "Invented President",
+   "phone": "+00 000 000 000"
+  },
+  {
+   "code": "ZZD",
+   "name": "Dunmere Wolves",
+   "abbreviatedName": "Dunmere",
+   "editorialName": "Dunmere",
+   "tvCode": "DMW",
+   "isVirtual": false,
+   "images": {
+    "crest": "https://example.org/crest/ZZD.png"
+   },
+   "sponsor": "Dunmere Wolves",
+   "clubPermanentName": "Dunmere Wolves",
+   "clubPermanentAlias": "Dunmere",
+   "country": {
+    "code": "UTO",
+    "name": "Utopia"
+   },
+   "address": "1 Invented Street",
+   "website": "https://example.org",
+   "ticketsUrl": "https://example.org/tickets",
+   "twitterAccount": "",
+   "venueCode": "DMP",
+   "city": "INVENTEDVILLE",
+   "president": "Invented President",
+   "phone": "+00 000 000 000"
+  }
+ ],
+ "total": 4
+}

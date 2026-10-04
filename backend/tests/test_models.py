@@ -230,7 +230,7 @@ def test_season_column_resolution() -> None:
 
 
 def test_catalogs_load_with_the_expected_shape() -> None:
-    assert len(catalog.all_metrics()) == 61
+    assert len(catalog.all_metrics()) == 62
     assert len(catalog.all_widgets()) == 16
     assert len(catalog.presets()) == 12
     assert catalog.metrics_document()["schemaVersion"] == 1

@@ -1,0 +1,1013 @@
+{
+ "data": [
+  {
+   "person": {
+    "code": "900100",
+    "name": "MOSSGATE, TOBIAS",
+    "alias": "Mossgate",
+    "aliasRaw": "Mossgate",
+    "passportName": "TOBIAS",
+    "passportSurname": "MOSSGATE",
+    "jerseyName": "MOSSGATE",
+    "abbreviatedName": "Mossgate, T.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 185,
+    "weight": 105,
+    "birthDate": "1994-02-11T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "4",
+   "dorsalRaw": "4",
+   "position": 1,
+   "positionName": "Guard",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800100,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900101",
+    "name": "HAWTHORNE-LEE, DARIO",
+    "alias": "Hawthorne-Lee",
+    "aliasRaw": "Hawthorne-Lee",
+    "passportName": "DARIO",
+    "passportSurname": "HAWTHORNE-LEE",
+    "jerseyName": "HAWTHORNE-LEE",
+    "abbreviatedName": "Hawthorne-Lee, D.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 188,
+    "weight": 110,
+    "birthDate": "1995-03-12T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "6",
+   "dorsalRaw": "6",
+   "position": 1,
+   "positionName": "Guard",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800101,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900102",
+    "name": "BIRCHFIELD, GIDEON",
+    "alias": "Birchfield",
+    "aliasRaw": "Birchfield",
+    "passportName": "GIDEON",
+    "passportSurname": "BIRCHFIELD",
+    "jerseyName": "BIRCHFIELD",
+    "abbreviatedName": "Birchfield, G.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 191,
+    "weight": 80,
+    "birthDate": "1996-04-13T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "8",
+   "dorsalRaw": "8",
+   "position": 2,
+   "positionName": "Forward",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800102,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900103",
+    "name": "O'HALLOW, MAREK",
+    "alias": "O'Hallow",
+    "aliasRaw": "O'Hallow",
+    "passportName": "MAREK",
+    "passportSurname": "O'HALLOW",
+    "jerseyName": "O'HALLOW",
+    "abbreviatedName": "O'Hallow, M.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 194,
+    "weight": 85,
+    "birthDate": "1997-05-14T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "10",
+   "dorsalRaw": "10",
+   "position": 2,
+   "positionName": "Forward",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800103,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900104",
+    "name": "QUARRINGTON, DARIO",
+    "alias": "Quarrington",
+    "aliasRaw": "Quarrington",
+    "passportName": "DARIO",
+    "passportSurname": "QUARRINGTON",
+    "jerseyName": "QUARRINGTON",
+    "abbreviatedName": "Quarrington, D.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 197,
+    "weight": 90,
+    "birthDate": "1998-06-15T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "12",
+   "dorsalRaw": "12",
+   "position": 3,
+   "positionName": "Center",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800104,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900105",
+    "name": "DAPPLEMERE, LORCAN",
+    "alias": "Dapplemere",
+    "aliasRaw": "Dapplemere",
+    "passportName": "LORCAN",
+    "passportSurname": "DAPPLEMERE",
+    "jerseyName": "DAPPLEMERE",
+    "abbreviatedName": "Dapplemere, L.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 200,
+    "weight": 95,
+    "birthDate": "1999-07-16T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "14",
+   "dorsalRaw": "14",
+   "position": 1,
+   "positionName": "Guard",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800105,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900106",
+    "name": "PENNYWHISTLE, FENN",
+    "alias": "Pennywhistle",
+    "aliasRaw": "Pennywhistle",
+    "passportName": "FENN",
+    "passportSurname": "PENNYWHISTLE",
+    "jerseyName": "PENNYWHISTLE",
+    "abbreviatedName": "Pennywhistle, F.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 203,
+    "weight": 100,
+    "birthDate": "2000-08-17T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "16",
+   "dorsalRaw": "16",
+   "position": 2,
+   "positionName": "Forward",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800106,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900107",
+    "name": "QUILLFEATHER, URI",
+    "alias": "Quillfeather",
+    "aliasRaw": "Quillfeather",
+    "passportName": "URI",
+    "passportSurname": "QUILLFEATHER",
+    "jerseyName": "QUILLFEATHER",
+    "abbreviatedName": "Quillfeather, U.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 206,
+    "weight": 105,
+    "birthDate": "2001-09-18T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "18",
+   "dorsalRaw": "18",
+   "position": 3,
+   "positionName": "Center",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800107,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900108",
+    "name": "ASHGROVE, OREN",
+    "alias": "Ashgrove",
+    "aliasRaw": "Ashgrove",
+    "passportName": "OREN",
+    "passportSurname": "ASHGROVE",
+    "jerseyName": "ASHGROVE",
+    "abbreviatedName": "Ashgrove, O.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 209,
+    "weight": 110,
+    "birthDate": "1990-01-10T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "20",
+   "dorsalRaw": "20",
+   "position": 2,
+   "positionName": "Forward",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800108,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900109",
+    "name": "VEXFORD, FENN",
+    "alias": "Vexford",
+    "aliasRaw": "Vexford",
+    "passportName": "FENN",
+    "passportSurname": "VEXFORD",
+    "jerseyName": "VEXFORD",
+    "abbreviatedName": "Vexford, F.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 212,
+    "weight": 80,
+    "birthDate": "1991-02-11T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "22",
+   "dorsalRaw": "22",
+   "position": 1,
+   "positionName": "Guard",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800109,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900110",
+    "name": "EASTMOOR, GALEN",
+    "alias": "Eastmoor",
+    "aliasRaw": "Eastmoor",
+    "passportName": "GALEN",
+    "passportSurname": "EASTMOOR",
+    "jerseyName": "EASTMOOR",
+    "abbreviatedName": "Eastmoor, G.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 185,
+    "weight": 85,
+    "birthDate": "1992-03-12T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "24",
+   "dorsalRaw": "24",
+   "position": 3,
+   "positionName": "Center",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800110,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900111",
+    "name": "PRIMROSE, ALDER",
+    "alias": "Primrose",
+    "aliasRaw": "Primrose",
+    "passportName": "ALDER",
+    "passportSurname": "PRIMROSE",
+    "jerseyName": "PRIMROSE",
+    "abbreviatedName": "Primrose, A.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 188,
+    "weight": 90,
+    "birthDate": "1993-04-13T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "26",
+   "dorsalRaw": "26",
+   "position": 2,
+   "positionName": "Forward",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800111,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900112",
+    "name": "UNDERHILL, YORICK",
+    "alias": "Underhill",
+    "aliasRaw": "Underhill",
+    "passportName": "YORICK",
+    "passportSurname": "UNDERHILL",
+    "jerseyName": "UNDERHILL",
+    "abbreviatedName": "Underhill, Y.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 191,
+    "weight": 95,
+    "birthDate": "1994-05-14T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "28",
+   "dorsalRaw": "28",
+   "position": 1,
+   "positionName": "Guard",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800112,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "900113",
+    "name": "COBBLEDICK, JOSS",
+    "alias": "Cobbledick",
+    "aliasRaw": "Cobbledick",
+    "passportName": "JOSS",
+    "passportSurname": "COBBLEDICK",
+    "jerseyName": "COBBLEDICK",
+    "abbreviatedName": "Cobbledick, J.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 194,
+    "weight": 100,
+    "birthDate": "1995-06-15T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "J",
+   "typeName": "Player",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "30",
+   "dorsalRaw": "30",
+   "position": 3,
+   "positionName": "Center",
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 1800113,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "909900",
+    "name": "INVENTED0, COACH",
+    "alias": "Invented0",
+    "aliasRaw": "Invented0",
+    "passportName": "COACH",
+    "passportSurname": "INVENTED0",
+    "jerseyName": "INVENTED0",
+    "abbreviatedName": "Invented0, C.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 185,
+    "weight": 95,
+    "birthDate": "1996-01-10T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "E",
+   "typeName": "Head Coach",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "0",
+   "dorsalRaw": "0",
+   "position": null,
+   "positionName": null,
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 900990,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  },
+  {
+   "person": {
+    "code": "909901",
+    "name": "INVENTED1, COACH",
+    "alias": "Invented1",
+    "aliasRaw": "Invented1",
+    "passportName": "COACH",
+    "passportSurname": "INVENTED1",
+    "jerseyName": "INVENTED1",
+    "abbreviatedName": "Invented1, C.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "height": 188,
+    "weight": 100,
+    "birthDate": "1997-02-11T00:00:00",
+    "birthCountry": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "twitterAccount": "",
+    "instagramAccount": "",
+    "facebookAccount": "",
+    "isReferee": false,
+    "images": {}
+   },
+   "type": "A",
+   "typeName": "Assistant Coach",
+   "active": true,
+   "startDate": "2031-08-15T09:00:00.000",
+   "endDate": "2032-06-30T00:00:00",
+   "order": 0,
+   "dorsal": "0",
+   "dorsalRaw": "0",
+   "position": null,
+   "positionName": null,
+   "lastTeam": "INVENTED CLUB",
+   "externalId": 900991,
+   "images": {
+    "action": "https://example.org/a.png",
+    "headshot": "https://example.org/h.png"
+   },
+   "club": {
+    "code": "ZZA",
+    "name": "Zenith Harbour BC",
+    "abbreviatedName": "Harbour",
+    "editorialName": "Harbour",
+    "tvCode": "ZHB",
+    "isVirtual": false,
+    "images": {
+     "crest": "https://example.org/crest/ZZA.png"
+    }
+   },
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   }
+  }
+ ],
+ "total": 16
+}

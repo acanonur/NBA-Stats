@@ -8,14 +8,19 @@ Machine-readable companions, loaded by both sides at build time:
 
 | File | Contents |
 | --- | --- |
-| `contracts/metrics.json` | 61 metric descriptors: name, format, direction, era availability, glossary |
-| `contracts/widgets.json` | 12 widget kinds, their sizes and their configuration field schema |
-| `contracts/presets.json` | 9 preset dashboards, pre-validated against the widget catalog |
+| `contracts/metrics.json` | 62 metric descriptors (`metrics`: name, format, direction, era availability, glossary) and, beside them, the EuroLeague's stat vocabulary (`leagueMetrics.euroleague`, 23 descriptors; §9) |
+| `contracts/widgets.json` | 16 widget kinds, their sizes and their configuration field schema |
+| `contracts/presets.json` | 12 preset dashboards, pre-validated against the widget catalog |
+| `contracts/leagues.json` | The two league profiles, the availability vocabulary, the position schemes, and the two guard lists (§9, §10, §11). **Not** bundled in the app: clients read the live equivalents from `GET /v1/leagues` and `GET /v1/el/meta` |
 | `contracts/fixtures/*.json` | Golden response payloads, decoded by both the backend tests and the iOS tests |
+| `contracts/fixtures/leagues/{nba,el}/*.json` | Golden payloads of the league routes (§3, §4), from the seeded NBA demo and the synthetic EuroLeague. A sub-directory on purpose: the iOS bundle and its decoding tests never read it |
 
 Regenerate the catalogs with `python3 contracts/tools/gen_metrics.py > contracts/metrics.json`
 (and the `gen_widgets` / `gen_presets` equivalents). `gen_presets.py` validates every preset
 widget against the widget catalog and the metric catalog, and exits non-zero on any mismatch.
+`gen_leagues.py` writes `contracts/leagues.json`; with `--python` it writes
+`backend/nbastats/shared/_generated_leagues.py`, the same two guard lists as Python constants for
+the stdlib-only pure core. `scripts/check_contracts.py` check (m) regenerates both.
 
 ---
 
@@ -34,6 +39,10 @@ widget against the widget catalog and the metric catalog, and exits non-zero on 
 * Money-free, no auth on the public read surface by default; when `HARDWOOD_API_KEY` is set the
   service requires `X-API-Key` on every `/v1` route except `/v1/health`.
 * Errors use the envelope in §7. HTTP status mirrors the error class.
+* **Leagues.** `/v1` is the NBA. The EuroLeague is `/v1/el`, with the same route suffixes (§9). The
+  league is chosen by the URL, never by a header or a query parameter, and every league-aware
+  payload says which one it is with `"league": "nba" | "euroleague"`. The calendar-day, season and
+  id rules above are the NBA's; the EuroLeague's differ where §9 says so.
 
 ### Pagination
 
@@ -41,6 +50,37 @@ Collection endpoints that can exceed 200 rows take `limit` (default 50, max 200)
 `cursor`. Responses carry `"nextCursor": string | null`. Endpoints whose rows are a widget
 payload bound their `limit` to that widget's config field instead, and each states its own
 range below; an out-of-range `limit` is a `bad_request`, never a silent clamp.
+
+### Leagues and prefixes
+
+The league-aware routes (§3) exist under two prefixes with identical suffixes: `/v1` for the NBA
+and `/v1/el` for the EuroLeague. A client builds its league switcher from `GET /v1/leagues`
+(§9.2), which names each league's `apiPrefix`, and never hard-codes `/v1/el`. The two prefixes
+cannot be mixed: a EuroLeague id sent to an NBA route is an unknown id, and the reverse.
+
+Teams and players in league-aware payloads are the league-neutral references below, never
+`TeamRef` and `PlayerRef` (which stay NBA-only and unchanged). `id` is always a **string**: the NBA
+numeric id as a string, or the EuroLeague's official club or person code. Clients key entities by
+`(league, id)`.
+
+```json
+{ "league": "euroleague", "id": "ZZA", "abbr": "ZZA", "name": "Alderwick Herons",
+  "shortName": "Alderwick", "clubCode": "ZZA", "tvCode": null }
+```
+
+`LeagueTeamRef` is `{league, id, abbr, name, shortName, teamId?, clubCode?, tvCode?}`. `teamId`
+(a number) is present for the NBA only; `clubCode` and `tvCode` for the EuroLeague only. `shortName`
+and `tvCode` are nullable.
+
+```json
+{ "league": "euroleague", "id": "demo-9", "name": "Aldous Oldacre", "position": "F",
+  "positionRaw": "Forward", "jersey": "75", "headshotUrl": null, "personCode": "demo-9" }
+```
+
+`LeaguePlayerRef` is `{league, id, name, position, positionRaw, jersey, headshotUrl, playerId?,
+personCode?}`. `position` is `"G"`, `"F"`, `"C"` or null (the three buckets both leagues publish;
+null when the listing is missing or not understood), and `positionRaw` is the source's own label.
+`playerId` is NBA-only and `personCode` EuroLeague-only. `headshotUrl` is null for every EuroLeague player (no photographs are stored) and, for the NBA, is whatever `PlayerRef.headshotUrl` would be for the same player.
 
 ---
 
@@ -131,6 +171,57 @@ file and refreshes it from `/v1/meta`, so it never hard-codes formatting rules.
 
 `status` ∈ `"scheduled"` | `"live"` | `"final"`. `homePts`/`awayPts`/`finalizedAt` are null
 before the game starts. `clock` is a display string such as `"4:21"` while live.
+
+### `GameRefL`
+
+The league-neutral game, used by every payload in §4's league section. `GameRef` is unchanged.
+
+```json
+{ "league": "euroleague", "gameId": "E2026-R05-01", "date": "2026-10-15",
+  "tipoffUtc": "2026-10-15T17:30:00Z", "venue": "Alderwick Hall", "isNeutral": false,
+  "round": 5, "phase": "RS", "status": "scheduled",
+  "home": { "...LeagueTeamRef" }, "away": { "...LeagueTeamRef" },
+  "homePts": null, "awayPts": null, "overtimePeriods": null }
+```
+
+`status` ∈ `"scheduled"` | `"resultPending"` | `"final"` | `"postponed"`. **`resultPending` is
+derived when read, and it is not "upcoming":** the tip-off (or 23:59 local on the game date when
+the tip-off is unknown) is more than three hours past and no result is stored. `isNeutral` is
+`null` when unknown, never assumed false. `round` and `phase` are null for the NBA, which has no
+rounds. `date` is the league's own calendar day (US Eastern for the NBA, Europe/Berlin for the
+EuroLeague). `tipoffUtc` is null when the source did not say.
+
+### `Source`
+
+Where one fact came from, carried by every availability entry (§10).
+
+```json
+{ "kind": "pressArticle", "label": "example.org news", "url": "https://news.example.org/injuries/0",
+  "publishedAt": "2026-10-02T09:00:00Z", "asOf": "2026-10-12T09:00:00Z",
+  "fetchedAt": "2026-10-12T09:00:00Z", "snapshotId": null }
+```
+
+`kind` ∈ `leagueReport` | `clubStatement` | `pressArticle` | `boxScoreInference` |
+`workbookImport` | `manual`. `publishedAt` is the date the *source* carries and is what every age
+is computed from, never `fetchedAt`. `url` is null for a hand-typed entry and for a link withheld
+because its host belongs to a betting operator (the `label` then ends
+`(link withheld: betting operator)`). `snapshotId` is the NBA injury-report snapshot the entry came
+from, or null.
+
+### `Freshness`
+
+How current a payload is, and which sources fed it. In every new payload.
+
+```json
+{ "league": "euroleague", "syncVersion": 7, "dataThrough": "2026-10-09",
+  "generatedAt": "2026-10-12T09:00:00Z", "isDemo": true,
+  "sources": [ { "key": "el.manual", "label": "Entered by hand", "state": "ok",
+                 "reason": null, "lastSuccessAt": "2026-10-12T09:00:00Z" } ] }
+```
+
+`syncVersion` is the league's own cursor (the EuroLeague's is independent of the NBA's, §9.6).
+`isDemo` is true when the store holds invented games: **show a banner**. `sources` lists only the
+sources that fed *this* payload; the full registry is `GET {prefix}/sources` (§10.5).
 
 ---
 
@@ -452,6 +543,84 @@ A `409 stale_write` body:
              "recoverable": true, "field": null, "requestId": "…" },
   "layout": { "...the server's current document" }, "revision": 3 }
 ```
+
+### League routes: the NBA, under `/v1`
+
+Team matchup, defence by opponent position, team-score projections, availability, headlines and
+the source registry. The EuroLeague serves the same suffixes under `/v1/el` (next section). All of
+them sit behind the same API-key-or-session gate and rate limiter as every other `/v1` router; the
+payload shapes are in §4's league section and the rules behind them in §9–§11. A **write** needs a
+signed-in session with its CSRF token (the browser) or the API key (the native app on loopback).
+
+| Route | What it returns |
+| --- | --- |
+| `GET /v1/leagues` | The leagues this process serves, each with its `apiPrefix`, state, units and position buckets (§9.2) |
+| `GET /v1/matchups` | `TeamMatchup` for two teams. Query: `homeTeamId`, `awayTeamId` (both required), `season` (default `latest`), `seasonType`, `window` (3-15, default 5) |
+| `GET /v1/teams/{teamId}/matchup` | `TeamMatchup` for the team's next scheduled game (`404 game_not_found` if there is none). Query: `window` |
+| `GET /v1/games/{gameId}/matchup` | `TeamMatchup` for one game, with every input cut off before tip-off |
+| `GET /v1/teams/{teamId}/defense-by-position` | `DefenseByPosition`. Query: `season`, `seasonType`, `window` (`0` = the whole season, default), `basis` (`perGame` or `perMinute`, default `perGame`) |
+| `GET /v1/defense-by-position` | `DefenseByPositionTable`, every team. Same query |
+| `GET /v1/projections` | `SlateProjections`. Query: `date` (an ISO date or `next`, default `next`), `teamIds` |
+| `GET /v1/games/{gameId}/projection` | `GameProjectionDetail`: the current projection, the one locked before tip-off, and the history |
+| `GET /v1/projections/review` | `ProjectionReview`: locked projections against what happened. Query: `date`, `season` |
+| `GET /v1/availability` | `AvailabilityReport`. Query: `teamId`, `date` (`next` by default), `statuses` |
+| `GET /v1/availability/review-queue` | `{items: [{statusId, playerName, team, source}]}`: statuses whose player matched nobody |
+| `POST /v1/availability` | Write: enter an override. Body: `{playerId, teamId?, gameId?, status, note?, sourceUrl?, sourcePublishedAt?}` |
+| `DELETE /v1/availability/{overrideId}` | Write: clear an override |
+| `GET /v1/news` | `NewsLinks`: headlines (title, link, date, source) about a team or player. Query: `teamId`, `playerId`, `limit` (default 10) |
+| `POST /v1/news/links` | Write: paste a link. Body: `{title, link, publishedAt, sourceName, teamIds, playerIds}` |
+| `GET /v1/sources` | `SourceList`: where every number came from and how current it is (§10.5) |
+| `GET /v1/model-settings` | `{league, freshness, settings: [{key, value, provenance, isDefault, setAt}]}` |
+| `PATCH /v1/model-settings` | Write: `{settings: [{key, value}]}`. Allowlisted keys only; the patch is validated whole and applied atomically |
+
+Every query, path and body field name on these routes is on one list
+(`contracts/leagues.json#/allowedParameters`), and a test walks the OpenAPI document to prove it:
+no route takes an external number to compare with a projection (§11).
+
+### League routes: the EuroLeague, under `/v1/el`
+
+`season` accepts `E2026`, `2026-27` or `latest` and defaults to the current season. A team id is a
+club code. Every route except `meta` and `health` answers `503 league_unavailable` while the
+EuroLeague is off, misconfigured or holds no data (§9.4); **`GET /v1/el/health` is the only
+EuroLeague route that needs no API key**, because its state is its payload.
+
+**The same suffixes as the NBA routes above:**
+
+| Route | Notes |
+| --- | --- |
+| `GET /v1/el/matchups` | `homeTeamId` and `awayTeamId` are club codes |
+| `GET /v1/el/teams/{clubCode}/matchup` | |
+| `GET /v1/el/games/{gameId}/matchup` | |
+| `GET /v1/el/teams/{clubCode}/defense-by-position` | `phase` in place of `seasonType`; adds `scheme` (`gfc`, the default, or `workbook5`; §9.4) |
+| `GET /v1/el/defense-by-position` | `phase`, `scheme` |
+| `GET /v1/el/projections` | `round` (a number or `next`, the default) in place of `date` |
+| `GET /v1/el/games/{gameId}/projection` | |
+| `GET /v1/el/projections/review` | `round` |
+| `GET /v1/el/availability` | `clubCode`, `round`, `statuses`, `includeNews` |
+| `GET /v1/el/availability/review-queue` | |
+| `POST /v1/el/availability` | Write. Body: `{clubCode, personCode or playerName, gameId?, status, reasonCategory?, reasonText?, expectedReturnText?, sourceUrl?, sourceLabel, sourcePublishedAt}`. `kind` of the stored source is `pressArticle` or `clubStatement` when a URL is given, `manual` otherwise. A status outside the five is `400 invalid_status` |
+| `DELETE /v1/el/availability/{statusId}` | Write. Appends a retraction; history is never rewritten |
+| `GET /v1/el/news`, `POST /v1/el/news/links` | as the NBA's, club codes for team ids |
+| `GET /v1/el/sources` | |
+| `GET /v1/el/model-settings`, `PATCH /v1/el/model-settings` | |
+
+**EuroLeague only** (the pages of the user's workbook, made live):
+
+| Route | Payload |
+| --- | --- |
+| `GET /v1/el/meta` | State, demo flag, seasons, rounds, clubs, units and the plain statement of what is and is not loaded (§9.4) |
+| `GET /v1/el/health`, `GET /v1/el/sync` | The EuroLeague's state and freshness cursor only |
+| `GET /v1/el/teams` | Every club: record, points scored and allowed, rating |
+| `GET /v1/el/teams/{clubCode}` | `ClubView`: scoring, rating, squad, absences, next game |
+| `GET /v1/el/rounds/{round}` | `RoundView` |
+| `GET /v1/el/rounds/{round}/scorers` | `RoundScorers`. Query: `perClub` (default 3) |
+| `GET /v1/el/games` | The schedule and results (EuroLeague games only). Query: `round`, `clubCode`, `phase` |
+| `GET /v1/el/games/{gameId}` | `ElBoxScore` |
+| `GET /v1/el/players/{personCode}`, `.../gamelog` | A player's season line, rates and availability; his official games |
+| `GET /v1/el/stats/players` | `ElPlayerStatsTable`. Query: `perMode` (`PerGame`, `Totals`, `Per40`), `sort`, `clubCode`, `minGames`, `limit` |
+| `GET /v1/el/ratings` | Club ratings. Query: `asOfRound` |
+| `GET /v1/el/method` | `{constants: [{key, value, provenance, isDefault, description}], deviations: [string], limitations: [string]}`: every constant the model uses and where it came from |
+| `GET /v1/el/review-queue` | Unmatched people, clubs and statuses from import or reconciliation |
 
 ---
 
@@ -793,6 +962,364 @@ against the league they are being applied to rather than taken as universal thre
   "peak": { "season": "2008-09", "value": 31.7 } }
 ```
 
+### League payloads
+
+The payloads of the league routes in §3. They are not widget payloads today; the four widget
+kinds that will carry them (`team_matchup`, `defense_by_position`, `availability_report`,
+`slate_projections`) are thin resolvers over the same builders, so a tile's payload will be exactly
+the route's. Every payload carries `league` and `freshness` (§2). Shapes are written in TypeScript
+notation; `T | null` means the key is always present and may be null, `k?` means the key may be
+absent. A client ignores keys it does not know. Percentages are fractions in [0, 1]; anything not
+recorded is `null`, never `0`.
+
+#### `TeamMatchup`
+
+Two teams side by side, or one team for its next game.
+
+```ts
+TeamMatchup = {
+  league, season, seasonType: string | null, phase: string[] | null, freshness,
+  game: GameRefL | null,
+  teams: [{
+    side: "home" | "away" | null, team: LeagueTeamRef, record: {wins, losses}, games,
+    pointsPerGame, pointsAllowedPerGame, differentialPerGame,
+    pointsPerRegulation: number | null, pointsAllowedPerRegulation: number | null,
+    latestGame: FormGame | null, form: FormGame[],
+    lastN:  {window, games, pointsPerGame, pointsAllowedPerGame},
+    last10: {window: 10, games, pointsPerGame, pointsAllowedPerGame},
+    venueSplits: {home: Split, away: Split, neutral: Split | null},
+    adjustedPointsAgainst: {value: number | null, games},
+    adjustedPointsFor:     {value: number | null, games},
+    availability: AvailabilitySummary | null,
+    defenseSummary: {pointsAllowedPerGame, buckets: [{position, pointsAllowedPerGame,
+                     deltaPerGame, band}], withheld} | null
+  }, ...],
+  leagueAverage: {pointsPerGame, teams},
+  projection: GameProjection | null,
+  availability: "full" | "partial" | "estimated" | "unavailable", notes: string[]
+}
+FormGame = {gameId, date, opponent: LeagueTeamRef, isHome, isNeutral: boolean | null,
+            teamScore, opponentScore, result: "W" | "L", overtimePeriods: number | null}
+Split = {games, pointsPerGame: number | null, pointsAllowedPerGame: number | null}
+AvailabilitySummary = {out, doubtful, questionable, probable, keyAbsences: AbsenceEntry[],
+                       freshnessState, asOf}
+```
+
+Only final games count, newest first. `pointsAllowedPerGame` is the mean of the opponents' points
+and answers "how many do they let opponents score". `pointsPerRegulation` and
+`pointsAllowedPerRegulation` rescale each game to regulation time and are `null` when the team's
+playing time is unknown for any game. `adjustedPointsAgainst` is the mean, over games, of the
+opponent's points minus that opponent's own average in its other games (negative: the team holds
+opponents below their usual output); `value` is `null` until at least five games qualify, and
+`games` says how many did. There is **no rank anywhere** in this payload. The EuroLeague's
+neutral-site games appear only under `venueSplits.neutral`; the NBA never has one (it does not
+record neutral sites, so `isNeutral` is `null` and every NBA venue is an assumption). A
+EuroLeague payload says in `notes` that only EuroLeague games are tracked, not friendlies or
+domestic games.
+
+#### `DefenseByPosition` and `DefenseByPositionTable`
+
+Points allowed by the position of the opposing players, **not** who guarded whom: it counts the
+points scored by opponents *listed at* a position. Every payload carries a `caveat` saying so.
+
+```ts
+DefenseByPosition = {
+  league, team: LeagueTeamRef, season, seasonType | phase, scheme: "gfc" | "workbook5",
+  basis: "perGame" | "perMinute", regulationMinutes, freshness,
+  window: {kind: "season" | "lastGames", games, requested: number | null},
+  pointsAllowedPerGame, leaguePointsAllowedPerGame,
+  buckets: [{ position: "G" | "F" | "C" | "PG" | "SG" | "SF" | "PF" | "unknown", label,
+              pointsAllowedPerGame, leagueAverage, deltaPerGame,
+              opponentMinutesPerGame, pointsPerRegulationMinutes, leagueRate,
+              share, leagueShare,
+              rawIndex: number | null, index: number | null, standardError: number | null,
+              band: "better" | "typical" | "worse" | null }],
+  provisional: boolean,
+  withheld: {reason: "minimumGames" | "positionCoverage" | "leagueSample", message} | null,
+  coverage: {listed, workbookListing, unknown},
+  reconciliation: {sumOfBuckets, pointsAllowedPerGame, unreconciledGames,
+                   identity: "sum(deltaPerGame) = pointsAllowedPerGame - leaguePointsAllowedPerGame"},
+  method: {minimumGames, provisionalBelowGames, coverageCeiling, shrinkage: "empiricalBayes",
+           leagueReliability: {G, F, C}, leagueSignal: "detected" | "none detected" | null,
+           bandRule, positionSource, taxonomy, limitations: string[]},
+  methodMessage: string | null, availability, caveat, notes
+}
+DefenseByPositionTable = { league, season, scheme, basis, freshness, leaguePointsAllowedPerGame,
+  teams: [{team, games, pointsAllowedPerGame, buckets: [...same bucket shape...], provisional,
+           withheld}],   /* sorted by pointsAllowedPerGame ascending; no rank field */
+  method, methodMessage: string | null, caveat }
+```
+
+`methodMessage` is the sentence to show when `method.leagueSignal` is `"none detected"` ("No team's
+points allowed at this position differ from the league by more than chance this season") and is
+`null` otherwise. A EuroLeague payload also carries `seasonCode` (beside `season`) and `phase`
+(`null` for all phases) where an NBA one carries `seasonType`.
+
+How to read it. The buckets **sum to the headline**: `sum(deltaPerGame)` equals
+`pointsAllowedPerGame - leaguePointsAllowedPerGame` over the window's reconciled games, and the
+payload shows that identity, so the user can check it. A game whose positions do not reconcile to
+the final score is excluded and counted in `unreconciledGames`. Each player counts at exactly one
+position per season (a hybrid splits half and half), taken from the league's own listing, never
+from where he lined up in a game; a player with no listing falls in `unknown`, which is shown and
+never redistributed.
+
+`index` is a team's points allowed at that position over the league's, shrunk toward 1 by an
+empirical-Bayes estimate of how much teams really differ (a lower index is a better defence); it
+is `rawIndex` pulled toward 1 by how noisy the team's sample is. `standardError` is the
+raw index's. A `band` is present only when the table is not `provisional` and the league's
+reliability at that position reaches 0.2, and it uses a family-wise (Bonferroni) cut-off over every
+displayed cell, so **a league with no positional signal shows essentially no `better` or `worse`**
+and `method.leagueSignal` says `"none detected"`. That is correct behaviour, not a bug. **Never show
+`rawIndex` as a ranking.**
+
+`withheld` replaces every index, standard error and band with `null` and its `message` goes on
+screen. `minimumGames`: fewer games than the league's minimum (NBA 10, EuroLeague 6).
+`positionCoverage`: more than 5% of the team's, or the league's, points allowed went to players
+with no listed position. `leagueSample`: fewer than 80% of teams have enough games to estimate
+the spread between teams. The raw buckets, `unknown` included, still show because they are
+recorded facts. `provisional` (NBA under 25 games, EuroLeague under 12) must be visibly marked and
+shows no band. The injury layer never changes a defence, and `method.limitations` says so.
+`scheme: "workbook5"` (EuroLeague only, opt-in) uses PG, SG, SF, PF and C as the workbook's author
+assigned them; it is always `availability: "estimated"` and never the default.
+
+#### `GameProjection`, `SlateProjections`, `GameProjectionDetail`, `ProjectionReview`
+
+A projected score for each side. **There is no probability of winning in any of these**, and no
+line or total to compare with (§11).
+
+```ts
+GameProjection = {
+  league, game: GameRefL, freshness,
+  home: SideProjection, away: SideProjection,
+  margin, marginRange80: {low, high} | null,
+  projectedWinner: LeagueTeamRef | null, isTossUp, summary,
+  combinedPoints, combinedAvailabilityEffect, homeAdvantagePoints, venueAssumed,
+  intervalBasis: "assumed" | "fittedPrevSeason" | "fittedLedger" | null,
+  model: {key, version, kind: "latest" | "locked" | "reconstructed" | "imported",
+          computedAt, inputsCutoff, capPolicy,
+          constants: [{key, value, provenance, isDefault}]},
+  assumptions: {assumedAvailable: {home: number, away: number, basis}, staleEntriesIgnored: number},
+  result: {homePts, awayPts, marginMiss, winnerCalled: boolean | null} | null,
+  availability: "estimated", notes
+}
+SideProjection = { team: LeagueTeamRef, projectedPoints, range80: {low, high} | null,
+  fullStrengthPoints, availabilityEffect, attackIndex, attackIndexAfterAvailability,
+  defenceIndex, capBinding, unassignedPoints, keyAbsences: AbsenceEntry[] }
+SlateProjections = { league, date | null, round | null, freshness, model, games: GameProjection[],
+  review: ProjectionReviewSummary | null, notes }
+GameProjectionDetail = { current: GameProjection | null, locked: GameProjection | null,
+  history: [{computedAt, kind, homePts, awayPts}] }
+ProjectionReview = { league, scope: {season, seasonCode?, round?, date?}, freshness,
+  byModel: [{modelKey, games, decidedGames, winnersCalled, tossUps, meanAbsMarginMiss,
+             meanAbsScoreMiss, meanAbsCombinedMiss}],
+  reconstructed: {...same as a byModel row} | null,
+  games: [{game, locked: {homePts, awayPts}, result, marginMiss, winnerCalled}], notes }
+```
+
+`decidedGames` is `games` less the toss-ups: a toss-up names no winner, so it can be neither called
+nor missed, and `winnersCalled` is out of `decidedGames`.
+
+`margin` is home minus away; `isTossUp` is true under half a point, and `projectedWinner` is then
+`null` and `summary` is `"Toss-up"` (otherwise `"ZZA by 8.7"`). `combinedPoints` is the sum of the
+two projections to one decimal, **never rounded to a half point and never called a total to beat**.
+`homeAdvantagePoints` is zero for a neutral game; `venueAssumed` is true when the venue was not
+known and the league default was applied (always, for the NBA). `intervalBasis: "assumed"` is
+shown as an "assumed spread": it is the workbook's own, not yet checked against results. A
+`range80` or `marginRange80` is `null` until a spread exists.
+
+`availability` is always `"estimated"`: a projection is never a record. `assumptions` states how
+many players with no entry the model assumed to play, and why (§10.2). `capBinding` is true when
+teammates' absorption of a missing player's scoring hit its cap; under the default policy the team
+figure then equals the sum of the players', and under the workbook's own policy
+`unassignedPoints` reports the gap. A `locked` projection was frozen before tip-off and is the
+only kind the review judges; a `reconstructed` one was rebuilt afterwards from inputs dated before
+tip-off and is reported separately; an `imported` one is a score the user's workbook published.
+The review reports calls and misses of the model's own numbers; it compares nothing with an outside
+price.
+
+#### `AvailabilityReport` and `NewsLink`
+
+```ts
+AvailabilityReport = { league, asOf: string | null, freshness,
+  state: "fresh" | "stale" | "noReportYet" | "unreadable" | "disabled",
+  message,
+  teams: [{ team: LeagueTeamRef, reportState: "submitted" | "notYetSubmitted" | "noReport",
+    entries: [{ statusId, overrideId?, player: LeaguePlayerRef | null, playerName,
+      status: string | null, statusLabel, chanceOfPlaying: number | null,
+      modelStatus: string | null, reasonCategory: string | null, reasonText: string | null,
+      expectedReturnText: string | null,
+      expectedReturn: {roundFrom, roundTo, date} | null,
+      game: GameRefL | null, isOverride, inForce, outOfForceReason?, isStale, ageMinutes,
+      source: Source }] }],
+  news: NewsLink[] | null, attribution }
+NewsLink = { itemId, title, link, publishedAt, sourceName,
+             teams: LeagueTeamRef[], players: LeaguePlayerRef[] }
+NewsLinks = { league, freshness, items: NewsLink[], notes }
+AbsenceEntry = { player: LeaguePlayerRef, status: string | null, chanceOfPlaying: number,
+                 expectedPointsLost: number, expectedMinutesLost: number,
+                 inForce: boolean, isStale: boolean, source: Source }
+```
+
+`AbsenceEntry` is what `keyAbsences` and `absences` hold wherever a payload names the players a
+team is missing (a matchup's `availability`, a projection's `home`/`away`, a `ClubView`).
+`expectedPointsLost` and `expectedMinutesLost` are what the absence is worth to the team in the
+model: the player's projected points and minutes times his chance of *not* playing. A list of
+absences is ordered by `expectedPointsLost`, largest first, and holds only players the model
+expects to miss time (a player assumed to play is not an absence, §10.2). `inForce: false` means
+the entry no longer drives a projection (§10.3) and `isStale` that it is old enough to be
+doubted; both are shown.
+
+See §10 for what every field means. `state: "disabled"` carries the reason in `message`, for
+instance that the NBA store holds the invented demo league and a real injury status is not shown
+next to invented games. A headline is a title, a link, a date and a source name and nothing more:
+no excerpt, no body.
+
+#### `RoundView`, `ClubView`, `RoundScorers` (EuroLeague)
+
+```ts
+RoundView = { league, season, round, phase, freshness,
+  status: "upcoming" | "inProgress" | "resultPending" | "complete",
+  games: GameProjection[],
+  summary: {games, tossUps, closestGame: GameRefL | null, averageCombinedPoints,
+            homeWinnersProjected, awayWinnersProjected},
+  notes }
+ClubView = { league, team, season, freshness, coach, record, scoring: /* TeamMatchup's team block */,
+  rating: {pfPrior, paPrior, priorIsEstimate, attackAdj, defenceAdj, projectedPointsFor,
+           projectedPointsAgainst, attackIndex, defenceIndex, asOfRound,
+           source, updateWeight: number | null, updateBasis: "locked" | "reconstructed" | null,
+           extrapolated: boolean},
+  squad: [{ player: LeaguePlayerRef, positionWorkbook5: string | null, age: number | null,
+            role: string | null, basis, basisNote: string | null, isEstimate: boolean,
+            projectedMinutes: number | null,
+            per40: {pts, reb, ast, fg3m, stl, blk, tov} | null,
+            seasonAverages: {games, min, pts, reb, ast, pir, fg2Pct, fg3Pct, ftPct} | null,
+            status: string | null, chanceOfPlaying: number | null,
+            availabilitySource: Source | null }],
+  absences: AbsenceEntry[], nextGame: GameRefL | null, defenseSummary, notes }
+RoundScorers = { league, round, freshness,
+  clubs: [{team, game: GameRefL,
+           players: [{player, status: string | null, chanceOfPlaying, modelPoints,
+                      formAverage: number | null, formGames, projectedPoints}]}] }
+```
+
+`RoundView.status` of `"resultPending"` means the round's games were played and their results are
+not loaded: its `notes` then say so and how to load them (enable live ingest, or import an updated
+workbook). A round that was played before the data arrived is **never** shown as `"upcoming"`.
+`RoundScorers` ranks each club's players by projected points and has no player interval and no
+line of any kind. `squad[].basis` says where a player's per-40 rates came from: the league's
+published numbers, an estimate typed into the workbook (shown as "your estimate; source not
+recorded"), or a position prior; `isEstimate` is true for the last two and `basisNote` is the
+sentence to show beside them. `rating.updateWeight` is the weight the club's last round update
+carried, `updateBasis` says whether that update was measured against a projection frozen before
+tip-off (`locked`) or one rebuilt afterwards (`reconstructed`), and `extrapolated` is true when
+the weight came from the rule that continues the workbook's table rather than from the table.
+
+#### `ElBoxScore`, `ElLine`, `ElPlayerStatsTable` (EuroLeague)
+
+```ts
+ElBoxScore = { league, game: GameRefL, partials: {home: number[], away: number[]} | null,
+  attendance: number | null, statsStatus, notes,
+  teams: [{team, totals: ElLine,
+           players: [{player, participation: "played" | "dnp", isStarter: boolean | null,
+                      line: ElLine | null}]}],
+  freshness, sourceRef: {kind, label, ingestedAt} }
+ElLine = {minutes, pts, fgm2, fga2, fg2Pct, fgm3, fga3, fg3Pct, ftm, fta, ftPct, oreb, dreb, reb,
+          ast, stl, tov, blk, blkAgainst, pf, foulsDrawn, plusMinus, pir}
+ElPlayerStatsTable = { league, season, perMode, sort, freshness,
+  rows: [{player, team, games, values: {<metricKey>: number | null},
+          gamesWithStat: {<metricKey>: number}}], notes }
+```
+
+A player who was listed and did not play is `participation: "dnp"` with `line: null`, never a row of
+zeros; a player who was not dressed has no row. Every statistic that was not recorded is `null`:
+the workbook's box scores carry no fouls drawn, blocks against, plus/minus or starter flag, so
+those are `null` in those games. **A per-game average divides by the games that carry the stat**,
+not by games played, and `gamesWithStat` is exposed beside each value so the divisor is visible;
+`Per40` divides by the minutes of those same games; a percentage over no attempts is `null`, not
+`0%`. `pir` is the EuroLeague's published Performance Index Rating, stored as published and never
+recomputed. The keys of `values` are the metric keys of `contracts/metrics.json#/leagueMetrics/euroleague`
+(§9.5), which is where a client finds each one's name, format and direction.
+
+#### The rest of the EuroLeague's pages
+
+The remaining `/v1/el` payloads, each the equivalent of one page of the user's workbook. Every one
+carries `league`, `freshness`, and, where it is about a season, both `season` (`"2026-27"`) and
+`seasonCode` (`"E2026"`).
+
+```ts
+ElMeta = { league, state: "ready" | "disabled" | "misconfigured" | "notConfigured" | "error",
+  reason: string | null, isDemo, mode: string | null,
+  seasons: [{code, label, isCurrent}], currentSeason, currentSeasonCode,
+  rounds: [{round, phase, firstTipoffUtc: string | null, games,
+            status: "upcoming" | "inProgress" | "resultPending" | "complete"}],
+  clubs: LeagueTeamRef[], regulationMinutes: 40, perModes: string[], positionBuckets: string[],
+  unverifiedClubCodes: string[], attribution, dataThrough: string | null, dayOneNotice, freshness }
+ElTeams = { league, season, seasonCode, freshness,
+  teams: [{team: LeagueTeamRef, record: {wins, losses}, games, pointsPerGame,
+           pointsAllowedPerGame, rating: {attackIndex, defenceIndex, asOfRound}}], notes }
+ElGames = { league, season, seasonCode, freshness, games: GameRefL[], notes }
+ElPlayerDetail = { league, season, seasonCode, freshness, player: LeaguePlayerRef,
+  club: LeagueTeamRef,
+  registration: {dorsal, positionCode: 1 | 2 | 3 | null, positionName, positionWorkbook5,
+                 role, age, active},
+  birthDate, heightCm, weightKg, countryCode,       /* each null when the league did not say */
+  seasonAverages: {games, values: {<metricKey>: number | null},
+                   gamesWithStat: {<metricKey>: number}},
+  seasonPer40: {<metricKey>: number | null},
+  rate: {basis, basisNote: string | null, asOfRound, projectedMinutes,
+         per40: {pts, reb, ast, fg3m, stl, blk, tov}} | null,
+  availability: {status, chanceOfPlaying, inForce, isStale, source: Source} | null, notes }
+ElPlayerGameLog = { league, season, seasonCode, freshness, player: LeaguePlayerRef,
+  games: [{game: GameRefL, club: LeagueTeamRef, participation: "played" | "dnp",
+           isStarter: boolean | null, stats: ElLine | null}], notes }
+RatingsTable = { league, season, seasonCode, asOfRound, baseRound, freshness,
+  leagueAveragePoints, regression,
+  rows: [{team: LeagueTeamRef, pfPrior, paPrior, priorIsEstimate, attackAdj, defenceAdj,
+          projectedPointsFor, projectedPointsAgainst, attackIndex, defenceIndex, source,
+          updateWeight: number | null, updateBasis: "locked" | "reconstructed" | null,
+          extrapolated, gamesCounted}],
+  updates: [{round, team, opponent, gameId, gameNumber, weight, extrapolated, projectedScored,
+             scored, projectedAllowed, allowed, basis: "locked" | "reconstructed"}], notes }
+ElMethod = { league, freshness,
+  constants: [{key, value, provenance, isDefault, description}],
+  deviations: string[], limitations: string[] }
+ModelSettings = { league, freshness,
+  settings: [{key, value, provenance, isDefault, setAt: string | null, description}] }
+ReviewQueue = { league,
+  items: [ {kind: "status", statusId, playerName, team, source: Source}
+         | {kind: "person", personCode, name, team: LeagueTeamRef | null} ] }
+ElHealth = { league, status: "ok" | "unavailable", state, reason: string | null, isDemo,
+             syncVersion: number | null, dataThrough: string | null, generatedAt }
+ElSync = { league, syncVersion, dataThrough: string | null, mode: string | null, isDemo,
+           lastSuccessAt: string | null, pausedUntil: string | null, generatedAt }
+```
+
+`ElMeta.state` and `ElHealth.state` are the §9.4 states; `ElHealth` is the one payload that needs no
+key and never answers 503, and its `syncVersion` and `dataThrough` are `null` unless the
+EuroLeague is `ready`. `ElMeta.rounds[].status` follows `RoundView.status`. `ElPlayerDetail`'s
+`seasonAverages.values` and `seasonPer40` are keyed by the metric keys of
+`contracts/metrics.json#/leagueMetrics/euroleague` (§9.5) and divide by the games that carry each
+stat, exactly as `ElPlayerStatsTable` does; `seasonPer40.min` is `null` (minutes per forty minutes
+is not a statistic). `RatingsTable` is the club-rating arithmetic made visible: each `updates` row
+is one finished game's correction to one club, its `weight`, and the projection it was measured
+against (`basis`: frozen before tip-off or rebuilt afterwards). `ElMethod.constants` lists every
+number the model uses with its `provenance` (the workbook's, a default, fitted from results, or set
+by the user), and `ModelSettings.settings` the same keys in their editable form. `ReviewQueue`
+holds what waits for a person: a status whose player matched nobody, and a workbook-minted person
+not yet matched to the league's official code; neither is ever guessed onto anyone.
+
+#### `SourceList`
+
+```ts
+SourceList = { league, freshness,
+  sources: [{ key, label, kind, enabled, state, reason: string | null,
+              lastSuccessAt: string | null, lastError: string | null,
+              robotsCheckedOn: string | null, attribution }],
+  store?: {state, reason, kind}, attribution }
+```
+
+See §10.5. It renders as a "Sources and freshness" panel.
+
 ---
 
 ## 5. Dashboard layout document
@@ -874,6 +1401,9 @@ per-game rating against a modern one without the badge.
 | `too_many_widgets` | 400 | More than 24 widgets in one resolve |
 | `unauthorized` | 401 | Missing or wrong `X-API-Key` |
 | `player_not_found` / `team_not_found` / `game_not_found` | 404 | Unknown id |
+| `club_not_found` | 404 | An unknown EuroLeague club code (`/v1/el`) |
+| `invalid_status` | 400 | An availability status that is not one of the five (§10) |
+| `league_unavailable` | 503 | The EuroLeague is off, misconfigured, or holds no data source; `message` says which (§9.4). `recoverable` is true |
 | `metric_unavailable` | 422 | The metric does not exist for the requested era or subject |
 | `season_not_loaded` | 422 | The season is valid but not yet ingested |
 | `rate_limited` | 429 | Client exceeded the service's own limiter; `Retry-After` is set |
@@ -916,3 +1446,265 @@ Accounts and dashboards (Hardwood Web) add these codes to the same table and the
 `ttlSeconds` on each resolve result tells the client how long the payload is good for:
 60s for `scoreboard` and `daily_movers`, 300s for player-level widgets, 600s for leaderboards
 and team tables, 3600s for `career_arc`.
+
+---
+
+## 9. Leagues
+
+Hardwood serves two leagues from one process, the NBA and the EuroLeague, and holds them
+apart on purpose: separate stores, separate id spaces, separate URL prefixes, one shared payload
+format. A EuroLeague row can never appear in an NBA view, an NBA reseed can never wipe a
+EuroLeague row, and a EuroLeague that fails to start never stops the NBA from serving.
+
+### 9.1 One format, two prefixes
+
+* **Prefixes.** `/v1` is the NBA and `/v1/el` is the EuroLeague. The suffixes of the shared
+  routes are identical (`matchups`, `teams/{id}/matchup`, `games/{id}/matchup`,
+  `teams/{id}/defense-by-position`, `defense-by-position`, `projections`, `games/{id}/projection`,
+  `projections/review`, `availability`, `news`, `sources`, `model-settings`), so a client that can
+  render one league renders the other by changing the prefix.
+* **Every new payload carries `league` and `freshness`** (§2). Teams and players are
+  `LeagueTeamRef` and `LeaguePlayerRef` with a string `id`; games are `GameRefL`. Clients key
+  entities by `(league, id)`.
+* **No table, id or season code is shared.** NBA ids are the NBA's ten-digit game ids and numeric
+  team and player ids; the EuroLeague's are strings (below). A EuroLeague season code such as
+  `E2026` exists only in the EuroLeague's store and is never accepted by an NBA route.
+
+### 9.2 Discovery: `GET /v1/leagues`
+
+An array with one row per league, so a client builds league switching from it and never
+hard-codes a prefix:
+
+```ts
+{ key: "nba" | "euroleague", name, apiPrefix, enabled, state, reason: string | null, isDemo,
+  currentSeason, syncVersion, dataThrough: string | null, regulationMinutes,
+  perModes: string[], positionBuckets: string[], features }
+```
+
+The EuroLeague's row is filled in by the EuroLeague's own package through a registry, so the NBA
+side never imports it; when the EuroLeague is switched off (`HARDWOOD_EL_ENABLED=0`) or did not
+start, its row says `enabled: false` with a `state` and a `reason`. `isDemo` is true when a league
+holds invented games.
+
+### 9.3 What differs between the leagues
+
+The constants a calculation needs are data, in `contracts/leagues.json`, and are the same ones the
+service computes with:
+
+| | NBA | EuroLeague |
+| --- | --- | --- |
+| Route prefix | `/v1` | `/v1/el` |
+| Calendar day | US Eastern | Europe/Berlin |
+| Regulation, overtime (minutes) | 48, 5 | 40, 5 |
+| Per modes | `PerGame`, `Totals`, `Per36`, `Per100` | `PerGame`, `Totals`, `Per40` |
+| Position buckets | G, F, C | G, F, C (opt-in `workbook5`: PG, SG, SF, PF, C, always estimated) |
+| Defence: minimum games, provisional below | 10, 25 | 6, 12 |
+| Defence: unlisted-position ceiling (team, league) | 5% | 5% |
+| Opponent-adjusted points: qualifying games needed | 5 | 5 |
+| Home advantage (points) | 2.5, a default; replaced by the fitted mean margin from 300 final games | 3.5, the user's workbook setting |
+| Neutral sites | not recorded (every venue is an assumption) | recorded; `isNeutral` null means unknown |
+| Chance of playing, by status | out 0, doubtful .25, questionable .5, probable .85, available 1 (defaults) | the same values, from the workbook |
+| An availability entry is stale after | 60 minutes inside a reporting window, 24 hours outside one | 7 days, or once the team has played since the source's date |
+| Attribution | *"Stats via NBA.com. Injury status from the NBA's official injury report."* | *"EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources."* |
+
+### 9.4 The EuroLeague's own rules
+
+* **Season.** `E2026` or `2026-27`, defaulting to the current one. Payloads carry both the label
+  (`season`) and the code (`seasonCode`). Phases are `RS`, `PI`, `PO` and `FF`; `phase` filters a
+  query, and a payload that spans several says which.
+* **Ids.** Clubs use the official club code (`PAN`). People use the official person code with any
+  `P` prefix removed, or a minted `wb-<8 hex>` (from a workbook) or `demo-<n>` (the demo). Games
+  use `E2026-0012` (season code and four-digit game code), or `E2026-R03-01` for a fixture a
+  workbook listed before the league assigned it a game code; the id then changes to the official
+  one when the data service names the game, and nothing else about the game does.
+* **Club codes are looked up by system.** The workbook's `PAR` (Paris) and the league's `PAR`
+  (believed to be Partizan) are different clubs, so `meta.unverifiedClubCodes` names any code the
+  crosswalk has not yet confirmed against the data service, and a name that matches two people
+  goes to `GET /v1/el/review-queue` and is never guessed.
+* **State.** `meta.state` is `ready`, `disabled` (switched off), `misconfigured` (its store file is
+  the NBA's), `notConfigured` (nothing to hold yet) or `error`; `reason` says why. Every route but
+  `meta` and `health` answers `503 league_unavailable` with that reason in any state but `ready`.
+* **Demo.** A synthetic EuroLeague of invented clubs (`ZZA` to `ZZT`) and players exists for
+  offline use and for the tests. `isDemo` is true throughout it, and a store is either real or
+  synthetic and never both.
+* **What it knows on day one.** `meta.dayOneNotice` says plainly what is loaded and what is not,
+  in the user's words: which rounds have results, which are fixtures only, and that availability
+  is sourced and dated, never live. A round whose games were played before their results arrived
+  is `resultPending`.
+* **Scope.** EuroLeague games only. Friendlies, domestic leagues and national-team games are not
+  tracked, and every EuroLeague payload that averages says so in `notes`.
+* **Computed on read.** Season aggregates are summed from the box-score lines when asked, with the
+  per-column divisor rule of §4.
+
+### 9.5 Stat vocabulary
+
+`contracts/metrics.json` has two lists on purpose. `metrics` is the NBA catalog (62 entries,
+including `opp_pts`, "Points Allowed", a team metric available from 1946-47): every key in it
+resolves against NBA rows and carries NBA-era availability. **`leagueMetrics.euroleague` is the
+EuroLeague's** (23 entries): the stats a EuroLeague box score has, with the same entry shape plus
+`leagues` and `perModes`. PIR is only in the second list, because in the first it would be a
+permanently null NBA metric that lied about its era. Where both leagues have a stat (`pts`, `reb`,
+`fg3m` and the rest) both lists name and format it identically, and a test proves it. The store's
+`fgm3`, `fga3` and `pir_official` are `fg3m`, `fg3a` and `pir` on the wire. A client formats a
+EuroLeague stat from `leagueMetrics.euroleague` and an NBA one from `metrics`. Their `availability`
+describes what Hardwood holds (the first EuroLeague season it stores is 2026-27), not when the
+league began publishing a stat, and three of them (`fouls_drawn`, `blk_against`, `plus_minus`) are
+`null` in games imported from a workbook.
+
+### 9.6 Refreshing
+
+The NBA uses `GET /v1/sync` and `/v1/sync/stream` (§8). The EuroLeague has its own cursor at
+`GET /v1/el/sync`, independent of the NBA's; its `syncVersion` moves when a game is written or a
+status is entered. A league's `syncVersion` only means anything beside that league's own
+payloads, which is why a dashboard tile of the EuroLeague is never answered "unchanged" by the
+NBA's cursor.
+
+### 9.7 What every client must do with these payloads
+
+1. `null` renders as an em dash, never `0`.
+2. Percentages are fractions.
+3. `withheld` replaces indices with its `message`. `provisional` is visibly marked.
+4. `rawIndex` is never shown as a ranking, and there are no rank fields to show.
+5. `freshness.isDemo` shows a banner.
+6. `availability: "estimated"` is labelled "estimated".
+7. Every status shows the age of its `source.publishedAt`.
+8. `intervalBasis: "assumed"` shows as an "assumed spread".
+9. `status: "resultPending"` is not "upcoming".
+10. A write needs a session with its CSRF token, or the API key.
+
+---
+
+## 10. Availability and provenance
+
+A player's availability reaches Hardwood as sourced, dated entries: a row of the NBA's official
+injury report, a line a person copied from a club statement or an article, a row of the user's
+workbook. Three different questions are asked of that pile and they are answered separately,
+because conflating them is how a product tells a small lie.
+
+### 10.1 What is shown
+
+**Exactly what the source said, with its age and its link.** The vocabulary is `out`, `doubtful`,
+`questionable`, `probable`, `available`, lower case, or `null`. **"No report" is `status: null`**,
+an em dash on screen, and it is never rendered "available", because nobody said so. A string that
+is not one of the five is rejected with `400 invalid_status` (a typo never silently marks a star
+healthy). `reasonCategory` is `injury`, `illness`, `rest`, `coachDecision`, `personal`,
+`suspension`, `gLeague`, `notWithTeam`, `notRegistered`, `other` or null. `reasonText` is the
+league report's own field or text a person typed (200 characters at most), never article text.
+`expectedReturn` is parsed only from `Rounds a-b`, `Round n` and `Around D Mon`; anything else is
+kept as `expectedReturnText` and left unparsed.
+
+Every entry carries `ageMinutes`, computed from `source.publishedAt` and **never** from the fetch
+time, and `isStale`. `chanceOfPlaying` is derived from the league's status table (§9.3) at read
+time and never stored; it is `null` for a `null` status.
+
+### 10.2 What the model assumes
+
+A player with no usable entry is assumed to play with probability one. That is a modelling
+convenience and not a claim, so it is stated beside every projection, as a count and a basis, in
+`assumptions.assumedAvailable`, never folded into the display:
+
+* `notOnSubmittedReport` (NBA): the player's team submitted a report and he is not on it. The
+  NBA's rules oblige teams to list anyone whose participation may be affected, so his absence
+  from the list carries meaning.
+* `teamReportPending` (NBA): the team's report is `notYetSubmitted`.
+* `noReportPublished` (NBA): no snapshot exists at all.
+* `noEntry` (EuroLeague): there is no entry.
+
+### 10.3 Which entry applies to a game, and whether it still counts
+
+For one player and one game, in priority order: an active **override** (one a person entered, not
+cleared, and not made obsolete by a newer league report arriving after it); then the newest sourced
+entry **for that game**, by `source.publishedAt`; then the newest player-level entry still *in
+force*; then none. An entry written for this exact game is the best evidence about it, so it is
+never skipped for an older, vaguer one; if it is out of force the model ignores it.
+
+An entry stops driving a projection (`inForce: false`, `isStale: true`, still listed) when any of
+these holds:
+
+1. **Its expected return has passed.** A parsed date once the league's day is past it; a round
+   range once the last game of the last round in it has been played.
+2. **The box score supersedes it.** The player has a line in a game played after the entry's
+   `source.publishedAt`.
+3. **It is too old.** It is more than 14 days old, unless its expected-return text says
+   long-term, indefinite, season or surgery. A long-term entry stays in force but is flagged
+   stale after 7 days.
+
+`outOfForceReason` names which. Staleness for display is separate and depends on the league (§9.3):
+the NBA's clock is the snapshot, the EuroLeague's is the entry.
+
+### 10.4 How entries get in
+
+* **NBA: automated from the official injury report.** The scheduled worker fetches the report's
+  PDFs from NBA.com (never a browser), parses them and stores a snapshot per slot. The parser fails
+  closed: a layout it does not recognise yields `parse_status` `headerMismatch`, no rows, and the
+  state `unreadable`; it never guesses. A team's `NOT YET SUBMITTED` is stored as exactly that. A
+  player whose name matches two people goes to `GET /v1/availability/review-queue` and is never
+  guessed. Until the parser has read one real report successfully on the user's machine,
+  `GET /v1/sources` says so. It is off when the NBA store holds the invented demo league, and the
+  reason is shown.
+* **EuroLeague: imported and entered by hand.** The league publishes no injury feed. A workbook
+  import brings its dated, sourced rows; a person pastes the rest through `POST /v1/el/availability`
+  with a source label, an optional link and a date. A headline can prefill the link, label and date
+  but **a person always confirms the status**: a headline is never turned into a status
+  automatically. `DELETE` appends a retraction and history is never rewritten.
+* **Links to betting operators are withheld.** A source whose host belongs to one keeps its
+  label and date but is stored and served with `url: null` (§2, `Source`).
+
+### 10.5 Where every number came from: `GET {prefix}/sources`
+
+```ts
+{ key, label, kind, enabled, state, reason: string | null, lastSuccessAt, lastError,
+  robotsCheckedOn, attribution }
+```
+
+`state` is one of `ok`, `stale`, `disabled`, `notConfigured`, `noReportYet`, `blocked`
+(a host refused us and requests are paused), `unreadable` or `error`; `reason` is the sentence
+a person can read. NBA keys: `nba.stats`, `nba.rosters`, `nba.injuryReport`, `nba.news.<feedId>`;
+EuroLeague keys: `el.workbook`, `el.dataService`, `el.news.<feedId>`, `el.manual`. A headline feed
+whose `robots.txt` disallows the fetch is `disabled` with that reason. A client shows this as a
+"Sources and freshness" panel.
+
+---
+
+## 11. Things this service will not compute
+
+Hardwood projects scores. It does not price anything. The list below is not a roadmap; each item
+is excluded by a structural guard (`tests/test_no_market_machinery.py`, built on
+`backend/nbastats/shared/market_guard.py` and `contracts/leagues.json`), so adding one means
+removing the guard first, in a change nobody can miss.
+
+**Never computed, stored, accepted or returned, in any league:**
+
+* a **line**, a total to beat, an over/under, a spread used as a price, a handicap;
+* a **probability** of going over a number, an **edge**, a **lean**, a **pick** against a line;
+* **odds**, an implied probability, a stake, a payout, a parlay, a bookmaker's anything;
+* a **probability of winning**. It is omitted from this version as a design choice. A projected
+  margin, with its interval, carries the same uncertainty without a number one step from a price.
+  A later version may choose differently; this one does not.
+
+**What remains, and is analytics:** projected scores, projected margin, projected winner, the
+toss-up flag, the sum of the two projected scores (`combinedPoints`, never rounded to a half point
+and never called a total), the effect of absences on a projection, and the review of the model's
+own misses against what happened.
+
+**How it is enforced rather than promised:**
+
+1. No object key of a league payload contains a forbidden word. Keys are split into camelCase
+   words and matched as whole words (`overtimePeriods` is fine, `projectedLine` is not). The words
+   are `contracts/leagues.json#/forbiddenPayloadKeyWords`. The check covers the league fixtures,
+   the league widget fixtures and every response of every new route.
+2. No route accepts a number it could compare with a projection: every query, path and body field
+   name is on `contracts/leagues.json#/allowedParameters`.
+3. No database column and no model-setting key could hold one. The settings are an allowlist, and
+   the workbook's own `TotalSD`, `PSDBase`, `PSDSlope` and `EdgeP` have no key.
+4. The workbook importer never reads a betting column (`Model line`, `Your line`, `P(over)`,
+   `Lean`, `Result v line`, `Home win %`); a workbook full of them, with sentinel values, imports
+   and leaves no trace.
+5. No code rounds a total to the half point (`round(x * 2) / 2` and its spellings).
+6. No payload field holds a probability of winning.
+7. The NBA client cannot reach NBA.com's odds endpoint, and no source whose purpose is betting is
+   fetched; links to betting operators are withheld (§10.4).
+
+The reasons are in [`docs/PROJECTION.md`](../docs/PROJECTION.md) §6 and §8 and the legal posture in
+[`docs/LEGAL.md`](../docs/LEGAL.md): this tool is private, personal analytics, and the fastest way
+to stop being that is to start looking like something else.

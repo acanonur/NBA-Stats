@@ -101,8 +101,9 @@ __all__ = [
 API_KEY_HEADER = "X-API-Key"
 
 #: Paths that never require a key, whatever ``HARDWOOD_API_KEY`` says. Health has to answer
-#: an unauthenticated load balancer.
-API_KEY_EXEMPT_PATHS = frozenset({"/v1/health", "/v1/health/"})
+#: an unauthenticated load balancer. ``/v1/el/health`` is the EuroLeague's equivalent: its state
+#: (off, misconfigured, ready, and why) is the payload, and it carries no statistic.
+API_KEY_EXEMPT_PATHS = frozenset({"/v1/health", "/v1/health/", "/v1/el/health", "/v1/el/health/"})
 
 DEFAULT_RATE_LIMIT = 600
 DEFAULT_RATE_WINDOW_SECONDS = 60

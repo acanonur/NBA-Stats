@@ -368,15 +368,27 @@ def test_no_market_vocabulary_anywhere_the_reader_can_see_it() -> None:
         r"staking",
         r"over/under",
         r"point spread",
+        r"moneyline\w*",
     )
     pattern = re.compile(r"\b(?:" + "|".join(banned) + r")\b")
     scanned = 0
     offences: list[str] = []
+    # The league packages are in the walk too: they are where a line, a price or a probability of
+    # beating one would be written if anyone were ever tempted to, and a package the guard does
+    # not read is a package the guard does not protect. A root that does not exist yet is simply
+    # empty (``rglob`` on a missing directory yields nothing), so the list can name packages
+    # that are still being built. "Bet" alone is not banned, so the club name, which lives only
+    # in ``.json`` data this walk never opens, is safe.
     roots = [
         root / "web" / "src",
         root / "backend" / "nbastats" / "accounts",
         root / "backend" / "nbastats" / "api",
         root / "backend" / "nbastats" / "widgets",
+        root / "backend" / "nbastats" / "shared",
+        root / "backend" / "nbastats" / "intel",
+        root / "backend" / "nbastats" / "nba_intel",
+        root / "backend" / "nbastats" / "nba_matchup",
+        root / "backend" / "nbastats" / "euroleague",
     ]
     for base in roots:
         for path in sorted(base.rglob("*")):

@@ -148,7 +148,7 @@ def test_meta_carries_league_state_and_the_catalogs(app_client: TestClient) -> N
 
     body = response.json()
     assert body["currentSeason"] == CURRENT_SEASON
-    assert len(body["metrics"]["metrics"]) == 61
+    assert len(body["metrics"]["metrics"]) == 62
     assert len(body["widgets"]["widgets"]) == 16
     assert len(body["teams"]) == 30
     assert body["coverage"]["advancedFrom"] == "1996-97"

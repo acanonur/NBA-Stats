@@ -275,7 +275,7 @@ final class PayloadDecodingTests: XCTestCase {
     func testMetaFixtureCarriesBothCatalogs() throws {
         try requireFixtures()
         let response = try decoder.decode(MetaResponse.self, from: try fixture("meta"))
-        XCTAssertEqual(response.metrics?.metrics.count, 61)
+        XCTAssertEqual(response.metrics?.metrics.count, 62)   // 61 + opp_pts (points allowed)
         XCTAssertFalse(response.teams.isEmpty)
         XCTAssertFalse(response.seasons.isEmpty)
         XCTAssertEqual(response.coverage?.advancedFrom, "1996-97")

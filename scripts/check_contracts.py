@@ -7,7 +7,7 @@ iOS app — three copies of the same truth, each of which can be edited independ
 of which fails loudly when it stops agreeing with the others. This script is what makes that
 failure loud, and it is the first job in ``.github/workflows/backend.yml``.
 
-Twelve checks, one summary line each, exit 1 if any of them fails:
+Thirteen checks, one summary line each, exit 1 if any of them fails:
 
 a. the three catalogs regenerate **byte-identically** from their generators, so nobody has
    hand-edited a generated file;
@@ -29,7 +29,11 @@ j. the widget kinds ``widgets.json`` declares, the directories under ``web/src/w
 k. every widget kind has a ``contracts/fixtures/widget_<kind>.json`` payload fixture, and — once
    the web test that enumerates them exists — that it lists every one;
 l. each cross-language parity fixture (§8's ``gen_parity_cases.py`` output) is referenced by
-   name from the test file(s) meant to assert it, once those files exist.
+   name from the test file(s) meant to assert it, once those files exist;
+m. the league contract: ``contracts/leagues.json`` and the Python constants generated beside it
+   (``backend/nbastats/shared/_generated_leagues.py``) regenerate **byte-identically** from
+   ``gen_leagues.py``, every fixture under ``contracts/fixtures/leagues/`` (and each league widget
+   fixture) parses, and no JSON key in any of them contains a word the market guard forbids.
 
 Checks (g) and (h) are here because the iOS half of this repository is written on a machine
 with no Xcode. Both encode a build failure that otherwise only appears on someone's Mac, as a
@@ -42,6 +46,14 @@ which have every input already in this checkout, (j)-(l) start in a state where 
 would police does not exist yet. Each is written to report that plainly and pass anyway — a
 missing *file* here means "not built yet", the thing this whole contract-check exists to make
 loud is a *disagreement* between two things that do exist.
+
+Check (m) is the guard for the EuroLeague and matchup features. ``leagues.json`` is *not* one of
+the three bundled catalogs (``CATALOGS``), so checks (a) and (e) and the iOS bundle never see it;
+it is checked here instead, with the same byte-for-byte regeneration test, because it carries the
+one definition of the words no new payload key may contain and of the only names a new route may
+accept. The fixtures it scans live in a subdirectory on purpose: check (f) and the fixture sync
+glob only ``contracts/fixtures/*.json``, so the 34 original fixtures and the iOS bundle are
+untouched by the league ones.
 
 Nothing here needs the network, and nothing writes to the repository.
 """
@@ -67,6 +79,16 @@ WEB = ROOT / "web"
 WEB_WIDGETS = WEB / "src" / "widgets"
 WEB_GENERATED = WEB / "src" / "generated"
 BACKEND = ROOT / "backend"
+SHARED_GENERATED = BACKEND / "nbastats" / "shared" / "_generated_leagues.py"
+LEAGUE_FIXTURES = FIXTURES / "leagues"
+#: The four league widget kinds' payload fixtures (written when the widget kinds land). Scanned for
+#: forbidden keys when present, like everything under ``LEAGUE_FIXTURES``.
+LEAGUE_WIDGET_FIXTURES: tuple[str, ...] = (
+    "widget_team_matchup.json",
+    "widget_defense_by_position.json",
+    "widget_availability_report.json",
+    "widget_slate_projections.json",
+)
 
 #: The generated catalogs, and the generator that owns each.
 CATALOGS: tuple[tuple[str, str], ...] = (
@@ -760,6 +782,73 @@ def check_parity_cases_are_wired() -> str:
     return f"{wired} parity-fixture/test pair(s) wired{detail}"
 
 
+# --------------------------------------------------------------------------- m. leagues
+
+
+def check_leagues_contract() -> str:
+    """(m) ``leagues.json`` and its Python constants regenerate; league fixtures are clean."""
+    problems: list[str] = []
+    outputs: tuple[tuple[Path, tuple[str, ...]], ...] = (
+        (CONTRACTS / "leagues.json", ()),
+        (SHARED_GENERATED, ("--python",)),
+    )
+    for target, flags in outputs:
+        label = target.relative_to(ROOT)
+        command = " ".join(("python3", "contracts/tools/gen_leagues.py", *flags))
+        if not target.is_file():
+            problems.append(f"{label} is missing")
+            continue
+        result = subprocess.run(
+            [sys.executable, str(TOOLS / "gen_leagues.py"), *flags],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+        if result.returncode != 0:
+            detail = result.stderr.strip().splitlines() or ["(no output)"]
+            problems.append(f"`{command}` exited {result.returncode}: " + " / ".join(detail[:6]))
+            continue
+        committed = target.read_text(encoding="utf-8")
+        if result.stdout != committed:
+            problems.append(
+                f"{label} differs from `{command}` "
+                f"({_first_difference(committed, result.stdout)})"
+            )
+
+    if str(BACKEND) not in sys.path:
+        sys.path.insert(0, str(BACKEND))
+    try:
+        from nbastats.shared import market_guard  # noqa: PLC0415 - imported on demand
+    except Exception as exc:  # noqa: BLE001 - the import itself is the assertion
+        raise CheckFailure(
+            f"backend/nbastats/shared/market_guard.py could not be imported: "
+            f"{type(exc).__name__}: {exc}"
+        ) from exc
+
+    paths: list[Path] = []
+    if LEAGUE_FIXTURES.is_dir():
+        paths.extend(sorted(LEAGUE_FIXTURES.rglob("*.json")))
+    paths.extend(FIXTURES / name for name in LEAGUE_WIDGET_FIXTURES if (FIXTURES / name).is_file())
+    for path in paths:
+        label = path.relative_to(ROOT)
+        try:
+            with path.open(encoding="utf-8") as handle:
+                document = json.load(handle)
+        except (OSError, ValueError) as exc:
+            problems.append(f"{label}: {exc}")
+            continue
+        for violation in market_guard.scan_keys(document):
+            problems.append(f"{label}: {violation}")
+    if problems:
+        raise CheckFailure(*problems)
+    fixtures = (
+        f"{len(paths)} league fixtures parse and carry no forbidden key word"
+        if paths
+        else "no league fixtures yet"
+    )
+    return f"leagues.json and its Python constants regenerate byte-identically; {fixtures}"
+
+
 # --------------------------------------------------------------------------- runner
 
 CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
@@ -775,6 +864,7 @@ CHECKS: tuple[tuple[str, str, Callable[[], str]], ...] = (
     ("j", "widget kinds agree across widgets.json, web and iOS", check_widget_kinds_agree),
     ("k", "a payload fixture exists per widget kind", check_widget_fixtures_exist),
     ("l", "parity fixtures are wired into their tests", check_parity_cases_are_wired),
+    ("m", "league contract regenerates; league fixtures are clean", check_leagues_contract),
 )
 
 

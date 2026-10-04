@@ -87,7 +87,7 @@ export type WidgetKind = // 16-member union, snake_case, one per widget director
   | "fantasy_trade" | "career_arc";
 export const WIDGET_KINDS: readonly WidgetKind[]; // same 16, in catalog order
 
-export type MetricKey = /* 61-member union of every contracts/metrics.json metric key */;
+export type MetricKey = /* 62-member union of every contracts/metrics.json metric key */;
 export type MetricFormat =
   | "integer" | "decimal1" | "decimal2" | "percent1" | "percent2" | "rating1" | "plusMinus1"
   | "minutes";
