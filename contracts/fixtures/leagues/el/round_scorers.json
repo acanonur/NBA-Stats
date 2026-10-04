@@ -1,0 +1,2081 @@
+{
+  "league": "euroleague",
+  "season": "2026-27",
+  "seasonCode": "E2026",
+  "round": 5,
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.manual",
+        "label": "Entered by hand",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-10-12T09:00:00Z"
+      }
+    ]
+  },
+  "clubs": [
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZA",
+        "abbr": "ZZA",
+        "name": "Alderwick Herons",
+        "shortName": "Alderwick",
+        "clubCode": "ZZA",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-01",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T17:30:00Z",
+        "venue": "Alderwick Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZA",
+          "abbr": "ZZA",
+          "name": "Alderwick Herons",
+          "shortName": "Alderwick",
+          "clubCode": "ZZA",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZP",
+          "abbr": "ZZP",
+          "name": "Pinecrest Panthers",
+          "shortName": "Pinecrest",
+          "clubCode": "ZZP",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-1",
+            "name": "Rurik Jessop",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "62",
+            "headshotUrl": null,
+            "personCode": "demo-1"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 18.21188538407353,
+          "formAverage": 17.75,
+          "formGames": 4,
+          "projectedPoints": 18.096414038055148,
+          "projectedMinutes": 27.431111111111115
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-2",
+            "name": "Tamsin Jarrow",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "88",
+            "headshotUrl": null,
+            "personCode": "demo-2"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.612924296658033,
+          "formAverage": 15.75,
+          "formGames": 4,
+          "projectedPoints": 14.897193222493524,
+          "projectedMinutes": 25.94
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-4",
+            "name": "Cadrik Abernethy",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "23",
+            "headshotUrl": null,
+            "personCode": "demo-4"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 11.87895440140526,
+          "formAverage": 10.0,
+          "formGames": 4,
+          "projectedPoints": 11.409215801053945,
+          "projectedMinutes": 22.25777777777778
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZP",
+        "abbr": "ZZP",
+        "name": "Pinecrest Panthers",
+        "shortName": "Pinecrest",
+        "clubCode": "ZZP",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-01",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T17:30:00Z",
+        "venue": "Alderwick Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZA",
+          "abbr": "ZZA",
+          "name": "Alderwick Herons",
+          "shortName": "Alderwick",
+          "clubCode": "ZZA",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZP",
+          "abbr": "ZZP",
+          "name": "Pinecrest Panthers",
+          "shortName": "Pinecrest",
+          "clubCode": "ZZP",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-244",
+            "name": "Rafe Fairbourne",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "18",
+            "headshotUrl": null,
+            "personCode": "demo-244"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 20.42782120702829,
+          "formAverage": 18.0,
+          "formGames": 4,
+          "projectedPoints": 19.82086590527122,
+          "projectedMinutes": 26.952244897959183
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-243",
+            "name": "Arlen Garnet",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "67",
+            "headshotUrl": null,
+            "personCode": "demo-243"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 10.298171346078764,
+          "formAverage": 14.5,
+          "formGames": 4,
+          "projectedPoints": 11.348628509559074,
+          "projectedMinutes": 27.219387755102037
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-245",
+            "name": "Torvald Wetherby",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "75",
+            "headshotUrl": null,
+            "personCode": "demo-245"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 9.544226120227405,
+          "formAverage": 13.75,
+          "formGames": 4,
+          "projectedPoints": 10.595669590170553,
+          "projectedMinutes": 24.437959183673467
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZO",
+        "abbr": "ZZO",
+        "name": "Oakhaven Elks",
+        "shortName": "Oakhaven",
+        "clubCode": "ZZO",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-02",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T18:45:00Z",
+        "venue": "Oakhaven Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZO",
+          "abbr": "ZZO",
+          "name": "Oakhaven Elks",
+          "shortName": "Oakhaven",
+          "clubCode": "ZZO",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZQ",
+          "abbr": "ZZQ",
+          "name": "Quillon Ravens",
+          "shortName": "Quillon",
+          "clubCode": "ZZQ",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-227",
+            "name": "Torvald Moorcroft",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "95",
+            "headshotUrl": null,
+            "personCode": "demo-227"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.575336446925533,
+          "formAverage": 12.5,
+          "formGames": 4,
+          "projectedPoints": 14.80650233519415,
+          "projectedMinutes": 25.302118171683386
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-226",
+            "name": "Rurik Valdemar",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "38",
+            "headshotUrl": null,
+            "personCode": "demo-226"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.430716788327043,
+          "formAverage": 11.25,
+          "formGames": 4,
+          "projectedPoints": 14.385537591245281,
+          "projectedMinutes": 25.921962095875138
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-228",
+            "name": "Tamsin Dunmore",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "82",
+            "headshotUrl": null,
+            "personCode": "demo-228"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 12.543427482692552,
+          "formAverage": 12.25,
+          "formGames": 4,
+          "projectedPoints": 12.470070612019414,
+          "projectedMinutes": 24.74247491638796
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZQ",
+        "abbr": "ZZQ",
+        "name": "Quillon Ravens",
+        "shortName": "Quillon",
+        "clubCode": "ZZQ",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-02",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T18:45:00Z",
+        "venue": "Oakhaven Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZO",
+          "abbr": "ZZO",
+          "name": "Oakhaven Elks",
+          "shortName": "Oakhaven",
+          "clubCode": "ZZO",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZQ",
+          "abbr": "ZZQ",
+          "name": "Quillon Ravens",
+          "shortName": "Quillon",
+          "clubCode": "ZZQ",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-261",
+            "name": "Isidor Kelderan",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "69",
+            "headshotUrl": null,
+            "personCode": "demo-261"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 18.103741218370335,
+          "formAverage": 17.0,
+          "formGames": 4,
+          "projectedPoints": 17.827805913777752,
+          "projectedMinutes": 27.519631982805755
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-262",
+            "name": "Joran Corwen",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "48",
+            "headshotUrl": null,
+            "personCode": "demo-262"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.794645542272951,
+          "formAverage": 16.25,
+          "formGames": 4,
+          "projectedPoints": 15.158484156704713,
+          "projectedMinutes": 25.02844717608391
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-263",
+            "name": "Emrys Emsworth",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "94",
+            "headshotUrl": null,
+            "personCode": "demo-263"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 9.736380264867375,
+          "formAverage": 9.25,
+          "formGames": 4,
+          "projectedPoints": 9.61478519865053,
+          "projectedMinutes": 23.723434073012704
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZR",
+        "abbr": "ZZR",
+        "name": "Redmarsh Pikes",
+        "shortName": "Redmarsh",
+        "clubCode": "ZZR",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-03",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T19:30:00Z",
+        "venue": "Redmarsh Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZR",
+          "abbr": "ZZR",
+          "name": "Redmarsh Pikes",
+          "shortName": "Redmarsh",
+          "clubCode": "ZZR",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZN",
+          "abbr": "ZZN",
+          "name": "Northwick Bison",
+          "shortName": "Northwick",
+          "clubCode": "ZZN",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-279",
+            "name": "Calder Ambrose",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "9",
+            "headshotUrl": null,
+            "personCode": "demo-279"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 20.616073226505584,
+          "formAverage": 16.25,
+          "formGames": 4,
+          "projectedPoints": 19.524554919879186,
+          "projectedMinutes": 26.284116331096197
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-278",
+            "name": "Isidor Vickery",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "24",
+            "headshotUrl": null,
+            "personCode": "demo-278"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.649353041410286,
+          "formAverage": 18.5,
+          "formGames": 4,
+          "projectedPoints": 15.612014781057715,
+          "projectedMinutes": 28.604026845637584
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-280",
+            "name": "Dacian Aldenmoor",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "39",
+            "headshotUrl": null,
+            "personCode": "demo-280"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 10.526511317467811,
+          "formAverage": 15.0,
+          "formGames": 4,
+          "projectedPoints": 11.64488348810086,
+          "projectedMinutes": 24.013422818791945
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZN",
+        "abbr": "ZZN",
+        "name": "Northwick Bison",
+        "shortName": "Northwick",
+        "clubCode": "ZZN",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-03",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T19:30:00Z",
+        "venue": "Redmarsh Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZR",
+          "abbr": "ZZR",
+          "name": "Redmarsh Pikes",
+          "shortName": "Redmarsh",
+          "clubCode": "ZZR",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZN",
+          "abbr": "ZZN",
+          "name": "Northwick Bison",
+          "shortName": "Northwick",
+          "clubCode": "ZZN",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-213",
+            "name": "Vance Inverlay",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "0",
+            "headshotUrl": null,
+            "personCode": "demo-213"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 13.129541906586727,
+          "formAverage": 17.5,
+          "formGames": 4,
+          "projectedPoints": 14.222156429940046,
+          "projectedMinutes": 24.271604938271608
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-211",
+            "name": "Quenby Tarrant",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "74",
+            "headshotUrl": null,
+            "personCode": "demo-211"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.651674473204372,
+          "formAverage": 8.25,
+          "formGames": 4,
+          "projectedPoints": 13.801255854903278,
+          "projectedMinutes": 27.928170594837262
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-212",
+            "name": "Quenby Fallowmere",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "29",
+            "headshotUrl": null,
+            "personCode": "demo-212"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 12.096102211874307,
+          "formAverage": 11.5,
+          "formGames": 4,
+          "projectedPoints": 11.94707665890573,
+          "projectedMinutes": 26.060606060606062
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZM",
+        "abbr": "ZZM",
+        "name": "Mistral Point Gulls",
+        "shortName": "Mistral Point",
+        "clubCode": "ZZM",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-04",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T20:45:00Z",
+        "venue": "Mistral Point Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZM",
+          "abbr": "ZZM",
+          "name": "Mistral Point Gulls",
+          "shortName": "Mistral Point",
+          "clubCode": "ZZM",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZS",
+          "abbr": "ZZS",
+          "name": "Silverlake Orcas",
+          "shortName": "Silverlake",
+          "clubCode": "ZZS",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-196",
+            "name": "Joran Blackmere",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "66",
+            "headshotUrl": null,
+            "personCode": "demo-196"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.286996024586252,
+          "formAverage": 16.75,
+          "formGames": 4,
+          "projectedPoints": 15.652747018439689,
+          "projectedMinutes": 26.136465324384787
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-195",
+            "name": "Yorrick Oakeshott",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "39",
+            "headshotUrl": null,
+            "personCode": "demo-195"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.503115218146263,
+          "formAverage": 13.25,
+          "formGames": 4,
+          "projectedPoints": 14.939836413609697,
+          "projectedMinutes": 29.109619686800894
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-197",
+            "name": "Kendrick Moorcroft",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "38",
+            "headshotUrl": null,
+            "personCode": "demo-197"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 13.10515635838044,
+          "formAverage": 11.5,
+          "formGames": 4,
+          "projectedPoints": 12.703867268785329,
+          "projectedMinutes": 23.3579418344519
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZS",
+        "abbr": "ZZS",
+        "name": "Silverlake Orcas",
+        "shortName": "Silverlake",
+        "clubCode": "ZZS",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-04",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T20:45:00Z",
+        "venue": "Mistral Point Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZM",
+          "abbr": "ZZM",
+          "name": "Mistral Point Gulls",
+          "shortName": "Mistral Point",
+          "clubCode": "ZZM",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZS",
+          "abbr": "ZZS",
+          "name": "Silverlake Orcas",
+          "shortName": "Silverlake",
+          "clubCode": "ZZS",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-295",
+            "name": "Kendrick Hallowby",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "90",
+            "headshotUrl": null,
+            "personCode": "demo-295"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.591134514261391,
+          "formAverage": 14.25,
+          "formGames": 4,
+          "projectedPoints": 15.255850885696043,
+          "projectedMinutes": 25.277479028284535
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-296",
+            "name": "Jessamy Hartigan",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "33",
+            "headshotUrl": null,
+            "personCode": "demo-296"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.211189171643522,
+          "formAverage": 14.75,
+          "formGames": 4,
+          "projectedPoints": 15.09589187873264,
+          "projectedMinutes": 23.86354570118814
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-294",
+            "name": "Quenby Rookwood",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "24",
+            "headshotUrl": null,
+            "personCode": "demo-294"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 10.439514301991847,
+          "formAverage": 15.5,
+          "formGames": 4,
+          "projectedPoints": 11.704635726493885,
+          "projectedMinutes": 27.989038263635514
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZT",
+        "abbr": "ZZT",
+        "name": "Thornfield Tigers",
+        "shortName": "Thornfield",
+        "clubCode": "ZZT",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-05",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T21:30:00Z",
+        "venue": "Thornfield Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZT",
+          "abbr": "ZZT",
+          "name": "Thornfield Tigers",
+          "shortName": "Thornfield",
+          "clubCode": "ZZT",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZL",
+          "abbr": "ZZL",
+          "name": "Larkspur Rams",
+          "shortName": "Larkspur",
+          "clubCode": "ZZL",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-313",
+            "name": "Ladric Yardley",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "64",
+            "headshotUrl": null,
+            "personCode": "demo-313"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 17.44600206918699,
+          "formAverage": 17.75,
+          "formGames": 4,
+          "projectedPoints": 17.52200155189024,
+          "projectedMinutes": 26.936432881095303
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-312",
+            "name": "Bastian Ellerby",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "76",
+            "headshotUrl": null,
+            "personCode": "demo-312"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 11.199573538142714,
+          "formAverage": 15.5,
+          "formGames": 4,
+          "projectedPoints": 12.274680153607035,
+          "projectedMinutes": 28.06135125554511
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-314",
+            "name": "Ugo Evenwood",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "41",
+            "headshotUrl": null,
+            "personCode": "demo-314"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 10.806597668616757,
+          "formAverage": 14.75,
+          "formGames": 4,
+          "projectedPoints": 11.792448251462567,
+          "projectedMinutes": 23.71455713114981
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZL",
+        "abbr": "ZZL",
+        "name": "Larkspur Rams",
+        "shortName": "Larkspur",
+        "clubCode": "ZZL",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-05",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T21:30:00Z",
+        "venue": "Thornfield Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZT",
+          "abbr": "ZZT",
+          "name": "Thornfield Tigers",
+          "shortName": "Thornfield",
+          "clubCode": "ZZT",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZL",
+          "abbr": "ZZL",
+          "name": "Larkspur Rams",
+          "shortName": "Larkspur",
+          "clubCode": "ZZL",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-178",
+            "name": "Vance Lindqvist",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "41",
+            "headshotUrl": null,
+            "personCode": "demo-178"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 18.900626033395422,
+          "formAverage": 18.25,
+          "formGames": 4,
+          "projectedPoints": 18.737969525046566,
+          "projectedMinutes": 26.104767698263906
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-177",
+            "name": "Ugo Holloway",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "2",
+            "headshotUrl": null,
+            "personCode": "demo-177"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 10.747016201393485,
+          "formAverage": 23.25,
+          "formGames": 4,
+          "projectedPoints": 13.872762151045114,
+          "projectedMinutes": 28.189748715898826
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-179",
+            "name": "Pellam Thornbury",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "63",
+            "headshotUrl": null,
+            "personCode": "demo-179"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 12.553851336572976,
+          "formAverage": 11.5,
+          "formGames": 4,
+          "projectedPoints": 12.290388502429732,
+          "projectedMinutes": 23.7781794382421
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZK",
+        "abbr": "ZZK",
+        "name": "Kestrelburn Owls",
+        "shortName": "Kestrelburn",
+        "clubCode": "ZZK",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-06",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T17:45:00Z",
+        "venue": "Kestrelburn Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZK",
+          "abbr": "ZZK",
+          "name": "Kestrelburn Owls",
+          "shortName": "Kestrelburn",
+          "clubCode": "ZZK",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZB",
+          "abbr": "ZZB",
+          "name": "Brindlemoor Stags",
+          "shortName": "Brindlemoor",
+          "clubCode": "ZZB",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-163",
+            "name": "Oswin Hallowby",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "21",
+            "headshotUrl": null,
+            "personCode": "demo-163"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 17.54709476776748,
+          "formAverage": 15.5,
+          "formGames": 4,
+          "projectedPoints": 17.03532107582561,
+          "projectedMinutes": 28.955932203389832
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-164",
+            "name": "Joran Cranwell",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "39",
+            "headshotUrl": null,
+            "personCode": "demo-164"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 16.90954830107803,
+          "formAverage": 12.0,
+          "formGames": 4,
+          "projectedPoints": 15.682161225808521,
+          "projectedMinutes": 25.071186440677963
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-165",
+            "name": "Ulric Ormerod",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "71",
+            "headshotUrl": null,
+            "personCode": "demo-165"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 8.414460930752135,
+          "formAverage": 11.0,
+          "formGames": 4,
+          "projectedPoints": 9.060845698064101,
+          "projectedMinutes": 24.350282485875702
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZB",
+        "abbr": "ZZB",
+        "name": "Brindlemoor Stags",
+        "shortName": "Brindlemoor",
+        "clubCode": "ZZB",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-06",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T17:45:00Z",
+        "venue": "Kestrelburn Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZK",
+          "abbr": "ZZK",
+          "name": "Kestrelburn Owls",
+          "shortName": "Kestrelburn",
+          "clubCode": "ZZK",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZB",
+          "abbr": "ZZB",
+          "name": "Brindlemoor Stags",
+          "shortName": "Brindlemoor",
+          "clubCode": "ZZB",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-19",
+            "name": "Elric Beaumont",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "95",
+            "headshotUrl": null,
+            "personCode": "demo-19"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.835281290881104,
+          "formAverage": 18.0,
+          "formGames": 4,
+          "projectedPoints": 16.376460968160828,
+          "projectedMinutes": 29.012116887209107
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-20",
+            "name": "Marlow Garnet",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "50",
+            "headshotUrl": null,
+            "personCode": "demo-20"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.714213504071418,
+          "formAverage": 15.25,
+          "formGames": 4,
+          "projectedPoints": 15.598160128053564,
+          "projectedMinutes": 25.37090135864197
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-21",
+            "name": "Quillan Inverlay",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "5",
+            "headshotUrl": null,
+            "personCode": "demo-21"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.31585769159065,
+          "formAverage": 9.25,
+          "formGames": 4,
+          "projectedPoints": 13.049393268692988,
+          "projectedMinutes": 24.489999311832186
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZC",
+        "abbr": "ZZC",
+        "name": "Cindervale Foxes",
+        "shortName": "Cindervale",
+        "clubCode": "ZZC",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-07",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T18:30:00Z",
+        "venue": "Cindervale Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZC",
+          "abbr": "ZZC",
+          "name": "Cindervale Foxes",
+          "shortName": "Cindervale",
+          "clubCode": "ZZC",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZJ",
+          "abbr": "ZZJ",
+          "name": "Juniper Falls Badgers",
+          "shortName": "Juniper Falls",
+          "clubCode": "ZZJ",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-36",
+            "name": "Rafe Ingleby",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "82",
+            "headshotUrl": null,
+            "personCode": "demo-36"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 17.232833799240538,
+          "formAverage": 16.5,
+          "formGames": 4,
+          "projectedPoints": 17.049625349430404,
+          "projectedMinutes": 27.87830413069254
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-35",
+            "name": "Oswin Ashgrove",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "81",
+            "headshotUrl": null,
+            "personCode": "demo-35"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 16.715614962269107,
+          "formAverage": 16.0,
+          "formGames": 4,
+          "projectedPoints": 16.53671122170183,
+          "projectedMinutes": 28.22850569810135
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-37",
+            "name": "Bastian Rookwood",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "70",
+            "headshotUrl": null,
+            "personCode": "demo-37"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 11.177328205357655,
+          "formAverage": 10.25,
+          "formGames": 4,
+          "projectedPoints": 10.945496154018242,
+          "projectedMinutes": 23.519989140166082
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZJ",
+        "abbr": "ZZJ",
+        "name": "Juniper Falls Badgers",
+        "shortName": "Juniper Falls",
+        "clubCode": "ZZJ",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-07",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T18:30:00Z",
+        "venue": "Cindervale Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZC",
+          "abbr": "ZZC",
+          "name": "Cindervale Foxes",
+          "shortName": "Cindervale",
+          "clubCode": "ZZC",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZJ",
+          "abbr": "ZZJ",
+          "name": "Juniper Falls Badgers",
+          "shortName": "Juniper Falls",
+          "clubCode": "ZZJ",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-149",
+            "name": "Vance Saltmarsh",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "48",
+            "headshotUrl": null,
+            "personCode": "demo-149"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.361926188455131,
+          "formAverage": 19.25,
+          "formGames": 4,
+          "projectedPoints": 15.583944641341349,
+          "projectedMinutes": 27.701694915254237
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-151",
+            "name": "Ulric Quickfall",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "26",
+            "headshotUrl": null,
+            "personCode": "demo-151"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.625594644472084,
+          "formAverage": 15.75,
+          "formGames": 4,
+          "projectedPoints": 14.906695983354062,
+          "projectedMinutes": 23.814689265536717
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-150",
+            "name": "Faolan Quickfall",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "42",
+            "headshotUrl": null,
+            "personCode": "demo-150"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 11.630094685458996,
+          "formAverage": 10.5,
+          "formGames": 4,
+          "projectedPoints": 11.347571014094246,
+          "projectedMinutes": 26.140112994350282
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZI",
+        "abbr": "ZZI",
+        "name": "Ivorymead Hawks",
+        "shortName": "Ivorymead",
+        "clubCode": "ZZI",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-08",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T19:45:00Z",
+        "venue": "Ivorymead Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZI",
+          "abbr": "ZZI",
+          "name": "Ivorymead Hawks",
+          "shortName": "Ivorymead",
+          "clubCode": "ZZI",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZD",
+          "abbr": "ZZD",
+          "name": "Dunmarrow Wolves",
+          "shortName": "Dunmarrow",
+          "clubCode": "ZZD",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-131",
+            "name": "Zeline Fallowmere",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "90",
+            "headshotUrl": null,
+            "personCode": "demo-131"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 19.29319884164387,
+          "formAverage": 13.5,
+          "formGames": 4,
+          "projectedPoints": 17.844899131232903,
+          "projectedMinutes": 28.4941954525443
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-132",
+            "name": "Leopold Ullswater",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "13",
+            "headshotUrl": null,
+            "personCode": "demo-132"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.066748381999476,
+          "formAverage": 16.5,
+          "formGames": 4,
+          "projectedPoints": 14.675061286499608,
+          "projectedMinutes": 25.920022926326958
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-133",
+            "name": "Hadric Fallowmere",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "54",
+            "headshotUrl": null,
+            "personCode": "demo-133"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 13.509189787196519,
+          "formAverage": 17.25,
+          "formGames": 4,
+          "projectedPoints": 14.444392340397389,
+          "projectedMinutes": 24.87921031183043
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZD",
+        "abbr": "ZZD",
+        "name": "Dunmarrow Wolves",
+        "shortName": "Dunmarrow",
+        "clubCode": "ZZD",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-08",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T19:45:00Z",
+        "venue": "Ivorymead Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZI",
+          "abbr": "ZZI",
+          "name": "Ivorymead Hawks",
+          "shortName": "Ivorymead",
+          "clubCode": "ZZI",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZD",
+          "abbr": "ZZD",
+          "name": "Dunmarrow Wolves",
+          "shortName": "Dunmarrow",
+          "clubCode": "ZZD",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-50",
+            "name": "Rurik Ormerod",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "93",
+            "headshotUrl": null,
+            "personCode": "demo-50"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 15.15808559246695,
+          "formAverage": 14.75,
+          "formGames": 4,
+          "projectedPoints": 15.056064194350213,
+          "projectedMinutes": 28.76284670595131
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-51",
+            "name": "Nikolai Yarrowby",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "55",
+            "headshotUrl": null,
+            "personCode": "demo-51"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.56409846975741,
+          "formAverage": 11.0,
+          "formGames": 4,
+          "projectedPoints": 13.673073852318057,
+          "projectedMinutes": 24.716593728763698
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-52",
+            "name": "Faolan Fairbourne",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "85",
+            "headshotUrl": null,
+            "personCode": "demo-52"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 10.052666577633401,
+          "formAverage": 14.5,
+          "formGames": 4,
+          "projectedPoints": 11.16449993322505,
+          "projectedMinutes": 24.44188985385169
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZE",
+        "abbr": "ZZE",
+        "name": "Eastmere Falcons",
+        "shortName": "Eastmere",
+        "clubCode": "ZZE",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-09",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T20:30:00Z",
+        "venue": "Eastmere Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZE",
+          "abbr": "ZZE",
+          "name": "Eastmere Falcons",
+          "shortName": "Eastmere",
+          "clubCode": "ZZE",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZH",
+          "abbr": "ZZH",
+          "name": "Harrowfield Bears",
+          "shortName": "Harrowfield",
+          "clubCode": "ZZH",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-67",
+            "name": "Talbot Vickery",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "14",
+            "headshotUrl": null,
+            "personCode": "demo-67"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 21.385549816715564,
+          "formAverage": 17.25,
+          "formGames": 4,
+          "projectedPoints": 20.351662362536672,
+          "projectedMinutes": 27.674467363717238
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-66",
+            "name": "Hadric Underhill",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "83",
+            "headshotUrl": null,
+            "personCode": "demo-66"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 13.33270613924497,
+          "formAverage": 16.25,
+          "formGames": 4,
+          "projectedPoints": 14.062029604433727,
+          "projectedMinutes": 29.59962690638854
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-69",
+            "name": "Leopold Upcott",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "99",
+            "headshotUrl": null,
+            "personCode": "demo-69"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 10.055971198698245,
+          "formAverage": 11.5,
+          "formGames": 4,
+          "projectedPoints": 10.416978399023684,
+          "projectedMinutes": 24.448330440656868
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZH",
+        "abbr": "ZZH",
+        "name": "Harrowfield Bears",
+        "shortName": "Harrowfield",
+        "clubCode": "ZZH",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-09",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T20:30:00Z",
+        "venue": "Eastmere Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZE",
+          "abbr": "ZZE",
+          "name": "Eastmere Falcons",
+          "shortName": "Eastmere",
+          "clubCode": "ZZE",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZH",
+          "abbr": "ZZH",
+          "name": "Harrowfield Bears",
+          "shortName": "Harrowfield",
+          "clubCode": "ZZH",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-114",
+            "name": "Cadrik Quickfall",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "55",
+            "headshotUrl": null,
+            "personCode": "demo-114"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 17.736001364971713,
+          "formAverage": 19.25,
+          "formGames": 4,
+          "projectedPoints": 18.114501023728785,
+          "projectedMinutes": 25.891111111111112
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-113",
+            "name": "Marek Whitlock",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "72",
+            "headshotUrl": null,
+            "personCode": "demo-113"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.72134169277146,
+          "formAverage": 14.0,
+          "formGames": 4,
+          "projectedPoints": 14.541006269578595,
+          "projectedMinutes": 27.777777777777775
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-115",
+            "name": "Vance Zelkova",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "42",
+            "headshotUrl": null,
+            "personCode": "demo-115"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.017591569480228,
+          "formAverage": 12.25,
+          "formGames": 4,
+          "projectedPoints": 13.57569367711017,
+          "projectedMinutes": 24.32
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZG",
+        "abbr": "ZZG",
+        "name": "Glimmerton Lynx",
+        "shortName": "Glimmerton",
+        "clubCode": "ZZG",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-10",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T21:45:00Z",
+        "venue": "Glimmerton Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZG",
+          "abbr": "ZZG",
+          "name": "Glimmerton Lynx",
+          "shortName": "Glimmerton",
+          "clubCode": "ZZG",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZF",
+          "abbr": "ZZF",
+          "name": "Fernhollow Otters",
+          "shortName": "Fernhollow",
+          "clubCode": "ZZF",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-98",
+            "name": "Marlow Goodricke",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "6",
+            "headshotUrl": null,
+            "personCode": "demo-98"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 17.046702424639232,
+          "formAverage": 14.0,
+          "formGames": 4,
+          "projectedPoints": 16.285026818479423,
+          "projectedMinutes": 26.39821029082774
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-97",
+            "name": "Perrin Hawkridge",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "68",
+            "headshotUrl": null,
+            "personCode": "demo-97"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.107231056754523,
+          "formAverage": 18.0,
+          "formGames": 4,
+          "projectedPoints": 15.080423292565893,
+          "projectedMinutes": 27.78523489932886
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-99",
+            "name": "Zeph Kelderan",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "56",
+            "headshotUrl": null,
+            "personCode": "demo-99"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 11.565243087720708,
+          "formAverage": 15.5,
+          "formGames": 4,
+          "projectedPoints": 12.54893231579053,
+          "projectedMinutes": 24.814317673378078
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZF",
+        "abbr": "ZZF",
+        "name": "Fernhollow Otters",
+        "shortName": "Fernhollow",
+        "clubCode": "ZZF",
+        "tvCode": null
+      },
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-10",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T21:45:00Z",
+        "venue": "Glimmerton Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZG",
+          "abbr": "ZZG",
+          "name": "Glimmerton Lynx",
+          "shortName": "Glimmerton",
+          "clubCode": "ZZG",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZF",
+          "abbr": "ZZF",
+          "name": "Fernhollow Otters",
+          "shortName": "Fernhollow",
+          "clubCode": "ZZF",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "players": [
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-80",
+            "name": "Garrow Ellerby",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "9",
+            "headshotUrl": null,
+            "personCode": "demo-80"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.468574140086986,
+          "formAverage": 14.25,
+          "formGames": 4,
+          "projectedPoints": 14.41393060506524,
+          "projectedMinutes": 29.25378569409104
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-81",
+            "name": "Rafe Goodricke",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "7",
+            "headshotUrl": null,
+            "personCode": "demo-81"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.483676185367177,
+          "formAverage": 12.75,
+          "formGames": 4,
+          "projectedPoints": 14.050257139025383,
+          "projectedMinutes": 25.41321741588918
+        },
+        {
+          "player": {
+            "league": "euroleague",
+            "id": "demo-82",
+            "name": "Hollis Yarrowby",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "20",
+            "headshotUrl": null,
+            "personCode": "demo-82"
+          },
+          "status": null,
+          "chanceOfPlaying": 1.0,
+          "modelPoints": 14.547591044113556,
+          "formAverage": 8.25,
+          "formGames": 4,
+          "projectedPoints": 12.973193283085166,
+          "projectedMinutes": 24.002991235510322
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Scorers are projected from rates and minutes; form uses EuroLeague games in the store only."
+  ]
+}

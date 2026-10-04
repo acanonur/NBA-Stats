@@ -1,0 +1,477 @@
+{
+  "league": "euroleague",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": []
+  },
+  "settings": [
+    {
+      "key": "priorRegression",
+      "value": 0.3,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "How far last season's scoring is pulled back toward the league mean (0 = as-is, 1 = every club average)."
+    },
+    {
+      "key": "homeAdvantagePoints",
+      "value": 3.5,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Points of home-court advantage: half to the home side, half off the away side."
+    },
+    {
+      "key": "teamSd",
+      "value": 9.5,
+      "provenance": "workbookUnvalidated",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Spread of one team's score in one game. Assumed by the workbook, not yet checked against results."
+    },
+    {
+      "key": "marginSd",
+      "value": 11.5,
+      "provenance": "workbookUnvalidated",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Spread of the winning margin. Assumed by the workbook, not yet checked against results."
+    },
+    {
+      "key": "replacementPer40",
+      "value": 9.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Points per 40 minutes at replacement level; a missing player's minutes are first refilled at this rate."
+    },
+    {
+      "key": "absorbShare",
+      "value": 0.6,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Share of a missing player's scoring above replacement that teammates recover."
+    },
+    {
+      "key": "boostCap",
+      "value": 1.35,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Largest multiple of a player's output that teammates' absences can produce."
+    },
+    {
+      "key": "rotationShare",
+      "value": 0.5,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Share of lost minutes taken by the listed rotation (minutes display only)."
+    },
+    {
+      "key": "formWeight",
+      "value": 0.25,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of a scorer's recent average against the model in his round projection."
+    },
+    {
+      "key": "capPolicyConsistent",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "1: team and player projections agree (the boost cap binds the team too). 0: the workbook's behaviour, which can leave points unassigned."
+    },
+    {
+      "key": "squadReconcile",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "1: scale each squad so its players' points sum to the club's projected score."
+    },
+    {
+      "key": "overtimeScaling",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "1: scale actual scores to regulation length before updating ratings (a documented deviation; the workbook did not)."
+    },
+    {
+      "key": "roundWeight.1",
+      "value": 0.1,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 1."
+    },
+    {
+      "key": "roundWeight.2",
+      "value": 0.09090909090909091,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 2."
+    },
+    {
+      "key": "roundWeight.3",
+      "value": 0.08333333333333333,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 3."
+    },
+    {
+      "key": "roundWeight.4",
+      "value": 0.07692307692307693,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 4."
+    },
+    {
+      "key": "roundWeight.5",
+      "value": 0.07142857142857142,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 5."
+    },
+    {
+      "key": "roundWeight.6",
+      "value": 0.06666666666666667,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 6."
+    },
+    {
+      "key": "roundWeight.7",
+      "value": 0.0625,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 7."
+    },
+    {
+      "key": "roundWeight.8",
+      "value": 0.058823529411764705,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 8."
+    },
+    {
+      "key": "roundWeight.9",
+      "value": 0.05555555555555555,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 9."
+    },
+    {
+      "key": "roundWeight.10",
+      "value": 0.05263157894736842,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 10."
+    },
+    {
+      "key": "roundWeight.11",
+      "value": 0.05,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 11."
+    },
+    {
+      "key": "roundWeight.12",
+      "value": 0.047619047619047616,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 12."
+    },
+    {
+      "key": "roundWeight.13",
+      "value": 0.045454545454545456,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 13."
+    },
+    {
+      "key": "roundWeight.14",
+      "value": 0.043478260869565216,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 14."
+    },
+    {
+      "key": "roundWeight.15",
+      "value": 0.041666666666666664,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 15."
+    },
+    {
+      "key": "roundWeight.16",
+      "value": 0.04,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 16."
+    },
+    {
+      "key": "roundWeight.17",
+      "value": 0.038461538461538464,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 17."
+    },
+    {
+      "key": "roundWeight.18",
+      "value": 0.037037037037037035,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 18."
+    },
+    {
+      "key": "roundWeight.19",
+      "value": 0.03571428571428571,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 19."
+    },
+    {
+      "key": "roundWeight.20",
+      "value": 0.034482758620689655,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 20."
+    },
+    {
+      "key": "roundWeight.21",
+      "value": 0.03333333333333333,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 21."
+    },
+    {
+      "key": "roundWeight.22",
+      "value": 0.03225806451612903,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 22."
+    },
+    {
+      "key": "roundWeight.23",
+      "value": 0.03125,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 23."
+    },
+    {
+      "key": "roundWeight.24",
+      "value": 0.030303030303030304,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 24."
+    },
+    {
+      "key": "roundWeight.25",
+      "value": 0.029411764705882353,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 25."
+    },
+    {
+      "key": "roundWeight.26",
+      "value": 0.02857142857142857,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 26."
+    },
+    {
+      "key": "roundWeight.27",
+      "value": 0.027777777777777776,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 27."
+    },
+    {
+      "key": "roundWeight.28",
+      "value": 0.02702702702702703,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 28."
+    },
+    {
+      "key": "roundWeight.29",
+      "value": 0.02631578947368421,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 29."
+    },
+    {
+      "key": "roundWeight.30",
+      "value": 0.02564102564102564,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 30."
+    },
+    {
+      "key": "roundWeight.31",
+      "value": 0.025,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 31."
+    },
+    {
+      "key": "roundWeight.32",
+      "value": 0.024390243902439025,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 32."
+    },
+    {
+      "key": "roundWeight.33",
+      "value": 0.023809523809523808,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 33."
+    },
+    {
+      "key": "roundWeight.34",
+      "value": 0.023255813953488372,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 34."
+    },
+    {
+      "key": "roundWeight.35",
+      "value": 0.022727272727272728,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 35."
+    },
+    {
+      "key": "roundWeight.36",
+      "value": 0.022222222222222223,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 36."
+    },
+    {
+      "key": "roundWeight.37",
+      "value": 0.021739130434782608,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 37."
+    },
+    {
+      "key": "roundWeight.38",
+      "value": 0.02127659574468085,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 38."
+    },
+    {
+      "key": "roundWeight.39",
+      "value": 0.020833333333333332,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 39."
+    },
+    {
+      "key": "roundWeight.40",
+      "value": 0.02040816326530612,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Weight of one game's miss in the rating update for a club's game number 40."
+    },
+    {
+      "key": "statusChance.out",
+      "value": 0.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Chance a player with status 'out' plays."
+    },
+    {
+      "key": "statusChance.doubtful",
+      "value": 0.25,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Chance a player with status 'doubtful' plays."
+    },
+    {
+      "key": "statusChance.questionable",
+      "value": 0.5,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Chance a player with status 'questionable' plays."
+    },
+    {
+      "key": "statusChance.probable",
+      "value": 0.85,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Chance a player with status 'probable' plays."
+    },
+    {
+      "key": "statusChance.available",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Chance a player with status 'available' plays."
+    },
+    {
+      "key": "positionCoverageCeiling",
+      "value": 0.05,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Most points a defence may allow to unlisted positions before every index is withheld."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "note": "Crosswalk between the workbook's club abbreviations, the codes the EuroLeague data service is believed to use, and the broadcast codes. Club names and codes are facts, not statistics. Every row is 'pending': none could be checked from the build environment, because every EuroLeague host was unreachable from it. The first successful club sweep of the live service compares each official code with the club's name and prints any mismatch; a row only becomes 'fixture' once a recorded response confirms it. The workbook's PAR is Paris, while the official PAR is believed to be Partizan, so always look a club up by (system, code), never by the bare code. A null tvCode means the broadcast code has not been confirmed.",
+  "clubs": [
+    {"workbookCode": "OLY", "officialCode": "OLY", "tvCode": null, "name": "Olympiacos Piraeus", "shortName": "Olympiacos", "verified": "pending"},
+    {"workbookCode": "RMA", "officialCode": "MAD", "tvCode": null, "name": "Real Madrid", "shortName": "Real Madrid", "verified": "pending"},
+    {"workbookCode": "FNB", "officialCode": "ULK", "tvCode": null, "name": "Fenerbahce Tarfin", "shortName": "Fenerbahce", "verified": "pending"},
+    {"workbookCode": "PAO", "officialCode": "PAN", "tvCode": null, "name": "Panathinaikos AKTOR", "shortName": "Panathinaikos", "verified": "pending"},
+    {"workbookCode": "ZAL", "officialCode": "ZAL", "tvCode": null, "name": "Zalgiris Kaunas", "shortName": "Zalgiris", "verified": "pending"},
+    {"workbookCode": "HTA", "officialCode": "HTA", "tvCode": null, "name": "Hapoel IBI Tel Aviv", "shortName": "Hapoel Tel Aviv", "verified": "pending"},
+    {"workbookCode": "BAR", "officialCode": "BAR", "tvCode": null, "name": "FC Barcelona", "shortName": "Barcelona", "verified": "pending"},
+    {"workbookCode": "CZV", "officialCode": "RED", "tvCode": null, "name": "Crvena Zvezda Belgrade", "shortName": "Crvena Zvezda", "verified": "pending"},
+    {"workbookCode": "DUB", "officialCode": "DUB", "tvCode": null, "name": "Dubai Basketball", "shortName": "Dubai", "verified": "pending"},
+    {"workbookCode": "MTA", "officialCode": "TEL", "tvCode": null, "name": "Maccabi Rapyd Tel Aviv", "shortName": "Maccabi Tel Aviv", "verified": "pending"},
+    {"workbookCode": "BAY", "officialCode": "BAY", "tvCode": null, "name": "FC Bayern Munich", "shortName": "Bayern", "verified": "pending"},
+    {"workbookCode": "PRT", "officialCode": "PAR", "tvCode": null, "name": "Partizan Mozzart Bet", "shortName": "Partizan", "verified": "pending"},
+    {"workbookCode": "PAR", "officialCode": "PRS", "tvCode": null, "name": "Paris Basketball", "shortName": "Paris", "verified": "pending"},
+    {"workbookCode": "VIR", "officialCode": "VIR", "tvCode": null, "name": "Virtus Bologna", "shortName": "Virtus Bologna", "verified": "pending"},
+    {"workbookCode": "BAS", "officialCode": "BAS", "tvCode": null, "name": "Kosner Baskonia", "shortName": "Baskonia", "verified": "pending"},
+    {"workbookCode": "EFS", "officialCode": "IST", "tvCode": null, "name": "Anadolu Efes Istanbul", "shortName": "Anadolu Efes", "verified": "pending"},
+    {"workbookCode": "ASV", "officialCode": "ASV", "tvCode": null, "name": "LDLC ASVEL Villeurbanne", "shortName": "ASVEL", "verified": "pending"},
+    {"workbookCode": "BES", "officialCode": "BJK", "tvCode": null, "name": "Besiktas Istanbul", "shortName": "Besiktas", "verified": "pending"},
+    {"workbookCode": "VAL", "officialCode": "PAM", "tvCode": null, "name": "Valencia Basket", "shortName": "Valencia", "verified": "pending"},
+    {"workbookCode": "MIL", "officialCode": "MIL", "tvCode": null, "name": "Armani Olimpia Milan", "shortName": "Milan", "verified": "pending"}
+  ]
+}

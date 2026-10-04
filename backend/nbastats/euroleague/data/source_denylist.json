@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "note": "Domains owned by betting operators. A status that cites one keeps its label and its date but is stored with no link, so Hardwood never sends a reader to a gambling product. Matching is on the host of the link (the domain and any subdomain), never on text: a club whose name contains an operator's brand is a club name, stored as data, and is never matched by this list.",
+  "withheldSuffix": "(link withheld: betting operator)",
+  "domains": [
+    "mozzartsport.com",
+    "mozzartbet.com"
+  ]
+}

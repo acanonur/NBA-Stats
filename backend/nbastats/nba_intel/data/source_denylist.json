@@ -1,0 +1,8 @@
+{
+  "domains": [
+    "mozzartsport.com",
+    "mozzartbet.com"
+  ],
+  "linkWithheldSuffix": " (link withheld: betting operator)",
+  "note": "Hosts owned by betting operators. A status or headline citing one keeps its label and date but no link, and the label gains linkWithheldSuffix. This matches the host of a URL only, never text: a club whose name contains one of these words is not affected."
+}

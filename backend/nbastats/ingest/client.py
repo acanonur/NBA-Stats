@@ -36,6 +36,22 @@ Rate limits are undocumented; community consensus is roughly one request per
 jitter between retries. Every call emits one structured log line and updates
 :class:`RateLimitStats`, so a run's request budget is auditable after the fact.
 
+The endpoint allowlist
+----------------------
+:meth:`StatsClient.call` will only call an ``(endpoint module, class)`` pair named in
+:data:`ENDPOINT_ALLOWLIST`, in live mode and in fixture mode alike. Before this existed the
+module name was passed straight to ``importlib``, so any ``nba_api.stats.endpoints`` module was
+one typo away from being fetched, and the allowlist is how "this application only ever reads
+the endpoints it was built for" is something a test can prove rather than a promise in a
+comment. Adding an endpoint is one line here, in the same change as the method that uses it.
+
+One thing is refused by name as well as by omission: anything whose endpoint or class contains a
+fragment of :data:`FORBIDDEN_ENDPOINT_FRAGMENTS` (the league's betting-odds feed,
+``odds_todaysGames.json``). Hardwood has no betting machinery, so the odds feed is not merely
+unused: it is unreachable, and adding it to the allowlist by mistake still raises
+:class:`EndpointNotAllowed`. The client has no method that takes a URL, so naming an endpoint is
+the only way to reach the network, and this is the only door.
+
 Fixture naming
 --------------
 A call records its endpoint and the parameters that identify the payload::
@@ -60,7 +76,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, Callable, Final, Mapping, Sequence
 
 from ..config import get_settings
 
@@ -70,10 +86,13 @@ __all__ = [
     "DEFAULT_TIMEOUT_SECONDS",
     "DEFAULT_RETRIES",
     "FIXTURES_ENV_VAR",
+    "ENDPOINT_ALLOWLIST",
+    "FORBIDDEN_ENDPOINT_FRAGMENTS",
     "IngestError",
     "IngestUnavailable",
     "FixtureMissing",
     "UpstreamUnavailable",
+    "EndpointNotAllowed",
     "RateLimitStats",
     "RateLimiter",
     "StatsClient",
@@ -91,6 +110,30 @@ FIXTURES_ENV_VAR = "HARDWOOD_INGEST_FIXTURES"
 DEFAULT_MIN_DELAY_SECONDS = 1.0
 DEFAULT_TIMEOUT_SECONDS = 60
 DEFAULT_RETRIES = 5
+
+#: How many dates' scoreboard payloads :meth:`StatsClient.last_scoreboard` keeps. A correction
+#: pass walks many dates; only the newest few are ever asked for again, so the memo stays tiny.
+_SCOREBOARD_MEMO = 4
+
+#: The only ``(nba_api endpoint module, endpoint class)`` pairs this client will call. One per
+#: method below; see "The endpoint allowlist" in the module docstring.
+ENDPOINT_ALLOWLIST: Final[frozenset[tuple[str, str]]] = frozenset(
+    {
+        ("scoreboardv2", "ScoreboardV2"),
+        ("leaguegamelog", "LeagueGameLog"),
+        ("playergamelogs", "PlayerGameLogs"),
+        ("boxscoretraditionalv3", "BoxScoreTraditionalV3"),
+        ("boxscoreadvancedv3", "BoxScoreAdvancedV3"),
+        ("leaguedashplayerstats", "LeagueDashPlayerStats"),
+        ("commonallplayers", "CommonAllPlayers"),
+        ("commonteamroster", "CommonTeamRoster"),
+    }
+)
+
+#: Lower-case fragments that make an endpoint refusable *whatever the allowlist says*. This is
+#: the betting-odds feed. It is spelled once, here, because a scan of this package's string
+#: constants allows exactly this definition and nothing else to contain it.
+FORBIDDEN_ENDPOINT_FRAGMENTS: Final[tuple[str, ...]] = ("odds",)
 
 #: The headers stats.nba.com requires. Sending anything less gets empty responses
 #: rather than an error, which is why this is a constant and not a nicety.
@@ -123,6 +166,15 @@ class IngestUnavailable(IngestError):
 
 class FixtureMissing(IngestError):
     """Fixture mode is on and the recorded payload for this call does not exist."""
+
+
+class EndpointNotAllowed(IngestError):
+    """The call named an endpoint that is not on :data:`ENDPOINT_ALLOWLIST`.
+
+    An :class:`IngestError`, so :func:`polite_get` does not retry it (it cannot succeed on a
+    second attempt) and nothing about it is a network failure: no import was attempted, no
+    request was made, no fixture was read.
+    """
 
 
 class UpstreamUnavailable(IngestError):
@@ -312,6 +364,29 @@ def fixture_name(endpoint: str, parts: Sequence[Any] = ()) -> str:
     return f"{_slug(endpoint)}__{'__'.join(slugs)}.json"
 
 
+def check_endpoint_allowed(endpoint: str, class_name: str) -> None:
+    """Raise :class:`EndpointNotAllowed` unless ``(endpoint, class_name)`` is allowlisted.
+
+    Forbidden fragments are checked first and independently of the allowlist, so the refusal of
+    the odds feed does not depend on nobody ever adding it to the list. Comparison is on the
+    exact strings: ``"ScoreboardV2"`` is not ``"scoreboardv2"`` (the module name and the class
+    name are different things and both are pinned).
+    """
+    lowered = f"{endpoint}/{class_name}".lower()
+    for fragment in FORBIDDEN_ENDPOINT_FRAGMENTS:
+        if fragment in lowered:
+            raise EndpointNotAllowed(
+                f"{endpoint}/{class_name} is refused: Hardwood has no betting machinery, and "
+                "this client cannot reach the league's odds feed."
+            )
+    if (endpoint, class_name) not in ENDPOINT_ALLOWLIST:
+        raise EndpointNotAllowed(
+            f"{endpoint}/{class_name} is not on the endpoint allowlist "
+            "(nbastats.ingest.client.ENDPOINT_ALLOWLIST); add it there, with its method, "
+            "if the application genuinely needs it."
+        )
+
+
 class StatsClient:
     """stats.nba.com endpoints this pipeline uses, each returning the raw payload.
 
@@ -348,6 +423,7 @@ class StatsClient:
         self.headers: dict[str, str] = {**DEFAULT_HEADERS, **(headers or {})}
         self.proxy = proxy if proxy is not None else settings.nba_api_proxy
         self.stats = RateLimitStats()
+        self._scoreboards: dict[str, dict[str, Any]] = {}
         self.limiter = RateLimiter(
             DEFAULT_MIN_DELAY_SECONDS if min_delay is None else min_delay,
             stats=self.stats,
@@ -425,6 +501,7 @@ class StatsClient:
         that class, plus the headers, proxy and timeout this client was built
         with.
         """
+        check_endpoint_allowed(endpoint, class_name)
         started = time.monotonic()
         cleaned = {key: value for key, value in params.items() if value is not None}
 
@@ -474,8 +551,14 @@ class StatsClient:
     # ------------------------------------------------------------- endpoints
 
     def scoreboard(self, game_date: date, league_id: str = "00") -> dict[str, Any]:
-        """``ScoreboardV2`` for one calendar day: the slate and its live state."""
-        return self.call(
+        """``ScoreboardV2`` for one calendar day: the slate and its live state.
+
+        The payload is also remembered, for the most recent few dates only, so a caller that
+        wants a second reading of it (the schedule-detail writer takes tip-off and arena from
+        the very same response) can ask :meth:`last_scoreboard` instead of spending another
+        request on the same slate.
+        """
+        payload = self.call(
             "scoreboardv2",
             "ScoreboardV2",
             fixture_parts=(game_date.isoformat(),),
@@ -483,6 +566,19 @@ class StatsClient:
             league_id=league_id,
             day_offset=0,
         )
+        self._scoreboards.pop(game_date.isoformat(), None)
+        self._scoreboards[game_date.isoformat()] = payload
+        while len(self._scoreboards) > _SCOREBOARD_MEMO:
+            self._scoreboards.pop(next(iter(self._scoreboards)))
+        return payload
+
+    def last_scoreboard(self, game_date: date) -> dict[str, Any] | None:
+        """The payload :meth:`scoreboard` last returned for ``game_date``, or ``None``.
+
+        Never makes a request. ``None`` means this client has not fetched that date (or has
+        since fetched enough other dates for it to be dropped).
+        """
+        return self._scoreboards.get(game_date.isoformat())
 
     def league_game_log(
         self,
@@ -603,4 +699,24 @@ class StatsClient:
             season=season,
             is_only_current_season=1 if only_current_season else 0,
             league_id=league_id,
+        )
+
+    def common_team_roster(
+        self, team_id: int, season: str, *, league_id: str = "00"
+    ) -> dict[str, Any]:
+        """``CommonTeamRoster`` for one team and season: who is on it, and their listed position.
+
+        One request per team (thirty for the league), which is why the roster job is weekly:
+        positions change a few times a season, not a few times a day. Its ``POSITION`` column
+        is what ``player_position_season`` is built from, and that column's presence is not
+        verified from the development environment, so the reader of this payload
+        (:mod:`nbastats.ingest.rosters`) fails closed when it is missing.
+        """
+        return self.call(
+            "commonteamroster",
+            "CommonTeamRoster",
+            fixture_parts=(season, team_id),
+            team_id=team_id,
+            season=season,
+            league_id_nullable=league_id,
         )

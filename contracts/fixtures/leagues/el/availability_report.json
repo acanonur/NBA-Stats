@@ -1,0 +1,1798 @@
+{
+  "league": "euroleague",
+  "asOf": "2026-10-12T09:00:00Z",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.manual",
+        "label": "Entered by hand",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-10-12T09:00:00Z"
+      }
+    ]
+  },
+  "state": "fresh",
+  "message": "Statuses are researched from the linked sources and dated; none of them is a live feed.",
+  "teams": [
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZA",
+        "abbr": "ZZA",
+        "name": "Alderwick Herons",
+        "shortName": "Alderwick",
+        "clubCode": "ZZA",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 21,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-9",
+            "name": "Aldous Oldacre",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "75",
+            "headshotUrl": null,
+            "personCode": "demo-9"
+          },
+          "playerName": "Aldous Oldacre",
+          "status": "doubtful",
+          "statusLabel": "Doubtful",
+          "chanceOfPlaying": 0.25,
+          "modelStatus": null,
+          "reasonCategory": "illness",
+          "reasonText": "Invented note 20",
+          "expectedReturnText": "Uncertain",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 6300,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Alderwick statement",
+            "url": "https://clubs.example.org/zza/statement-20",
+            "publishedAt": "2026-10-08T00:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 1,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-1",
+            "name": "Rurik Jessop",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "62",
+            "headshotUrl": null,
+            "personCode": "demo-1"
+          },
+          "playerName": "Rurik Jessop",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 0",
+          "expectedReturnText": "Rounds 4-5",
+          "expectedReturn": {
+            "roundFrom": 4,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-01",
+            "date": "2026-10-15",
+            "tipoffUtc": "2026-10-15T17:30:00Z",
+            "venue": "Alderwick Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZA",
+              "abbr": "ZZA",
+              "name": "Alderwick Herons",
+              "shortName": "Alderwick",
+              "clubCode": "ZZA",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZP",
+              "abbr": "ZZP",
+              "name": "Pinecrest Panthers",
+              "shortName": "Pinecrest",
+              "clubCode": "ZZP",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 14400,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/0",
+            "publishedAt": "2026-10-02T09:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZB",
+        "abbr": "ZZB",
+        "name": "Brindlemoor Stags",
+        "shortName": "Brindlemoor",
+        "clubCode": "ZZB",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 2,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-24",
+            "name": "Sevrin Northrop",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "45",
+            "headshotUrl": null,
+            "personCode": "demo-24"
+          },
+          "playerName": "Sevrin Northrop",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 1",
+          "expectedReturnText": "Long-term",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 5220,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Brindlemoor statement",
+            "url": "https://clubs.example.org/zzb/statement-1",
+            "publishedAt": "2026-10-08T18:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 22,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-22",
+            "name": "Sorrel Hartigan",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "55",
+            "headshotUrl": null,
+            "personCode": "demo-22"
+          },
+          "playerName": "Sorrel Hartigan",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 21",
+          "expectedReturnText": "Round 5",
+          "expectedReturn": {
+            "roundFrom": 5,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-06",
+            "date": "2026-10-16",
+            "tipoffUtc": "2026-10-16T17:45:00Z",
+            "venue": "Kestrelburn Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZK",
+              "abbr": "ZZK",
+              "name": "Kestrelburn Owls",
+              "shortName": "Kestrelburn",
+              "clubCode": "ZZK",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZB",
+              "abbr": "ZZB",
+              "name": "Brindlemoor Stags",
+              "shortName": "Brindlemoor",
+              "clubCode": "ZZB",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 4500,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/21",
+            "publishedAt": "2026-10-09T06:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZC",
+        "abbr": "ZZC",
+        "name": "Cindervale Foxes",
+        "shortName": "Cindervale",
+        "clubCode": "ZZC",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 23,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-43",
+            "name": "Quenby Netherfield",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "21",
+            "headshotUrl": null,
+            "personCode": "demo-43"
+          },
+          "playerName": "Quenby Netherfield",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 22",
+          "expectedReturnText": "Game-time decision",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 13020,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/22",
+            "publishedAt": "2026-10-03T08:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 3,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-39",
+            "name": "Yaric Northrop",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "5",
+            "headshotUrl": null,
+            "personCode": "demo-39"
+          },
+          "playerName": "Yaric Northrop",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "suspension",
+          "reasonText": "Invented note 2",
+          "expectedReturnText": "Round 5",
+          "expectedReturn": {
+            "roundFrom": 5,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 13140,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Cindervale statement",
+            "url": "https://clubs.example.org/zzc/statement-2",
+            "publishedAt": "2026-10-03T06:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZD",
+        "abbr": "ZZD",
+        "name": "Dunmarrow Wolves",
+        "shortName": "Dunmarrow",
+        "clubCode": "ZZD",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 4,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-59",
+            "name": "Aldous Drummond-Lee",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "43",
+            "headshotUrl": null,
+            "personCode": "demo-59"
+          },
+          "playerName": "Aldous Drummond-Lee",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 3",
+          "expectedReturnText": "Around 20 Oct",
+          "expectedReturn": {
+            "roundFrom": null,
+            "roundTo": null,
+            "date": "2026-10-20"
+          },
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-08",
+            "date": "2026-10-16",
+            "tipoffUtc": "2026-10-16T19:45:00Z",
+            "venue": "Ivorymead Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZI",
+              "abbr": "ZZI",
+              "name": "Ivorymead Hawks",
+              "shortName": "Ivorymead",
+              "clubCode": "ZZI",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZD",
+              "abbr": "ZZD",
+              "name": "Dunmarrow Wolves",
+              "shortName": "Dunmarrow",
+              "clubCode": "ZZD",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 11040,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/3",
+            "publishedAt": "2026-10-04T17:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 24,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-58",
+            "name": "Tavish Kirkwall",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "1",
+            "headshotUrl": null,
+            "personCode": "demo-58"
+          },
+          "playerName": "Tavish Kirkwall",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "illness",
+          "reasonText": "Invented note 23",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 3840,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Dunmarrow statement",
+            "url": "https://clubs.example.org/zzd/statement-23",
+            "publishedAt": "2026-10-09T17:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZE",
+        "abbr": "ZZE",
+        "name": "Eastmere Falcons",
+        "shortName": "Eastmere",
+        "clubCode": "ZZE",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 25,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-77",
+            "name": "Emrys Inverlay",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "3",
+            "headshotUrl": null,
+            "personCode": "demo-77"
+          },
+          "playerName": "Emrys Inverlay",
+          "status": "probable",
+          "statusLabel": "Probable",
+          "chanceOfPlaying": 0.85,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 24",
+          "expectedReturnText": "Expected back",
+          "expectedReturn": null,
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-09",
+            "date": "2026-10-16",
+            "tipoffUtc": "2026-10-16T20:30:00Z",
+            "venue": "Eastmere Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZE",
+              "abbr": "ZZE",
+              "name": "Eastmere Falcons",
+              "shortName": "Eastmere",
+              "clubCode": "ZZE",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZH",
+              "abbr": "ZZH",
+              "name": "Harrowfield Bears",
+              "shortName": "Harrowfield",
+              "clubCode": "ZZH",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 5100,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/24",
+            "publishedAt": "2026-10-08T20:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 5,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-70",
+            "name": "Gideon Marwood",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "47",
+            "headshotUrl": null,
+            "personCode": "demo-70"
+          },
+          "playerName": "Gideon Marwood",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "personal",
+          "reasonText": "Invented note 4",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 1440,
+          "source": {
+            "kind": "manual",
+            "label": "Entered by hand",
+            "url": null,
+            "publishedAt": "2026-10-11T09:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZF",
+        "abbr": "ZZF",
+        "name": "Fernhollow Otters",
+        "shortName": "Fernhollow",
+        "clubCode": "ZZF",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 26,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-80",
+            "name": "Garrow Ellerby",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "9",
+            "headshotUrl": null,
+            "personCode": "demo-80"
+          },
+          "playerName": "Garrow Ellerby",
+          "status": "probable",
+          "statusLabel": "Probable",
+          "chanceOfPlaying": 0.85,
+          "modelStatus": null,
+          "reasonCategory": "rest",
+          "reasonText": "Invented note 25",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 7200,
+          "source": {
+            "kind": "manual",
+            "label": "Entered by hand",
+            "url": null,
+            "publishedAt": "2026-10-07T09:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 6,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-90",
+            "name": "Quenby Beaumont",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "77",
+            "headshotUrl": null,
+            "personCode": "demo-90"
+          },
+          "playerName": "Quenby Beaumont",
+          "status": "doubtful",
+          "statusLabel": "Doubtful",
+          "chanceOfPlaying": 0.25,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 5",
+          "expectedReturnText": "Rounds 5-6",
+          "expectedReturn": {
+            "roundFrom": 5,
+            "roundTo": 6,
+            "date": null
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 12240,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/5",
+            "publishedAt": "2026-10-03T21:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZG",
+        "abbr": "ZZG",
+        "name": "Glimmerton Lynx",
+        "shortName": "Glimmerton",
+        "clubCode": "ZZG",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 27,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-108",
+            "name": "Isidor Grimsdale",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "34",
+            "headshotUrl": null,
+            "personCode": "demo-108"
+          },
+          "playerName": "Isidor Grimsdale",
+          "status": "available",
+          "statusLabel": "Available",
+          "chanceOfPlaying": 1.0,
+          "modelStatus": null,
+          "reasonCategory": "coachDecision",
+          "reasonText": "Invented note 26",
+          "expectedReturnText": "Squad choice",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 6180,
+          "source": {
+            "kind": "boxScoreInference",
+            "label": "Box score",
+            "url": "https://stats.example.org/box/26",
+            "publishedAt": "2026-10-08T02:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 7,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-98",
+            "name": "Marlow Goodricke",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "6",
+            "headshotUrl": null,
+            "personCode": "demo-98"
+          },
+          "playerName": "Marlow Goodricke",
+          "status": "doubtful",
+          "statusLabel": "Doubtful",
+          "chanceOfPlaying": 0.25,
+          "modelStatus": null,
+          "reasonCategory": "illness",
+          "reasonText": "Invented note 6",
+          "expectedReturnText": "Uncertain",
+          "expectedReturn": null,
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-10",
+            "date": "2026-10-16",
+            "tipoffUtc": "2026-10-16T21:45:00Z",
+            "venue": "Glimmerton Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZG",
+              "abbr": "ZZG",
+              "name": "Glimmerton Lynx",
+              "shortName": "Glimmerton",
+              "clubCode": "ZZG",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZF",
+              "abbr": "ZZF",
+              "name": "Fernhollow Otters",
+              "shortName": "Fernhollow",
+              "clubCode": "ZZF",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 16080,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Glimmerton statement",
+            "url": "https://clubs.example.org/zzg/statement-6",
+            "publishedAt": "2026-10-01T05:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZH",
+        "abbr": "ZZH",
+        "name": "Harrowfield Bears",
+        "shortName": "Harrowfield",
+        "clubCode": "ZZH",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 8,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-122",
+            "name": "Leopold Pellworth",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "95",
+            "headshotUrl": null,
+            "personCode": "demo-122"
+          },
+          "playerName": "Leopold Pellworth",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 7",
+          "expectedReturnText": "Round 5",
+          "expectedReturn": {
+            "roundFrom": 5,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 13020,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/7",
+            "publishedAt": "2026-10-03T08:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 28,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-121",
+            "name": "Nikolai Fenimore",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "8",
+            "headshotUrl": null,
+            "personCode": "demo-121"
+          },
+          "playerName": "Nikolai Fenimore",
+          "status": "available",
+          "statusLabel": "Available",
+          "chanceOfPlaying": 1.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 27",
+          "expectedReturnText": "Playing",
+          "expectedReturn": null,
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-09",
+            "date": "2026-10-16",
+            "tipoffUtc": "2026-10-16T20:30:00Z",
+            "venue": "Eastmere Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZE",
+              "abbr": "ZZE",
+              "name": "Eastmere Falcons",
+              "shortName": "Eastmere",
+              "clubCode": "ZZE",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZH",
+              "abbr": "ZZH",
+              "name": "Harrowfield Bears",
+              "shortName": "Harrowfield",
+              "clubCode": "ZZH",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 17400,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/27",
+            "publishedAt": "2026-09-30T07:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZI",
+        "abbr": "ZZI",
+        "name": "Ivorymead Hawks",
+        "shortName": "Ivorymead",
+        "clubCode": "ZZI",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 9,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-141",
+            "name": "Yorrick Moorcroft",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "62",
+            "headshotUrl": null,
+            "personCode": "demo-141"
+          },
+          "playerName": "Yorrick Moorcroft",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 8",
+          "expectedReturnText": "Game-time decision",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 6780,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/8",
+            "publishedAt": "2026-10-07T16:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZJ",
+        "abbr": "ZZJ",
+        "name": "Juniper Falls Badgers",
+        "shortName": "Juniper Falls",
+        "clubCode": "ZZJ",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 10,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-156",
+            "name": "Tamsin Fairbourne",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "11",
+            "headshotUrl": null,
+            "personCode": "demo-156"
+          },
+          "playerName": "Tamsin Fairbourne",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "illness",
+          "reasonText": "Invented note 9",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-07",
+            "date": "2026-10-16",
+            "tipoffUtc": "2026-10-16T18:30:00Z",
+            "venue": "Cindervale Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZC",
+              "abbr": "ZZC",
+              "name": "Cindervale Foxes",
+              "shortName": "Cindervale",
+              "clubCode": "ZZC",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZJ",
+              "abbr": "ZZJ",
+              "name": "Juniper Falls Badgers",
+              "shortName": "Juniper Falls",
+              "clubCode": "ZZJ",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 4740,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Juniper Falls statement",
+            "url": "https://clubs.example.org/zzj/statement-9",
+            "publishedAt": "2026-10-09T02:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZK",
+        "abbr": "ZZK",
+        "name": "Kestrelburn Owls",
+        "shortName": "Kestrelburn",
+        "clubCode": "ZZK",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 11,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-167",
+            "name": "Nikolai Saltmarsh",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "18",
+            "headshotUrl": null,
+            "personCode": "demo-167"
+          },
+          "playerName": "Nikolai Saltmarsh",
+          "status": "probable",
+          "statusLabel": "Probable",
+          "chanceOfPlaying": 0.85,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 10",
+          "expectedReturnText": "Expected back",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 9840,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/10",
+            "publishedAt": "2026-10-05T13:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZL",
+        "abbr": "ZZL",
+        "name": "Larkspur Rams",
+        "shortName": "Larkspur",
+        "clubCode": "ZZL",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 12,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-182",
+            "name": "Zeline Lavender",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "55",
+            "headshotUrl": null,
+            "personCode": "demo-182"
+          },
+          "playerName": "Zeline Lavender",
+          "status": "probable",
+          "statusLabel": "Probable",
+          "chanceOfPlaying": 0.85,
+          "modelStatus": null,
+          "reasonCategory": "rest",
+          "reasonText": "Invented note 11",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 1920,
+          "source": {
+            "kind": "manual",
+            "label": "Entered by hand",
+            "url": null,
+            "publishedAt": "2026-10-11T01:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZM",
+        "abbr": "ZZM",
+        "name": "Mistral Point Gulls",
+        "shortName": "Mistral Point",
+        "clubCode": "ZZM",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 13,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-197",
+            "name": "Kendrick Moorcroft",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "38",
+            "headshotUrl": null,
+            "personCode": "demo-197"
+          },
+          "playerName": "Kendrick Moorcroft",
+          "status": "available",
+          "statusLabel": "Available",
+          "chanceOfPlaying": 1.0,
+          "modelStatus": null,
+          "reasonCategory": "coachDecision",
+          "reasonText": "Invented note 12",
+          "expectedReturnText": "Squad choice",
+          "expectedReturn": null,
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-04",
+            "date": "2026-10-15",
+            "tipoffUtc": "2026-10-15T20:45:00Z",
+            "venue": "Mistral Point Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZM",
+              "abbr": "ZZM",
+              "name": "Mistral Point Gulls",
+              "shortName": "Mistral Point",
+              "clubCode": "ZZM",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZS",
+              "abbr": "ZZS",
+              "name": "Silverlake Orcas",
+              "shortName": "Silverlake",
+              "clubCode": "ZZS",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 13020,
+          "source": {
+            "kind": "boxScoreInference",
+            "label": "Box score",
+            "url": "https://stats.example.org/box/12",
+            "publishedAt": "2026-10-03T08:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZN",
+        "abbr": "ZZN",
+        "name": "Northwick Bison",
+        "shortName": "Northwick",
+        "clubCode": "ZZN",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 14,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-216",
+            "name": "Xanil Thackeray",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "40",
+            "headshotUrl": null,
+            "personCode": "demo-216"
+          },
+          "playerName": "Xanil Thackeray",
+          "status": "available",
+          "statusLabel": "Available",
+          "chanceOfPlaying": 1.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 13",
+          "expectedReturnText": "Playing",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 12180,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/13",
+            "publishedAt": "2026-10-03T22:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZO",
+        "abbr": "ZZO",
+        "name": "Oakhaven Elks",
+        "shortName": "Oakhaven",
+        "clubCode": "ZZO",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 15,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-226",
+            "name": "Rurik Valdemar",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "38",
+            "headshotUrl": null,
+            "personCode": "demo-226"
+          },
+          "playerName": "Rurik Valdemar",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 14",
+          "expectedReturnText": "Rounds 4-5",
+          "expectedReturn": {
+            "roundFrom": 4,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 5880,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/14",
+            "publishedAt": "2026-10-08T07:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZP",
+        "abbr": "ZZP",
+        "name": "Pinecrest Panthers",
+        "shortName": "Pinecrest",
+        "clubCode": "ZZP",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 29,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-243",
+            "name": "Arlen Garnet",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "67",
+            "headshotUrl": null,
+            "personCode": "demo-243"
+          },
+          "playerName": "Arlen Garnet",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 28",
+          "expectedReturnText": "Rounds 4-5",
+          "expectedReturn": {
+            "roundFrom": 4,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 18060,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/28",
+            "publishedAt": "2026-09-29T20:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 16,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-253",
+            "name": "Perrin Aldenmoor",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "79",
+            "headshotUrl": null,
+            "personCode": "demo-253"
+          },
+          "playerName": "Perrin Aldenmoor",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 15",
+          "expectedReturnText": "Long-term",
+          "expectedReturn": null,
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-01",
+            "date": "2026-10-15",
+            "tipoffUtc": "2026-10-15T17:30:00Z",
+            "venue": "Alderwick Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZA",
+              "abbr": "ZZA",
+              "name": "Alderwick Herons",
+              "shortName": "Alderwick",
+              "clubCode": "ZZA",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZP",
+              "abbr": "ZZP",
+              "name": "Pinecrest Panthers",
+              "shortName": "Pinecrest",
+              "clubCode": "ZZP",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 9720,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Pinecrest statement",
+            "url": "https://clubs.example.org/zzp/statement-15",
+            "publishedAt": "2026-10-05T15:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 30,
+          "overrideId": null,
+          "player": null,
+          "playerName": "Unlisted Example Player",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 29",
+          "expectedReturnText": "Long-term",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 13380,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Pinecrest statement",
+            "url": "https://clubs.example.org/zzp/statement-29",
+            "publishedAt": "2026-10-03T02:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZQ",
+        "abbr": "ZZQ",
+        "name": "Quillon Ravens",
+        "shortName": "Quillon",
+        "clubCode": "ZZQ",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 17,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-272",
+            "name": "Ugo Cranwell",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "36",
+            "headshotUrl": null,
+            "personCode": "demo-272"
+          },
+          "playerName": "Ugo Cranwell",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "suspension",
+          "reasonText": "Invented note 16",
+          "expectedReturnText": "Round 5",
+          "expectedReturn": {
+            "roundFrom": 5,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 7740,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Quillon statement",
+            "url": "https://clubs.example.org/zzq/statement-16",
+            "publishedAt": "2026-10-07T00:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZR",
+        "abbr": "ZZR",
+        "name": "Redmarsh Pikes",
+        "shortName": "Redmarsh",
+        "clubCode": "ZZR",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 18,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-285",
+            "name": "Tamsin Underhill",
+            "position": "C",
+            "positionRaw": "Center",
+            "jersey": "0",
+            "headshotUrl": null,
+            "personCode": "demo-285"
+          },
+          "playerName": "Tamsin Underhill",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 17",
+          "expectedReturnText": "Around 20 Oct",
+          "expectedReturn": {
+            "roundFrom": null,
+            "roundTo": null,
+            "date": "2026-10-20"
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 6000,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/17",
+            "publishedAt": "2026-10-08T05:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZS",
+        "abbr": "ZZS",
+        "name": "Silverlake Orcas",
+        "shortName": "Silverlake",
+        "clubCode": "ZZS",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 19,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-302",
+            "name": "Leopold Brakenridge",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "62",
+            "headshotUrl": null,
+            "personCode": "demo-302"
+          },
+          "playerName": "Leopold Brakenridge",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "personal",
+          "reasonText": "Invented note 18",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-04",
+            "date": "2026-10-15",
+            "tipoffUtc": "2026-10-15T20:45:00Z",
+            "venue": "Mistral Point Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZM",
+              "abbr": "ZZM",
+              "name": "Mistral Point Gulls",
+              "shortName": "Mistral Point",
+              "clubCode": "ZZM",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZS",
+              "abbr": "ZZS",
+              "name": "Silverlake Orcas",
+              "shortName": "Silverlake",
+              "clubCode": "ZZS",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": true,
+          "ageMinutes": 9360,
+          "source": {
+            "kind": "manual",
+            "label": "Entered by hand",
+            "url": null,
+            "publishedAt": "2026-10-05T21:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZT",
+        "abbr": "ZZT",
+        "name": "Thornfield Tigers",
+        "shortName": "Thornfield",
+        "clubCode": "ZZT",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 20,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-322",
+            "name": "Perrin Marwood",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "62",
+            "headshotUrl": null,
+            "personCode": "demo-322"
+          },
+          "playerName": "Perrin Marwood",
+          "status": "doubtful",
+          "statusLabel": "Doubtful",
+          "chanceOfPlaying": 0.25,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 19",
+          "expectedReturnText": "Rounds 5-6",
+          "expectedReturn": {
+            "roundFrom": 5,
+            "roundTo": 6,
+            "date": null
+          },
+          "game": null,
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 4860,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/19",
+            "publishedAt": "2026-10-09T00:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    }
+  ],
+  "news": null,
+  "attribution": "EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources."
+}

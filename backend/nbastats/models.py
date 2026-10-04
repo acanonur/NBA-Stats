@@ -19,6 +19,46 @@ store and a Postgres ``DATABASE_URL`` works unchanged; no BigQuery client is imp
 ``league_season`` note: the table is keyed ``(subject_type, season, season_type,
 metric_key)``. ``subject_type`` is part of the key because a player's offensive-rating
 distribution is not a team's — mixing them would silently corrupt every percentile.
+
+Three additive tables (matchup, defence-by-position and projection support)
+---------------------------------------------------------------------------
+``player_position_season``, ``game_schedule_detail`` and ``team_projection_ledger`` sit on this
+``Base`` on purpose. Each holds either a stats-derived fact or a schedule fact about the games
+in this same file, so each is rightly wiped and rebuilt with them by ``seed._clear`` (which
+walks ``Base.metadata``). Nothing that must survive a re-seed lives here: availability, news and
+model settings are on ``NbaIntelBase`` (``nbastats/nba_intel/models.py``), the EuroLeague has its
+own file. No existing table gained a column and nothing here needs an ``ALTER``: ``init_db``'s
+``create_all`` simply adds the three tables to a file that predates them.
+
+* ``player_position_season`` is the single position basis per player-season that defence by
+  position uses. One row per (player, season), three weights (guard, forward, center) that are
+  either all ``NULL`` (position not recorded or not understood) or sum to one. It is *not*
+  ``players.position``, which the box-score path fills from the lineup-card slot of whichever
+  game it saw first (a label a bench player never gets) and which ``queries._matches_position``
+  double counts for hybrids. Precedence between writers is documented on
+  :data:`POSITION_SOURCES`.
+* ``game_schedule_detail`` carries what the scoreboard says about *when and where*: tip-off and
+  arena. ``games.game_date`` is a US Eastern calendar day and says nothing about the hour, and
+  the projection ledger must know whether a row was computed before tip-off. A column is
+  ``NULL`` when the scoreboard did not carry it; the table has no ``data_source`` column and is
+  never seeded.
+* ``team_projection_ledger`` records each NBA team-score projection as computed, so a later
+  review compares what the model *said before the game* with what happened, instead of
+  re-running today's model over yesterday's result. It has no line, odds or total-to-beat column
+  of any kind, and no probability of winning. Its one rule that depends on another table (a
+  ``locked`` row must be computed before tip-off) is enforced in code by the ledger writer,
+  because tip-off lives in ``game_schedule_detail`` and a CHECK cannot read another table.
+
+``opp_pts`` and the metric maps
+-------------------------------
+``team_game.opp_pts`` and ``team_season.opp_pts`` have always been columns and have always been
+populated; what they lacked is a metric key, so points allowed could not be sorted in a
+leaderboard or shown in a stat tile. The two maps below name the key. The key is added only when
+the metric catalog declares it (see :func:`_declared_by_catalog`): ``seed`` and
+``ingest.aggregate`` resolve every mapped key through the catalog, so a map entry that runs
+ahead of ``contracts/metrics.json`` crashes both, and the catalog entry is added by the
+contracts step that follows this one. The entries therefore switch on by themselves the moment
+the catalog declares ``opp_pts``, with no edit here.
 """
 from __future__ import annotations
 
@@ -36,6 +76,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -54,10 +95,16 @@ __all__ = [
     "IdCrosswalk",
     "SyncState",
     "IngestLog",
+    "PlayerPositionSeason",
+    "GameScheduleDetail",
+    "TeamProjectionLedger",
     "SHOT_ZONES",
     "SHOT_ZONE_LABELS",
     "SEASON_TYPES",
     "GAME_STATUSES",
+    "POSITION_SOURCES",
+    "SCHEDULE_DETAIL_SOURCES",
+    "LEDGER_KINDS",
     "PLAYER_GAME_METRIC_COLUMNS",
     "PLAYER_GAME_ADVANCED_METRIC_COLUMNS",
     "TEAM_GAME_METRIC_COLUMNS",
@@ -85,6 +132,25 @@ SHOT_ZONE_LABELS = {
 SEASON_TYPES = ("Regular Season", "Playoffs", "Play In", "All Star", "Pre Season")
 
 GAME_STATUSES = ("scheduled", "live", "final")
+
+#: Who may write ``player_position_season.source``, strongest first. A stronger source replaces a
+#: weaker one for the same (player, season); a weaker one never replaces a stronger one.
+#:
+#: * ``commonTeamRoster``: the league's own roster listing, fetched once per team per week.
+#: * ``kaggleCurrent``: the ``common_player_info`` table of the Kaggle bulk file. It is a snapshot
+#:   of *today's* listing, so it is written for the season the backfill ran in and never for a
+#:   past one.
+#: * ``seedArchetype``: the demo seeder's own label. Seeded rows only ever sit beside seeded rows:
+#:   the ingest paths refuse to write into a store that holds the demo league.
+POSITION_SOURCES = ("commonTeamRoster", "kaggleCurrent", "seedArchetype")
+
+#: ``game_schedule_detail.source``: read from the scoreboard, or typed in by a person (a
+#: ``manual`` row is never overwritten by the scoreboard).
+SCHEDULE_DETAIL_SOURCES = ("scoreboard", "manual")
+
+#: ``team_projection_ledger.kind``: the newest projection (``latest``) and the copy frozen before
+#: tip-off (``locked``). There is deliberately no third kind.
+LEDGER_KINDS = ("latest", "locked")
 
 
 class Base(DeclarativeBase):
@@ -620,7 +686,174 @@ class IngestLog(Base):
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 
+# ---------------------------------------------------------------- matchup and defence support
+
+
+def _in_list(column: str, values: tuple[str, ...]) -> str:
+    """``column IN ('a', 'b')``, for a CHECK. Values are code constants, never user input."""
+    return f"{column} IN ({', '.join(repr(value) for value in values)})"
+
+
+class PlayerPositionSeason(Base):
+    """One player's listed position for one season: the basis of defence by position.
+
+    ``g_weight``, ``f_weight`` and ``c_weight`` say how the player's points are shared among the
+    three buckets the league publishes. A guard is ``1/0/0``, a guard-forward ``.5/.5/0``, a
+    forward-center ``0/.5/.5``. Either all three are ``NULL`` (the source named no position, or
+    one this schema does not understand: ``PG-SG`` is not on the table, so it is unknown rather
+    than interpreted) or they sum to one; the CHECK below refuses anything in between, because a
+    row that sums to 0.9 would silently lose ten percent of a defence's points allowed.
+
+    Weights are multiples of one half, which are exact in binary floating point, so the points
+    allocated to the buckets reconcile to the opponent's score with nothing to round away.
+
+    ``position_raw`` keeps the source's own string (``G-F``, ``Guard-Forward``) beside the
+    normalised weights, so a coverage report can say *which* labels went unrecognised.
+    ``team_id`` is the team at the time of listing and is informational: the allocation joins on
+    (player, season) only, because a player does not change bucket when he changes team.
+    ``data_source`` is ``synthetic-demo`` for seeded rows and ``nba_api`` for fetched ones.
+    """
+
+    __tablename__ = "player_position_season"
+    __table_args__ = (
+        CheckConstraint(_in_list("source", POSITION_SOURCES), name="ck_pps_source"),
+        # A CHECK passes when its expression is NULL, so the "all present" branch must say
+        # IS NOT NULL for each weight: without it a row with only one weight NULL would be
+        # accepted, because ``NULL >= 0`` is unknown rather than false.
+        CheckConstraint(
+            "(g_weight IS NULL AND f_weight IS NULL AND c_weight IS NULL) OR "
+            "(g_weight IS NOT NULL AND f_weight IS NOT NULL AND c_weight IS NOT NULL "
+            "AND g_weight >= 0 AND f_weight >= 0 AND c_weight >= 0 "
+            "AND abs(g_weight + f_weight + c_weight - 1.0) < 1e-9)",
+            name="ck_pps_weights_null_or_sum_to_one",
+        ),
+        Index("ix_pps_team_season", "team_id", "season"),
+    )
+
+    player_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("players.player_id"), primary_key=True
+    )
+    season: Mapped[str] = mapped_column(String(8), primary_key=True)
+    team_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("teams.team_id"), nullable=True
+    )
+    position_raw: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    g_weight: Mapped[float | None] = _num()
+    f_weight: Mapped[float | None] = _num()
+    c_weight: Mapped[float | None] = _num()
+    source: Mapped[str] = mapped_column(String(20), nullable=False)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    data_source: Mapped[str | None] = mapped_column(String(16), nullable=True)
+
+
+class GameScheduleDetail(Base):
+    """When and where a game is played, as far as the scoreboard said.
+
+    ``games.game_date`` is the NBA scheduling day in US Eastern and carries no hour. The
+    projection ledger needs the hour (a locked projection must predate tip-off), and a reader
+    wants the arena. Both come from the scoreboard when it carries them, and the scoreboard's
+    fields are not guaranteed, so every column but the key is nullable and a row is written
+    only when at least one of the three is present: there is no row of nothing but ``NULL``.
+
+    ``tipoff_utc`` is a naive UTC ``datetime`` like every timestamp in this schema. ``source`` is
+    ``scoreboard`` or ``manual``. The table has no ``data_source`` column and is never seeded, so
+    the seeder's stamp test does not see it.
+    """
+
+    __tablename__ = "game_schedule_detail"
+    __table_args__ = (
+        CheckConstraint(_in_list("source", SCHEDULE_DETAIL_SOURCES), name="ck_gsd_source"),
+    )
+
+    game_id: Mapped[str] = mapped_column(
+        String(16), ForeignKey("games.game_id"), primary_key=True
+    )
+    tipoff_utc: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    arena_name: Mapped[str | None] = mapped_column(String(96), nullable=True)
+    arena_city: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    source: Mapped[str] = mapped_column(String(16), nullable=False)
+    ingested_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+
+class TeamProjectionLedger(Base):
+    """An NBA team-score projection as it was computed, kept so it can be reviewed honestly.
+
+    ``kind`` is ``latest`` (replaced as inputs change) or ``locked`` (the copy taken in the hour
+    before tip-off and never touched again). A review compares ``locked`` rows with the result,
+    so a projection computed after the game can never be mistaken for a prediction. The rule
+    "``locked`` implies ``computed_at`` is before tip-off" cannot be a CHECK here, because tip-off
+    is in ``game_schedule_detail`` (or, when that is ``NULL``, ``game_date`` at 12:00 Eastern, the
+    earliest NBA tip); the ledger's ``lock()`` enforces it in code.
+
+    The indices are the model's own factors: attack and defence indices (points for and against,
+    over the league level), the availability factor from the injury layer (1.0 at full strength),
+    and the home-advantage points that were used. ``team_sd`` and ``margin_sd`` are ``NULL``
+    until a spread has been fitted, and then show as an em dash, never as an assumed number.
+    ``availability_snapshot_id`` points at an ``nba_intel_snapshot`` row by value only: that table
+    is on another ``MetaData`` and survives a re-seed, this one does not, so there is no foreign
+    key to carry across.
+
+    No column here is a line, an odds figure, a total to beat or a probability of winning, and
+    none may be added: the structural test over the new payload families fails on such a name.
+    """
+
+    __tablename__ = "team_projection_ledger"
+    __table_args__ = (
+        CheckConstraint(_in_list("kind", LEDGER_KINDS), name="ck_tpl_kind"),
+        UniqueConstraint("game_id", "kind", "inputs_sha256", name="uq_tpl_game_kind_inputs"),
+        Index("ix_tpl_game_kind", "game_id", "kind", "computed_at"),
+    )
+
+    ledger_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    game_id: Mapped[str] = mapped_column(
+        String(16), ForeignKey("games.game_id"), nullable=False
+    )
+    kind: Mapped[str] = mapped_column(String(14), nullable=False)
+    model_version: Mapped[str] = mapped_column(String(24), nullable=False)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    inputs_cutoff: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    home_pts: Mapped[float] = mapped_column(Float, nullable=False)
+    away_pts: Mapped[float] = mapped_column(Float, nullable=False)
+    home_full_strength: Mapped[float] = mapped_column(Float, nullable=False)
+    away_full_strength: Mapped[float] = mapped_column(Float, nullable=False)
+    home_attack_index: Mapped[float] = mapped_column(Float, nullable=False)
+    away_attack_index: Mapped[float] = mapped_column(Float, nullable=False)
+    home_defence_index: Mapped[float] = mapped_column(Float, nullable=False)
+    away_defence_index: Mapped[float] = mapped_column(Float, nullable=False)
+    home_availability_factor: Mapped[float] = mapped_column(Float, nullable=False)
+    away_availability_factor: Mapped[float] = mapped_column(Float, nullable=False)
+    home_advantage_points: Mapped[float] = mapped_column(Float, nullable=False)
+    team_sd: Mapped[float | None] = _num()
+    margin_sd: Mapped[float | None] = _num()
+    availability_snapshot_id: Mapped[int | None] = _count()
+    settings_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    inputs_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+
+
 # ------------------------------------------------------- metric key → column mappings
+
+
+def _declared_by_catalog(key: str) -> bool:
+    """True when ``contracts/metrics.json`` declares the metric ``key``.
+
+    Used for one thing: the ``opp_pts`` entries of the two team maps below (see the module
+    docstring). It answers from the catalog and fails *closed*: a missing contracts directory
+    or an unreadable catalog is ``False``, which leaves the maps exactly as they were before
+    ``opp_pts`` existed, rather than failing the import of the schema (this module also renders
+    ``schema.sql`` and is imported by tools that never read the catalog). ``catalog`` is stdlib
+    only and imports nothing from this package, so there is no import cycle.
+    """
+    try:
+        from . import catalog
+
+        return catalog.has_metric(key)
+    except Exception:  # noqa: BLE001 - any failure to read the catalog means "not declared"
+        return False
+
+
+#: Points allowed, as a team-scope metric: the column of the same name on ``team_game`` and
+#: ``team_season`` (per game), switched on by the catalog. Empty until the catalog declares it.
+_POINTS_ALLOWED: dict[str, str] = {"opp_pts": "opp_pts"} if _declared_by_catalog("opp_pts") else {}
 
 #: ``metrics.json`` key → ``player_game_basic`` column.
 PLAYER_GAME_METRIC_COLUMNS: dict[str, str] = {
@@ -711,6 +944,7 @@ TEAM_GAME_METRIC_COLUMNS: dict[str, str] = {
             "opp_ftr",
         )
     },
+    **_POINTS_ALLOWED,
 }
 
 #: ``metrics.json`` key → ``player_season`` column for ``perMode=PerGame``.
@@ -838,6 +1072,7 @@ TEAM_SEASON_PER_GAME_COLUMNS: dict[str, str] = {
             "fta",
         )
     },
+    **_POINTS_ALLOWED,
 }
 
 TEAM_SEASON_TOTALS_COLUMNS: dict[str, str] = {

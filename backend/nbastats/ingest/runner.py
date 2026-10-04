@@ -16,7 +16,24 @@ Three modes, all driving the functions in :mod:`nbastats.ingest.daily` and
 
 ``--backfill-*``
     The historical loaders, which read already-downloaded bulk files. Never backfill through
-    the API: ~35,000 games at a safe request rate is days of runtime.
+    the API: ~35,000 games at a safe request rate is days of runtime. ``--backfill-kaggle``
+    also writes the file's *current* listed positions for the season the run happens in
+    (``kaggleCurrent`` rows in ``player_position_season``), never for a past season.
+
+``--rosters``
+    One ``CommonTeamRoster`` call per team (thirty requests) to refresh each player's listed
+    position, the basis defence by position stands on. Weekly is plenty: positions change a
+    few times a season. ``--seasons 2026-27`` asks for a season other than the current one.
+    Exit status: 0 written (some teams may have been unreadable), 3 nothing could be fetched,
+    4 no team's response carried a usable ``POSITION`` (nothing written, and ``/v1/sources``
+    says ``unreadable``), 5 refused because the store holds the demo league, 130 interrupted.
+
+Schedule detail rides along with the scoreboard
+-----------------------------------------------
+The watch loop and ``--once`` already fetch the scoreboard. After the games are written they
+hand the *same* response to :mod:`nbastats.ingest.schedule_detail`, which records tip-off and
+arena when the scoreboard carried them: no extra request, and a failure there is logged and
+never fails the ingest. ``--nightly`` walks past dates, whose tip-offs are no use, and skips it.
 
 **Deployment constraint.** stats.nba.com silently drops requests from AWS, GCP and Azure IP
 ranges — they hang rather than failing, which is a confusing way to lose an afternoon. Run
@@ -31,6 +48,7 @@ Examples::
     python3 -m nbastats.ingest.runner --nightly
     python3 -m nbastats.ingest.runner --backfill-kaggle /data/nba/nba.sqlite
     python3 -m nbastats.ingest.runner --backfill-bbref /data/bbref --reconcile-ids
+    python3 -m nbastats.ingest.runner --rosters
 """
 
 from __future__ import annotations
@@ -49,7 +67,7 @@ from sqlalchemy.orm import Session
 
 from ..config import get_settings
 from ..db import init_db, read_sync_state, session_scope
-from . import backfill, daily
+from . import backfill, daily, rosters, schedule_detail
 from .client import IngestUnavailable, StatsClient, UpstreamUnavailable, log_line
 
 __all__ = [
@@ -61,6 +79,8 @@ __all__ = [
     "in_game_window",
     "run_once",
     "run_nightly",
+    "run_rosters",
+    "rosters_exit_code",
     "watch",
     "main",
 ]
@@ -170,6 +190,9 @@ def _ingest_finalized(
     which is precisely what the client's incremental refresh keys off.
     """
     finalized = daily.poll_finalized_games(session, game_date, client=client)
+    # The poll has just committed the slate's games, and the client remembers the very response
+    # it parsed: tip-off and arena cost no second request, and cannot fail this ingest.
+    schedule_detail.record_from_client(session, client, game_date)
     if not finalized:
         return 0
 
@@ -218,6 +241,7 @@ def run_once(
 
     def _work(active: Session) -> daily.DayIngestResult:
         result = daily.ingest_day(active, target, client=owned)
+        schedule_detail.record_from_client(active, owned, target)
         logger.info(
             log_line(
                 "day_ingested",
@@ -269,6 +293,52 @@ def run_nightly(
         return _work(session)
     with session_scope() as active:
         return _work(active)
+
+
+def run_rosters(
+    *,
+    season: str | None = None,
+    client: StatsClient | None = None,
+    session: Session | None = None,
+    shutdown: ShutdownFlag | None = None,
+) -> rosters.RosterReport:
+    """Refresh every team's roster and each player's listed position. See ``ingest.rosters``.
+
+    Makes sure the franchises exist first (one count query once they do), so a store that has
+    only ever had its schema created can be given positions before any game is ingested. A
+    store holding the demo league is refused inside, not here: the guard is keyed on the rows.
+    """
+    owned = client or _client()
+
+    def _work(active: Session) -> rosters.RosterReport:
+        daily.ensure_franchises(active)
+        active.commit()
+        return rosters.refresh_rosters(active, owned, season=season, shutdown=shutdown)
+
+    if session is not None:
+        return _work(session)
+    with session_scope() as active:
+        return _work(active)
+
+
+def rosters_exit_code(report: rosters.RosterReport) -> int:
+    """The process exit status for a roster run. See the module docstring."""
+    if report.interrupted:
+        return 130
+    return {"ok": 0, "error": 3, "unreadable": 4, "refused": 5}.get(report.state, 3)
+
+
+def _record_kaggle_positions(session: Session, path: str) -> None:
+    """Write the Kaggle file's current listed positions, best effort.
+
+    A backfill is the product here; positions are a by-product that must never fail it. The
+    season is the one the run happens in (the file is a snapshot of today's listings).
+    """
+    try:
+        rosters.load_kaggle_positions(session, path)  # logs its own summary
+    except Exception as exc:  # noqa: BLE001 - never fail the backfill over a by-product
+        session.rollback()
+        logger.warning(log_line("kaggle_positions_failed", error=str(exc)))
 
 
 def watch(
@@ -393,6 +463,8 @@ def build_parser() -> argparse.ArgumentParser:
                       help="load a hoopR / shufinskiy style parquet or CSV directory")
     mode.add_argument("--reconcile-ids", action="store_true",
                       help="build the nba_person_id to bbref_slug crosswalk and report misses")
+    mode.add_argument("--rosters", action="store_true",
+                      help="fetch every team's roster (30 requests) and refresh listed positions")
 
     parser.add_argument(
         "--date",
@@ -402,7 +474,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--days", type=int, help="override the correction window for --nightly")
     parser.add_argument("--poll-seconds", type=int, help="override INGEST_POLL_SECONDS")
-    parser.add_argument("--seasons", nargs="*", help="restrict a backfill to these seasons")
+    parser.add_argument("--seasons", nargs="*",
+                        help="restrict a backfill to these seasons, or name the season for "
+                             "--rosters (default: the current one)")
     parser.add_argument("--no-resume", action="store_true",
                         help="reload seasons a previous backfill already completed")
     parser.add_argument("--log-level", default=None, help="override LOG_LEVEL")
@@ -452,6 +526,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             run_once(args.date)
             return 0
 
+        if args.rosters:
+            report = run_rosters(
+                season=(args.seasons[0] if args.seasons else None), shutdown=flag
+            )
+            if report.reason:
+                logger.warning(log_line("rosters_note", state=report.state, reason=report.reason))
+            return rosters_exit_code(report)
+
         if args.nightly:
             # --date is the window's END. It used to be parsed, accepted and silently dropped
             # here, which is worse than rejecting it: `--nightly --days 250 --date 2026-04-15`
@@ -464,6 +546,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.backfill_kaggle:
                 _report_load(backfill.load_kaggle_sqlite(
                     session, args.backfill_kaggle, seasons=args.seasons, resume=resume))
+                _record_kaggle_positions(session, args.backfill_kaggle)
             elif args.backfill_bbref:
                 _report_load(backfill.load_bbref_season_csvs(
                     session, args.backfill_bbref, seasons=args.seasons, resume=resume))

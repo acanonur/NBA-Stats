@@ -1,0 +1,30 @@
+{
+  "resource": "commonteamroster",
+  "parameters": {
+    "TeamID": 1610612747,
+    "LeagueID": "00",
+    "Season": "2025-26"
+  },
+  "resultSets": [{ "name": "CommonTeamRoster", "headers": ["TeamID", "SEASON", "LeagueID", "PLAYER", "NICKNAME", "PLAYER_SLUG", "NUM", "POSITION", "HEIGHT", "WEIGHT", "BIRTH_DATE", "AGE", "EXP", "SCHOOL", "PLAYER_ID", "HOW_ACQUIRED"],
+      "rowSet": [
+        [1610612747, "2025", "00", "Marcus Vale", "Marcus", "marcus-vale", "7", "F", "6-8", "220", "MAR 04, 1997", 28.0, "6", "Lakeshore State", 1000101, "Draft"],
+        [1610612747, "2025", "00", "Elias Moreau", "Elias", "elias-moreau", "1", "G", "6-2", "190", "AUG 19, 1999", 26.0, "4", "Harbor Tech", 1000102, "Trade"],
+        [1610612747, "2025", "00", "Tobias Rask", "Tobias", "tobias-rask", "21", "C", "6-11", "250", "JAN 30, 1996", 29.0, "7", "Northfield", 1000103, "Free Agent"],
+        [1610612747, "2025", "00", "Dorian Fields", "Dorian", "dorian-fields", "14", "F-C", "6-10", "235", "NOV 11, 1998", 27.0, "5", "Pinecrest", 1000104, "Draft"],
+        [1610612747, "2025", "00", "Anton Kessler", "Anton", "anton-kessler", "5", "G-F", "6-6", "210", "JUN 02, 2000", 25.0, "3", "Riverbend", 1000105, "Draft"],
+        [1610612747, "2025", "00", "Nico Barr", "Nico", "nico-barr", "3", "G", "6-1", "185", "FEB 21, 2001", 24.0, "2", "Lakeshore State", 1000106, "Free Agent"],
+        [1610612747, "2025", "00", "Rafael Ibe", "Rafael", "rafael-ibe", "12", "F-G", "6-7", "215", "SEP 08, 1999", 26.0, "4", "Harbor Tech", 1000107, "Trade"],
+        [1610612747, "2025", "00", "Jonas Pike", "Jonas", "jonas-pike", "30", "", "6-9", "225", "DEC 15, 2002", 23.0, "R", "Northfield", 1000108, "Draft"],
+        [1610612747, "2025", "00", "Owen Hale", "Owen", "owen-hale", "9", "PG-SG", "6-3", "195", "APR 27, 2001", 24.0, "2", "Pinecrest", 1000109, "Free Agent"],
+        [1610612747, "2025", "00", "Ellis Quade", "Ellis", "ellis-quade", "88", "F", "6-8", "220", "JUL 14, 2003", 22.0, "R", "Riverbend", 1000190, "Two-Way"]
+      ]
+    },
+    {
+      "name": "Coaches",
+      "headers": ["TEAM_ID", "SEASON", "COACH_ID", "FIRST_NAME", "LAST_NAME", "COACH_NAME", "IS_ASSISTANT", "COACH_TYPE", "SORT_SEQUENCE", "SUB_SORT_SEQUENCE"],
+      "rowSet": [
+        [1610612747, "2025", 9000747, "Warren", "Tideman", "Warren Tideman", 0, "Head Coach", 1, 0]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,313 @@
+{
+  "league": "euroleague",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": []
+  },
+  "constants": [
+    {
+      "key": "priorRegression",
+      "value": 0.3,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "How far last season's scoring is pulled back toward the league mean (0 = as-is, 1 = every club average)."
+    },
+    {
+      "key": "homeAdvantagePoints",
+      "value": 3.5,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Points of home-court advantage: half to the home side, half off the away side."
+    },
+    {
+      "key": "teamSd",
+      "value": 9.5,
+      "provenance": "workbookUnvalidated",
+      "isDefault": true,
+      "description": "Spread of one team's score in one game. Assumed by the workbook, not yet checked against results."
+    },
+    {
+      "key": "marginSd",
+      "value": 11.5,
+      "provenance": "workbookUnvalidated",
+      "isDefault": true,
+      "description": "Spread of the winning margin. Assumed by the workbook, not yet checked against results."
+    },
+    {
+      "key": "replacementPer40",
+      "value": 9.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Points per 40 minutes at replacement level; a missing player's minutes are first refilled at this rate."
+    },
+    {
+      "key": "absorbShare",
+      "value": 0.6,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Share of a missing player's scoring above replacement that teammates recover."
+    },
+    {
+      "key": "boostCap",
+      "value": 1.35,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Largest multiple of a player's output that teammates' absences can produce."
+    },
+    {
+      "key": "rotationShare",
+      "value": 0.5,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Share of lost minutes taken by the listed rotation (minutes display only)."
+    },
+    {
+      "key": "formWeight",
+      "value": 0.25,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of a scorer's recent average against the model in his round projection."
+    },
+    {
+      "key": "capPolicyConsistent",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "1: team and player projections agree (the boost cap binds the team too). 0: the workbook's behaviour, which can leave points unassigned."
+    },
+    {
+      "key": "squadReconcile",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "1: scale each squad so its players' points sum to the club's projected score."
+    },
+    {
+      "key": "overtimeScaling",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "1: scale actual scores to regulation length before updating ratings (a documented deviation; the workbook did not)."
+    },
+    {
+      "key": "roundWeight.1",
+      "value": 0.1,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 1."
+    },
+    {
+      "key": "roundWeight.2",
+      "value": 0.09090909090909091,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 2."
+    },
+    {
+      "key": "roundWeight.3",
+      "value": 0.08333333333333333,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 3."
+    },
+    {
+      "key": "roundWeight.4",
+      "value": 0.07692307692307693,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 4."
+    },
+    {
+      "key": "roundWeight.5",
+      "value": 0.07142857142857142,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 5."
+    },
+    {
+      "key": "roundWeight.6",
+      "value": 0.06666666666666667,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 6."
+    },
+    {
+      "key": "roundWeight.7",
+      "value": 0.0625,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 7."
+    },
+    {
+      "key": "roundWeight.8",
+      "value": 0.058823529411764705,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 8."
+    },
+    {
+      "key": "roundWeight.9",
+      "value": 0.05555555555555555,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 9."
+    },
+    {
+      "key": "roundWeight.10",
+      "value": 0.05263157894736842,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Weight of one game's miss in the rating update for a club's game number 10."
+    },
+    {
+      "key": "statusChance.out",
+      "value": 0.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Chance a player with status 'out' plays."
+    },
+    {
+      "key": "statusChance.doubtful",
+      "value": 0.25,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Chance a player with status 'doubtful' plays."
+    },
+    {
+      "key": "statusChance.questionable",
+      "value": 0.5,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Chance a player with status 'questionable' plays."
+    },
+    {
+      "key": "statusChance.probable",
+      "value": 0.85,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Chance a player with status 'probable' plays."
+    },
+    {
+      "key": "statusChance.available",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Chance a player with status 'available' plays."
+    },
+    {
+      "key": "positionCoverageCeiling",
+      "value": 0.05,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Most points a defence may allow to unlisted positions before every index is withheld."
+    },
+    {
+      "key": "leagueAveragePoints",
+      "value": 84.5035,
+      "provenance": "derived",
+      "isDefault": false,
+      "description": "The mean of the clubs' scoring last season (Settings 'League average team score'); fixed for the season."
+    },
+    {
+      "key": "teamMinutes",
+      "value": 200.0,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "Player-minutes per team per game: five players for forty minutes."
+    },
+    {
+      "key": "minutesCap",
+      "value": 32.0,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "The most minutes one player is given."
+    },
+    {
+      "key": "minutesBlendOffset",
+      "value": 3.0,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "The 3 in w = rounds / (rounds + 3) for blending projected minutes with minutes played."
+    },
+    {
+      "key": "ratePriorMinutesOfficial",
+      "value": 400.0,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "Minutes a per-40 rate from official statistics counts for when games are added."
+    },
+    {
+      "key": "ratePriorMinutesEstimate",
+      "value": 150.0,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "Minutes an estimated per-40 rate counts for when games are added."
+    },
+    {
+      "key": "formGames",
+      "value": 10.0,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "Games a scorer's recent form averages over."
+    },
+    {
+      "key": "intervalZ80",
+      "value": 1.2816,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "Multiplier of the standard deviation for an 80% range."
+    },
+    {
+      "key": "tossUpMargin",
+      "value": 0.5,
+      "provenance": "workbook",
+      "isDefault": false,
+      "description": "A projected margin smaller than this names no winner."
+    },
+    {
+      "key": "defenseMinimumGames",
+      "value": 6.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Games a defence needs before any position index is shown."
+    },
+    {
+      "key": "defenseProvisionalBelowGames",
+      "value": 12.0,
+      "provenance": "default",
+      "isDefault": true,
+      "description": "Below this many games position indices show without bands."
+    }
+  ],
+  "deviations": [
+    "Actual scores are restated to regulation length before they move a rating, so an overtime game does not read as a collapse. The workbook did not scale. Set overtimeScaling to 0 to reproduce it.",
+    "The default cap policy is consistent: the limit on a teammate's boost also limits the team total, so a team's projection equals the sum of its players' projections. The workbook caps each player but not the team, which can leave points that no player is credited with. Set capPolicyConsistent to 0 to reproduce the workbook.",
+    "Each squad's projected points are scaled so the players add up to the club's rating (squadReconcile). Set it to 0 to use the squad as typed.",
+    "An absence never raises scoring. When the missing players score less than replacement level would, the points recovered equal the points lost; the workbook's formula would add points.",
+    "A round weight beyond the two the workbook states is 1 / (n + 9), where n is the club's game number counted from the start of the season, and it is marked extrapolated.",
+    "Only games after the imported round update ratings and player rates. The imported numbers already contain the earlier rounds, so using them again would count them twice.",
+    "A projection that was never frozen before tip-off is rebuilt from inputs published strictly before it and labelled reconstructed. The review reports those apart from locked ones.",
+    "A scorer's form is the mean of his last ten official EuroLeague games in the store. The workbook's game logs mix in friendlies, national-team and domestic games; none is imported.",
+    "A return expected in rounds a to b keeps an entry in force until the last game of round b has been played: the span of the absence, as the workbook means it.",
+    "Where the workbook gives an 'In model' status it drives the projection; the research status is what is shown.",
+    "Win probability is omitted. The margin and its 80% range say the same thing without producing a figure. The workbook's other probability columns, its typed comparison numbers and its hand-picked scorers are neither read nor computed.",
+    "A squad's minutes are normalised to 200 and capped at 32 a man only once a game has been added; the imported minutes are the workbook's own."
+  ],
+  "limitations": [
+    "Positions are the ones a roster lists for the season, not who guarded whom on the night.",
+    "No adjustment is made for the strength of the opponents a team has faced; the per-minute basis controls for how opponents distributed their minutes, and nothing more.",
+    "The injury layer never changes defence: absences move projected scores, not these figures.",
+    "Points from players with no listed position are shown as their own bucket and are never reassigned.",
+    "Availability is researched and dated, not live: the EuroLeague's data service has no injury list. Every status shows who said it and when.",
+    "The spread around a projection is the workbook's assumption until enough locked projections have results to fit it.",
+    "Two or three rounds are thin evidence: a rating moves only a fraction of each miss.",
+    "Players outside a club's squad list are not modelled, and a player's club is the one he was listed with when the rates were set.",
+    "Home advantage is one league-wide value, adjusted only by a game's own setting (a neutral venue is zero).",
+    "Position tables are often silent: with few games and small differences between clubs, no club may differ from the league by more than chance, and the page says so.",
+    "EuroLeague games only: friendlies, domestic leagues and national-team games are not tracked."
+  ]
+}

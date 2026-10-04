@@ -1,0 +1,55 @@
+{
+  "league": "euroleague",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": []
+  },
+  "sources": [
+    {
+      "key": "el.workbook",
+      "label": "Your workbook",
+      "kind": "workbook",
+      "enabled": false,
+      "state": "disabled",
+      "reason": "Demo league: this source is not used for invented games.",
+      "lastSuccessAt": null,
+      "lastError": null,
+      "robotsCheckedOn": null,
+      "attribution": "EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources."
+    },
+    {
+      "key": "el.dataService",
+      "label": "EuroLeague data service",
+      "kind": "dataService",
+      "enabled": false,
+      "state": "disabled",
+      "reason": "Demo league: this source is not used for invented games.",
+      "lastSuccessAt": null,
+      "lastError": null,
+      "robotsCheckedOn": null,
+      "attribution": "EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources."
+    },
+    {
+      "key": "el.manual",
+      "label": "Entered by hand",
+      "kind": "manual",
+      "enabled": true,
+      "state": "ok",
+      "reason": null,
+      "lastSuccessAt": "2026-10-12T09:00:00Z",
+      "lastError": null,
+      "robotsCheckedOn": null,
+      "attribution": "Statuses and links entered by hand, each with its source and date."
+    }
+  ],
+  "store": {
+    "state": "ready",
+    "reason": null,
+    "kind": "synthetic"
+  },
+  "attribution": "EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources."
+}

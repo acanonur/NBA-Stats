@@ -166,16 +166,27 @@ def session_scope(engine: Engine | None = None) -> Iterator[Session]:
 
 
 def init_db(engine: Engine | None = None) -> Engine:
-    """Create every table that does not exist yet — both metadata objects — and return the
+    """Create every table that does not exist yet — all three metadata objects — and return the
     engine used.
 
     ``AccountBase`` is a separate ``MetaData`` from ``Base`` on purpose: see
     ``nbastats/accounts/models.py`` for why account tables must never share the metadata that
-    ``nbastats/seed.py::_clear()`` wipes on every seed run.
+    ``nbastats/seed.py::_clear()`` wipes on every seed run. ``NbaIntelBase`` (injury snapshots,
+    headlines, model settings, job state) is separate for exactly the same reason; see
+    ``nbastats/nba_intel/models.py``.
+
+    ``NbaIntelBase`` is imported *here*, not at the top of the module, on purpose. The scheduler
+    (``nbastats/worker.py``) imports this module, and it must not load any feature package at
+    import time: a package that is missing or half built has to show up as a ``notInstalled`` row,
+    not as a crash at startup. ``init_db`` is where the tables are created, so it is where the
+    import belongs.
     """
+    from .nba_intel.models import NbaIntelBase
+
     target = engine or get_engine()
     Base.metadata.create_all(target)
     AccountBase.metadata.create_all(target)
+    NbaIntelBase.metadata.create_all(target)
     return target
 
 
