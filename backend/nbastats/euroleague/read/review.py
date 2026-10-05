@@ -77,6 +77,13 @@ class ReviewRow:
         return (self.game.home_pts - self.game.away_pts) - (self.home - self.away)
 
     @property
+    def combined_miss(self) -> float:
+        """Actual combined points less projected combined points, signed like ``margin_miss``
+        (negative: the game finished lower than projected). ``meanAbsCombinedMiss`` averages its
+        absolute value."""
+        return (self.game.home_pts + self.game.away_pts) - (self.home + self.away)
+
+    @property
     def projected_winner(self) -> str | None:
         margin = self.home - self.away
         if abs(margin) < TOSS_UP_MARGIN:
@@ -103,10 +110,7 @@ def metrics(rows: list[ReviewRow]) -> dict[str, Any]:
         mean_score = math.fsum(
             abs(r.game.home_pts - r.home) + abs(r.game.away_pts - r.away) for r in rows
         ) / (2 * n)
-        mean_combined = (
-            math.fsum(abs((r.game.home_pts + r.game.away_pts) - (r.home + r.away)) for r in rows)
-            / n
-        )
+        mean_combined = math.fsum(abs(r.combined_miss) for r in rows) / n
     return {
         "games": n,
         "decidedGames": len(decided),
@@ -209,6 +213,7 @@ def build_review(
                 "projected": {"homePts": row.home, "awayPts": row.away},
                 "result": {"homePts": row.game.home_pts, "awayPts": row.game.away_pts},
                 "marginMiss": row.margin_miss,
+                "combinedMiss": row.combined_miss,
                 "winnerCalled": row.winner_called,
             }
         )

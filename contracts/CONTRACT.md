@@ -13,7 +13,7 @@ Machine-readable companions, loaded by both sides at build time:
 | `contracts/presets.json` | 12 preset dashboards, pre-validated against the widget catalog |
 | `contracts/leagues.json` | The two league profiles, the availability vocabulary, the position schemes, and the two guard lists (§9, §10, §11). **Not** bundled in the app: clients read the live equivalents from `GET /v1/leagues` and `GET /v1/el/meta` |
 | `contracts/fixtures/*.json` | Golden response payloads, decoded by both the backend tests and the iOS tests |
-| `contracts/fixtures/leagues/{nba,el}/*.json` | Golden payloads of the league routes (§3, §4), from the seeded NBA demo and the synthetic EuroLeague. A sub-directory on purpose: the iOS bundle and its decoding tests never read it |
+| `contracts/fixtures/leagues/{nba,el}/*.json` | Golden payloads of the league routes (§3, §4), from the seeded NBA demo and the synthetic EuroLeague: flat files, no sub-folders, one document per payload family. `el/widget_<kind>.json` are the four EuroLeague tile payloads (`team_matchup`, `defense_by_position`, `availability_report`, `slate_projections`), proved equal to what the real tile resolves; the NBA's tile payloads are `contracts/fixtures/widget_<kind>.json`. `scripts/sync_contracts.sh` copies each into the app bundle as `league_<dir>_<name>.json` |
 
 Regenerate the catalogs with `python3 contracts/tools/gen_metrics.py > contracts/metrics.json`
 (and the `gen_widgets` / `gen_presets` equivalents). `gen_presets.py` validates every preset
@@ -37,7 +37,10 @@ the stdlib-only pure core. `scripts/check_contracts.py` check (m) regenerates bo
 * `null` means *not available for this era or subject*, never zero. Every payload carrying an
   era-limited metric also carries the flags in §6.
 * Money-free, no auth on the public read surface by default; when `HARDWOOD_API_KEY` is set the
-  service requires `X-API-Key` on every `/v1` route except `/v1/health`.
+  service requires `X-API-Key` (or a signed-in browser session) on every `/v1` route except
+  `/v1/health` and `/v1/el/health`. **Changing anything** (the league writes in §3) has its own,
+  stricter rule: see "Who may write" under the league routes. On a Mac the installer creates the
+  key (`hardwood.env`), so it is set by default there.
 * Errors use the envelope in §7. HTTP status mirrors the error class.
 * **Leagues.** `/v1` is the NBA. The EuroLeague is `/v1/el`, with the same route suffixes (§9). The
   league is chosen by the URL, never by a header or a query parameter, and every league-aware
@@ -221,7 +224,10 @@ How current a payload is, and which sources fed it. In every new payload.
 
 `syncVersion` is the league's own cursor (the EuroLeague's is independent of the NBA's, §9.6).
 `isDemo` is true when the store holds invented games: **show a banner**. `sources` lists only the
-sources that fed *this* payload; the full registry is `GET {prefix}/sources` (§10.5).
+sources that fed *this* payload; the full registry is `GET {prefix}/sources` (§10.5). Each element
+is exactly `{key, label, state, reason, lastSuccessAt}` (`reason` and `lastSuccessAt` may be
+`null`), and `state` is one of `ok`, `stale`, `disabled`, `notConfigured`, `noReportYet`, `blocked`,
+`unreadable`, `error`; a client treats a state it does not know as neutral, never as healthy.
 
 ---
 
@@ -549,8 +555,29 @@ A `409 stale_write` body:
 Team matchup, defence by opponent position, team-score projections, availability, headlines and
 the source registry. The EuroLeague serves the same suffixes under `/v1/el` (next section). All of
 them sit behind the same API-key-or-session gate and rate limiter as every other `/v1` router; the
-payload shapes are in §4's league section and the rules behind them in §9–§11. A **write** needs a
-signed-in session with its CSRF token (the browser) or the API key (the native app on loopback).
+payload shapes are in §4's league section and the rules behind them in §9–§11. A **write** has
+exactly two ways in, described next, and no third.
+
+**Who may write** (`POST`/`DELETE`/`PATCH` on `availability`, `news/links` and `model-settings`, under
+both prefixes). One gate, the same for both leagues:
+
+| Caller | What it sends | Allowed |
+| --- | --- | --- |
+| The native Mac app | `X-API-Key` equal to the server's `HARDWOOD_API_KEY`, and **no** `Origin` and no `Sec-Fetch-Site` header (`URLSession` sends neither) | yes |
+| The web app | a live session cookie, `X-Hardwood-CSRF`, and a same-origin `Origin` | yes |
+| Anything with an `Origin` or `Sec-Fetch-Site` header (every browser request) holding only the key | the key is ignored; the request is judged as a browser request | `401 unauthorized` with no session, `403 csrf_failed` with a session that fails the CSRF or origin check |
+| A loopback caller with no key, or with `X-Hardwood-Client: mac` | `X-Hardwood-Client` is **not a credential**; nothing reads it | `401 unauthorized` |
+| Any caller when the server has no `HARDWOOD_API_KEY` configured and no session | | `401 unauthorized` |
+
+The key is compared in constant time (`hmac.compare_digest` over bytes, so a key containing
+non-ASCII bytes is simply wrong, never a 500). Why `Origin` decides: a browser adds it to every
+cross-origin request and to every same-origin one that is not a `GET`, and page script cannot set
+or remove it; the service answers any CORS preflight (every header is allowed), so a web page open
+in the person's browser *can* send `X-API-Key` and `X-Hardwood-Client` to `http://127.0.0.1:8000`,
+and the request really does come from loopback. A key that authorised such a request would be
+authorised for any page that learned it. A client that must write and is not a browser sends the
+key and no `Origin`. The app's reads send the same `X-API-Key` header (when a key is set, reads need
+it too).
 
 | Route | What it returns |
 | --- | --- |
@@ -565,13 +592,13 @@ signed-in session with its CSRF token (the browser) or the API key (the native a
 | `GET /v1/projections/review` | `ProjectionReview`: locked projections against what happened. Query: `date`, `season` |
 | `GET /v1/availability` | `AvailabilityReport`. Query: `teamId`, `date` (`next` by default), `statuses` |
 | `GET /v1/availability/review-queue` | `{items: [{statusId, playerName, team, source}]}`: statuses whose player matched nobody |
-| `POST /v1/availability` | Write: enter an override. Body: `{playerId, teamId?, gameId?, status, note?, sourceUrl?, sourcePublishedAt?}` |
+| `POST /v1/availability` | Write: enter an override. Body (frozen): `{playerId, teamId?, gameId?, status, note?, sourceUrl?, sourcePublishedAt?}`; `playerId` and `status` are required, a status outside the five is `400 invalid_status`, and any other field is `400 bad_request` naming it. It has **none** of the EuroLeague's `reasonCategory`, `reasonText`, `expectedReturnText` or `sourceLabel` (the NBA override table has no column for them): a client sends the fields of the league it is writing to. Answers `201` with the entry (`AvailabilityReport.teams[].entries[]`'s shape plus `league`, `linkWithheld`) |
 | `DELETE /v1/availability/{overrideId}` | Write: clear an override |
 | `GET /v1/news` | `NewsLinks`: headlines (title, link, date, source) about a team or player. Query: `teamId`, `playerId`, `limit` (default 10) |
 | `POST /v1/news/links` | Write: paste a link. Body: `{title, link, publishedAt, sourceName, teamIds, playerIds}` |
 | `GET /v1/sources` | `SourceList`: where every number came from and how current it is (§10.5) |
 | `GET /v1/model-settings` | `{league, freshness, settings: [{key, value, provenance, isDefault, setAt}]}` |
-| `PATCH /v1/model-settings` | Write: `{settings: [{key, value}]}`. Allowlisted keys only; the patch is validated whole and applied atomically |
+| `PATCH /v1/model-settings` | Write. Body (frozen, both leagues): `{settings: [{key: string, value: number}, ...]}`, at least one item, no other field. The patch is validated whole and applied atomically: every refusal is `400 bad_request` with `field` set to `key` (not an allowlisted key), `value` (not a number, or outside that key's range), `settings` (empty) or the name of an unexpected field, and nothing is changed. Answers `200` with the whole `ModelSettings` payload (the same as the `GET`), so the client replaces what it holds |
 
 Every query, path and body field name on these routes is on one list
 (`contracts/leagues.json#/allowedParameters`), and a test walks the OpenAPI document to prove it:
@@ -1071,11 +1098,13 @@ TeamMatchup = {
 FormGame = {gameId, date, opponent: LeagueTeamRef, isHome, isNeutral: boolean | null,
             teamScore, opponentScore, result: "W" | "L", overtimePeriods: number | null}
 Split = {games, pointsPerGame: number | null, pointsAllowedPerGame: number | null}
-AvailabilitySummary = {out, doubtful, questionable, probable, keyAbsences: AbsenceEntry[],
-                       freshnessState, asOf}
+AvailabilitySummary = {out: number, doubtful: number, questionable: number, probable: number,
+                       keyAbsences: AbsenceEntry[], freshnessState, asOf}
 ```
 
-Only final games count, newest first. `pointsAllowedPerGame` is the mean of the opponents' points
+`AvailabilitySummary`'s four status fields are **integer counts** (never lists) of the team's
+players with that status in force; the players themselves are in `keyAbsences`. Only final games
+count, newest first. `pointsAllowedPerGame` is the mean of the opponents' points
 and answers "how many do they let opponents score". `pointsPerRegulation` and
 `pointsAllowedPerRegulation` rescale each game to regulation time and are `null` when the team's
 playing time is unknown for any game. `adjustedPointsAgainst` is the mean, over games, of the
@@ -1166,7 +1195,7 @@ GameProjection = {
   combinedPoints, combinedAvailabilityEffect, homeAdvantagePoints, venueAssumed,
   intervalBasis: "assumed" | "fittedPrevSeason" | "fittedLedger" | null,
   model: {key, version, kind: "latest" | "locked" | "reconstructed" | "imported",
-          computedAt, inputsCutoff, capPolicy,
+          computedAt, inputsCutoff, computedAfterTipoff: boolean | null, capPolicy,
           constants: [{key, value, provenance, isDefault}]},
   assumptions: {assumedAvailable: {home: number, away: number, basis}, staleEntriesIgnored: number},
   result: {homePts, awayPts, marginMiss, winnerCalled: boolean | null} | null,
@@ -1184,11 +1213,27 @@ ProjectionReview = { league, scope: {season, seasonCode?, round?, date?}, freshn
   byModel: [{modelKey, games, decidedGames, winnersCalled, tossUps, meanAbsMarginMiss,
              meanAbsScoreMiss, meanAbsCombinedMiss}],
   reconstructed: {...same as a byModel row} | null,
-  games: [{game, locked: {homePts, awayPts}, result, marginMiss, winnerCalled}], notes }
+  games: [{game, kind: "locked" | "reconstructed" | "imported", modelKey: "hardwood" | "workbook",
+           projected: {homePts, awayPts}, locked?: {homePts, awayPts} /* NBA only */,
+           result: {homePts, awayPts}, marginMiss, combinedMiss, winnerCalled: boolean | null}],
+  notes }
 ```
 
 `decidedGames` is `games` less the toss-ups: a toss-up names no winner, so it can be neither called
 nor missed, and `winnersCalled` is out of `decidedGames`.
+
+`marginMiss` is the actual margin (home minus away) less the projected one, and `combinedMiss` is
+the actual combined points less the projected combined points: both are **signed** (a negative
+`combinedMiss` means the game finished lower than projected) and the `meanAbs…Miss` figures are the
+means of their absolute values. `model.computedAfterTipoff` is said by the server so that no client
+does clock arithmetic: `true` when the projection was computed at or after the game's tip-off (a
+`reconstructed` one, always), `false` when before it (a `locked` one, by construction, and a
+`latest` one for a game not yet started), and **`null` when the server cannot say**: no creation
+time (an `imported` row), or no tip-off known and the projection was made during the game's day
+(the NBA's scoreboard does not always carry it). The `model` block that heads a slate or round is
+about no single game, so its `computedAfterTipoff` is `null`. A client captions a row "computed
+after tip-off, a reconstruction, not a prediction" when `kind` is `reconstructed` or the flag is
+`true`, and never when it is `false` or `null` on a `locked` or `latest` row.
 
 `margin` is home minus away; `isTossUp` is true under half a point, and `projectedWinner` is then
 `null` and `summary` is `"Toss-up"` (otherwise `"ZZA by 8.7"`). `combinedPoints` is the sum of the
@@ -1267,6 +1312,7 @@ ClubView = { league, team, season, freshness, coach, record, scoring: /* TeamMat
             role: string | null, basis, basisNote: string | null, isEstimate: boolean,
             projectedMinutes: number | null,
             per40: {pts, reb, ast, fg3m, stl, blk, tov} | null,
+            perGame: {min, pts, reb, ast, fg3m, stl, blk, tov, pir: null} | null,
             seasonAverages: {games, min, pts, reb, ast, pir, fg2Pct, fg3Pct, ftPct} | null,
             status: string | null, chanceOfPlaying: number | null,
             availabilitySource: Source | null }],
@@ -1274,8 +1320,22 @@ ClubView = { league, team, season, freshness, coach, record, scoring: /* TeamMat
 RoundScorers = { league, round, freshness,
   clubs: [{team, game: GameRefL,
            players: [{player, status: string | null, chanceOfPlaying, modelPoints,
-                      formAverage: number | null, formGames, projectedPoints}]}] }
+                      formAverage: number | null, formGames,
+                      recentPoints: (number | null)[], projectedPoints,
+                      projectedMinutes: number | null}]}] }
 ```
+
+`squad[].perGame` is the projected per-game line (the workbook's Squads columns U to AH):
+`min` is `projectedMinutes` and every other stat is its per-40 rate times `min / 40`, a number the
+server worked out so no client has to; a stat with no rate is `null`, the whole object is `null`
+without projected minutes, and **`pir` is always `null`** (the Performance Index Rating also counts
+fouls drawn, shots blocked against and fouls committed, which the workbook's rates do not carry, so
+a projected PIR would be invented). `RoundScorers.players[].recentPoints` is the player's points in
+his club's last five official games before the game, **newest first**, with `null` in the place of a
+game he did not play (listed and did not play, not dressed, or no points recorded), never `0` and
+never skipped, so the list always lines up with the club's last five games; it is shorter than five
+only while the club has played fewer, and empty before its first. `projectedMinutes` is his
+projected minutes in that game.
 
 `RoundView.status` of `"resultPending"` means the round's games were played and their results are
 not loaded: its `notes` then say so and how to load them (enable live ingest, or import an updated
@@ -1296,7 +1356,7 @@ ElBoxScore = { league, game: GameRefL, partials: {home: number[], away: number[]
   attendance: number | null, statsStatus, notes,
   teams: [{team, totals: ElLine,
            players: [{player, participation: "played" | "dnp", isStarter: boolean | null,
-                      line: ElLine | null}]}],
+                      stats: ElLine | null}]}],
   freshness, sourceRef: {kind, label, ingestedAt} }
 ElLine = {minutes, pts, fgm2, fga2, fg2Pct, fgm3, fga3, fg3Pct, ftm, fta, ftPct, oreb, dreb, reb,
           ast, stl, tov, blk, blkAgainst, pf, foulsDrawn, plusMinus, pir}
@@ -1305,8 +1365,8 @@ ElPlayerStatsTable = { league, season, perMode, sort, freshness,
           gamesWithStat: {<metricKey>: number}}], notes }
 ```
 
-A player who was listed and did not play is `participation: "dnp"` with `line: null`, never a row of
-zeros; a player who was not dressed has no row. Every statistic that was not recorded is `null`:
+A player who was listed and did not play is `participation: "dnp"` with `stats: null`, never a row of
+zeros (the key is `stats`: `line` is a word no payload key may contain, §11); a player who was not dressed has no row. Every statistic that was not recorded is `null`:
 the workbook's box scores carry no fouls drawn, blocks against, plus/minus or starter flag, so
 those are `null` in those games. **A per-game average divides by the games that carry the stat**,
 not by games played, and `gamesWithStat` is exposed beside each value so the divisor is visible;
@@ -1345,7 +1405,10 @@ ElPlayerDetail = { league, season, seasonCode, freshness, player: LeaguePlayerRe
          per40: {pts, reb, ast, fg3m, stl, blk, tov}} | null,
   availability: {status, chanceOfPlaying, inForce, isStale, source: Source} | null, notes }
 ElPlayerGameLog = { league, season, seasonCode, freshness, player: LeaguePlayerRef,
-  games: [{game: GameRefL, club: LeagueTeamRef, participation: "played" | "dnp",
+  games: [{game: GameRefL, club: LeagueTeamRef,       /* the player's own club */
+           opponent: LeagueTeamRef, isHome: boolean, isNeutral: boolean | null,
+           teamScore, opponentScore, result: "W" | "L",   /* the club's, as in FormGame */
+           participation: "played" | "dnp",
            isStarter: boolean | null, stats: ElLine | null}], notes }
 RatingsTable = { league, season, seasonCode, asOfRound, baseRound, freshness,
   leagueAveragePoints, regression,
@@ -1368,6 +1431,12 @@ ElHealth = { league, status: "ok" | "unavailable", state, reason: string | null,
 ElSync = { league, syncVersion, dataThrough: string | null, mode: string | null, isDemo,
            lastSuccessAt: string | null, pausedUntil: string | null, generatedAt }
 ```
+
+`ElPlayerGameLog` is newest first and holds the club's final games he has a line in, a game he
+sat out included (`participation: "dnp"`, `stats: null`, the result still the club's). Its
+`opponent`, `isHome`, `teamScore`, `opponentScore` and `result` are the same words a club's
+`scoring.form` rows use, from the player's side of the game, so a client prints "v OLY (H) W 94-84"
+without working out which side he was on.
 
 `ElMeta.state` and `ElHealth.state` are the §9.4 states; `ElHealth` is the one payload that needs no
 key and never answers 503, and its `syncVersion` and `dataThrough` are `null` unless the
@@ -1474,7 +1543,7 @@ per-game rating against a modern one without the badge.
 | `bad_request` | 400 | Malformed query or body |
 | `invalid_config` | 400 | A widget config failed validation (`field` names the key) |
 | `too_many_widgets` | 400 | More than 24 widgets in one resolve |
-| `unauthorized` | 401 | Missing or wrong `X-API-Key` |
+| `unauthorized` | 401 | Missing or wrong `X-API-Key`; or a league write with no valid credential (a key on a request that also carries an `Origin` is not one, see "Who may write") |
 | `player_not_found` / `team_not_found` / `game_not_found` | 404 | Unknown id |
 | `club_not_found` | 404 | An unknown EuroLeague club code (`/v1/el`) |
 | `invalid_status` | 400 | An availability status that is not one of the five (§10) |

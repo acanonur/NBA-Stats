@@ -1576,7 +1576,14 @@ def test_running_the_installer_again_keeps_the_users_settings(tmp_path) -> None:
     env_file.write_text("HARDWOOD_NEWS=off\n")
     again = _installed(tmp_path)
     assert again.returncode == 0, again.stderr
-    assert env_file.read_text() == "HARDWOOD_NEWS=off\n"
+    # The person's own line is untouched. The one thing the installer adds to a file that has no
+    # API key is the key (the Mac app's writes need it); see test_install_api_key.py for that rule.
+    text = env_file.read_text()
+    assert text.startswith("HARDWOOD_NEWS=off\n")
+    assert [ln for ln in text.splitlines() if ln.startswith("HARDWOOD_API_KEY=")] != []
+    assert [ln for ln in text.splitlines() if not ln.startswith("#") and ln.strip()][0] == (
+        "HARDWOOD_NEWS=off"
+    )
     assert "Keeping your existing settings file" in again.stdout
 
 

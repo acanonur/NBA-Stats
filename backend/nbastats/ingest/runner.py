@@ -12,7 +12,20 @@ Three modes, all driving the functions in :mod:`nbastats.ingest.daily` and
     The bulk and correction paths. ``--once`` pulls a single date with one ``LeagueGameLog``
     call plus one ``PlayerGameLogs`` call per season, rather than one call per game.
     ``--nightly`` re-pulls the last ``CORRECTION_WINDOW_DAYS`` days because the league issues
-    stat corrections after the fact, then re-aggregates.
+    stat corrections after the fact, then re-aggregates. **Neither records who started**: the
+    bulk rows have no starter column, so a game that only ever went through them has ``started``
+    unrecorded, and re-running them can never fill it in.
+
+``--refetch-games``
+    The repair for exactly that. It runs the per-game box-score path (``ingest_game``) again over
+    the stored final games of a date range (``--days N`` ending at ``--date D``, the same window
+    ``--nightly`` takes), which is the one source that knows the starting five. Use it after a
+    ``--nightly --days N`` season walk, and on a database the old ingest bug flattened (every
+    recorded starter overwritten with ``False``, ``games_started`` zero for everyone). About two
+    requests a game, roughly two seconds each at the client's pace: a 200-day season is about 40
+    minutes. Safe to interrupt and to repeat. Exit status: 0 done (a game that could not be fetched
+    is named in the log and in ``ingest_log``; run it again to pick it up), 3 games were found
+    and none could be fetched, 5 refused because the store holds the demo league, 130 interrupted.
 
 ``--backfill-*``
     The historical loaders, which read already-downloaded bulk files. Never backfill through
@@ -46,6 +59,7 @@ Examples::
     python3 -m nbastats.ingest.runner --watch
     python3 -m nbastats.ingest.runner --once --date 2026-01-02
     python3 -m nbastats.ingest.runner --nightly
+    python3 -m nbastats.ingest.runner --refetch-games --days 200 --date 2026-04-15
     python3 -m nbastats.ingest.runner --backfill-kaggle /data/nba/nba.sqlite
     python3 -m nbastats.ingest.runner --backfill-bbref /data/bbref --reconcile-ids
     python3 -m nbastats.ingest.runner --rosters
@@ -79,6 +93,8 @@ __all__ = [
     "in_game_window",
     "run_once",
     "run_nightly",
+    "run_refetch_games",
+    "refetch_exit_code",
     "run_rosters",
     "rosters_exit_code",
     "watch",
@@ -295,6 +311,75 @@ def run_nightly(
         return _work(active)
 
 
+def run_refetch_games(
+    *,
+    days: int | None = None,
+    end_date: date | None = None,
+    client: StatsClient | None = None,
+    session: Session | None = None,
+    shutdown: ShutdownFlag | None = None,
+) -> daily.RefetchReport:
+    """Re-run the per-game box-score path over a date range. See :func:`daily.refetch_games`.
+
+    A store holding the seeded demo league is **refused** (judged by its rows, like the roster
+    refresh): the demo's game ids are the ids of real games, and pulling real box scores onto
+    invented ones would blend measured and invented numbers with nothing to tell them apart. A
+    refused run makes no request.
+    """
+    settings = get_settings()
+    window = settings.correction_window_days if days is None else days
+
+    def _work(active: Session) -> daily.RefetchReport:
+        if rosters.store_is_synthetic(active):
+            last = end_date or date.today()
+            refused = daily.RefetchReport(
+                state="refused",
+                reason=(
+                    "This store holds the built-in demo league, whose game ids are real games' ids;"
+                    " fetching real box scores into it would blend invented and measured numbers."
+                    " Use a store of your own."
+                ),
+                first_date=last - timedelta(days=max(window, 1) - 1),
+                last_date=last,
+            )
+            logger.warning(log_line("refetch_refused", reason="demo store"))
+            return refused
+        # Built only now: a refused run must not even need the league's client to exist.
+        report = daily.refetch_games(
+            active, window, client=client or _client(settings), end_date=end_date,
+            shutdown=shutdown,
+        )
+        logger.info(
+            log_line(
+                "refetch_games_complete",
+                found=report.games_found,
+                refetched=report.games_refetched,
+                changed=report.games_changed,
+                failed=report.games_failed,
+                starts_before=report.starts_before,
+                starts_after=report.starts_after,
+                unrecorded_after=report.unrecorded_after,
+            )
+        )
+        return report
+
+    if session is not None:
+        return _work(session)
+    with session_scope() as active:
+        return _work(active)
+
+
+def refetch_exit_code(report: daily.RefetchReport) -> int:
+    """The process exit status for a refetch run. See the module docstring."""
+    if report.state == "refused":
+        return 5
+    if report.interrupted:
+        return 130
+    if report.games_found and not report.games_refetched:
+        return 3
+    return 0
+
+
 def run_rosters(
     *,
     season: str | None = None,
@@ -465,14 +550,20 @@ def build_parser() -> argparse.ArgumentParser:
                       help="build the nba_person_id to bbref_slug crosswalk and report misses")
     mode.add_argument("--rosters", action="store_true",
                       help="fetch every team's roster (30 requests) and refresh listed positions")
+    mode.add_argument("--refetch-games", action="store_true",
+                      help="re-run the per-game box-score path over the stored games of --days N "
+                           "ending --date D: the only way to restore who started (the bulk "
+                           "--nightly pass cannot)")
 
     parser.add_argument(
         "--date",
         type=_parse_date,
         help="ISO date: the day for --once (default: today), or the LAST day of the window "
-             "for --nightly (default: data_through, else today)",
+             "for --nightly and --refetch-games (default: data_through, else today)",
     )
-    parser.add_argument("--days", type=int, help="override the correction window for --nightly")
+    parser.add_argument("--days", type=int,
+                        help="the window width for --nightly (default: CORRECTION_WINDOW_DAYS) "
+                             "and --refetch-games (same default; at least 1)")
     parser.add_argument("--poll-seconds", type=int, help="override INGEST_POLL_SECONDS")
     parser.add_argument("--seasons", nargs="*",
                         help="restrict a backfill to these seasons, or name the season for "
@@ -506,7 +597,10 @@ def _report_load(report: backfill.LoadReport) -> None:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.refetch_games and args.days is not None and args.days < 1:
+        parser.error("--days must be at least 1 for --refetch-games")
     settings = get_settings()
     logging.basicConfig(
         level=(args.log_level or settings.log_level).upper(),
@@ -533,6 +627,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             if report.reason:
                 logger.warning(log_line("rosters_note", state=report.state, reason=report.reason))
             return rosters_exit_code(report)
+
+        if args.refetch_games:
+            repair = run_refetch_games(days=args.days, end_date=args.date, shutdown=flag)
+            if repair.reason:
+                logger.warning(log_line("refetch_note", state=repair.state, reason=repair.reason))
+            return refetch_exit_code(repair)
 
         if args.nightly:
             # --date is the window's END. It used to be parsed, accepted and silently dropped

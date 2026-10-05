@@ -50,8 +50,15 @@ from ..model.round_projection import (
     ledger_rows_for,
     side_absences,
 )
-from ..model.scorers import game_scorers
-from .queries import ReadContext, bad_request, game_has_result, game_start, round_status
+from ..model.scorers import game_scorers, recent_points
+from .queries import (
+    ReadContext,
+    bad_request,
+    computed_after_tipoff,
+    game_has_result,
+    game_start,
+    round_status,
+)
 from .review import review_blocks, review_rows
 
 __all__ = [
@@ -125,13 +132,21 @@ def model_block(
     version: str = MODEL_VERSION,
     league_level: float | None = None,
     include_constants: bool = True,
+    after_tipoff: bool | None = None,
 ) -> dict[str, Any]:
+    """The ``model`` object of a projection.
+
+    ``computedAfterTipoff`` is :func:`~nbastats.euroleague.read.queries.computed_after_tipoff` for
+    the game the projection is about, passed in as ``after_tipoff`` by the one caller that knows
+    the game. A block that is not about one game (the round's own ``model``) leaves it ``None``.
+    """
     return {
         "key": model_key,
         "version": version,
         "kind": kind,
         "computedAt": refs.rfc3339(computed_at),
         "inputsCutoff": refs.rfc3339(inputs_cutoff),
+        "computedAfterTipoff": after_tipoff,
         "capPolicy": cap_policy,
         "constants": model_constants(ctx, league_level) if include_constants else [],
     }
@@ -238,6 +253,7 @@ def projection_payload(
             inputs_cutoff=result.as_of,
             cap_policy=result.cap_policy,
             league_level=result.league_level,
+            after_tipoff=computed_after_tipoff(game, ctx.now),
         )
         notes = [
             "Defence indices are not changed by absences: absences move the projected scores only.",
@@ -316,6 +332,7 @@ def projection_payload(
             model_key="workbook" if row.kind == "imported" else MODEL_KEY,
             version=row.model_version,
             include_constants=False,
+            after_tipoff=computed_after_tipoff(game, row.computed_at),
         )
         notes = [
             "Player detail was not frozen with this projection, so absences are not listed.",
@@ -572,6 +589,7 @@ def build_round_scorers(
                         "modelPoints": line.model_points,
                         "formAverage": line.form_average,
                         "formGames": line.form_games,
+                        "recentPoints": recent_points(ctx, line.person_code, club, result.as_of),
                         "projectedPoints": line.projected_points,
                         "projectedMinutes": entry.outcome.projected_minutes,
                     }

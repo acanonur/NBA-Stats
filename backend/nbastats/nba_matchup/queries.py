@@ -121,6 +121,7 @@ __all__ = [
     "game_start",
     "lock_deadline",
     "game_reference",
+    "computed_after_tipoff",
     "primary_bucket",
     "ReadContext",
     "build_context",
@@ -243,6 +244,36 @@ def lock_deadline(game: Game, tipoff_utc: datetime | None) -> datetime:
 def game_reference(game: Game, tipoff_utc: datetime | None) -> datetime:
     """What ``resultPending`` is measured from: tip-off, else 23:59 Eastern of the game day."""
     return aware(tipoff_utc) or _eastern(game.game_date, time(23, 59))  # type: ignore[return-value]
+
+
+def computed_after_tipoff(
+    game: Game, tipoff_utc: datetime | None, computed_at: datetime | None
+) -> bool | None:
+    """Whether a projection was made after the game it is about had started.
+
+    Said by the server so that no client does clock arithmetic to decide whether to caption a
+    projection "computed after tip-off, a reconstruction, not a prediction". Three answers:
+
+    * the tip-off is known: ``computed_at`` at or after it is ``True``, before it ``False``;
+    * the tip-off is not known (the scoreboard did not carry it): only what is certain is said,
+      and "certain" is the service's own assumption about the game day. A projection made before
+      the lock deadline (:func:`lock_deadline`, noon Eastern when no tip-off is known: no game
+      tips earlier, which is the assumption the ledger already locks projections on) is
+      ``False``; one made after the day's last minute (:func:`game_reference`) is ``True``; and
+      anything in between is ``None`` ("cannot say") rather than a guess;
+    * the projection has no creation time: ``None``.
+    """
+    moment = aware(computed_at)
+    if moment is None:
+        return None
+    tip = aware(tipoff_utc)
+    if tip is not None:
+        return moment >= tip
+    if moment < lock_deadline(game, None):
+        return False
+    if moment >= game_reference(game, None):
+        return True
+    return None
 
 
 # --------------------------------------------------------------------------- seasons and ids
@@ -466,6 +497,10 @@ class ReadContext:
 
     def start_of(self, game: Game) -> datetime:
         return game_start(game, self.tipoff_of(game))
+
+    def computed_after_tipoff(self, game: Game, computed_at: datetime | None) -> bool | None:
+        """See :func:`computed_after_tipoff`, with this store's tip-off for ``game``."""
+        return computed_after_tipoff(game, self.tipoff_of(game), computed_at)
 
     def result_known_by(self, game: Game, cutoff: datetime) -> bool:
         """Whether ``game``'s result may inform anything cut off at ``cutoff``: see

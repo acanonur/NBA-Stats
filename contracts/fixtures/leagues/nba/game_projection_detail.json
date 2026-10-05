@@ -306,6 +306,7 @@
       "kind": "latest",
       "computedAt": "2026-01-03T16:30:00Z",
       "inputsCutoff": "2026-01-03T16:30:00Z",
+      "computedAfterTipoff": false,
       "capPolicy": "consistent",
       "constants": [
         {
@@ -536,6 +537,7 @@
       "kind": "locked",
       "computedAt": "2026-01-03T16:30:00Z",
       "inputsCutoff": "2026-01-03T16:30:00Z",
+      "computedAfterTipoff": false,
       "capPolicy": "consistent",
       "constants": []
     },

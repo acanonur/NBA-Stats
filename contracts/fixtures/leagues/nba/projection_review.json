@@ -103,6 +103,7 @@
         "awayPts": 104
       },
       "marginMiss": 7.429790224753432,
+      "combinedMiss": -9.001803806117834,
       "winnerCalled": true
     },
     {
@@ -151,6 +152,7 @@
         "awayPts": 111
       },
       "marginMiss": 7.7189703055462076,
+      "combinedMiss": 10.847551737806214,
       "winnerCalled": true
     },
     {
@@ -199,6 +201,7 @@
         "awayPts": 110
       },
       "marginMiss": 1.0993785276523624,
+      "combinedMiss": 6.648899676458541,
       "winnerCalled": true
     },
     {
@@ -247,6 +250,7 @@
         "awayPts": 137
       },
       "marginMiss": -19.235981534144457,
+      "combinedMiss": 25.002253093442164,
       "winnerCalled": false
     },
     {
@@ -292,6 +296,7 @@
         "awayPts": 101
       },
       "marginMiss": 4.124382519388533,
+      "combinedMiss": -7.987144567538223,
       "winnerCalled": true
     }
   ],

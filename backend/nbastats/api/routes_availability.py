@@ -20,10 +20,12 @@ The reads
 
 The writes
 ----------
-Three routes write, and each needs **either** the API key (the native Mac app on loopback sends it)
-**or** a signed-in browser session with its CSRF token (:func:`require_nba_write`). With neither
-configured or presented the answer is ``401``: a write endpoint with no credential is the one thing
-this service does not offer. Each commits explicitly (:func:`commit_after`); no read does.
+Three routes write, and each needs **either** the API key on a request with no ``Origin`` (the
+native Mac app sends it) **or** a signed-in browser session with its CSRF token and a same-origin
+``Origin`` (:func:`require_nba_write`). With neither configured or presented the answer is ``401``:
+a write endpoint with no credential is the one thing this service does not offer, and
+``X-Hardwood-Client`` is not a credential. Each commits explicitly (:func:`commit_after`); no read
+does.
 
 ``POST /availability``
     Enter an override: ``{playerId, teamId?, gameId?, status, note?, sourceUrl?,
@@ -42,7 +44,6 @@ gets a ``400`` naming it instead of having it silently dropped.
 
 from __future__ import annotations
 
-import hmac
 from datetime import datetime
 from typing import Annotated, Any
 
@@ -52,7 +53,6 @@ from pydantic.alias_generators import to_camel
 from sqlalchemy.orm import Session
 
 from .. import nba_matchup
-from ..config import get_settings
 from ..nba_matchup import availability_view, news_view
 from ..nba_matchup.queries import (
     build_context,
@@ -63,7 +63,7 @@ from ..nba_matchup.queries import (
 )
 from ..nba_matchup.sources import freshness_for, news_keys
 from . import deps
-from .deps import API_KEY_HEADER, SessionDep
+from .deps import SessionDep
 
 __all__ = [
     "router",
@@ -84,18 +84,15 @@ NowDep = Annotated[datetime, Depends(get_now)]
 
 
 def require_nba_write(request: Request) -> None:
-    """The API key, or a session with its CSRF token; otherwise ``401``.
+    """The native app's API key, or a browser session with its CSRF token; otherwise ``401``.
 
-    The key is compared in constant time and only when the service is configured with one. A
-    session goes through the same ``require_write`` every other state-changing route uses (origin
-    check and CSRF), so an NBA write is no easier to forge than any other.
+    One shared gate (:func:`nbastats.api.deps.require_key_or_session_write`) so the NBA's writes
+    and the EuroLeague's can never differ. The key is compared in constant time, only when the
+    service is configured with one, and only on a request that carries no ``Origin``: a web page
+    holding the key is still a web page. A keyless server refuses every write that has no
+    session. See ``nbastats/api/deps.py`` for why no other header is a credential.
     """
-    settings = get_settings()
-    if settings.requires_api_key:
-        supplied = request.headers.get(API_KEY_HEADER)
-        if supplied and hmac.compare_digest(supplied, settings.api_key or ""):
-            return
-    deps.require_write(request)
+    deps.require_key_or_session_write(request)
 
 
 def entered_by(request: Request) -> str | None:

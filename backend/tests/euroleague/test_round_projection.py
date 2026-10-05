@@ -993,6 +993,7 @@ def test_the_scorers_payload_has_no_player_interval_and_no_forbidden_keys(sessio
         "modelPoints",
         "formAverage",
         "formGames",
+        "recentPoints",
         "projectedPoints",
         "projectedMinutes",
     }

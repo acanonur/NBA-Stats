@@ -37,6 +37,25 @@ whenever a live session exists, then falls back to the *same* key check
 :func:`require_api_key` already performs. A deployment with no ``HARDWOOD_API_KEY`` and no
 accounts feature therefore behaves byte-for-byte as it did before this module grew a session
 concept at all.
+
+Writes from the native Mac app, and why the key alone is never enough for a browser
+-------------------------------------------------------------------------------------
+Every state-changing route outside accounts (a typed injury status, a pasted headline link, a model
+setting, a retraction) is guarded by :func:`require_key_or_session_write`, which accepts exactly
+two kinds of caller:
+
+* **The native app**: ``X-API-Key`` equal to ``HARDWOOD_API_KEY``, compared in constant time, on a
+  request that carries **no** ``Origin`` header (and no ``Sec-Fetch-Site``). ``URLSession`` sends
+  neither; every browser sends at least one on a ``fetch``/XHR that changes state.
+* **The web app**: a live session plus its CSRF token plus a same-origin ``Origin``
+  (:func:`nbastats.accounts.csrf.require_write`, unchanged).
+
+There is no third path. In particular **a keyless server never accepts a write**, and
+``X-Hardwood-Client`` (which an earlier draft treated as a credential for a loopback caller) is
+not consulted anywhere: it is a header name a browser page may send cross-origin, because the
+service answers any CORS preflight (``api/app.py`` allows every header), so it proves nothing. A
+request that carries an ``Origin`` is held to the browser path even when it also carries the
+right key, so a web page that somehow learned the key still cannot write.
 """
 from __future__ import annotations
 
@@ -76,6 +95,9 @@ __all__ = [
     "RateLimiter",
     "get_db",
     "require_api_key",
+    "api_key_matches",
+    "request_is_from_a_browser",
+    "require_key_or_session_write",
     "enforce_rate_limit",
     "get_rate_limiter",
     "reset_rate_limiter",
@@ -126,6 +148,39 @@ SessionDep = Annotated[Session, Depends(get_db)]
 # --------------------------------------------------------------------------- auth
 
 
+def api_key_matches(supplied: str | None, expected: str | None) -> bool:
+    """True when ``supplied`` is the configured key. Constant time; never raises.
+
+    ``hmac.compare_digest`` is given **bytes**. Given two ``str`` it raises ``TypeError`` as soon
+    as either holds a non-ASCII character, and Starlette decodes header bytes as Latin-1, so a
+    client sending a key header with a byte above 0x7F turned a plain "wrong key" into a 500 on
+    every gate that compared strings. Encoding both sides first makes any byte string a wrong
+    key, which is what it is.
+
+    A missing or empty key never matches, whatever ``expected`` is, and an unset ``expected``
+    matches nothing: a server with no configured key has no key to present.
+    """
+    if not supplied or not expected:
+        return False
+    return hmac.compare_digest(supplied.encode("utf-8"), expected.encode("utf-8"))
+
+
+def request_is_from_a_browser(request: Request) -> bool:
+    """True when the request carries a header only a web page's request carries.
+
+    ``Origin`` is added by the browser itself to every cross-origin request and to every
+    same-origin one that is not a plain ``GET``/``HEAD``, and page script cannot set, remove or
+    forge it (it is a forbidden header name). ``Sec-Fetch-Site`` is the same kind of header (a
+    ``Sec-`` name, also forbidden to script) and rides along on every request a modern browser
+    makes. A native client (``URLSession``, ``curl``) sends neither.
+
+    Presence is what counts, not truthiness: an empty ``Origin:`` still came from something that
+    sends the header, so it is held to the browser path too.
+    """
+    headers = request.headers
+    return "origin" in headers or "sec-fetch-site" in headers
+
+
 def require_api_key(request: Request) -> None:
     """Enforce ``X-API-Key`` when the service is configured with one.
 
@@ -136,9 +191,7 @@ def require_api_key(request: Request) -> None:
         return
     if request.url.path in API_KEY_EXEMPT_PATHS:
         return
-    supplied = request.headers.get(API_KEY_HEADER)
-    expected = settings.api_key or ""
-    if not supplied or not hmac.compare_digest(supplied, expected):
+    if not api_key_matches(request.headers.get(API_KEY_HEADER), settings.api_key):
         raise errors.unauthorized()
 
 
@@ -203,13 +256,36 @@ def require_api_key_or_session(request: Request) -> None:
         return
     if request.url.path in API_KEY_EXEMPT_PATHS:
         return
-    supplied = request.headers.get(API_KEY_HEADER)
-    expected = settings.api_key or ""
-    if supplied and hmac.compare_digest(supplied, expected):
+    if api_key_matches(request.headers.get(API_KEY_HEADER), settings.api_key):
         return
     if getattr(request.state, "auth_session", None) is not None:
         return
     raise errors.unauthorized()
+
+
+def require_key_or_session_write(request: Request) -> None:
+    """The one gate for a state-changing league route: the native app's key, or the browser's
+    session. Anything else is ``401``/``403`` and nothing is written.
+
+    * ``X-API-Key`` equal to ``HARDWOOD_API_KEY`` **and** no browser marker
+      (:func:`request_is_from_a_browser`): the native app. Authorised.
+    * Otherwise the request must satisfy the browser path, exactly as every account route does
+      (:func:`require_write`): a live session, a same-origin ``Origin`` (or ``Sec-Fetch-Site``)
+      and the CSRF synchroniser token. A key sent along with an ``Origin`` is simply ignored here,
+      so the answer for a web page that learned the key is the same ``401`` as for a stranger, and
+      for a signed-in browser it is whatever the CSRF check says.
+
+    Two non-paths, on purpose. With **no key configured** the first branch can never be taken
+    (:func:`api_key_matches` has nothing to match), so a keyless server refuses every write that
+    has no session, loopback or not. And ``X-Hardwood-Client`` is never read: see the module
+    docstring.
+    """
+    settings = get_settings()
+    if settings.requires_api_key:
+        if api_key_matches(request.headers.get(API_KEY_HEADER), settings.api_key):
+            if not request_is_from_a_browser(request):
+                return
+    require_write(request)
 
 
 # --------------------------------------------------------------------------- auth rate limit
@@ -346,10 +422,8 @@ def _rate_limit_bucket(request: Request) -> str:
     """
     settings = get_settings()
     supplied = request.headers.get(API_KEY_HEADER)
-    if settings.requires_api_key and supplied:
-        expected = settings.api_key or ""
-        if hmac.compare_digest(supplied, expected):
-            return f"key:{hashlib.sha256(supplied.encode('utf-8')).hexdigest()[:32]}"
+    if settings.requires_api_key and api_key_matches(supplied, settings.api_key):
+        return f"key:{hashlib.sha256((supplied or '').encode('utf-8')).hexdigest()[:32]}"
 
     auth_session = getattr(request.state, "auth_session", None)
     session_id = getattr(auth_session, "session_id", None)

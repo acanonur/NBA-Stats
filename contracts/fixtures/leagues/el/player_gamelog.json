@@ -78,6 +78,20 @@
         "clubCode": "ZZA",
         "tvCode": null
       },
+      "opponent": {
+        "league": "euroleague",
+        "id": "ZZQ",
+        "abbr": "ZZQ",
+        "name": "Quillon Ravens",
+        "shortName": "Quillon",
+        "clubCode": "ZZQ",
+        "tvCode": null
+      },
+      "isHome": false,
+      "isNeutral": false,
+      "teamScore": 74,
+      "opponentScore": 80,
+      "result": "L",
       "participation": "played",
       "isStarter": true,
       "stats": {
@@ -148,6 +162,20 @@
         "clubCode": "ZZA",
         "tvCode": null
       },
+      "opponent": {
+        "league": "euroleague",
+        "id": "ZZR",
+        "abbr": "ZZR",
+        "name": "Redmarsh Pikes",
+        "shortName": "Redmarsh",
+        "clubCode": "ZZR",
+        "tvCode": null
+      },
+      "isHome": true,
+      "isNeutral": true,
+      "teamScore": 96,
+      "opponentScore": 82,
+      "result": "W",
       "participation": "played",
       "isStarter": true,
       "stats": {
@@ -218,6 +246,20 @@
         "clubCode": "ZZA",
         "tvCode": null
       },
+      "opponent": {
+        "league": "euroleague",
+        "id": "ZZS",
+        "abbr": "ZZS",
+        "name": "Silverlake Orcas",
+        "shortName": "Silverlake",
+        "clubCode": "ZZS",
+        "tvCode": null
+      },
+      "isHome": false,
+      "isNeutral": false,
+      "teamScore": 89,
+      "opponentScore": 78,
+      "result": "W",
       "participation": "played",
       "isStarter": null,
       "stats": {
@@ -288,6 +330,20 @@
         "clubCode": "ZZA",
         "tvCode": null
       },
+      "opponent": {
+        "league": "euroleague",
+        "id": "ZZT",
+        "abbr": "ZZT",
+        "name": "Thornfield Tigers",
+        "shortName": "Thornfield",
+        "clubCode": "ZZT",
+        "tvCode": null
+      },
+      "isHome": true,
+      "isNeutral": null,
+      "teamScore": 94,
+      "opponentScore": 93,
+      "result": "W",
       "participation": "played",
       "isStarter": null,
       "stats": {

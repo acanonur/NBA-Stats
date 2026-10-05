@@ -205,6 +205,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -465,6 +466,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -697,6 +699,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -957,6 +960,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -1245,6 +1249,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -1505,6 +1510,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -1765,6 +1771,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -2053,6 +2060,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -2313,6 +2321,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {
@@ -2573,6 +2582,7 @@
         "kind": "latest",
         "computedAt": "2026-10-12T09:00:00Z",
         "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
         "capPolicy": "consistent",
         "constants": [
           {

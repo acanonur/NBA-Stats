@@ -425,12 +425,27 @@ def build_player_gamelog(
         for row in rows:
             game = games[row.game_id]
             played = row.participation == "played"
+            at_home = row.club_code == game.home_club_code
+            own, other = (
+                (game.home_pts, game.away_pts) if at_home else (game.away_pts, game.home_pts)
+            )
             entries.append(
                 (
                     (game_start(game), game.game_id),
                     {
                         "game": ctx.game_ref(game),
                         "club": ctx.team_ref(row.club_code),
+                        # The result as the player's club lived it, in the same words a club's own
+                        # ``scoring.form`` rows use, so a client prints "v OLY (H) W 94-84"
+                        # without working out which side of the game he was on.
+                        "opponent": ctx.team_ref(
+                            game.away_club_code if at_home else game.home_club_code
+                        ),
+                        "isHome": at_home,
+                        "isNeutral": game.is_neutral,
+                        "teamScore": own,
+                        "opponentScore": other,
+                        "result": None if own == other else ("W" if own > other else "L"),
                         "participation": row.participation,
                         "isStarter": row.is_starter if played else None,
                         "stats": line_payload(row) if played else None,

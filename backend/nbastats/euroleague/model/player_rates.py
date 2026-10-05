@@ -220,6 +220,27 @@ class PlayerState:
             return None
         return pts * minutes / 40.0
 
+    @property
+    def per_game(self) -> dict[str, float | None] | None:
+        """The projected per-game line (the workbook's Squads columns U to AH): projected minutes
+        and each per-40 rate scaled to them, ``rate * minutes / 40``, the same arithmetic as
+        :attr:`points_per_game`.
+
+        ``None`` when the player has no projected minutes. A stat with no rate is ``None`` in its
+        place, never zero. ``pir`` is **always** ``None``: the Performance Index Rating also counts
+        fouls drawn, shots blocked against and fouls committed, none of which the workbook's rates
+        carry, so a projected PIR would be invented. The key stays so a client has one shape.
+        """
+        minutes = self.minutes
+        if minutes is None:
+            return None
+        line: dict[str, float | None] = {"min": minutes}
+        for key in ("pts", "reb", "ast", "fg3m", "stl", "blk", "tov"):
+            rate = self.rates.get(f"{key}40")
+            line[key] = None if rate is None else rate * minutes / 40.0
+        line["pir"] = None
+        return line
+
 
 # --------------------------------------------------------------------------- the arithmetic
 

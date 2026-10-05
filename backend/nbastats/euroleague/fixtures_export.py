@@ -61,6 +61,7 @@ __all__ = [
     "FIXTURE_NOW",
     "FIXTURE_DIR",
     "FIXTURE_NAMES",
+    "WIDGET_CONFIGS",
     "build_fixtures",
     "render",
     "write_fixtures",
@@ -104,7 +105,45 @@ FIXTURE_NAMES: tuple[str, ...] = (
     "sources",
     "team_matchup",
     "teams",
+    "widget_availability_report",
+    "widget_defense_by_position",
+    "widget_slate_projections",
+    "widget_team_matchup",
 )
+
+#: The four league tiles' configurations for the invented league: the ``config`` of a dashboard
+#: widget whose ``league`` is ``euroleague``. The ``widget_<kind>`` fixtures below are what the
+#: tile resolvers return for exactly these (``tests/euroleague/test_el_widget_fixtures.py`` resolves
+#: them through the real dashboard route and demands equality), which is why they are built here
+#: with the builders' own keyword arguments and not copied from the route fixtures: availability,
+#: for one, is the club's report for its next game here, where the route fixture is a whole round.
+WIDGET_CONFIGS: dict[str, dict[str, Any]] = {
+    "team_matchup": {
+        "league": "euroleague",
+        "team": None,
+        "club": _CLUB,
+        "opponent": None,
+        "opponentClub": None,
+        "season": "latest",
+        "window": 5,
+    },
+    "defense_by_position": {
+        "league": "euroleague",
+        "team": None,
+        "club": _CLUB,
+        "season": "latest",
+        "window": 0,
+        "basis": "perGame",
+        "scheme": "gfc",
+    },
+    "availability_report": {
+        "league": "euroleague",
+        "team": None,
+        "club": _CLUB,
+        "includeNews": False,
+    },
+    "slate_projections": {"league": "euroleague", "date": "next", "round": 0},
+}
 
 
 def _documents(session: Session, now: datetime) -> dict[str, Any]:
@@ -164,6 +203,17 @@ def _documents(session: Session, now: datetime) -> dict[str, Any]:
             freshness=fresh(sources_module.news_keys(ctx)),
         ),
         "review_queue": availability_module.build_review_queue(ctx),
+        # The tiles: the same builders, called the way the tile resolvers call them.
+        "widget_team_matchup": read.team_matchup(session, club=_CLUB, window=5, now=now),
+        "widget_defense_by_position": read.defense_by_position(
+            session, club=_CLUB, window=0, basis="perGame", scheme="gfc", now=now
+        ),
+        "widget_availability_report": read.availability_report(
+            session, club=_CLUB, include_news=False, now=now
+        ),
+        "widget_slate_projections": read.slate_projections(
+            session, round_number="next", now=now
+        ),
     }
     return {name: docs[name] for name in FIXTURE_NAMES}
 

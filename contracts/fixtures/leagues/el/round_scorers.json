@@ -93,6 +93,12 @@
           "modelPoints": 18.21188538407353,
           "formAverage": 17.75,
           "formGames": 4,
+          "recentPoints": [
+            11,
+            30,
+            23,
+            7
+          ],
           "projectedPoints": 18.096414038055148,
           "projectedMinutes": 27.431111111111115
         },
@@ -112,6 +118,12 @@
           "modelPoints": 14.612924296658033,
           "formAverage": 15.75,
           "formGames": 4,
+          "recentPoints": [
+            15,
+            17,
+            13,
+            18
+          ],
           "projectedPoints": 14.897193222493524,
           "projectedMinutes": 25.94
         },
@@ -131,6 +143,12 @@
           "modelPoints": 11.87895440140526,
           "formAverage": 10.0,
           "formGames": 4,
+          "recentPoints": [
+            12,
+            6,
+            16,
+            6
+          ],
           "projectedPoints": 11.409215801053945,
           "projectedMinutes": 22.25777777777778
         }
@@ -195,6 +213,12 @@
           "modelPoints": 20.42782120702829,
           "formAverage": 18.0,
           "formGames": 4,
+          "recentPoints": [
+            21,
+            16,
+            16,
+            19
+          ],
           "projectedPoints": 19.82086590527122,
           "projectedMinutes": 26.952244897959183
         },
@@ -214,6 +238,12 @@
           "modelPoints": 10.298171346078764,
           "formAverage": 14.5,
           "formGames": 4,
+          "recentPoints": [
+            22,
+            19,
+            8,
+            9
+          ],
           "projectedPoints": 11.348628509559074,
           "projectedMinutes": 27.219387755102037
         },
@@ -233,6 +263,12 @@
           "modelPoints": 9.544226120227405,
           "formAverage": 13.75,
           "formGames": 4,
+          "recentPoints": [
+            13,
+            11,
+            13,
+            18
+          ],
           "projectedPoints": 10.595669590170553,
           "projectedMinutes": 24.437959183673467
         }
@@ -297,6 +333,12 @@
           "modelPoints": 15.575336446925533,
           "formAverage": 12.5,
           "formGames": 4,
+          "recentPoints": [
+            21,
+            11,
+            12,
+            6
+          ],
           "projectedPoints": 14.80650233519415,
           "projectedMinutes": 25.302118171683386
         },
@@ -316,6 +358,12 @@
           "modelPoints": 15.430716788327043,
           "formAverage": 11.25,
           "formGames": 4,
+          "recentPoints": [
+            5,
+            10,
+            15,
+            15
+          ],
           "projectedPoints": 14.385537591245281,
           "projectedMinutes": 25.921962095875138
         },
@@ -335,6 +383,12 @@
           "modelPoints": 12.543427482692552,
           "formAverage": 12.25,
           "formGames": 4,
+          "recentPoints": [
+            19,
+            12,
+            2,
+            16
+          ],
           "projectedPoints": 12.470070612019414,
           "projectedMinutes": 24.74247491638796
         }
@@ -399,6 +453,12 @@
           "modelPoints": 18.103741218370335,
           "formAverage": 17.0,
           "formGames": 4,
+          "recentPoints": [
+            16,
+            22,
+            9,
+            21
+          ],
           "projectedPoints": 17.827805913777752,
           "projectedMinutes": 27.519631982805755
         },
@@ -418,6 +478,12 @@
           "modelPoints": 14.794645542272951,
           "formAverage": 16.25,
           "formGames": 4,
+          "recentPoints": [
+            12,
+            17,
+            14,
+            22
+          ],
           "projectedPoints": 15.158484156704713,
           "projectedMinutes": 25.02844717608391
         },
@@ -437,6 +503,12 @@
           "modelPoints": 9.736380264867375,
           "formAverage": 9.25,
           "formGames": 4,
+          "recentPoints": [
+            7,
+            11,
+            6,
+            13
+          ],
           "projectedPoints": 9.61478519865053,
           "projectedMinutes": 23.723434073012704
         }
@@ -501,6 +573,12 @@
           "modelPoints": 20.616073226505584,
           "formAverage": 16.25,
           "formGames": 4,
+          "recentPoints": [
+            27,
+            13,
+            11,
+            14
+          ],
           "projectedPoints": 19.524554919879186,
           "projectedMinutes": 26.284116331096197
         },
@@ -520,6 +598,12 @@
           "modelPoints": 14.649353041410286,
           "formAverage": 18.5,
           "formGames": 4,
+          "recentPoints": [
+            19,
+            18,
+            12,
+            25
+          ],
           "projectedPoints": 15.612014781057715,
           "projectedMinutes": 28.604026845637584
         },
@@ -539,6 +623,12 @@
           "modelPoints": 10.526511317467811,
           "formAverage": 15.0,
           "formGames": 4,
+          "recentPoints": [
+            22,
+            11,
+            13,
+            14
+          ],
           "projectedPoints": 11.64488348810086,
           "projectedMinutes": 24.013422818791945
         }
@@ -603,6 +693,12 @@
           "modelPoints": 13.129541906586727,
           "formAverage": 17.5,
           "formGames": 4,
+          "recentPoints": [
+            13,
+            21,
+            17,
+            19
+          ],
           "projectedPoints": 14.222156429940046,
           "projectedMinutes": 24.271604938271608
         },
@@ -622,6 +718,12 @@
           "modelPoints": 15.651674473204372,
           "formAverage": 8.25,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            7,
+            13,
+            3
+          ],
           "projectedPoints": 13.801255854903278,
           "projectedMinutes": 27.928170594837262
         },
@@ -641,6 +743,12 @@
           "modelPoints": 12.096102211874307,
           "formAverage": 11.5,
           "formGames": 4,
+          "recentPoints": [
+            14,
+            15,
+            10,
+            7
+          ],
           "projectedPoints": 11.94707665890573,
           "projectedMinutes": 26.060606060606062
         }
@@ -705,6 +813,12 @@
           "modelPoints": 15.286996024586252,
           "formAverage": 16.75,
           "formGames": 4,
+          "recentPoints": [
+            20,
+            19,
+            16,
+            12
+          ],
           "projectedPoints": 15.652747018439689,
           "projectedMinutes": 26.136465324384787
         },
@@ -724,6 +838,12 @@
           "modelPoints": 15.503115218146263,
           "formAverage": 13.25,
           "formGames": 4,
+          "recentPoints": [
+            16,
+            6,
+            16,
+            15
+          ],
           "projectedPoints": 14.939836413609697,
           "projectedMinutes": 29.109619686800894
         },
@@ -743,6 +863,12 @@
           "modelPoints": 13.10515635838044,
           "formAverage": 11.5,
           "formGames": 4,
+          "recentPoints": [
+            12,
+            11,
+            10,
+            13
+          ],
           "projectedPoints": 12.703867268785329,
           "projectedMinutes": 23.3579418344519
         }
@@ -807,6 +933,12 @@
           "modelPoints": 15.591134514261391,
           "formAverage": 14.25,
           "formGames": 4,
+          "recentPoints": [
+            13,
+            12,
+            14,
+            18
+          ],
           "projectedPoints": 15.255850885696043,
           "projectedMinutes": 25.277479028284535
         },
@@ -826,6 +958,12 @@
           "modelPoints": 15.211189171643522,
           "formAverage": 14.75,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            14,
+            15,
+            20
+          ],
           "projectedPoints": 15.09589187873264,
           "projectedMinutes": 23.86354570118814
         },
@@ -845,6 +983,12 @@
           "modelPoints": 10.439514301991847,
           "formAverage": 15.5,
           "formGames": 4,
+          "recentPoints": [
+            19,
+            17,
+            17,
+            9
+          ],
           "projectedPoints": 11.704635726493885,
           "projectedMinutes": 27.989038263635514
         }
@@ -909,6 +1053,12 @@
           "modelPoints": 17.44600206918699,
           "formAverage": 17.75,
           "formGames": 4,
+          "recentPoints": [
+            20,
+            20,
+            14,
+            17
+          ],
           "projectedPoints": 17.52200155189024,
           "projectedMinutes": 26.936432881095303
         },
@@ -928,6 +1078,12 @@
           "modelPoints": 11.199573538142714,
           "formAverage": 15.5,
           "formGames": 4,
+          "recentPoints": [
+            15,
+            14,
+            13,
+            20
+          ],
           "projectedPoints": 12.274680153607035,
           "projectedMinutes": 28.06135125554511
         },
@@ -947,6 +1103,12 @@
           "modelPoints": 10.806597668616757,
           "formAverage": 14.75,
           "formGames": 4,
+          "recentPoints": [
+            14,
+            12,
+            15,
+            18
+          ],
           "projectedPoints": 11.792448251462567,
           "projectedMinutes": 23.71455713114981
         }
@@ -1011,6 +1173,12 @@
           "modelPoints": 18.900626033395422,
           "formAverage": 18.25,
           "formGames": 4,
+          "recentPoints": [
+            28,
+            18,
+            13,
+            14
+          ],
           "projectedPoints": 18.737969525046566,
           "projectedMinutes": 26.104767698263906
         },
@@ -1030,6 +1198,12 @@
           "modelPoints": 10.747016201393485,
           "formAverage": 23.25,
           "formGames": 4,
+          "recentPoints": [
+            27,
+            17,
+            26,
+            23
+          ],
           "projectedPoints": 13.872762151045114,
           "projectedMinutes": 28.189748715898826
         },
@@ -1049,6 +1223,12 @@
           "modelPoints": 12.553851336572976,
           "formAverage": 11.5,
           "formGames": 4,
+          "recentPoints": [
+            7,
+            20,
+            10,
+            9
+          ],
           "projectedPoints": 12.290388502429732,
           "projectedMinutes": 23.7781794382421
         }
@@ -1113,6 +1293,12 @@
           "modelPoints": 17.54709476776748,
           "formAverage": 15.5,
           "formGames": 4,
+          "recentPoints": [
+            19,
+            11,
+            23,
+            9
+          ],
           "projectedPoints": 17.03532107582561,
           "projectedMinutes": 28.955932203389832
         },
@@ -1132,6 +1318,12 @@
           "modelPoints": 16.90954830107803,
           "formAverage": 12.0,
           "formGames": 4,
+          "recentPoints": [
+            9,
+            11,
+            8,
+            20
+          ],
           "projectedPoints": 15.682161225808521,
           "projectedMinutes": 25.071186440677963
         },
@@ -1151,6 +1343,12 @@
           "modelPoints": 8.414460930752135,
           "formAverage": 11.0,
           "formGames": 4,
+          "recentPoints": [
+            8,
+            16,
+            12,
+            8
+          ],
           "projectedPoints": 9.060845698064101,
           "projectedMinutes": 24.350282485875702
         }
@@ -1215,6 +1413,12 @@
           "modelPoints": 15.835281290881104,
           "formAverage": 18.0,
           "formGames": 4,
+          "recentPoints": [
+            21,
+            15,
+            15,
+            21
+          ],
           "projectedPoints": 16.376460968160828,
           "projectedMinutes": 29.012116887209107
         },
@@ -1234,6 +1438,12 @@
           "modelPoints": 15.714213504071418,
           "formAverage": 15.25,
           "formGames": 4,
+          "recentPoints": [
+            15,
+            14,
+            10,
+            22
+          ],
           "projectedPoints": 15.598160128053564,
           "projectedMinutes": 25.37090135864197
         },
@@ -1253,6 +1463,12 @@
           "modelPoints": 14.31585769159065,
           "formAverage": 9.25,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            14,
+            8,
+            5
+          ],
           "projectedPoints": 13.049393268692988,
           "projectedMinutes": 24.489999311832186
         }
@@ -1317,6 +1533,12 @@
           "modelPoints": 17.232833799240538,
           "formAverage": 16.5,
           "formGames": 4,
+          "recentPoints": [
+            16,
+            23,
+            10,
+            17
+          ],
           "projectedPoints": 17.049625349430404,
           "projectedMinutes": 27.87830413069254
         },
@@ -1336,6 +1558,12 @@
           "modelPoints": 16.715614962269107,
           "formAverage": 16.0,
           "formGames": 4,
+          "recentPoints": [
+            14,
+            23,
+            12,
+            15
+          ],
           "projectedPoints": 16.53671122170183,
           "projectedMinutes": 28.22850569810135
         },
@@ -1355,6 +1583,12 @@
           "modelPoints": 11.177328205357655,
           "formAverage": 10.25,
           "formGames": 4,
+          "recentPoints": [
+            6,
+            6,
+            15,
+            14
+          ],
           "projectedPoints": 10.945496154018242,
           "projectedMinutes": 23.519989140166082
         }
@@ -1419,6 +1653,12 @@
           "modelPoints": 14.361926188455131,
           "formAverage": 19.25,
           "formGames": 4,
+          "recentPoints": [
+            23,
+            16,
+            18,
+            20
+          ],
           "projectedPoints": 15.583944641341349,
           "projectedMinutes": 27.701694915254237
         },
@@ -1438,6 +1678,12 @@
           "modelPoints": 14.625594644472084,
           "formAverage": 15.75,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            25,
+            14,
+            14
+          ],
           "projectedPoints": 14.906695983354062,
           "projectedMinutes": 23.814689265536717
         },
@@ -1457,6 +1703,12 @@
           "modelPoints": 11.630094685458996,
           "formAverage": 10.5,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            6,
+            18,
+            8
+          ],
           "projectedPoints": 11.347571014094246,
           "projectedMinutes": 26.140112994350282
         }
@@ -1521,6 +1773,12 @@
           "modelPoints": 19.29319884164387,
           "formAverage": 13.5,
           "formGames": 4,
+          "recentPoints": [
+            14,
+            16,
+            11,
+            13
+          ],
           "projectedPoints": 17.844899131232903,
           "projectedMinutes": 28.4941954525443
         },
@@ -1540,6 +1798,12 @@
           "modelPoints": 14.066748381999476,
           "formAverage": 16.5,
           "formGames": 4,
+          "recentPoints": [
+            16,
+            13,
+            24,
+            13
+          ],
           "projectedPoints": 14.675061286499608,
           "projectedMinutes": 25.920022926326958
         },
@@ -1559,6 +1823,12 @@
           "modelPoints": 13.509189787196519,
           "formAverage": 17.25,
           "formGames": 4,
+          "recentPoints": [
+            19,
+            28,
+            11,
+            11
+          ],
           "projectedPoints": 14.444392340397389,
           "projectedMinutes": 24.87921031183043
         }
@@ -1623,6 +1893,12 @@
           "modelPoints": 15.15808559246695,
           "formAverage": 14.75,
           "formGames": 4,
+          "recentPoints": [
+            17,
+            18,
+            6,
+            18
+          ],
           "projectedPoints": 15.056064194350213,
           "projectedMinutes": 28.76284670595131
         },
@@ -1642,6 +1918,12 @@
           "modelPoints": 14.56409846975741,
           "formAverage": 11.0,
           "formGames": 4,
+          "recentPoints": [
+            17,
+            9,
+            14,
+            4
+          ],
           "projectedPoints": 13.673073852318057,
           "projectedMinutes": 24.716593728763698
         },
@@ -1661,6 +1943,12 @@
           "modelPoints": 10.052666577633401,
           "formAverage": 14.5,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            9,
+            25,
+            14
+          ],
           "projectedPoints": 11.16449993322505,
           "projectedMinutes": 24.44188985385169
         }
@@ -1725,6 +2013,12 @@
           "modelPoints": 21.385549816715564,
           "formAverage": 17.25,
           "formGames": 4,
+          "recentPoints": [
+            16,
+            15,
+            26,
+            12
+          ],
           "projectedPoints": 20.351662362536672,
           "projectedMinutes": 27.674467363717238
         },
@@ -1744,6 +2038,12 @@
           "modelPoints": 13.33270613924497,
           "formAverage": 16.25,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            16,
+            18,
+            21
+          ],
           "projectedPoints": 14.062029604433727,
           "projectedMinutes": 29.59962690638854
         },
@@ -1763,6 +2063,12 @@
           "modelPoints": 10.055971198698245,
           "formAverage": 11.5,
           "formGames": 4,
+          "recentPoints": [
+            18,
+            15,
+            5,
+            8
+          ],
           "projectedPoints": 10.416978399023684,
           "projectedMinutes": 24.448330440656868
         }
@@ -1827,6 +2133,12 @@
           "modelPoints": 17.736001364971713,
           "formAverage": 19.25,
           "formGames": 4,
+          "recentPoints": [
+            19,
+            10,
+            21,
+            27
+          ],
           "projectedPoints": 18.114501023728785,
           "projectedMinutes": 25.891111111111112
         },
@@ -1846,6 +2158,12 @@
           "modelPoints": 14.72134169277146,
           "formAverage": 14.0,
           "formGames": 4,
+          "recentPoints": [
+            15,
+            18,
+            7,
+            16
+          ],
           "projectedPoints": 14.541006269578595,
           "projectedMinutes": 27.777777777777775
         },
@@ -1865,6 +2183,12 @@
           "modelPoints": 14.017591569480228,
           "formAverage": 12.25,
           "formGames": 4,
+          "recentPoints": [
+            14,
+            12,
+            13,
+            10
+          ],
           "projectedPoints": 13.57569367711017,
           "projectedMinutes": 24.32
         }
@@ -1929,6 +2253,12 @@
           "modelPoints": 17.046702424639232,
           "formAverage": 14.0,
           "formGames": 4,
+          "recentPoints": [
+            10,
+            11,
+            13,
+            22
+          ],
           "projectedPoints": 16.285026818479423,
           "projectedMinutes": 26.39821029082774
         },
@@ -1948,6 +2278,12 @@
           "modelPoints": 14.107231056754523,
           "formAverage": 18.0,
           "formGames": 4,
+          "recentPoints": [
+            18,
+            13,
+            28,
+            13
+          ],
           "projectedPoints": 15.080423292565893,
           "projectedMinutes": 27.78523489932886
         },
@@ -1967,6 +2303,12 @@
           "modelPoints": 11.565243087720708,
           "formAverage": 15.5,
           "formGames": 4,
+          "recentPoints": [
+            9,
+            19,
+            22,
+            12
+          ],
           "projectedPoints": 12.54893231579053,
           "projectedMinutes": 24.814317673378078
         }
@@ -2031,6 +2373,12 @@
           "modelPoints": 14.468574140086986,
           "formAverage": 14.25,
           "formGames": 4,
+          "recentPoints": [
+            17,
+            15,
+            7,
+            18
+          ],
           "projectedPoints": 14.41393060506524,
           "projectedMinutes": 29.25378569409104
         },
@@ -2050,6 +2398,12 @@
           "modelPoints": 14.483676185367177,
           "formAverage": 12.75,
           "formGames": 4,
+          "recentPoints": [
+            9,
+            9,
+            14,
+            19
+          ],
           "projectedPoints": 14.050257139025383,
           "projectedMinutes": 25.41321741588918
         },
@@ -2069,6 +2423,12 @@
           "modelPoints": 14.547591044113556,
           "formAverage": 8.25,
           "formGames": 4,
+          "recentPoints": [
+            12,
+            2,
+            8,
+            11
+          ],
           "projectedPoints": 12.973193283085166,
           "projectedMinutes": 24.002991235510322
         }

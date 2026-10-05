@@ -13,16 +13,34 @@ live rather than nightly:
 3. :func:`run_correction_window` re-pulls the last few days every night, because
    the league revises box scores after the fact. Every write is an upsert, so a
    correction overwrites yesterday instead of duplicating it.
+4. :func:`refetch_games` runs the per-game path (:func:`ingest_game`) again over a
+   date range of games already stored. It exists for one job the bulk path cannot
+   do: restoring who started (see "Who started" below).
 
 Two calls per game, not two calls per player
 --------------------------------------------
-:func:`ingest_game` is the per-game path and costs two requests. It is only ever
-used for a game that has just gone Final. Everything else — a whole day, a whole
-season, a correction pass — goes through :func:`ingest_day`, which uses the bulk
-endpoints: one ``LeagueGameLog`` for the team rows plus one ``PlayerGameLogs``
-per measure type for every player in the league. That is three requests for an
-entire night's slate, against roughly two per game. Backfilling with the per-game
-endpoint would be tens of thousands of calls; see ``docs/DATA_SOURCES.md`` §5.
+:func:`ingest_game` is the per-game path and costs two requests. It is used for a
+game that has just gone Final, and by :func:`refetch_games` when a repair needs it.
+Everything else — a whole day, a whole season, a correction pass — goes through
+:func:`ingest_day`, which uses the bulk endpoints: one ``LeagueGameLog`` for the
+team rows plus one ``PlayerGameLogs`` per measure type for every player in the
+league. That is three requests for an entire night's slate, against roughly two per
+game. Backfilling with the per-game endpoint would be tens of thousands of calls;
+see ``docs/DATA_SOURCES.md`` §5.
+
+Who started: only the per-game path knows
+-----------------------------------------
+The per-game box score marks a starter by giving him a position; the bulk
+``PlayerGameLogs`` rows carry no starter column at all. So ``started`` is recorded
+by :func:`ingest_game` and by nothing else, and **a game that only ever went
+through the bulk path (``--once``, ``--nightly``, a ``--nightly --days N`` season
+walk) has ``started`` unrecorded**. Re-running the bulk path never changes that:
+:func:`write_player_basic_row` leaves the stored flag alone when a line is silent
+about it, which is the fix for the old bug that wrote ``False`` over every recorded
+starter. A database that suffered that bug, or was filled by a bulk season walk, is
+repaired by :func:`refetch_games` (``--refetch-games --days N --date D``), which is
+the per-game path over the stored games of those days: two requests per game,
+roughly two seconds each at the client's pace.
 
 ``data_through`` versus ``sync_version``
 ----------------------------------------
@@ -55,17 +73,19 @@ from ..models import (
     TeamGame,
 )
 from . import aggregate, normalize
-from .client import StatsClient
+from .client import StatsClient, UpstreamUnavailable
 
 __all__ = [
     "ADVANCED_FROM_SEASON",
     "LIVE_SOURCE",
     "GameIngestResult",
     "DayIngestResult",
+    "RefetchReport",
     "poll_finalized_games",
     "ingest_game",
     "ingest_day",
     "run_correction_window",
+    "refetch_games",
     "move_data_through",
     "season_has_advanced",
     "record_ingest_log",
@@ -997,3 +1017,206 @@ def run_correction_window(
         sum(item.changed_rows for item in results),
     )
     return results
+
+
+# --------------------------------------------------------------------------- #
+# Refetching games through the per-game path
+# --------------------------------------------------------------------------- #
+
+
+@dataclass
+class RefetchReport:
+    """What a :func:`refetch_games` run did, in numbers a person can read.
+
+    ``starts_before`` and ``starts_after`` count the stored lines flagged as a start in the
+    window's games; ``unrecorded_after`` counts the lines still ``NULL``. A repair that worked
+    shows ``starts_after`` near ten a game and ``unrecorded_after`` at zero. ``state`` is ``ok``
+    for a run that was allowed to start and ``refused`` (with ``reason``) for one that was not;
+    only the runner sets the second, because the refusal is its decision, not this module's.
+    """
+
+    first_date: date | None = None
+    last_date: date | None = None
+    state: str = "ok"
+    reason: str | None = None
+    games_found: int = 0
+    games_refetched: int = 0
+    games_changed: int = 0
+    games_failed: int = 0
+    failed_game_ids: list[str] = field(default_factory=list)
+    starts_before: int = 0
+    starts_after: int = 0
+    unrecorded_after: int = 0
+    seasons: set[tuple[str, str]] = field(default_factory=set)
+    interrupted: bool = False
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "state": self.state,
+            "reason": self.reason,
+            "firstDate": self.first_date.isoformat() if self.first_date else None,
+            "lastDate": self.last_date.isoformat() if self.last_date else None,
+            "gamesFound": self.games_found,
+            "gamesRefetched": self.games_refetched,
+            "gamesChanged": self.games_changed,
+            "gamesFailed": self.games_failed,
+            "startsBefore": self.starts_before,
+            "startsAfter": self.starts_after,
+            "unrecordedAfter": self.unrecorded_after,
+            "seasons": sorted(f"{s}/{t}" for s, t in self.seasons),
+            "interrupted": self.interrupted,
+        }
+
+
+def _count_lines(session: Session, first: date, last: date, *, started: bool | None) -> int:
+    """Stored player lines in games dated ``first`` to ``last`` whose ``started`` is ``True``
+    (``started=True``) or ``NULL`` (``started=None``)."""
+    flag = PlayerGameBasic.started.is_(True) if started else PlayerGameBasic.started.is_(None)
+    return int(
+        session.execute(
+            select(func.count())
+            .select_from(PlayerGameBasic)
+            .join(Game, Game.game_id == PlayerGameBasic.game_id)
+            .where(Game.game_date >= first, Game.game_date <= last, flag)
+        ).scalar_one()
+    )
+
+
+def refetch_games(
+    session: Session,
+    days: int | None = None,
+    *,
+    client: StatsClient | None = None,
+    end_date: date | None = None,
+    shutdown: Any = None,
+    commit: bool = True,
+) -> RefetchReport:
+    """Run the per-game box-score path again over the stored final games of a date range.
+
+    **Why this exists.** ``player_game_basic.started`` is written by :func:`ingest_game` (the
+    per-game box score marks starters) and by nothing the bulk path does. The old
+    ``write_player_basic_row`` wrote ``bool(line.get("started"))`` for bulk lines too, which
+    flattened every recorded starter to ``False`` on the first correction pass, and the repair
+    that stopped it (an absent flag is left alone) deliberately does not rewrite history: a
+    database already flattened, or one filled by a ``--nightly --days N`` season walk, still has
+    ``False`` or ``NULL`` where a starter should be. Only a source that knows can restore the
+    flags, and the only such source is the per-game path. So this is that path, over a range.
+
+    **The window** is the same as the nightly pass's: ``days`` days (default
+    ``CORRECTION_WINDOW_DAYS``) ending at ``end_date``, else ``data_through``, else today. It
+    covers *stored final games*; it does not discover games. A date nobody has ingested has no
+    rows to repair, and the scoreboard is not asked.
+
+    **What it does per game**: :func:`ingest_game` with the stored date, season and season type,
+    committed one game at a time so an interruption (``shutdown`` becoming true, or Ctrl-C) leaves
+    a consistent prefix and a re-run simply finds the rest still unrecorded. A game whose box
+    score cannot be fetched is counted and listed, and the run goes on: one flaky game must not
+    stop a season. The bulk fields a game's box score restates are upserts, so nothing is
+    duplicated; ``changed`` games bump ``sync_version`` once each, exactly as a live ingest does.
+
+    **Aggregates once at the end**, over the union of the seasons that changed (the same reason
+    :func:`run_correction_window` does it that way: per-game recomputation makes a long repair
+    quadratic), followed by one more ``sync_version`` bump so a client that refreshed between
+    the per-game bumps and the recompute refreshes again. Nothing is bumped when nothing changed.
+
+    ``client`` is any object with the :class:`StatsClient` box-score methods (the tests pass a
+    recorded-payload fake). ``shutdown`` is anything truthy once a stop is requested.
+    """
+    settings = get_settings()
+    window = settings.correction_window_days if days is None else days
+    if window < 1:
+        raise ValueError("the refetch window must be at least one day")
+    state = read_sync_state(session)
+    last = end_date or state.data_through or date.today()
+    first = last - timedelta(days=window - 1)
+    report = RefetchReport(first_date=first, last_date=last)
+    started = utcnow()
+
+    games = (
+        session.execute(
+            select(Game)
+            .where(Game.game_date >= first, Game.game_date <= last, Game.status == "final")
+            .order_by(Game.game_date, Game.game_id)
+        )
+        .scalars()
+        .all()
+    )
+    report.games_found = len(games)
+    report.starts_before = _count_lines(session, first, last, started=True)
+    api = client or StatsClient()
+    touched: set[tuple[str, str]] = set()
+
+    for game in games:
+        if shutdown:
+            report.interrupted = True
+            break
+        game_id, scope = game.game_id, (game.season, game.season_type)
+        try:
+            result = ingest_game(
+                session,
+                game_id,
+                client=api,
+                game_date=game.game_date,
+                season=game.season,
+                season_type=game.season_type,
+                reaggregate=False,
+                commit=True,
+            )
+        except UpstreamUnavailable as exc:
+            session.rollback()
+            report.games_failed += 1
+            report.failed_game_ids.append(game_id)
+            logger.warning("event=refetch_game_deferred game_id=%s error=%s", game_id, exc)
+            continue
+        except Exception as exc:  # noqa: BLE001 - one bad game must not stop the repair
+            session.rollback()
+            report.games_failed += 1
+            report.failed_game_ids.append(game_id)
+            logger.exception("event=refetch_game_failed game_id=%s error=%s", game_id, exc)
+            continue
+        report.games_refetched += 1
+        if result.changed:
+            report.games_changed += 1
+            if scope[0] and scope[1]:
+                touched.add((scope[0], scope[1]))
+
+    report.seasons = touched
+    if touched:
+        aggregate.recompute_seasons(session, sorted(touched))
+        bump_sync_version(session, note="refetch games", commit=False)
+
+    record_ingest_log(
+        session,
+        "refetch",
+        status="success" if not report.games_failed else "partial",
+        games=report.games_refetched,
+        rows=report.games_changed,
+        error=(
+            f"{report.games_failed} game(s) could not be fetched: "
+            + ", ".join(report.failed_game_ids[:10])
+            if report.games_failed
+            else None
+        ),
+        started_at=started,
+    )
+    if commit:
+        session.commit()
+    else:
+        session.flush()
+    report.starts_after = _count_lines(session, first, last, started=True)
+    report.unrecorded_after = _count_lines(session, first, last, started=None)
+    logger.info(
+        "event=refetch_games first=%s last=%s found=%d refetched=%d changed=%d failed=%d "
+        "starts_before=%d starts_after=%d unrecorded_after=%d interrupted=%s",
+        first.isoformat(),
+        last.isoformat(),
+        report.games_found,
+        report.games_refetched,
+        report.games_changed,
+        report.games_failed,
+        report.starts_before,
+        report.starts_after,
+        report.unrecorded_after,
+        report.interrupted,
+    )
+    return report

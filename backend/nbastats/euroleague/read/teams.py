@@ -169,6 +169,7 @@ def build_club_view(ctx: ReadContext, club: str, freshness: dict[str, Any]) -> d
                     if state is not None
                     else None
                 ),
+                "perGame": state.per_game if state is not None else None,
                 "seasonAverages": averages,
                 "status": status,
                 "chanceOfPlaying": display_chance(status, ctx.chance_table()),

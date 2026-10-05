@@ -102,6 +102,7 @@ __all__ = [
     "naive_utc",
     "game_start",
     "game_reference",
+    "computed_after_tipoff",
     "game_expected_end",
     "game_has_result",
     "counts_for_scoring",
@@ -191,6 +192,31 @@ def game_reference(game: ElGame) -> datetime:
     if game.tipoff_utc is not None:
         return aware(game.tipoff_utc)  # type: ignore[return-value]
     return datetime.combine(game.game_date, time(23, 59), tzinfo=BERLIN).astimezone(UTC)
+
+
+def computed_after_tipoff(game: ElGame, computed_at: datetime | None) -> bool | None:
+    """Whether a projection was made after the game it is about had started.
+
+    Said by the server so that no client does clock arithmetic to decide whether to caption a
+    projection "computed after tip-off, a reconstruction, not a prediction". Three answers:
+
+    * the tip-off is known: ``computed_at`` at or after it is ``True``, before it ``False``;
+    * the tip-off is not known: the game could have started at any hour of its Berlin day, so only
+      what is certain is said. A projection made before the day began is ``False``, one made after
+      the day's last minute (:func:`game_reference`) is ``True``, and anything in between is
+      ``None`` ("cannot say") rather than a guess;
+    * the projection has no creation time (the workbook's own imported scores): ``None``.
+    """
+    moment = aware(computed_at)
+    if moment is None:
+        return None
+    if game.tipoff_utc is not None:
+        return moment >= aware(game.tipoff_utc)  # type: ignore[operator]
+    if moment < _berlin_midnight(game.game_date):
+        return False
+    if moment >= game_reference(game):
+        return True
+    return None
 
 
 def game_expected_end(game: ElGame) -> datetime:

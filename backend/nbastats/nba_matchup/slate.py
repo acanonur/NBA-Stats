@@ -107,7 +107,14 @@ def model_block(
     version: str,
     league_level: float | None = None,
     include_constants: bool = True,
+    after_tipoff: bool | None = None,
 ) -> dict[str, Any]:
+    """The ``model`` object of a projection.
+
+    ``computedAfterTipoff`` is :meth:`ReadContext.computed_after_tipoff` for the game the
+    projection is about, passed in as ``after_tipoff`` by the caller that knows the game. A block
+    that is not about one game (the slate's own ``model``) leaves it ``None``.
+    """
     model = None
     try:
         model = get_model(ctx)
@@ -119,6 +126,7 @@ def model_block(
         "kind": kind,
         "computedAt": refs.rfc3339(computed_at),
         "inputsCutoff": refs.rfc3339(inputs_cutoff),
+        "computedAfterTipoff": after_tipoff,
         "capPolicy": _cap_policy(ctx),
         "constants": model_constants(ctx, model, league_level) if include_constants else [],
     }
@@ -232,6 +240,7 @@ def projection_payload(
             inputs_cutoff=result.as_of,
             version=MODEL_VERSION,
             league_level=result.league_level,
+            after_tipoff=ctx.computed_after_tipoff(game, ctx.now),
         )
         notes = [
             "Defence indices are not changed by absences: absences move the projected scores only.",
@@ -303,6 +312,7 @@ def projection_payload(
             inputs_cutoff=row.inputs_cutoff,
             version=row.model_version,
             include_constants=False,
+            after_tipoff=ctx.computed_after_tipoff(game, row.computed_at),
         )
         notes = ["Player detail was not frozen with this projection, so absences are not listed."]
         interval = (
@@ -493,6 +503,13 @@ class ReviewRow:
         return (self.game.home_pts - self.game.away_pts) - (self.home - self.away)
 
     @property
+    def combined_miss(self) -> float:
+        """Actual combined points less projected combined points, signed like ``margin_miss``
+        (negative: the game finished lower than projected). ``meanAbsCombinedMiss`` averages its
+        absolute value."""
+        return (self.game.home_pts + self.game.away_pts) - (self.home + self.away)
+
+    @property
     def projected_winner(self) -> str | None:
         margin = self.home - self.away
         if abs(margin) < TOSS_UP_MARGIN:
@@ -518,10 +535,7 @@ def metrics(rows: Sequence[ReviewRow]) -> dict[str, Any]:
         mean_score = math.fsum(
             abs(r.game.home_pts - r.home) + abs(r.game.away_pts - r.away) for r in rows
         ) / (2 * n)
-        mean_combined = (
-            math.fsum(abs((r.game.home_pts + r.game.away_pts) - (r.home + r.away)) for r in rows)
-            / n
-        )
+        mean_combined = math.fsum(abs(r.combined_miss) for r in rows) / n
     return {
         "games": n,
         "decidedGames": len(decided),
@@ -603,6 +617,7 @@ def build_review(
                 "locked": figures if row.kind == "locked" else None,
                 "result": {"homePts": row.game.home_pts, "awayPts": row.game.away_pts},
                 "marginMiss": row.margin_miss,
+                "combinedMiss": row.combined_miss,
                 "winnerCalled": row.winner_called,
             }
         )

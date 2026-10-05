@@ -5,7 +5,9 @@
 # What it does, in plain terms:
 #   1. Finds a Python that is new enough (3.11 or later) and makes a private copy of the
 #      Python packages Hardwood needs, inside the Hardwood data folder.
-#   2. Creates the Hardwood data folder and a settings file (hardwood.env) you can edit.
+#   2. Creates the Hardwood data folder and a settings file (hardwood.env) you can edit, with a
+#      private random API key in it (the Mac app reads the key from that file; it is never
+#      printed, never overwritten once it exists, and the file is readable by you only).
 #   3. Installs four background programs ("launch agents") that start when you log in:
 #        com.hardwood.api          the Hardwood server, reachable from this Mac only
 #        com.hardwood.nba-watch    brings in each NBA game as it finishes
@@ -27,6 +29,8 @@
 #   --dry-run        say what would happen, change nothing
 #   --no-load        write everything but do not start the background programs
 #   --skip-pip       do not (re)install the Python packages
+#   --no-api-key     do not create an API key in the settings file (the server then refuses every
+#                    change from the Mac app, because it has no key to check)
 #   -h, --help       show this help
 #
 # For tests and unusual setups only:
@@ -49,6 +53,7 @@ PYTHON_ARG=""
 DRY_RUN="0"
 NO_LOAD="0"
 SKIP_PIP="0"
+NO_API_KEY="0"
 
 # ------------------------------------------------------------------------------ messages
 
@@ -71,6 +76,7 @@ while [ $# -gt 0 ]; do
     --dry-run)   DRY_RUN="1"; shift ;;
     --no-load)   NO_LOAD="1"; shift ;;
     --skip-pip)  SKIP_PIP="1"; shift ;;
+    --no-api-key) NO_API_KEY="1"; shift ;;
     -h|--help)   usage; exit 0 ;;
     *)           die "I do not know the option '$1'. Try --help." ;;
   esac
@@ -211,17 +217,39 @@ being offline. Fix that and run the installer again."
 write_env_file() {
   if [ -f "$ENV_FILE" ]; then
     say "Keeping your existing settings file: $ENV_FILE"
+  else
+    cp "$SCRIPT_DIR/hardwood.env.example" "$ENV_FILE"
+    if [ "$PORT" != "8000" ]; then
+      {
+        printf '\n# Written by install.sh because you chose a port other than 8000.\n'
+        printf 'HARDWOOD_PUBLIC_BASE_URL=http://127.0.0.1:%s\n' "$PORT"
+      } >> "$ENV_FILE"
+    fi
+    chmod 600 "$ENV_FILE"
+    say "Wrote your settings file: $ENV_FILE"
+  fi
+  ensure_api_key
+}
+
+# The Mac app's changes (a status you type in, a link you paste, a model setting) are accepted
+# only with the API key, and the server has no other way in, so there has to be one. This never
+# replaces a key that is already there and never prints the key: ensure_api_key.py says only
+# whether it made one. The settings file ends up readable by you alone either way.
+ensure_api_key() {
+  local outcome
+  if [ "$NO_API_KEY" = "1" ]; then
+    say "Not creating an API key (--no-api-key). The server will refuse changes from the Mac app."
     return 0
   fi
-  cp "$SCRIPT_DIR/hardwood.env.example" "$ENV_FILE"
-  if [ "$PORT" != "8000" ]; then
-    {
-      printf '\n# Written by install.sh because you chose a port other than 8000.\n'
-      printf 'HARDWOOD_PUBLIC_BASE_URL=http://127.0.0.1:%s\n' "$PORT"
-    } >> "$ENV_FILE"
-  fi
-  chmod 600 "$ENV_FILE"
-  say "Wrote your settings file: $ENV_FILE"
+  outcome="$("$VENV_PY" "$SCRIPT_DIR/ensure_api_key.py" "$ENV_FILE")" \
+    || die "Could not write an API key into $ENV_FILE.
+Check that you can write to that file and its folder, then run the installer again."
+  case "$outcome" in
+    created) say "Created a private API key in your settings file (the Mac app reads it there)." ;;
+    filled)  say "Put a private API key into the empty HARDWOOD_API_KEY line of your settings file." ;;
+    kept)    say "Your settings file already has an API key; it was left alone." ;;
+    *)       die "ensure_api_key.py said something unexpected: $outcome" ;;
+  esac
 }
 
 # Fills in a plist template. Done in Python rather than with sed so that a path containing
@@ -353,7 +381,7 @@ Hardwood is installed.
 
   Server        http://127.0.0.1:$PORT   (this Mac only)
   Data          $DATA_DIR
-  Settings      $ENV_FILE
+  Settings      $ENV_FILE$( [ "$NO_API_KEY" = "1" ] || echo "   (holds your API key; readable by you only)" )
   Logs          $LOG_DIR
 
 Your EuroLeague workbook: copy the .xlsx file into
@@ -391,6 +419,7 @@ Dry run: nothing will be changed. I would:
   Python environment  $VENV_DIR
   install packages    $BACKEND_DIR[serve,live,injuries]  (skip: $SKIP_PIP)
   settings file       $ENV_FILE  (kept if it already exists)
+  an API key          $( [ "$NO_API_KEY" = "1" ] && echo "no (--no-api-key)" || echo "made if the settings file has none, never replaced, never printed" )
   a shortcut          $DATA_DIR/hardwood-python  (runs Python with Hardwood's settings)
   write four agents   $(for l in $LABELS; do printf '%s ' "$l"; done)
   into                $AGENT_DIR

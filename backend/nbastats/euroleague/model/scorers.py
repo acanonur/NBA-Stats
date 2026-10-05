@@ -57,8 +57,10 @@ from .round_projection import ProjectionResult, SideResult
 
 __all__ = [
     "FORM_GAMES",
+    "RECENT_GAMES",
     "ScorerLine",
     "form_index",
+    "recent_points",
     "context_factor",
     "club_scorers",
     "game_scorers",
@@ -66,6 +68,10 @@ __all__ = [
 
 #: How many recent games a scorer's form averages over.
 FORM_GAMES: Final = 10
+
+#: How many of the club's latest official games a scorer's ``recentPoints`` lists (the workbook's
+#: L1 to L5 columns).
+RECENT_GAMES: Final = 5
 
 
 @dataclass(frozen=True)
@@ -117,6 +123,40 @@ def _form(
     if not recent:
         return None, 0
     return math.fsum(recent) / len(recent), len(recent)
+
+
+def _club_game_starts(ctx: ReadContext, club: str) -> list[datetime]:
+    """When each of the club's scoring-scope games started, oldest first (cached per request)."""
+    key = f"club_game_starts:{club}"
+    cached = ctx.cache.get(key)
+    if cached is not None:
+        return cached
+    starts = sorted(game_start(g) for g in ctx.club_games(club) if counts_for_scoring(g))
+    ctx.cache[key] = starts
+    return starts
+
+
+def recent_points(
+    ctx: ReadContext, person_code: str, club: str, before: datetime
+) -> list[int | None]:
+    """His points in the club's last :data:`RECENT_GAMES` official games before ``before``,
+    newest first, so a client can print the workbook's L1 to L5 without computing anything.
+
+    The window is the *club's* games, not the player's: a game the player did not play in is a
+    ``None`` in its place (he was listed and did not play, was not dressed, or his line carries no
+    points or no minutes), never a zero and never skipped, because "scored 0" and "did not play"
+    are different facts and a window that silently reached back past a missed game would show
+    five games that are not the last five. The list is shorter than five only when the club has
+    played fewer than five games in scope; it is empty when it has played none.
+
+    Games count exactly as they do for :func:`form_index` (final, box score passed its checks), so
+    a recent-points list and a form average can never disagree about which games exist.
+    """
+    cutoff = aware(before)
+    starts = _club_game_starts(ctx, club)
+    earlier = [start for start in starts if start < cutoff]  # type: ignore[operator]
+    scored = dict(form_index(ctx).get(person_code, ()))
+    return [scored.get(start) for start in reversed(earlier[-RECENT_GAMES:])]
 
 
 def context_factor(

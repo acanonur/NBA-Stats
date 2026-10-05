@@ -1,0 +1,158 @@
+{
+  "league": "euroleague",
+  "asOf": "2026-10-12T09:00:00Z",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.manual",
+        "label": "Entered by hand",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-10-12T09:00:00Z"
+      }
+    ]
+  },
+  "state": "stale",
+  "message": "Every status shown is older than its source can vouch for.",
+  "teams": [
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZA",
+        "abbr": "ZZA",
+        "name": "Alderwick Herons",
+        "shortName": "Alderwick",
+        "clubCode": "ZZA",
+        "tvCode": null
+      },
+      "reportState": "submitted",
+      "entries": [
+        {
+          "statusId": 21,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-9",
+            "name": "Aldous Oldacre",
+            "position": "F",
+            "positionRaw": "Forward",
+            "jersey": "75",
+            "headshotUrl": null,
+            "personCode": "demo-9"
+          },
+          "playerName": "Aldous Oldacre",
+          "status": "doubtful",
+          "statusLabel": "Doubtful",
+          "chanceOfPlaying": 0.25,
+          "modelStatus": null,
+          "reasonCategory": "illness",
+          "reasonText": "Invented note 20",
+          "expectedReturnText": "Uncertain",
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 6300,
+          "source": {
+            "kind": "clubStatement",
+            "label": "Alderwick statement",
+            "url": "https://clubs.example.org/zza/statement-20",
+            "publishedAt": "2026-10-08T00:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        },
+        {
+          "statusId": 1,
+          "overrideId": null,
+          "player": {
+            "league": "euroleague",
+            "id": "demo-1",
+            "name": "Rurik Jessop",
+            "position": "G",
+            "positionRaw": "Guard",
+            "jersey": "62",
+            "headshotUrl": null,
+            "personCode": "demo-1"
+          },
+          "playerName": "Rurik Jessop",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Invented note 0",
+          "expectedReturnText": "Rounds 4-5",
+          "expectedReturn": {
+            "roundFrom": 4,
+            "roundTo": 5,
+            "date": null
+          },
+          "game": {
+            "league": "euroleague",
+            "gameId": "E2026-R05-01",
+            "date": "2026-10-15",
+            "tipoffUtc": "2026-10-15T17:30:00Z",
+            "venue": "Alderwick Hall",
+            "isNeutral": false,
+            "round": 5,
+            "phase": "RS",
+            "status": "scheduled",
+            "home": {
+              "league": "euroleague",
+              "id": "ZZA",
+              "abbr": "ZZA",
+              "name": "Alderwick Herons",
+              "shortName": "Alderwick",
+              "clubCode": "ZZA",
+              "tvCode": null
+            },
+            "away": {
+              "league": "euroleague",
+              "id": "ZZP",
+              "abbr": "ZZP",
+              "name": "Pinecrest Panthers",
+              "shortName": "Pinecrest",
+              "clubCode": "ZZP",
+              "tvCode": null
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": false,
+          "outOfForceReason": "playedSince",
+          "isStale": true,
+          "ageMinutes": 14400,
+          "source": {
+            "kind": "pressArticle",
+            "label": "example.org news",
+            "url": "https://news.example.org/injuries/0",
+            "publishedAt": "2026-10-02T09:00:00Z",
+            "asOf": "2026-10-12T09:00:00Z",
+            "fetchedAt": "2026-10-12T09:00:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    }
+  ],
+  "news": null,
+  "attribution": "EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources."
+}
