@@ -18,6 +18,15 @@ on:
       - ".github/workflows/mac.yml"
   workflow_dispatch:
 
+# Hosted macOS runners are scarce: the first run of this workflow was cancelled after fifteen
+# minutes with "The job was not acquired by Runner of type hosted", under a GitHub notice about
+# capacity constraints on macOS arm64. Only the newest commit on a branch matters for a disk
+# image, so a newer push cancels the older run instead of queueing a second job for the same
+# scarce machines.
+concurrency:
+  group: mac-app-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-dmg:
     runs-on: macos-15
