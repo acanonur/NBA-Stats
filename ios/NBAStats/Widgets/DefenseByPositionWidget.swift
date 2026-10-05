@@ -269,7 +269,7 @@ public struct DefenseByPositionWidget: View {
     @ViewBuilder private var tableFooter: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             if !isLarge && allRows.count > shownRows.count {
-                Text("Showing " + String(shownRows.count) + " of " + String(allRows.count) + " teams")
+                Text(verbatim: shownRowsCaption)
                     .hardwoodText(.caption)
             }
             if isLarge {
@@ -284,12 +284,23 @@ public struct DefenseByPositionWidget: View {
         }
     }
 
+    /// "Showing 6 of 20 teams" for a medium tile that lists only the first rows.
+    ///
+    /// Built here as a plain String, never as `Text("…" + String(a) + "…" + String(b) + "…")`
+    /// inside the view body: `Text` has many initialisers and `+` dozens of overloads, and that
+    /// five-part chain inside a `@ViewBuilder` was the one expression the macOS SDK's type checker
+    /// gave up on ("unable to type-check this expression in reasonable time"). Interpolation into
+    /// a typed String has one reading.
+    private var shownRowsCaption: String {
+        "Showing \(shownRows.count) of \(allRows.count) teams"
+    }
+
     /// What the numbers in a table cell are, in the unit the basis says.
     private var tableLegend: String {
         if isPerMinute {
             return "PA/G is points allowed per game. Each position shows points per "
-                + String(regulationMinutes)
-                + " opponent minutes at that position, with the league's rate beneath it."
+                + "\(regulationMinutes) opponent minutes at that position, with the league's rate "
+                + "beneath it."
         }
         return "PA/G is points allowed per game. Beneath each position, the difference from the league average."
     }

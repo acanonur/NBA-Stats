@@ -293,7 +293,7 @@ struct MacSeasonStatsScreen: View {
         if league == .nba && nbaTeamCount > 0 {
             VStack(spacing: Spacing.sm) {
                 ProgressView()
-                Text("Loading rosters " + String(nbaProgress) + " of " + String(nbaTeamCount))
+                Text(verbatim: "Loading rosters \(nbaProgress) of \(nbaTeamCount)")
                     .hardwoodText(.caption)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
