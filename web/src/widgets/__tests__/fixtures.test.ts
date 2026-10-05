@@ -19,6 +19,15 @@
  * test fail loudly rather than subtly if a kind is registered but cannot survive its own
  * contract payload.
  *
+ * The four league kinds (`team_matchup`, `defense_by_position`, `availability_report`,
+ * `slate_projections`) are the exception, on purpose. The web draws no component for them: the native
+ * Mac app builds them, and the registry carries `component: null`, which `WidgetContainer` renders
+ * as its pending tile. They are listed in `NOT_ON_THE_WEB_YET` below, and for them this file asserts
+ * the *opposite* of the rule above (the entry is `null`), so the day someone adds
+ * `web/src/widgets/team_matchup/` and re-runs `scripts/sync_contracts.sh` this test fails until the
+ * kind is taken off that list and held to the same render check as the other sixteen. The exemption
+ * cannot go stale quietly.
+ *
  * Named `fixtures.test.ts` (no JSX, hence `createElement`) because `check_contracts.py` check (k)
  * looks for this exact path and requires it to name every `widget_<kind>` fixture — see that
  * check's docstring. The per-kind literals below are what it greps for.
@@ -56,7 +65,23 @@ const FIXTURE_FILE: Readonly<Record<WidgetKind, string>> = {
   fantasy_draft_board: "widget_fantasy_draft_board.json",
   fantasy_trade: "widget_fantasy_trade.json",
   career_arc: "widget_career_arc.json",
+  team_matchup: "widget_team_matchup.json",
+  defense_by_position: "widget_defense_by_position.json",
+  availability_report: "widget_availability_report.json",
+  slate_projections: "widget_slate_projections.json",
 };
+
+/**
+ * The kinds the service resolves and the web does not draw: the native Mac app's, until a web
+ * widget directory exists. Every one must still have its golden fixture, and the registry must
+ * still carry its entry (as `null`). Remove a kind from this list when its component lands.
+ */
+const NOT_ON_THE_WEB_YET: readonly WidgetKind[] = [
+  "team_matchup",
+  "defense_by_position",
+  "availability_report",
+  "slate_projections",
+];
 
 function loadFixture(kind: WidgetKind): unknown {
   const path = resolve(process.cwd(), "..", "contracts", "fixtures", FIXTURE_FILE[kind]);
@@ -64,12 +89,36 @@ function loadFixture(kind: WidgetKind): unknown {
 }
 
 describe("every widget kind is wired into the registry", () => {
-  it("covers all sixteen kinds with no gaps and no strays", () => {
-    expect(WIDGET_KINDS.length).toBe(16);
+  it("covers all twenty kinds with no gaps and no strays", () => {
+    expect(WIDGET_KINDS.length).toBe(20);
     expect(Object.keys(FIXTURE_FILE).sort()).toEqual([...WIDGET_KINDS].sort());
   });
 
-  for (const kind of WIDGET_KINDS) {
+  it("exempts only kinds that are in the catalog", () => {
+    for (const kind of NOT_ON_THE_WEB_YET) expect(WIDGET_KINDS).toContain(kind);
+  });
+
+  for (const kind of WIDGET_KINDS.filter((candidate) => NOT_ON_THE_WEB_YET.includes(candidate))) {
+    describe(`${kind} (not on the web yet)`, () => {
+      it("is still registered as a pending entry, with sizes it also lists as its default", () => {
+        // `null` is what makes `WidgetContainer` draw its pending tile. If this fails because a
+        // component now exists, take the kind off NOT_ON_THE_WEB_YET so it is rendered below.
+        expect(REGISTRY[kind].component).toBeNull();
+        expect(REGISTRY[kind].sizes).toContain(REGISTRY[kind].defaultSize);
+      });
+
+      it("has a golden fixture that is a league payload: it names its league and its freshness", () => {
+        const payload = loadFixture(kind) as Record<string, unknown>;
+        expect(typeof payload).toBe("object");
+        expect(["nba", "euroleague"]).toContain(payload["league"]);
+        // `availability_report` and `slate_projections` carry no `availability` key, but every
+        // league payload says how fresh it is and whether the league is a demo.
+        expect(payload["freshness"]).toMatchObject({ league: payload["league"] });
+      });
+    });
+  }
+
+  for (const kind of WIDGET_KINDS.filter((candidate) => !NOT_ON_THE_WEB_YET.includes(candidate))) {
     describe(kind, () => {
       it("has a component in REGISTRY, not a null placeholder", () => {
         // The exact read `WidgetContainer.renderBody` performs. A null here is a grey

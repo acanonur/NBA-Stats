@@ -10,7 +10,7 @@ Built from the acquisition and architecture research in
 [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md).
 
 ```
-┌── contracts/ ── the shared truth: 62 metrics, 16 widgets, 12 presets, golden fixtures ──┐
+┌── contracts/ ── the shared truth: 62 metrics, 20 widgets, 12 presets, golden fixtures ──┐
 │                                                                                         │
 │                                                  ⇄   ios/  SwiftUI dashboard + sync     │
 │   backend/  ingest → SQLite/Postgres → FastAPI                                          │
@@ -116,7 +116,7 @@ belonging to whoever signs in. [`docs/LEGAL.md`](docs/LEGAL.md) §2b and §2c.
 
 ### Why `contracts/` is a top-level directory
 
-Two codebases in two languages have to agree on 62 metric definitions, 16 payload shapes and 12
+Two codebases in two languages have to agree on 62 metric definitions, 20 payload shapes and 12
 preset dashboards. Prose guarantees drift, so the agreement is data: the backend formats values
 from `metrics.json`, the app formats values from the same file, the app *generates its
 configuration UI* from `widgets.json`, and `scripts/check_contracts.py` fails CI the moment the

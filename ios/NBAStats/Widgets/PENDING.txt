@@ -1,0 +1,15 @@
+# Widget kinds the service resolves today and the native app has not built yet.
+#
+# These four are the league widgets (a matchup, defence by position, an availability report and a
+# projected slate). They read either the NBA or the EuroLeague, and their payloads are the same
+# objects the /v1 and /v1/el routes return (contracts/CONTRACT.md section 4). The shipped iOS app
+# decodes them as an unknown widget kind and skips them, which is safe; the Mac phase writes a
+# Swift widget for each and deletes its line here.
+#
+# scripts/check_contracts.py check (j) reads this file. It is transient on purpose: the ceiling is
+# four and only ever goes down, and a kind listed here that already has a <Kind>Widget.swift is an
+# error, so a finished widget cannot stay on the list. When the file is empty, delete it.
+team_matchup
+defense_by_position
+availability_report
+slate_projections

@@ -2,6 +2,26 @@ import Foundation
 import XCTest
 @testable import Hardwood
 
+// MARK: - Widget kinds not built yet
+
+/// Widget kinds the service resolves and the native app has not built yet: the lines of
+/// `ios/NBAStats/Widgets/PENDING.txt`, which the Mac phase empties kind by kind (and then deletes,
+/// which makes this set empty and every test below strict again). Read from the source tree beside
+/// this file, which is where Xcode runs the tests from.
+enum PendingWidgetKinds {
+    static let all: Set<String> = {
+        let file = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("NBAStats/Widgets/PENDING.txt")
+        guard let text = try? String(contentsOf: file, encoding: .utf8) else { return [] }
+        let lines = text.split(whereSeparator: \.isNewline)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty && !$0.hasPrefix("#") }
+        return Set(lines)
+    }()
+}
+
 // MARK: - Bundles and fixtures
 
 /// Where the tests find the JSON they read.

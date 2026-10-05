@@ -1,4 +1,17 @@
-"""Generate contracts/widgets.json - the shared widget catalog + config field schema."""
+"""Generate contracts/widgets.json - the shared widget catalog + config field schema.
+
+Twenty kinds. The first sixteen are the NBA player and team tiles the shipped iOS app draws. The
+last four (``team_matchup``, ``defense_by_position``, ``availability_report`` and
+``slate_projections``) are the league tiles: thin resolvers over the same builders the
+``/v1`` and ``/v1/el`` routes call, so a tile's payload is exactly the route's payload. Each of the
+four carries a ``league`` config field (``nba`` or ``euroleague``). The league lives in the widget's
+own config, not in the layout document, on purpose: the layout migrators rebuild a layout from a
+fixed key list and would drop a layout-level ``league``, while a declared config key survives a
+save (``catalog.validate_widget_config`` keeps declared keys and drops the rest).
+
+The four kinds also introduce one config field type, ``club``: a EuroLeague club code (three
+capital letters) that the service checks against the EuroLeague store when that league is mounted.
+"""
 import json
 
 def f(key, type_, label, **kw):
@@ -13,6 +26,12 @@ SEASON_TYPE= f("seasonType", "enum", "Season Type", default="Regular Season", re
                options=["Regular Season", "Playoffs", "Play In", "All Star", "Pre Season"])
 PER_MODE   = f("perMode", "enum", "Per Mode", default="PerGame",
                options=["PerGame", "Totals", "Per36", "Per100"])
+LEAGUE     = f("league", "enum", "League", default="nba", required=True,
+               options=["nba", "euroleague"],
+               help="Which league this tile reads. The two leagues are separate stores and are "
+                    "never mixed in one tile.")
+CLUB_NOTE  = ("A EuroLeague club code such as PAN. Used when League is EuroLeague; "
+              "the NBA team field is used when it is NBA.")
 
 W = [
  {
@@ -331,6 +350,87 @@ W = [
     f("xAxis", "enum", "X Axis", default="season", options=["season", "age"]),
   ],
  },
+ {
+  "kind": "team_matchup",
+  "name": "Matchup",
+  "summary": "Two teams side by side going into a game: points scored and allowed, recent form, home and away splits, who is missing, and the projected score.",
+  "icon": "rectangle.split.2x1",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    LEAGUE,
+    f("team", "team", "Team", default="$favorite_team",
+      help="Used when League is NBA. Leave on your favorite team, or pick one."),
+    f("club", "club", "Club", default=None, help=CLUB_NOTE),
+    f("opponent", "team", "Opponent", default=None,
+      help="NBA only. Leave empty to use the team's next scheduled opponent."),
+    f("opponentClub", "club", "Opponent Club", default=None,
+      help="EuroLeague only. Leave empty to use the club's next scheduled opponent."),
+    SEASON,
+    f("window", "int", "Recent Games", default=5, min=3, max=15,
+      help="How many of each side's last games to show as form."),
+  ],
+ },
+ {
+  "kind": "defense_by_position",
+  "name": "Defence by Position",
+  "summary": "Points each defence allows to opposing guards, forwards and centers, against the league. Withheld where the sample is too small to judge; no rankings.",
+  "icon": "shield.lefthalf.filled",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    LEAGUE,
+    f("team", "team", "Team", default=None,
+      help="NBA only. Leave empty for the whole league's table."),
+    f("club", "club", "Club", default=None,
+      help="EuroLeague only. Leave empty for the whole league's table."),
+    SEASON,
+    f("window", "int", "Recent Games", default=0, min=0, max=82,
+      help="0 uses the whole season; otherwise the team's last N games."),
+    f("basis", "enum", "Basis", default="perGame", options=["perGame", "perMinute"],
+      help="Per game, or per 48 (NBA) or 40 (EuroLeague) minutes the opposing position played."),
+    f("scheme", "enum", "Positions", default="gfc", options=["gfc", "workbook5"],
+      help="Guard, forward and center. The five-position workbook scheme is EuroLeague only "
+           "and is an estimate."),
+  ],
+ },
+ {
+  "kind": "availability_report",
+  "name": "Availability Report",
+  "summary": "Who is out, doubtful or questionable for the next games, each status with its source and how old it is.",
+  "icon": "cross.case",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 300,
+  "config": [
+    LEAGUE,
+    f("team", "team", "Team", default=None,
+      help="NBA only. Leave empty for the whole slate."),
+    f("club", "club", "Club", default=None,
+      help="EuroLeague only. Leave empty for every club."),
+    f("includeNews", "bool", "Include Headlines", default=False,
+      help="Adds headline links (title, source and date only) when a news feed is switched on."),
+  ],
+ },
+ {
+  "kind": "slate_projections",
+  "name": "Slate Projections",
+  "summary": "Projected scores for the next slate or round: margin, winner and combined points, with the model's assumptions stated.",
+  "icon": "calendar.badge.clock",
+  "sizes": ["large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    LEAGUE,
+    f("date", "date", "Date", default="next", required=True, tokens=["latest", "next"],
+      help="NBA only. An ISO date, 'next' for the next slate, or 'latest' for the most recent "
+           "completed one."),
+    f("round", "int", "Round", default=0, min=0, max=40,
+      help="EuroLeague only. A round number, or 0 for the next round."),
+  ],
+ },
 ]
 
 for w in W:
@@ -352,7 +452,7 @@ doc = {
     "gridColumns": {"compact": 2, "regular": 4},
     "configFieldTypes": [
         "season", "enum", "enumList", "metric", "metricList", "player", "playerList",
-        "team", "teamList", "subject", "subjectList", "int", "double", "bool", "date",
+        "team", "teamList", "subject", "subjectList", "int", "double", "bool", "date", "club",
     ],
     "widgets": W,
 }

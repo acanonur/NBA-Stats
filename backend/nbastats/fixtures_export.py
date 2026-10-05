@@ -59,9 +59,11 @@ from .api.app import create_app
 # ``utcnow`` on every module that imported it, so those modules have to exist first.
 from .api import routes_dashboard as _routes_dashboard  # noqa: F401
 from .api import routes_sync as _routes_sync  # noqa: F401
+from .widgets import MAX_WIDGETS_PER_REQUEST
 from .api.routes_players import fold_name
 from .db import create_db_engine, init_db
 from .models import Player, PlayerSeason
+from .nba_matchup.queries import clear_memo
 from .seed import seed_database
 
 __all__ = [
@@ -133,9 +135,15 @@ FIXTURE_ENVIRONMENT: dict[str, Optional[str]] = {
 
 # --------------------------------------------------------------------------- widget configs
 
-#: One configuration per widget kind, in catalog order. These are the sixteen tiles the
+#: One configuration per widget kind, in catalog order. These are the twenty tiles the
 #: ``dashboard_resolve`` fixture asks for, and each result's payload is also written out on
 #: its own as ``widget_<kind>.json``, so the two can never disagree.
+#:
+#: The last four are the league tiles (``team_matchup``, ``defense_by_position``,
+#: ``availability_report``, ``slate_projections``), configured for the **NBA**: the seeded demo
+#: league is the only store this exporter builds, and a EuroLeague tile needs the EuroLeague's own
+#: store (whose payloads are committed under ``contracts/fixtures/leagues/el/``). Each is the same
+#: object the matching ``/v1`` route returns, built at the exporter's frozen clock.
 #:
 #: The subject fields use ``$`` tokens rather than raw ids on purpose: the fixtures then
 #: exercise the token resolution in ``nbastats.widgets.base`` as well as the payload shapes,
@@ -302,6 +310,37 @@ WIDGET_CONFIGS: dict[str, dict[str, Any]] = {
         "includePlayoffs": True,
         "xAxis": "season",
     },
+    # The league tiles. ``team`` is a token so the fixtures also cover token resolution for them,
+    # and the opponent is left empty (the team's next scheduled game).
+    "team_matchup": {
+        "league": "nba",
+        "team": "$favorite_team",
+        "club": None,
+        "opponent": None,
+        "opponentClub": None,
+        "season": "latest",
+        "window": 5,
+    },
+    "defense_by_position": {
+        "league": "nba",
+        "team": "$favorite_team",
+        "club": None,
+        "season": "latest",
+        "window": 0,
+        "basis": "perGame",
+        "scheme": "gfc",
+    },
+    "availability_report": {
+        "league": "nba",
+        "team": None,
+        "club": None,
+        "includeNews": False,
+    },
+    "slate_projections": {
+        "league": "nba",
+        "date": "next",
+        "round": 0,
+    },
 }
 
 #: The season the era block below is written about: before 1996-97, so the league has box
@@ -310,12 +349,18 @@ WIDGET_CONFIGS: dict[str, dict[str, Any]] = {
 #: ``null`` where a rating should be has not been tested against the league's real record.
 FIXTURE_ERA_SEASON = "1985-86"
 
-#: Four extra tiles appended to the resolve fixture, pointed at :data:`FIXTURE_ERA_SEASON`.
+#: Three extra tiles appended to the resolve fixture, pointed at :data:`FIXTURE_ERA_SEASON`.
 #: Between them they produce every availability the contract defines other than ``"full"``:
-#: ``estimated`` (a career arc of box-score-derived PER), ``partial`` (a snapshot and a game
-#: log whose modern columns are ``null``, never ``0``) and ``unavailable`` (a shot profile
-#: for a season with no play-by-play). They come *after* the canonical set, so
-#: ``resolvedContext`` still echoes the dashboard's modern subject.
+#: ``estimated`` (a career arc of box-score-derived PER), ``partial`` (a snapshot whose modern
+#: metrics are ``null``, never ``0``) and ``unavailable`` (a shot profile for a season with no
+#: play-by-play). They come *after* the canonical set, so ``resolvedContext`` still echoes the
+#: dashboard's modern subject.
+#:
+#: There were four (a game log of ``null`` modern columns was the fourth) until the catalog grew
+#: to twenty kinds. One resolve is capped at 24 widgets (``MAX_WIDGETS_PER_REQUEST``, a property of
+#: the contract), and twenty canonical tiles plus the declared failure leave room for three, so the
+#: era block gave one up: the snapshot already carries the ``partial`` case with its ``null``
+#: values, and ``build_fixtures`` fails loudly if the request ever outgrows the cap again.
 ERA_WIDGET_CONFIGS: tuple[tuple[str, str, dict[str, Any]], ...] = (
     (
         "e01.player_snapshot",
@@ -349,28 +394,7 @@ ERA_WIDGET_CONFIGS: tuple[tuple[str, str, dict[str, Any]], ...] = (
         },
     ),
     (
-        "e03.game_log",
-        "game_log",
-        {
-            "playerId": "$era_player",
-            "season": FIXTURE_ERA_SEASON,
-            "seasonType": "Regular Season",
-            "columns": [
-                "min",
-                "pts",
-                "reb",
-                "ast",
-                "ts_pct",
-                "usg_pct",
-                "plus_minus",
-                "game_score",
-            ],
-            "limit": 5,
-            "highlightSeasonBest": True,
-        },
-    ),
-    (
-        "e04.shot_profile",
+        "e03.shot_profile",
         "shot_profile",
         {
             "subjectType": "player",
@@ -630,7 +654,7 @@ def _failing(client: TestClient, url: str, expected: int, /, **params: Any) -> A
 def _resolve_request(subjects: Subjects) -> dict[str, Any]:
     """The body of the ``dashboard_resolve`` fixture's request.
 
-    One tile of every catalog kind first — those twelve results are what the
+    One tile of every catalog kind first — those twenty results are what the
     ``widget_<kind>.json`` fixtures are cut from — then the era block from
     :data:`ERA_WIDGET_CONFIGS`, then the deliberately failing tile from
     :data:`ERROR_WIDGET_CONFIGS`.
@@ -668,6 +692,12 @@ def _resolve_request(subjects: Subjects) -> dict[str, Any]:
         }
         for widget_id, kind, config in ERROR_WIDGET_CONFIGS
     ]
+    widgets = [*canonical, *era, *failing]
+    if len(widgets) > MAX_WIDGETS_PER_REQUEST:
+        raise RuntimeError(
+            f"the resolve fixture asks for {len(widgets)} widgets and one resolve is capped at "
+            f"{MAX_WIDGETS_PER_REQUEST}: shrink ERA_WIDGET_CONFIGS (see its comment)"
+        )
     return {
         "layoutId": FIXTURE_LAYOUT_ID,
         "context": {
@@ -676,7 +706,7 @@ def _resolve_request(subjects: Subjects) -> dict[str, Any]:
             "timeZone": "America/New_York",
             "asOf": FIXTURE_AS_OF.isoformat(),
         },
-        "widgets": [*canonical, *era, *failing],
+        "widgets": widgets,
     }
 
 
@@ -788,20 +818,26 @@ def export_fixtures(out_dir: Path | str | None = None) -> dict[str, Any]:
     can leak into a fixture.
     """
     target = Path(out_dir) if out_dir is not None else None
-    with tempfile.TemporaryDirectory(prefix="hardwood-fixtures-") as workspace:
-        database_url = f"sqlite:///{Path(workspace) / 'fixtures.db'}"
-        with _environment(DATABASE_URL=database_url, **FIXTURE_ENVIRONMENT):
-            with _frozen_clock(FIXTURE_NOW):
-                _seed_fixture_database(database_url)
-                engine = create_db_engine(database_url)
-                try:
-                    with TestClient(create_app()) as client, Session(
-                        engine, future=True
-                    ) as session:
-                        client.headers["X-Request-Id"] = FIXTURE_REQUEST_ID
-                        documents = build_fixtures(client, session)
-                finally:
-                    engine.dispose()
+    # The league tiles' builders memoise per (store contents, season): forget anything an earlier
+    # store in this process left, and leave nothing of this one behind.
+    clear_memo()
+    try:
+        with tempfile.TemporaryDirectory(prefix="hardwood-fixtures-") as workspace:
+            database_url = f"sqlite:///{Path(workspace) / 'fixtures.db'}"
+            with _environment(DATABASE_URL=database_url, **FIXTURE_ENVIRONMENT):
+                with _frozen_clock(FIXTURE_NOW):
+                    _seed_fixture_database(database_url)
+                    engine = create_db_engine(database_url)
+                    try:
+                        with TestClient(create_app()) as client, Session(
+                            engine, future=True
+                        ) as session:
+                            client.headers["X-Request-Id"] = FIXTURE_REQUEST_ID
+                            documents = build_fixtures(client, session)
+                    finally:
+                        engine.dispose()
+    finally:
+        clear_memo()
     if target is not None:
         write_fixtures(target, documents)
     return documents

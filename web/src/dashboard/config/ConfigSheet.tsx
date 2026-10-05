@@ -22,6 +22,7 @@ import { IntField } from "./IntField";
 import { DoubleField } from "./DoubleField";
 import { BoolField } from "./BoolField";
 import { DateField } from "./DateField";
+import { ClubField } from "./ClubField";
 import formStyles from "../../auth/forms.module.css";
 import styles from "./ConfigSheet.module.css";
 
@@ -88,6 +89,8 @@ function renderField(
       return <BoolField spec={fieldSpec} value={value as boolean} onChange={onChange} config={config} />;
     case "date":
       return <DateField spec={fieldSpec} value={value as string | null} onChange={onChange} config={config} />;
+    case "club":
+      return <ClubField spec={fieldSpec} value={value as string | null} onChange={onChange} config={config} />;
   }
 }
 

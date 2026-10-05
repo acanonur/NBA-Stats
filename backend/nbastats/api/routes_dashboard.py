@@ -14,7 +14,10 @@ tile**:
 ``knownSyncVersion`` is the cheap path. The service's sync version increments once per
 finalized game (§8), so a client whose version already matches the server's is holding
 payloads that cannot have changed: those widgets come back ``"unchanged"`` with a ``null``
-payload and the client keeps what it has.
+payload and the client keeps what it has. Two groups of kinds are never answered that way, because
+their data moves without a finalized game: the clock-dependent ones (a live scoreboard) and the four
+league kinds, whose freshness is carried in their own ``payload.freshness`` (see
+``_CLOCK_DEPENDENT_KINDS`` and ``_FOREIGN_CURSOR_KINDS`` below).
 
 ``resolvedContext`` echoes the subjects that were actually used, so a client that sent no
 favourite learns who the dashboard ended up being about and can offer "pin this player".
@@ -204,6 +207,7 @@ def resolve_one(
         known_sync_version is not None
         and known_sync_version == ctx.sync_version
         and kind not in _CLOCK_DEPENDENT_KINDS
+        and kind not in _FOREIGN_CURSOR_KINDS
     ):
         # Nothing has been ingested since the client's copy was built, so nothing this
         # widget could show has moved. §3: the client keeps what it has.
@@ -266,6 +270,21 @@ def resolve_one(
 #: the wall clock. Answering ``unchanged`` for these would freeze a live tile until the final
 #: buzzer, so they are always resolved.
 _CLOCK_DEPENDENT_KINDS = frozenset({"scoreboard", "daily_movers"})
+
+#: Kinds whose freshness is not the NBA's ``syncVersion``, so "the NBA has ingested nothing since
+#: the client's copy was built" says nothing about whether they changed.
+#:
+#: These are the four league widgets. Their payloads carry their own cursor in ``payload.freshness``
+#: (a EuroLeague tile moves with the EuroLeague's own ``/v1/el/sync`` version, which this resolve
+#: never reads), and even an NBA-configured one moves without a finalized game: a status arrives
+#: with the injury report, a projection re-prices when one does, a game flips to "result pending"
+#: three hours after tip-off and a ``next`` slate rolls over at midnight Eastern. Answering
+#: ``unchanged`` for any of them would freeze a tile until the next final buzzer, so, like the
+#: clock-dependent kinds, they are always resolved. The set is by kind, not by the tile's league,
+#: because the NBA-configured case needs it just as much as the EuroLeague's.
+_FOREIGN_CURSOR_KINDS = frozenset(
+    {"team_matchup", "defense_by_position", "availability_report", "slate_projections"}
+)
 
 
 def _error(

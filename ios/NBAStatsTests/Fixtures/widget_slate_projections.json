@@ -1,0 +1,1246 @@
+{
+  "league": "nba",
+  "date": "2026-01-03",
+  "round": null,
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 4861,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T07:12:44Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.stats",
+        "label": "NBA statistics",
+        "state": "ok",
+        "reason": "Demo league: every game here is invented.",
+        "lastSuccessAt": "2026-01-03T07:12:44Z"
+      },
+      {
+        "key": "nba.rosters",
+        "label": "Team rosters (listed positions)",
+        "state": "ok",
+        "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "nba.injuryReport",
+        "label": "NBA official injury report",
+        "state": "disabled",
+        "reason": "Demo league: real injury statuses are not shown next to invented games",
+        "lastSuccessAt": null
+      }
+    ]
+  },
+  "model": {
+    "key": "hardwood",
+    "version": "nba-1",
+    "kind": "latest",
+    "computedAt": "2026-01-03T07:12:44Z",
+    "inputsCutoff": "2026-01-03T07:12:44Z",
+    "capPolicy": "consistent",
+    "constants": [
+      {
+        "key": "priorRegression",
+        "value": 0.3,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "priorWeightGames",
+        "value": 10.0,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "leagueLevelWeight",
+        "value": 150.0,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "homeAdvantagePoints",
+        "value": 2.0452342487883683,
+        "provenance": "derived",
+        "isDefault": false
+      },
+      {
+        "key": "teamSd",
+        "value": null,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "marginSd",
+        "value": null,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "replacementShare",
+        "value": 0.52,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "absorbShare",
+        "value": 0.6,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "boostCap",
+        "value": 1.35,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "capPolicyConsistent",
+        "value": 1.0,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "playerPriorGames",
+        "value": 10,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "leagueAveragePoints",
+        "value": 112.82281855686152,
+        "provenance": "derived",
+        "isDefault": false
+      }
+    ]
+  },
+  "games": [
+    {
+      "league": "nba",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500369",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612761",
+          "abbr": "TOR",
+          "name": "Toronto Raptors",
+          "shortName": "Raptors",
+          "teamId": 1610612761
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612749",
+          "abbr": "MIL",
+          "name": "Milwaukee Bucks",
+          "shortName": "Bucks",
+          "teamId": 1610612749
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "nba",
+        "syncVersion": 4861,
+        "dataThrough": "2026-01-02",
+        "generatedAt": "2026-01-03T07:12:44Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "nba.stats",
+            "label": "NBA statistics",
+            "state": "ok",
+            "reason": "Demo league: every game here is invented.",
+            "lastSuccessAt": "2026-01-03T07:12:44Z"
+          },
+          {
+            "key": "nba.rosters",
+            "label": "Team rosters (listed positions)",
+            "state": "ok",
+            "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "nba.injuryReport",
+            "label": "NBA official injury report",
+            "state": "disabled",
+            "reason": "Demo league: real injury statuses are not shown next to invented games",
+            "lastSuccessAt": null
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "nba",
+          "id": "1610612761",
+          "abbr": "TOR",
+          "name": "Toronto Raptors",
+          "shortName": "Raptors",
+          "teamId": 1610612761
+        },
+        "projectedPoints": 115.72615795242864,
+        "range80": null,
+        "fullStrengthPoints": 115.72615795242864,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.022209943231376,
+        "attackIndexAfterAvailability": 1.022209943231376,
+        "defenceIndex": 1.0018392932475997,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "nba",
+          "id": "1610612749",
+          "abbr": "MIL",
+          "name": "Milwaukee Bucks",
+          "shortName": "Bucks",
+          "teamId": 1610612749
+        },
+        "projectedPoints": 111.68273691779036,
+        "range80": null,
+        "fullStrengthPoints": 111.68273691779036,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9971248535241968,
+        "attackIndexAfterAvailability": 0.9971248535241968,
+        "defenceIndex": 0.9945801294171723,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": 4.043421034638271,
+      "marginRange80": null,
+      "projectedWinner": {
+        "league": "nba",
+        "id": "1610612761",
+        "abbr": "TOR",
+        "name": "Toronto Raptors",
+        "shortName": "Raptors",
+        "teamId": 1610612761
+      },
+      "isTossUp": false,
+      "summary": "TOR by 4.0",
+      "combinedPoints": 227.408894870219,
+      "combinedAvailabilityEffect": 0.0,
+      "homeAdvantagePoints": 2.0452342487883683,
+      "venueAssumed": true,
+      "intervalBasis": null,
+      "model": {
+        "key": "hardwood",
+        "version": "nba-1",
+        "kind": "latest",
+        "computedAt": "2026-01-03T07:12:44Z",
+        "inputsCutoff": "2026-01-03T07:12:44Z",
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "priorWeightGames",
+            "value": 10.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueLevelWeight",
+            "value": 150.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 2.0452342487883683,
+            "provenance": "derived",
+            "isDefault": false
+          },
+          {
+            "key": "teamSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "replacementShare",
+            "value": 0.52,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "playerPriorGames",
+            "value": 10,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 112.82281855686152,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 10,
+          "away": 10,
+          "basis": "noReportPublished",
+          "homeBasis": "noReportPublished",
+          "awayBasis": "noReportPublished"
+        },
+        "staleEntriesIgnored": 0
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+        "Absences are listed by season averages, not by the engine's own player projections.",
+        "No spread has been fitted yet, so no range is shown."
+      ]
+    },
+    {
+      "league": "nba",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500370",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612754",
+          "abbr": "IND",
+          "name": "Indiana Pacers",
+          "shortName": "Pacers",
+          "teamId": 1610612754
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612766",
+          "abbr": "CHA",
+          "name": "Charlotte Hornets",
+          "shortName": "Hornets",
+          "teamId": 1610612766
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "nba",
+        "syncVersion": 4861,
+        "dataThrough": "2026-01-02",
+        "generatedAt": "2026-01-03T07:12:44Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "nba.stats",
+            "label": "NBA statistics",
+            "state": "ok",
+            "reason": "Demo league: every game here is invented.",
+            "lastSuccessAt": "2026-01-03T07:12:44Z"
+          },
+          {
+            "key": "nba.rosters",
+            "label": "Team rosters (listed positions)",
+            "state": "ok",
+            "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "nba.injuryReport",
+            "label": "NBA official injury report",
+            "state": "disabled",
+            "reason": "Demo league: real injury statuses are not shown next to invented games",
+            "lastSuccessAt": null
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "nba",
+          "id": "1610612754",
+          "abbr": "IND",
+          "name": "Indiana Pacers",
+          "shortName": "Pacers",
+          "teamId": 1610612754
+        },
+        "projectedPoints": 111.20144739462246,
+        "range80": null,
+        "fullStrengthPoints": 111.20144739462246,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9853610798170216,
+        "attackIndexAfterAvailability": 0.9853610798170216,
+        "defenceIndex": 1.0208158677191355,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "nba",
+          "id": "1610612766",
+          "abbr": "CHA",
+          "name": "Charlotte Hornets",
+          "shortName": "Hornets",
+          "teamId": 1610612766
+        },
+        "projectedPoints": 108.85293298749188,
+        "range80": null,
+        "fullStrengthPoints": 108.85293298749188,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9540182993966705,
+        "attackIndexAfterAvailability": 0.9540182993966705,
+        "defenceIndex": 0.9910733722122207,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": 2.3485144071305797,
+      "marginRange80": null,
+      "projectedWinner": {
+        "league": "nba",
+        "id": "1610612754",
+        "abbr": "IND",
+        "name": "Indiana Pacers",
+        "shortName": "Pacers",
+        "teamId": 1610612754
+      },
+      "isTossUp": false,
+      "summary": "IND by 2.3",
+      "combinedPoints": 220.05438038211435,
+      "combinedAvailabilityEffect": 0.0,
+      "homeAdvantagePoints": 2.0452342487883683,
+      "venueAssumed": true,
+      "intervalBasis": null,
+      "model": {
+        "key": "hardwood",
+        "version": "nba-1",
+        "kind": "latest",
+        "computedAt": "2026-01-03T07:12:44Z",
+        "inputsCutoff": "2026-01-03T07:12:44Z",
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "priorWeightGames",
+            "value": 10.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueLevelWeight",
+            "value": 150.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 2.0452342487883683,
+            "provenance": "derived",
+            "isDefault": false
+          },
+          {
+            "key": "teamSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "replacementShare",
+            "value": 0.52,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "playerPriorGames",
+            "value": 10,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 112.82281855686152,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 10,
+          "away": 10,
+          "basis": "noReportPublished",
+          "homeBasis": "noReportPublished",
+          "awayBasis": "noReportPublished"
+        },
+        "staleEntriesIgnored": 0
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+        "Absences are listed by season averages, not by the engine's own player projections.",
+        "No spread has been fitted yet, so no range is shown."
+      ]
+    },
+    {
+      "league": "nba",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500371",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612756",
+          "abbr": "PHX",
+          "name": "Phoenix Suns",
+          "shortName": "Suns",
+          "teamId": 1610612756
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612757",
+          "abbr": "POR",
+          "name": "Portland Trail Blazers",
+          "shortName": "Trail Blazers",
+          "teamId": 1610612757
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "nba",
+        "syncVersion": 4861,
+        "dataThrough": "2026-01-02",
+        "generatedAt": "2026-01-03T07:12:44Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "nba.stats",
+            "label": "NBA statistics",
+            "state": "ok",
+            "reason": "Demo league: every game here is invented.",
+            "lastSuccessAt": "2026-01-03T07:12:44Z"
+          },
+          {
+            "key": "nba.rosters",
+            "label": "Team rosters (listed positions)",
+            "state": "ok",
+            "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "nba.injuryReport",
+            "label": "NBA official injury report",
+            "state": "disabled",
+            "reason": "Demo league: real injury statuses are not shown next to invented games",
+            "lastSuccessAt": null
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "nba",
+          "id": "1610612756",
+          "abbr": "PHX",
+          "name": "Phoenix Suns",
+          "shortName": "Suns",
+          "teamId": 1610612756
+        },
+        "projectedPoints": 114.5087994978632,
+        "range80": null,
+        "fullStrengthPoints": 114.5087994978632,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0098888267635213,
+        "attackIndexAfterAvailability": 1.0098888267635213,
+        "defenceIndex": 1.0127301126024948,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "nba",
+          "id": "1610612757",
+          "abbr": "POR",
+          "name": "Portland Trail Blazers",
+          "shortName": "Trail Blazers",
+          "teamId": 1610612757
+        },
+        "projectedPoints": 110.78053645474785,
+        "range80": null,
+        "fullStrengthPoints": 110.78053645474785,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9785057566666838,
+        "attackIndexAfterAvailability": 0.9785057566666838,
+        "defenceIndex": 0.9960301261142478,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": 3.728263043115348,
+      "marginRange80": null,
+      "projectedWinner": {
+        "league": "nba",
+        "id": "1610612756",
+        "abbr": "PHX",
+        "name": "Phoenix Suns",
+        "shortName": "Suns",
+        "teamId": 1610612756
+      },
+      "isTossUp": false,
+      "summary": "PHX by 3.7",
+      "combinedPoints": 225.28933595261105,
+      "combinedAvailabilityEffect": 0.0,
+      "homeAdvantagePoints": 2.0452342487883683,
+      "venueAssumed": true,
+      "intervalBasis": null,
+      "model": {
+        "key": "hardwood",
+        "version": "nba-1",
+        "kind": "latest",
+        "computedAt": "2026-01-03T07:12:44Z",
+        "inputsCutoff": "2026-01-03T07:12:44Z",
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "priorWeightGames",
+            "value": 10.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueLevelWeight",
+            "value": 150.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 2.0452342487883683,
+            "provenance": "derived",
+            "isDefault": false
+          },
+          {
+            "key": "teamSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "replacementShare",
+            "value": 0.52,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "playerPriorGames",
+            "value": 10,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 112.82281855686152,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 10,
+          "away": 10,
+          "basis": "noReportPublished",
+          "homeBasis": "noReportPublished",
+          "awayBasis": "noReportPublished"
+        },
+        "staleEntriesIgnored": 0
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+        "Absences are listed by season averages, not by the engine's own player projections.",
+        "No spread has been fitted yet, so no range is shown."
+      ]
+    },
+    {
+      "league": "nba",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500372",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "nba",
+        "syncVersion": 4861,
+        "dataThrough": "2026-01-02",
+        "generatedAt": "2026-01-03T07:12:44Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "nba.stats",
+            "label": "NBA statistics",
+            "state": "ok",
+            "reason": "Demo league: every game here is invented.",
+            "lastSuccessAt": "2026-01-03T07:12:44Z"
+          },
+          {
+            "key": "nba.rosters",
+            "label": "Team rosters (listed positions)",
+            "state": "ok",
+            "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "nba.injuryReport",
+            "label": "NBA official injury report",
+            "state": "disabled",
+            "reason": "Demo league: real injury statuses are not shown next to invented games",
+            "lastSuccessAt": null
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        },
+        "projectedPoints": 116.3180292632157,
+        "range80": null,
+        "fullStrengthPoints": 116.3180292632157,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0235701690294388,
+        "attackIndexAfterAvailability": 1.0235701690294388,
+        "defenceIndex": 1.032515001927611,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        "projectedPoints": 119.72583398588615,
+        "range80": null,
+        "fullStrengthPoints": 119.72583398588615,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.036545219414946,
+        "attackIndexAfterAvailability": 1.036545219414946,
+        "defenceIndex": 0.9983836510772448,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": -3.4078047226704484,
+      "marginRange80": null,
+      "projectedWinner": {
+        "league": "nba",
+        "id": "1610612740",
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "shortName": "Pelicans",
+        "teamId": 1610612740
+      },
+      "isTossUp": false,
+      "summary": "NOP by 3.4",
+      "combinedPoints": 236.04386324910186,
+      "combinedAvailabilityEffect": 0.0,
+      "homeAdvantagePoints": 2.0452342487883683,
+      "venueAssumed": true,
+      "intervalBasis": null,
+      "model": {
+        "key": "hardwood",
+        "version": "nba-1",
+        "kind": "latest",
+        "computedAt": "2026-01-03T07:12:44Z",
+        "inputsCutoff": "2026-01-03T07:12:44Z",
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "priorWeightGames",
+            "value": 10.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueLevelWeight",
+            "value": 150.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 2.0452342487883683,
+            "provenance": "derived",
+            "isDefault": false
+          },
+          {
+            "key": "teamSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "replacementShare",
+            "value": 0.52,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "playerPriorGames",
+            "value": 10,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 112.82281855686152,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 10,
+          "away": 10,
+          "basis": "noReportPublished",
+          "homeBasis": "noReportPublished",
+          "awayBasis": "noReportPublished"
+        },
+        "staleEntriesIgnored": 0
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+        "Absences are listed by season averages, not by the engine's own player projections.",
+        "No spread has been fitted yet, so no range is shown."
+      ]
+    },
+    {
+      "league": "nba",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500373",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612747",
+          "abbr": "LAL",
+          "name": "Los Angeles Lakers",
+          "shortName": "Lakers",
+          "teamId": 1610612747
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612746",
+          "abbr": "LAC",
+          "name": "Los Angeles Clippers",
+          "shortName": "Clippers",
+          "teamId": 1610612746
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "nba",
+        "syncVersion": 4861,
+        "dataThrough": "2026-01-02",
+        "generatedAt": "2026-01-03T07:12:44Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "nba.stats",
+            "label": "NBA statistics",
+            "state": "ok",
+            "reason": "Demo league: every game here is invented.",
+            "lastSuccessAt": "2026-01-03T07:12:44Z"
+          },
+          {
+            "key": "nba.rosters",
+            "label": "Team rosters (listed positions)",
+            "state": "ok",
+            "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "nba.injuryReport",
+            "label": "NBA official injury report",
+            "state": "disabled",
+            "reason": "Demo league: real injury statuses are not shown next to invented games",
+            "lastSuccessAt": null
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "nba",
+          "id": "1610612747",
+          "abbr": "LAL",
+          "name": "Los Angeles Lakers",
+          "shortName": "Lakers",
+          "teamId": 1610612747
+        },
+        "projectedPoints": 114.81260206004241,
+        "range80": null,
+        "fullStrengthPoints": 114.81260206004241,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0310836367037122,
+        "attackIndexAfterAvailability": 1.0310836367037122,
+        "defenceIndex": 1.008940533399203,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "nba",
+          "id": "1610612746",
+          "abbr": "LAC",
+          "name": "Los Angeles Clippers",
+          "shortName": "Clippers",
+          "teamId": 1610612746
+        },
+        "projectedPoints": 110.11816258682062,
+        "range80": null,
+        "fullStrengthPoints": 110.11816258682062,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9763621258187973,
+        "attackIndexAfterAvailability": 0.9763621258187973,
+        "defenceIndex": 0.9781674347120489,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": 4.694439473221792,
+      "marginRange80": null,
+      "projectedWinner": {
+        "league": "nba",
+        "id": "1610612747",
+        "abbr": "LAL",
+        "name": "Los Angeles Lakers",
+        "shortName": "Lakers",
+        "teamId": 1610612747
+      },
+      "isTossUp": false,
+      "summary": "LAL by 4.7",
+      "combinedPoints": 224.93076464686303,
+      "combinedAvailabilityEffect": 0.0,
+      "homeAdvantagePoints": 2.0452342487883683,
+      "venueAssumed": true,
+      "intervalBasis": null,
+      "model": {
+        "key": "hardwood",
+        "version": "nba-1",
+        "kind": "latest",
+        "computedAt": "2026-01-03T07:12:44Z",
+        "inputsCutoff": "2026-01-03T07:12:44Z",
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "priorWeightGames",
+            "value": 10.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueLevelWeight",
+            "value": 150.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 2.0452342487883683,
+            "provenance": "derived",
+            "isDefault": false
+          },
+          {
+            "key": "teamSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": null,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "replacementShare",
+            "value": 0.52,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "playerPriorGames",
+            "value": 10,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 112.82281855686152,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 10,
+          "away": 10,
+          "basis": "noReportPublished",
+          "homeBasis": "noReportPublished",
+          "awayBasis": "noReportPublished"
+        },
+        "staleEntriesIgnored": 0
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+        "Absences are listed by season averages, not by the engine's own player projections.",
+        "No spread has been fitted yet, so no range is shown."
+      ]
+    }
+  ],
+  "review": {
+    "byModel": [],
+    "reconstructed": {
+      "modelKey": "hardwood",
+      "games": 368,
+      "decidedGames": 330,
+      "winnersCalled": 201,
+      "tossUps": 38,
+      "meanAbsMarginMiss": 8.473336919276143,
+      "meanAbsScoreMiss": 7.133934648985199,
+      "meanAbsCombinedMiss": 11.573475642707939
+    }
+  },
+  "availability": "estimated",
+  "notes": [
+    "Projections are estimates. Players with no status in force are assumed to play."
+  ]
+}

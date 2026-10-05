@@ -9,7 +9,7 @@ Machine-readable companions, loaded by both sides at build time:
 | File | Contents |
 | --- | --- |
 | `contracts/metrics.json` | 62 metric descriptors (`metrics`: name, format, direction, era availability, glossary) and, beside them, the EuroLeague's stat vocabulary (`leagueMetrics.euroleague`, 23 descriptors; §9) |
-| `contracts/widgets.json` | 16 widget kinds, their sizes and their configuration field schema |
+| `contracts/widgets.json` | 20 widget kinds (16 NBA tiles and the 4 league tiles of §4), their sizes and their configuration field schema |
 | `contracts/presets.json` | 12 preset dashboards, pre-validated against the widget catalog |
 | `contracts/leagues.json` | The two league profiles, the availability vocabulary, the position schemes, and the two guard lists (§9, §10, §11). **Not** bundled in the app: clients read the live equivalents from `GET /v1/leagues` and `GET /v1/el/meta` |
 | `contracts/fixtures/*.json` | Golden response payloads, decoded by both the backend tests and the iOS tests |
@@ -962,12 +962,82 @@ against the league they are being applied to rather than taken as universal thre
   "peak": { "season": "2008-09", "value": 31.7 } }
 ```
 
+### `team_matchup`
+
+```json
+{ "league": "nba", "season": "2025-26", "seasonType": "Regular Season", "phase": null,
+  "freshness": { "...Freshness" }, "game": { "...GameRefL" },
+  "teams": [ { "side": "home", "team": { "...LeagueTeamRef" }, "…": "TeamMatchup §4" } ],
+  "leagueAverage": { "pointsPerGame": 113.4, "teams": 30 },
+  "projection": { "...GameProjection" }, "availability": "full", "notes": [ "…" ] }
+```
+
+A league widget: the payload is `TeamMatchup` (League payloads, below), exactly what
+`GET /v1/matchups` and `GET /v1/teams/{teamId}/matchup` (or the `/v1/el` pair) return. Config:
+`league` (`nba` | `euroleague`, default `nba`), `team` (default `$favorite_team`; NBA) or `club`
+(a three-letter club code; EuroLeague), `opponent` / `opponentClub` (optional; empty means the next
+opponent), `season`, `window` (3–15, default 5). A EuroLeague payload adds `seasonCode` beside
+`season`. With no opponent chosen and no game scheduled, the payload is the two sides of the
+subject's most recent game as they stand now, with `game: null` and a note.
+
+### `defense_by_position`
+
+```json
+{ "league": "nba", "season": "2025-26", "seasonType": "Regular Season", "scheme": "gfc",
+  "basis": "perGame", "regulationMinutes": 48, "freshness": { "...Freshness" },
+  "team": { "...LeagueTeamRef" }, "window": { "kind": "season", "games": 41, "requested": null },
+  "pointsAllowedPerGame": 112.3, "leaguePointsAllowedPerGame": 113.4,
+  "buckets": [ { "position": "G", "…": "DefenseByPosition §4" } ],
+  "provisional": false, "withheld": null, "coverage": { "listed": 1.0, "workbookListing": 0.0,
+  "unknown": 0.0 }, "reconciliation": { "…": "…" }, "method": { "…": "…" }, "methodMessage": null,
+  "availability": "full", "caveat": "…", "notes": [ "…" ] }
+```
+
+A league widget: `DefenseByPosition` for the configured `team` (NBA) or `club` (EuroLeague), or
+`DefenseByPositionTable` (no `team` key; a `teams` list) when none is configured. Config: `league`,
+`team` / `club` (optional), `season`, `window` (0 is the season), `basis` (`perGame` |
+`perMinute`), `scheme` (`gfc` | `workbook5`; the five-position scheme is EuroLeague only, and asking
+the NBA for it shows the three positions with a note). A EuroLeague payload carries `seasonCode` and
+`phase` where an NBA one carries `seasonType`.
+
+### `availability_report`
+
+```json
+{ "league": "nba", "asOf": "2026-01-03T11:00:00Z", "freshness": { "...Freshness" },
+  "state": "fresh", "message": "…",
+  "teams": [ { "team": { "...LeagueTeamRef" }, "reportState": "submitted", "entries": [ { "…": "§10" } ] } ],
+  "news": null, "attribution": "…" }
+```
+
+A league widget: `AvailabilityReport` (§10), exactly what `GET /v1/availability` or
+`GET /v1/el/availability` returns. Config: `league`, `team` / `club` (optional; none is the whole
+slate), `includeNews` (headline links only when a feed is switched on). The result's `availability`
+is derived from the payload's `state`: `fresh` is `full`, `stale` is `partial`, anything else
+(no report yet, unreadable, disabled) is `unavailable`, and the payload's `message` is the note.
+
+### `slate_projections`
+
+```json
+{ "league": "nba", "date": "2026-01-03", "round": null, "freshness": { "...Freshness" },
+  "model": { "key": "hardwood", "…": "…" }, "games": [ { "...GameProjection" } ],
+  "review": null, "availability": "estimated", "notes": [ "…" ] }
+```
+
+A league widget: `SlateProjections`, exactly what `GET /v1/projections` or `GET /v1/el/projections`
+returns. Config: `league`, `date` (`next`, `latest` or an ISO date; NBA), `round` (0 is the next
+round; EuroLeague). A projection is an estimate, so a slate with games is `estimated`; a slate with
+none is `unavailable`. There is no probability of winning and no line to compare with (§11). The
+EuroLeague payload carries no `availability` key; the resolver derives it.
+
+The four league widgets are never answered `unchanged` by `POST /v1/dashboard/resolve`: their
+freshness is the payload's own `freshness` block, not the NBA's `syncVersion`.
+
 ### League payloads
 
-The payloads of the league routes in §3. They are not widget payloads today; the four widget
-kinds that will carry them (`team_matchup`, `defense_by_position`, `availability_report`,
-`slate_projections`) are thin resolvers over the same builders, so a tile's payload will be exactly
-the route's. Every payload carries `league` and `freshness` (§2). Shapes are written in TypeScript
+The payloads of the league routes in §3, and of the four league widgets above
+(`team_matchup`, `defense_by_position`, `availability_report`, `slate_projections`), which are thin
+resolvers over the same builders, so a tile's payload is exactly the route's. Every payload carries
+`league` and `freshness` (§2). Shapes are written in TypeScript
 notation; `T | null` means the key is always present and may be null, `k?` means the key may be
 absent. A client ignores keys it does not know. Percentages are fractions in [0, 1]; anything not
 recorded is `null`, never `0`.
@@ -1104,7 +1174,8 @@ GameProjection = {
 }
 SideProjection = { team: LeagueTeamRef, projectedPoints, range80: {low, high} | null,
   fullStrengthPoints, availabilityEffect, attackIndex, attackIndexAfterAvailability,
-  defenceIndex, capBinding, unassignedPoints, keyAbsences: AbsenceEntry[] }
+  defenceIndex, capBinding, unassignedPoints, replacementPoints,
+  keyAbsences: AbsenceEntry[] }
 SlateProjections = { league, date | null, round | null, freshness, model, games: GameProjection[],
   review: ProjectionReviewSummary | null, notes }
 GameProjectionDetail = { current: GameProjection | null, locked: GameProjection | null,
@@ -1129,9 +1200,13 @@ shown as an "assumed spread": it is the workbook's own, not yet checked against 
 
 `availability` is always `"estimated"`: a projection is never a record. `assumptions` states how
 many players with no entry the model assumed to play, and why (§10.2). `capBinding` is true when
-teammates' absorption of a missing player's scoring hit its cap; under the default policy the team
-figure then equals the sum of the players', and under the workbook's own policy
-`unassignedPoints` reports the gap. A `locked` projection was frozen before tip-off and is the
+teammates' absorption of a missing player's scoring hit its cap. Under the default policy the
+team figure then equals the sum of the players' plus `replacementPoints`, the points credited at
+replacement level to whoever fills the minutes the capped players cannot (at most the
+replacement-level refill, so the cap never removes the replacement floor; 0 when the cap does not
+bind); under the workbook's own policy `replacementPoints` is 0 and `unassignedPoints` reports the
+gap. All three are null on a frozen (`locked`) or `imported` row, which stores scores and indices only.
+A `locked` projection was frozen before tip-off and is the
 only kind the review judges; a `reconstructed` one was rebuilt afterwards from inputs dated before
 tip-off and is reported separately; an `imported` one is a score the user's workbook published.
 The review reports calls and misses of the model's own numbers; it compares nothing with an outside
@@ -1444,8 +1519,9 @@ Accounts and dashboards (Hardwood Web) add these codes to the same table and the
    `BGAppRefreshTask`, and optionally the SSE stream.
 
 `ttlSeconds` on each resolve result tells the client how long the payload is good for:
-60s for `scoreboard` and `daily_movers`, 300s for player-level widgets, 600s for leaderboards
-and team tables, 3600s for `career_arc`.
+60s for `scoreboard` and `daily_movers`, 300s for player-level widgets and `availability_report`,
+600s for leaderboards, team tables, `team_matchup`, `defense_by_position` and `slate_projections`,
+3600s for `career_arc`.
 
 ---
 

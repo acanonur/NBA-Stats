@@ -18,6 +18,29 @@ Era availability, in one place
 ``metric_availability()`` folds those into the four values the client renders:
 ``full`` / ``estimated`` / ``partial`` / ``unavailable``. ``partial`` is what you get when a
 span of seasons straddles a boundary (pass ``"career"`` or a list of seasons).
+
+The ``club`` field type
+-----------------------
+The four league widgets (``team_matchup``, ``defense_by_position``, ``availability_report``,
+``slate_projections``) read either the NBA or the EuroLeague, chosen by their own ``league``
+config field. A EuroLeague team is not an integer id, it is a club code, so the catalog has one
+field type for it: ``club``, a string of three capital letters (``PAN``). Validation is in two
+steps, and the split is deliberate.
+
+*Offline, always:* the value is trimmed, upper-cased and must be exactly three letters. That needs
+no store, so a layout can be checked on a machine where the EuroLeague is switched off.
+
+*Against the store, only when it can answer:* when the widget's ``league`` is ``euroleague`` and
+the EuroLeague has registered itself with :mod:`nbastats.shared.league_registry`, the club must
+exist there, and one that does not is an ordinary config error on that field. When the EuroLeague
+is *not* mounted the registry answers "cannot say" (``None``), which is not "no": the club is kept
+as written, and it is the resolver, not this validator, that reports the recoverable per-widget
+``league_unavailable`` (the reader can switch the league on and the tile comes back). The existence
+check is skipped entirely for a tile whose league is the NBA, so a club code left over from before
+the reader switched leagues cannot make an NBA tile invalid.
+
+The registry is the only seam: this module is stdlib-only, :mod:`nbastats.shared` is stdlib-only,
+and nothing here imports the EuroLeague package (an AST test holds that line).
 """
 from __future__ import annotations
 
@@ -30,6 +53,9 @@ from decimal import Decimal, ROUND_HALF_UP
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable, Literal, Mapping, Sequence, TypedDict
+
+from .shared import league_registry
+from .shared.league_profile import EUROLEAGUE_KEY
 
 __all__ = [
     "EM_DASH",
@@ -79,6 +105,11 @@ Scope = Literal["player", "team"]
 Granularity = Literal["season", "game", "per_game"]
 
 _SEASON_RE = re.compile(r"^(\d{4})-(\d{2})$")
+#: A EuroLeague club code, after trimming and upper-casing: three letters, nothing else.
+_CLUB_RE = re.compile(r"[A-Z]{3}")
+#: The words a ``date`` field accepts besides an ISO date, unless the field's own ``tokens`` say
+#: otherwise. Every date field in the original sixteen kinds takes just ``latest``.
+_DEFAULT_DATE_TOKENS: tuple[str, ...] = ("latest",)
 _CAREER_TOKENS = {"career", "all_time", "all-time", "alltime"}
 _GAME_GRANULARITY = {"game", "per_game", "pergame"}
 
@@ -119,6 +150,8 @@ class ConfigFieldSpec(TypedDict, total=False):
     min: float
     max: float
     help: str
+    #: ``date`` fields only: the words accepted besides an ISO date (default: ``["latest"]``).
+    tokens: list[str]
 
 
 class WidgetDescriptor(TypedDict, total=False):
@@ -503,11 +536,28 @@ def _validate_field(field: ConfigFieldSpec, value: Any) -> tuple[Any, list[str]]
         ]
 
     if kind == "date":
-        if isinstance(value, str) and (value == "latest" or _is_iso_date(value)):
+        tokens = tuple(field.get("tokens") or _DEFAULT_DATE_TOKENS)
+        if isinstance(value, str) and (value in tokens or _is_iso_date(value)):
             return value, messages
+        quoted = [f"'{token}'" for token in tokens]
+        words = (
+            f"or {quoted[0]}" if len(quoted) == 1 else f"{', '.join(quoted[:-1])} or {quoted[-1]}"
+        )
+        glue = " " if len(quoted) == 1 else ", "
         return deepcopy(field.get("default")), [
-            f"expected an ISO date or 'latest', got {value!r}"
+            f"expected an ISO date{glue}{words}, got {value!r}"
         ]
+
+    if kind == "club":
+        if value is None and not field.get("required"):
+            # As for an optional subject: an explicit null is the same as leaving it out.
+            return None, messages
+        code = value.strip().upper() if isinstance(value, str) else None
+        if code is None or _CLUB_RE.fullmatch(code) is None:
+            return deepcopy(field.get("default")), [
+                f"expected a three-letter EuroLeague club code such as 'PAN', got {value!r}"
+            ]
+        return code, messages
 
     # A field type the catalog grew after this build: keep the value, flag nothing.
     return value, messages
@@ -542,8 +592,9 @@ def validate_widget_config(
 
     Applies the contract's rules: unknown keys are dropped, missing keys take the catalog
     default, enums must be members, ints/doubles are typed then clamped to ``min``/``max``,
-    lists honour ``minItems``/``maxItems``, and subject fields accept an integer id or one of
-    the ``$`` tokens from ``presets.json``.
+    lists honour ``minItems``/``maxItems``, subject fields accept an integer id or one of
+    the ``$`` tokens from ``presets.json``, and ``club`` fields take a three-letter EuroLeague
+    club code that is also checked against the EuroLeague store when that league is mounted.
 
     The returned config is always usable — a value that failed validation falls back to the
     catalog default — so a caller may either reject the widget on ``errors`` (the ``/v1``
@@ -566,7 +617,33 @@ def validate_widget_config(
         cleaned[key] = value
         errors.extend(ConfigError(key, message) for message in messages)
 
+    errors.extend(_unknown_clubs(spec, cleaned))
     return cleaned, errors
+
+
+def _unknown_clubs(spec: WidgetDescriptor, cleaned: dict[str, Any]) -> list[ConfigError]:
+    """Config errors for clubs the EuroLeague store definitely does not hold.
+
+    Only for a tile whose own ``league`` is the EuroLeague, and only when the registry can answer:
+    ``None`` ("no provider", "the check failed") is "cannot say", never "does not exist", so a
+    EuroLeague that is switched off leaves the club alone and the resolver reports the
+    recoverable ``league_unavailable`` instead. See the module docstring. An unknown club falls
+    back to the field's default, like every other value that fails validation, so the returned
+    config stays usable.
+    """
+    if cleaned.get("league") != EUROLEAGUE_KEY:
+        return []
+    problems: list[ConfigError] = []
+    for field in spec["config"]:
+        if field["type"] != "club":
+            continue
+        code = cleaned.get(field["key"])
+        if code is None:
+            continue
+        if league_registry.team_exists(EUROLEAGUE_KEY, code) is False:
+            cleaned[field["key"]] = deepcopy(field.get("default"))
+            problems.append(ConfigError(field["key"], f"no EuroLeague club has the code {code!r}"))
+    return problems
 
 
 # --------------------------------------------------------------------------- presets

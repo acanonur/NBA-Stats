@@ -1,5 +1,5 @@
 /**
- * The TypeScript mirror of `POST /v1/dashboard/resolve`'s envelope and the sixteen widget
+ * The TypeScript mirror of `POST /v1/dashboard/resolve`'s envelope and the twenty widget
  * payloads it carries — `contracts/CONTRACT.md` §2-§4, transcribed field-for-field from three
  * sources that must not drift from one another, in this order of authority:
  *
@@ -25,7 +25,10 @@
  * A `?? 0`/`|| 0` on any `number | null` field declared below is a lint error by construction.
  *
  * SCOPE. WEB_DESIGN.md §9 gives this file exactly two jobs: the resolve envelope, and the
- * sixteen widget payloads. It deliberately does not cover the other `/v1/*` REST responses
+ * twenty widget payloads (sixteen NBA tiles, then the four league tiles at the end of the file,
+ * which the web does not draw yet: their registry entries are `component: null`, so
+ * `WidgetContainer` shows its pending tile, and these types are the contract a later web widget
+ * decodes against). It deliberately does not cover the other `/v1/*` REST responses
  * (`/v1/players/*`, `/v1/teams/*`, `/v1/games/*`, `/v1/meta`, `/v1/presets`, `/v1/sync`) —
  * those belong to `api/client.ts` (WP4) alongside the fetch calls that return them, at a point
  * when at least one more resolver's worth of shapes is nailed down against a live server
@@ -214,7 +217,7 @@ export interface ErrorEnvelope {
 
 /**
  * Every payload shape a resolve result can carry, keyed by `WidgetKind`. `WidgetKind` (from
- * `generated/contracts.ts`) is the single source for which sixteen kinds exist; this map's
+ * `generated/contracts.ts`) is the single source for which twenty kinds exist; this map's
  * keys are checked against it structurally, so a kind added there and forgotten here is a
  * compile error, not a silent `unknown`.
  */
@@ -235,6 +238,10 @@ export interface WidgetPayloadMap {
   readonly fantasy_draft_board: FantasyDraftBoardPayload;
   readonly fantasy_trade: FantasyTradePayload;
   readonly career_arc: CareerArcPayload;
+  readonly team_matchup: TeamMatchupPayload;
+  readonly defense_by_position: DefenseByPositionPayload;
+  readonly availability_report: AvailabilityReportPayload;
+  readonly slate_projections: SlateProjectionsPayload;
 }
 
 // A compile-time proof that WidgetPayloadMap's keys are exactly WidgetKind's members — if a
@@ -806,4 +813,491 @@ export interface CareerArcPayload {
   readonly playoffSeasons: readonly CareerArcSeason[];
   readonly eraBoundaries: readonly { readonly season: string; readonly label: string }[];
   readonly peak: CareerArcPeak | null;
+}
+
+// --------------------------------------------------------------------------------------------
+// §4 League widget payloads (CONTRACT.md §4 `team_matchup`, `defense_by_position`,
+// `availability_report`, `slate_projections`; contracts/fixtures/widget_<kind>.json)
+//
+// The four league tiles carry exactly what the `/v1` and `/v1/el` routes return, so these types
+// describe both leagues. A key the NBA never sends (`seasonCode`, `clubCode`) is optional; a value
+// the server can send as `null` is `T | null`, never a bare `T`: `null` is "not recorded" and
+// renders as an em dash, and an unmeasured figure is never a zero (CONTRACT.md §6). No payload
+// here has a probability of winning, a line, or a rank of any team in any statistic.
+// --------------------------------------------------------------------------------------------
+
+export type LeagueKey = "nba" | "euroleague";
+
+/** `LeagueTeamRef`: a team in either league. `id` is a string in both (the NBA's numeric id as
+ * text, or the EuroLeague's club code); clients key entities by `(league, id)`. */
+export interface LeagueTeamRef {
+  readonly league: LeagueKey;
+  readonly id: string;
+  readonly abbr: string;
+  readonly name: string;
+  readonly shortName: string | null;
+  /** NBA only. */
+  readonly teamId?: number;
+  /** EuroLeague only. */
+  readonly clubCode?: string;
+  readonly tvCode?: string | null;
+}
+
+/** `LeaguePlayerRef`. `position` is one of three buckets; the raw listing is in `positionRaw`. */
+export interface LeaguePlayerRef {
+  readonly league: LeagueKey;
+  readonly id: string;
+  readonly name: string;
+  readonly position: "G" | "F" | "C" | null;
+  readonly positionRaw: string | null;
+  readonly jersey: string | null;
+  readonly headshotUrl: string | null;
+  /** NBA only. */
+  readonly playerId?: number;
+  /** EuroLeague only. */
+  readonly personCode?: string;
+}
+
+/** Where a status came from. `publishedAt` is the source's own date, and ages are counted from it. */
+export interface LeagueSource {
+  readonly kind: string;
+  readonly label: string;
+  readonly url: string | null;
+  readonly publishedAt: string;
+  readonly asOf: string | null;
+  readonly fetchedAt: string | null;
+  readonly snapshotId: number | null;
+}
+
+export interface LeagueSourceState {
+  readonly key: string;
+  readonly label: string;
+  readonly state: string;
+  readonly reason: string | null;
+  readonly lastSuccessAt: string | null;
+}
+
+/** A league payload's freshness. `isDemo` must be shown as a banner: the games are invented. */
+export interface LeagueFreshness {
+  readonly league: LeagueKey;
+  readonly syncVersion: number;
+  readonly dataThrough: string | null;
+  readonly generatedAt: string;
+  readonly isDemo: boolean;
+  readonly sources: readonly LeagueSourceState[];
+}
+
+/** `GameRefL`. `"resultPending"` is a game whose tip-off is long past with no result stored: it
+ * is not "upcoming". `isNeutral` is `null` when unknown, never assumed false. */
+export interface LeagueGameRef {
+  readonly league: LeagueKey;
+  readonly gameId: string;
+  readonly date: string;
+  readonly tipoffUtc: string | null;
+  readonly venue: string | null;
+  readonly isNeutral: boolean | null;
+  readonly round: number | null;
+  readonly phase: string | null;
+  readonly status: "scheduled" | "resultPending" | "final" | "postponed";
+  readonly home: LeagueTeamRef;
+  readonly away: LeagueTeamRef;
+  readonly homePts: number | null;
+  readonly awayPts: number | null;
+  readonly overtimePeriods: number | null;
+}
+
+export type LeagueAvailabilityStatus = "out" | "doubtful" | "questionable" | "probable" | "available";
+
+/** One status in force (or not) for a player. A status is never shown without its `source`. */
+export interface LeagueAbsence {
+  readonly player: LeaguePlayerRef;
+  readonly status: LeagueAvailabilityStatus | null;
+  readonly chanceOfPlaying: number | null;
+  readonly expectedPointsLost: number | null;
+  readonly expectedMinutesLost: number | null;
+  readonly inForce: boolean;
+  readonly isStale: boolean;
+  readonly source: LeagueSource;
+}
+
+export interface LeagueFormGame {
+  readonly gameId: string;
+  readonly date: string;
+  readonly opponent: LeagueTeamRef;
+  readonly isHome: boolean;
+  readonly isNeutral: boolean | null;
+  readonly teamScore: number;
+  readonly opponentScore: number;
+  readonly result: "W" | "L";
+  readonly overtimePeriods: number | null;
+}
+
+export interface LeagueSplit {
+  readonly games: number;
+  readonly pointsPerGame: number | null;
+  readonly pointsAllowedPerGame: number | null;
+}
+
+export interface LeagueWindowSplit extends LeagueSplit {
+  readonly window: number;
+}
+
+export interface LeagueAdjustedPoints {
+  /** `null` until at least five games qualify; `games` says how many did. */
+  readonly value: number | null;
+  readonly games: number;
+}
+
+export interface LeagueAvailabilitySummary {
+  readonly out: number;
+  readonly doubtful: number;
+  readonly questionable: number;
+  readonly probable: number;
+  readonly keyAbsences: readonly LeagueAbsence[];
+  readonly freshnessState: string;
+  readonly asOf: string | null;
+}
+
+export type DefenseBand = "better" | "typical" | "worse";
+
+export type DefenseWithheldReason = "minimumGames" | "positionCoverage" | "leagueSample";
+
+/** `withheld` replaces every index, standard error and band with `null`; its `message` goes on
+ * screen. The raw buckets still show. */
+export interface DefenseWithheld {
+  readonly reason: DefenseWithheldReason;
+  readonly message: string;
+}
+
+export interface MatchupDefenseSummary {
+  readonly pointsAllowedPerGame: number | null;
+  readonly buckets: readonly {
+    readonly position: string;
+    readonly pointsAllowedPerGame: number | null;
+    readonly deltaPerGame: number | null;
+    readonly band: DefenseBand | null;
+  }[];
+  readonly withheld: DefenseWithheld | null;
+}
+
+export interface TeamMatchupSide {
+  readonly side: "home" | "away" | null;
+  readonly team: LeagueTeamRef;
+  readonly record: { readonly wins: number; readonly losses: number };
+  readonly games: number;
+  readonly pointsPerGame: number | null;
+  /** How many the team lets opponents score: the mean of the opponents' points. */
+  readonly pointsAllowedPerGame: number | null;
+  readonly differentialPerGame: number | null;
+  readonly pointsPerRegulation: number | null;
+  readonly pointsAllowedPerRegulation: number | null;
+  readonly latestGame: LeagueFormGame | null;
+  readonly form: readonly LeagueFormGame[];
+  readonly lastN: LeagueWindowSplit;
+  readonly last10: LeagueWindowSplit;
+  readonly venueSplits: {
+    readonly home: LeagueSplit;
+    readonly away: LeagueSplit;
+    /** EuroLeague only; the NBA records no neutral-site games. */
+    readonly neutral: LeagueSplit | null;
+  };
+  readonly adjustedPointsAgainst: LeagueAdjustedPoints;
+  readonly adjustedPointsFor: LeagueAdjustedPoints;
+  readonly availability: LeagueAvailabilitySummary | null;
+  readonly defenseSummary: MatchupDefenseSummary | null;
+}
+
+export interface ProjectionRange {
+  readonly low: number;
+  readonly high: number;
+}
+
+export interface LeagueSideProjection {
+  readonly team: LeagueTeamRef;
+  readonly projectedPoints: number;
+  readonly range80: ProjectionRange | null;
+  readonly fullStrengthPoints: number;
+  readonly availabilityEffect: number;
+  readonly attackIndex: number;
+  readonly attackIndexAfterAvailability: number;
+  readonly defenceIndex: number;
+  readonly capBinding: boolean;
+  readonly unassignedPoints: number | null;
+  readonly replacementPoints: number | null;
+  readonly keyAbsences: readonly LeagueAbsence[];
+}
+
+export interface ProjectionConstant {
+  readonly key: string;
+  /** `null` for a spread the model has not calibrated yet (see `intervalBasis`). */
+  readonly value: number | null;
+  readonly provenance: string;
+  readonly isDefault: boolean;
+}
+
+export interface ProjectionModel {
+  readonly key: string;
+  readonly version: string;
+  readonly kind: "latest" | "locked" | "reconstructed" | "imported";
+  readonly computedAt: string;
+  readonly inputsCutoff: string;
+  readonly capPolicy: string;
+  readonly constants: readonly ProjectionConstant[];
+}
+
+/** A game's projected score. There is no probability of winning in it, and nothing to compare it
+ * with but what happened. `intervalBasis: "assumed"` must be shown as an "assumed spread". */
+export interface LeagueGameProjection {
+  readonly league: LeagueKey;
+  readonly game: LeagueGameRef;
+  readonly freshness: LeagueFreshness;
+  readonly home: LeagueSideProjection;
+  readonly away: LeagueSideProjection;
+  readonly margin: number;
+  readonly marginRange80: ProjectionRange | null;
+  /** `null` for a toss-up. */
+  readonly projectedWinner: LeagueTeamRef | null;
+  readonly isTossUp: boolean;
+  readonly summary: string;
+  readonly combinedPoints: number;
+  readonly combinedAvailabilityEffect: number;
+  readonly homeAdvantagePoints: number;
+  readonly venueAssumed: boolean;
+  readonly intervalBasis: "assumed" | "fittedPrevSeason" | "fittedLedger" | null;
+  readonly model: ProjectionModel;
+  readonly assumptions: {
+    readonly assumedAvailable: {
+      readonly home: number;
+      readonly away: number;
+      readonly basis: string;
+      readonly homeBasis?: string;
+      readonly awayBasis?: string;
+    };
+    readonly staleEntriesIgnored: number;
+  };
+  readonly result: {
+    readonly homePts: number;
+    readonly awayPts: number;
+    readonly marginMiss: number;
+    readonly winnerCalled: boolean | null;
+  } | null;
+  readonly availability: Availability;
+  readonly notes: readonly string[];
+}
+
+/** `team_matchup`. NBA payloads carry `seasonType`; EuroLeague payloads carry `seasonCode` and
+ * `phase`. `game` and `projection` are `null` when the two teams are not scheduled to meet. */
+export interface TeamMatchupPayload {
+  readonly league: LeagueKey;
+  readonly season: string;
+  readonly seasonCode?: string;
+  readonly seasonType: string | null;
+  readonly phase: readonly string[] | null;
+  readonly freshness: LeagueFreshness;
+  readonly game: LeagueGameRef | null;
+  readonly teams: readonly TeamMatchupSide[];
+  readonly leagueAverage: { readonly pointsPerGame: number | null; readonly teams: number };
+  readonly projection: LeagueGameProjection | null;
+  readonly availability: Availability;
+  readonly notes: readonly string[];
+}
+
+export interface DefenseBucket {
+  readonly position: "G" | "F" | "C" | "PG" | "SG" | "SF" | "PF" | "unknown";
+  readonly label: string;
+  readonly pointsAllowedPerGame: number | null;
+  readonly leagueAverage: number | null;
+  readonly deltaPerGame: number | null;
+  readonly opponentMinutesPerGame: number | null;
+  readonly pointsPerRegulationMinutes: number | null;
+  readonly leagueRate: number | null;
+  readonly share: number | null;
+  readonly leagueShare: number | null;
+  /** Never shown as a ranking. */
+  readonly rawIndex: number | null;
+  readonly index: number | null;
+  readonly standardError: number | null;
+  readonly band: DefenseBand | null;
+}
+
+export interface DefenseMethod {
+  readonly minimumGames: number;
+  readonly provisionalBelowGames: number;
+  readonly coverageCeiling: number;
+  readonly shrinkage: string;
+  readonly leagueReliability: {
+    readonly G: number | null;
+    readonly F: number | null;
+    readonly C: number | null;
+  };
+  readonly leagueSignal: "detected" | "none detected" | null;
+  readonly bandRule: string;
+  readonly positionSource: string | null;
+  readonly taxonomy: string;
+  readonly limitations: readonly string[];
+}
+
+/** One team's defence by the position of the players who scored against it (`team` is present). */
+export interface DefenseByPositionTeamPayload {
+  readonly league: LeagueKey;
+  readonly season: string;
+  readonly seasonCode?: string;
+  readonly seasonType?: string | null;
+  readonly phase?: readonly string[] | null;
+  readonly scheme: "gfc" | "workbook5";
+  readonly basis: "perGame" | "perMinute";
+  readonly regulationMinutes: number;
+  readonly freshness: LeagueFreshness;
+  readonly team: LeagueTeamRef;
+  readonly window: {
+    readonly kind: "season" | "lastGames";
+    readonly games: number;
+    readonly requested: number | null;
+  };
+  readonly pointsAllowedPerGame: number | null;
+  readonly leaguePointsAllowedPerGame: number | null;
+  readonly buckets: readonly DefenseBucket[];
+  /** Visibly marked when true; a provisional table shows no band. */
+  readonly provisional: boolean;
+  readonly withheld: DefenseWithheld | null;
+  readonly coverage: {
+    readonly listed: number | null;
+    readonly workbookListing: number | null;
+    readonly unknown: number | null;
+  };
+  readonly reconciliation: {
+    readonly sumOfBuckets: number | null;
+    readonly pointsAllowedPerGame: number | null;
+    readonly unreconciledGames: number;
+    readonly identity: string;
+  };
+  readonly method: DefenseMethod;
+  readonly methodMessage: string | null;
+  readonly availability: Availability;
+  /** "Points by the position of who scored them, not who guarded whom": always shown. */
+  readonly caveat: string;
+  readonly notes: readonly string[];
+}
+
+/** The whole league's defences, sorted by points allowed (no rank field; `teams` is the key). */
+export interface DefenseByPositionTablePayload {
+  readonly league: LeagueKey;
+  readonly season: string;
+  readonly seasonCode?: string;
+  readonly seasonType?: string | null;
+  readonly phase?: readonly string[] | null;
+  readonly scheme: "gfc" | "workbook5";
+  readonly basis: "perGame" | "perMinute";
+  readonly regulationMinutes: number;
+  readonly freshness: LeagueFreshness;
+  readonly leaguePointsAllowedPerGame: number | null;
+  readonly window: {
+    readonly kind: "season" | "lastGames";
+    readonly requested: number | null;
+  };
+  readonly teams: readonly {
+    readonly team: LeagueTeamRef;
+    readonly games: number;
+    readonly pointsAllowedPerGame: number | null;
+    readonly buckets: readonly DefenseBucket[];
+    readonly provisional: boolean;
+    readonly withheld: DefenseWithheld | null;
+  }[];
+  readonly method: DefenseMethod;
+  readonly methodMessage: string | null;
+  readonly availability: Availability;
+  readonly caveat: string;
+  readonly notes: readonly string[];
+}
+
+/** `defense_by_position` is a team's payload when a team is configured and the league's table
+ * when none is; the two differ by the `team` key (and the `teams` list). */
+export type DefenseByPositionPayload = DefenseByPositionTeamPayload | DefenseByPositionTablePayload;
+
+export interface AvailabilityEntry {
+  /** `null` for a team whose report has not been submitted: there is no row to point at. */
+  readonly statusId: number | null;
+  readonly overrideId: number | null;
+  /** `null` when the name could not be matched to one player; it is never guessed. */
+  readonly player: LeaguePlayerRef | null;
+  readonly playerName: string;
+  /** `null` is "no report", an em dash: never "available". */
+  readonly status: LeagueAvailabilityStatus | null;
+  readonly statusLabel: string;
+  readonly chanceOfPlaying: number | null;
+  readonly modelStatus: LeagueAvailabilityStatus | null;
+  readonly reasonCategory: string | null;
+  readonly reasonText: string | null;
+  readonly expectedReturnText: string | null;
+  readonly expectedReturn: {
+    readonly roundFrom: number | null;
+    readonly roundTo: number | null;
+    readonly date: string | null;
+  } | null;
+  readonly game: LeagueGameRef | null;
+  readonly isOverride: boolean;
+  readonly inForce: boolean;
+  readonly outOfForceReason: string | null;
+  readonly isStale: boolean;
+  /** Minutes since the source published it, never since it was fetched. */
+  readonly ageMinutes: number | null;
+  readonly source: LeagueSource;
+}
+
+export interface AvailabilityTeam {
+  readonly team: LeagueTeamRef;
+  readonly reportState: "submitted" | "notYetSubmitted" | "noReport";
+  readonly game?: LeagueGameRef | null;
+  readonly entries: readonly AvailabilityEntry[];
+}
+
+/** Headline links: title, link, date and source only, never an article body. */
+export interface LeagueNewsLink {
+  readonly itemId: number;
+  readonly title: string;
+  readonly link: string;
+  readonly publishedAt: string;
+  readonly sourceName: string;
+  readonly teams: readonly LeagueTeamRef[];
+  readonly players: readonly LeaguePlayerRef[];
+}
+
+/** `availability_report`. It has no `availability` key: how far to trust it is its `state`. */
+export interface AvailabilityReportPayload {
+  readonly league: LeagueKey;
+  readonly asOf: string | null;
+  readonly freshness: LeagueFreshness;
+  readonly state: "fresh" | "stale" | "noReportYet" | "unreadable" | "disabled";
+  readonly message: string;
+  readonly teams: readonly AvailabilityTeam[];
+  readonly news: readonly LeagueNewsLink[] | null;
+  readonly attribution: string;
+}
+
+export interface ProjectionReviewRow {
+  readonly modelKey: string;
+  readonly games: number;
+  readonly decidedGames?: number;
+  readonly winnersCalled: number;
+  readonly tossUps: number;
+  readonly meanAbsMarginMiss: number | null;
+  readonly meanAbsScoreMiss: number | null;
+  readonly meanAbsCombinedMiss: number | null;
+}
+
+/** `slate_projections`. NBA payloads carry `date` and `availability`; EuroLeague payloads carry
+ * `round` and no `availability` (a slate with games is an estimate). */
+export interface SlateProjectionsPayload {
+  readonly league: LeagueKey;
+  readonly date: string | null;
+  readonly round: number | null;
+  readonly freshness: LeagueFreshness;
+  readonly model: ProjectionModel;
+  readonly games: readonly LeagueGameProjection[];
+  readonly review: {
+    readonly byModel: readonly ProjectionReviewRow[];
+    readonly reconstructed: ProjectionReviewRow | null;
+  } | null;
+  readonly availability?: Availability;
+  readonly notes: readonly string[];
 }

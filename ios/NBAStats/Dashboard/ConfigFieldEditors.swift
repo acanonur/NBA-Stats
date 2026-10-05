@@ -320,7 +320,7 @@ public enum ConfigValidator {
             if let options = field.options, let selected = value.stringValue, !options.contains(selected) {
                 return "“\(selected)” is no longer one of the choices."
             }
-        case .season, .metric, .player, .team, .subject, .bool, .date:
+        case .season, .metric, .player, .team, .subject, .bool, .date, .club:
             break
         }
         return nil
@@ -1260,7 +1260,7 @@ struct ConfigFieldEditor: View {
     var body: some View {
         Group {
             switch field.type {
-            case .season, .`enum`, .enumList, .bool, .int, .double, .date:
+            case .season, .`enum`, .enumList, .bool, .int, .double, .date, .club:
                 scalarEditor
             case .metric, .metricList, .player, .playerList, .team, .teamList, .subject, .subjectList:
                 subjectEditor

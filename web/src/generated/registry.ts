@@ -55,4 +55,8 @@ export const REGISTRY: Readonly<Record<WidgetKind, RegistryEntry>> = {
   fantasy_draft_board: { component: widget_fantasy_draft_board, sizes: ["medium", "large"], defaultSize: "large" },
   fantasy_trade: { component: widget_fantasy_trade, sizes: ["large"], defaultSize: "large" },
   career_arc: { component: widget_career_arc, sizes: ["medium", "large"], defaultSize: "large" },
+  team_matchup: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
+  defense_by_position: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
+  availability_report: { component: null, sizes: ["medium", "large"], defaultSize: "large" },
+  slate_projections: { component: null, sizes: ["large"], defaultSize: "large" },
 };

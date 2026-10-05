@@ -127,6 +127,10 @@ FALLBACK_WIDGET_NAMES: dict[str, str] = {
     "fantasy_draft_board": "Draft Board",
     "fantasy_trade": "Trade Analyzer",
     "career_arc": "Career Arc",
+    "team_matchup": "Matchup",
+    "defense_by_position": "Defence by Position",
+    "availability_report": "Availability Report",
+    "slate_projections": "Slate Projections",
 }
 
 

@@ -508,6 +508,44 @@ SHARED_OBJECTS: dict[str, tuple[frozenset[str], frozenset[str], frozenset[str]]]
 }
 
 
+# The league-neutral references of CONTRACT.md §1 and §2 (``GameRefL``). Same layout as
+# ``SHARED_OBJECTS``; the third set is the league-specific optional keys.
+LEAGUE_OBJECTS: dict[str, tuple[frozenset[str], frozenset[str], frozenset[str]]] = {
+    "GameRefL": (
+        frozenset({"league", "gameId", "home"}),
+        frozenset(
+            {
+                "league",
+                "gameId",
+                "date",
+                "tipoffUtc",
+                "venue",
+                "isNeutral",
+                "round",
+                "phase",
+                "status",
+                "home",
+                "away",
+                "homePts",
+                "awayPts",
+                "overtimePeriods",
+            }
+        ),
+        frozenset(),
+    ),
+    "LeagueTeamRef": (
+        frozenset({"league", "id", "abbr"}),
+        frozenset({"league", "id", "abbr", "name", "shortName"}),
+        frozenset({"teamId", "clubCode", "tvCode"}),
+    ),
+    "LeaguePlayerRef": (
+        frozenset({"league", "id", "positionRaw"}),
+        frozenset({"league", "id", "name", "position", "positionRaw", "jersey", "headshotUrl"}),
+        frozenset({"playerId", "personCode"}),
+    ),
+}
+
+
 def _objects(node: Any) -> Iterator[dict[str, Any]]:
     """Every JSON object anywhere in a document."""
     if isinstance(node, dict):
@@ -531,7 +569,11 @@ def test_every_shared_object_matches_its_contract_shape(committed: dict[str, str
             continue
         for obj in _objects(json.loads(text)):
             keys = set(obj)
-            for shape, (marker, expected, extensions) in SHARED_OBJECTS.items():
+            # A league-neutral ref (``LeagueTeamRef``, ``GameRefL``, ``LeaguePlayerRef``) shares a
+            # marker key with the NBA's ``TeamRef``/``GameRef`` but is deliberately a different
+            # shape; it carries ``league`` and is checked against its own contract (§1, §2).
+            table = LEAGUE_OBJECTS if "league" in keys else SHARED_OBJECTS
+            for shape, (marker, expected, extensions) in table.items():
                 if not marker <= keys:
                     continue
                 checked += 1
@@ -543,6 +585,36 @@ def test_every_shared_object_matches_its_contract_shape(committed: dict[str, str
                     f"{sorted(keys - expected - extensions)}"
                 )
     assert checked > 100, f"only {checked} shared objects found; the walk is not working"
+
+
+def test_league_fixtures_carry_league_refs_of_the_contract_shape() -> None:
+    """§1/§2: every ``LeagueTeamRef``, ``LeaguePlayerRef`` and ``GameRefL`` under
+    ``contracts/fixtures/leagues/`` has exactly the documented keys, and the league-specific
+    optional keys belong to the right league."""
+    league_only = {"teamId": "nba", "playerId": "nba", "clubCode": "euroleague",
+                   "tvCode": "euroleague", "personCode": "euroleague"}
+    checked = 0
+    for path in sorted((FIXTURES_DIR / "leagues").rglob("*.json")):
+        for obj in _objects(json.loads(path.read_text(encoding="utf-8"))):
+            keys = set(obj)
+            if "league" not in keys:
+                continue
+            for shape, (marker, expected, extensions) in LEAGUE_OBJECTS.items():
+                if not marker <= keys:
+                    continue
+                checked += 1
+                assert expected <= keys, (
+                    f"{path.name}: a {shape} is missing {sorted(expected - keys)}"
+                )
+                assert keys - expected <= extensions, (
+                    f"{path.name}: a {shape} carries undocumented keys "
+                    f"{sorted(keys - expected - extensions)}"
+                )
+                for key in keys & set(league_only):
+                    assert obj["league"] == league_only[key], (
+                        f"{path.name}: a {obj['league']} {shape} carries {key!r}"
+                    )
+    assert checked > 100, f"only {checked} league refs found; the walk is not working"
 
 
 def test_embedded_metric_descriptors_are_the_catalog_entry(committed: dict[str, str]) -> None:

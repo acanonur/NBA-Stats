@@ -93,7 +93,8 @@ export type MetricFormat =
   | "minutes";
 export type ConfigFieldType =
   | "season" | "enum" | "enumList" | "metric" | "metricList" | "player" | "playerList"
-  | "team" | "teamList" | "subject" | "subjectList" | "int" | "double" | "bool" | "date";
+  | "team" | "teamList" | "subject" | "subjectList" | "int" | "double" | "bool" | "date"
+  | "club";
 
 // The three catalog documents, verbatim `as const` — i.e. exactly
 // contracts/{metrics,widgets,presets}.json parsed and re-typed, never hand-transcribed.

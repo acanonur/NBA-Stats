@@ -23,9 +23,11 @@ i. the generated web artifacts (design tokens, the web's typed contracts, the cr
    parity fixtures) regenerate **byte-identically** from their generators, the same guarantee
    check (a) gives the three JSON catalogs;
 j. the widget kinds ``widgets.json`` declares, the directories under ``web/src/widgets/``, and
-   the ``*Widget.swift`` files under ``ios/NBAStats/Widgets/`` all name the same sixteen kinds,
-   tolerating whatever ``web/src/widgets/PENDING.txt`` (or, before that file exists, simply "no
-   directory yet") says the web has not ported;
+   the ``*Widget.swift`` files under ``ios/NBAStats/Widgets/`` all name the same kinds (twenty
+   today), tolerating whatever ``web/src/widgets/PENDING.txt`` (or, before that file exists, simply
+   "no directory yet") says the web has not ported, and whatever ``ios/NBAStats/Widgets/
+   PENDING.txt`` says the native app has not built yet (the four league widgets, until the Mac phase
+   writes them), under a ceiling that only ever goes down;
 k. every widget kind has a ``contracts/fixtures/widget_<kind>.json`` payload fixture, and — once
    the web test that enumerates them exists — that it lists every one;
 l. each cross-language parity fixture (§8's ``gen_parity_cases.py`` output) is referenced by
@@ -590,6 +592,15 @@ def check_web_artifacts_regenerate() -> str:
 #: unported, the check itself starts failing so the tolerance list has to shrink, not just grow.
 MAX_TOLERATED_PENDING_WIDGETS = 12
 
+#: The same escape hatch for the native app, and a much tighter one. ``ios/NBAStats/Widgets/
+#: PENDING.txt`` is transient: it names the four league widget kinds (``team_matchup``,
+#: ``defense_by_position``, ``availability_report``, ``slate_projections``), which the service
+#: resolves today and the Swift app draws in the Mac phase, and the Mac phase empties it kind by
+#: kind. The ceiling is the size it was born with, so it can only shrink, and a kind that is listed
+#: *and* already has its ``*Widget.swift`` is an error: a stale entry would let a widget go
+#: missing again without anyone noticing.
+MAX_TOLERATED_PENDING_IOS_WIDGETS = 4
+
 
 def _kind_from_swift_widget_filename(filename: str) -> str:
     """``StatTileWidget.swift`` -> ``stat_tile``: strip ``Widget.swift``, then PascalCase to
@@ -598,9 +609,18 @@ def _kind_from_swift_widget_filename(filename: str) -> str:
     return re.sub(r"(?<!^)(?=[A-Z])", "_", stem).lower()
 
 
+def _read_pending(path: Path) -> set[str]:
+    """The kinds a ``PENDING.txt`` names: one per line, blank lines and ``#`` comments ignored."""
+    return {
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    }
+
+
 def check_widget_kinds_agree() -> str:
     """(j) ``widgets.json``, ``web/src/widgets/``, and ``ios/.../Widgets/*Widget.swift`` name the
-    same kinds, tolerating whatever is still pending on the web."""
+    same kinds, tolerating whatever is still pending on the web and on iOS."""
     catalog_kinds = {widget["kind"] for widget in _load("widgets.json")["widgets"]}
 
     if not IOS_WIDGETS.is_dir():
@@ -608,6 +628,30 @@ def check_widget_kinds_agree() -> str:
     ios_kinds = {
         _kind_from_swift_widget_filename(path.name) for path in IOS_WIDGETS.glob("*Widget.swift")
     }
+
+    ios_pending_path = IOS_WIDGETS / "PENDING.txt"
+    ios_pending: set[str] = set()
+    ios_problems: list[str] = []
+    if ios_pending_path.is_file():
+        ios_pending = _read_pending(ios_pending_path)
+        ios_source = "ios/NBAStats/Widgets/PENDING.txt"
+        unknown_ios_pending = sorted(ios_pending - catalog_kinds)
+        if unknown_ios_pending:
+            ios_problems.append(
+                f"{ios_source} names kinds widgets.json does not: {unknown_ios_pending}"
+            )
+        built = sorted(ios_pending & ios_kinds)
+        if built:
+            ios_problems.append(
+                f"{ios_source} still lists kinds that already have a *Widget.swift; remove "
+                f"them: {built}"
+            )
+        if len(ios_pending) > MAX_TOLERATED_PENDING_IOS_WIDGETS:
+            ios_problems.append(
+                f"{ios_source} tolerates {len(ios_pending)} kinds, more than the "
+                f"{MAX_TOLERATED_PENDING_IOS_WIDGETS} the escape hatch allows: "
+                f"{sorted(ios_pending)}"
+            )
 
     pending_path = WEB_WIDGETS / "PENDING.txt"
     existing_web_dirs = (
@@ -659,10 +703,10 @@ def check_widget_kinds_agree() -> str:
     expected_web = catalog_kinds - pending
     missing_web = sorted(expected_web - existing_web_dirs)
     extra_web = sorted(existing_web_dirs - catalog_kinds)
-    missing_ios = sorted(catalog_kinds - ios_kinds)
+    missing_ios = sorted((catalog_kinds - ios_pending) - ios_kinds)
     extra_ios = sorted(ios_kinds - catalog_kinds)
 
-    problems: list[str] = []
+    problems: list[str] = list(ios_problems)
     if missing_web:
         problems.append(
             f"no web/src/widgets/ directory, and not tolerated as pending: {missing_web}"
@@ -670,7 +714,9 @@ def check_widget_kinds_agree() -> str:
     if extra_web:
         problems.append(f"web/src/widgets/ has directories widgets.json does not know: {extra_web}")
     if missing_ios:
-        problems.append(f"no ios/.../Widgets/*Widget.swift for: {missing_ios}")
+        problems.append(
+            f"no ios/.../Widgets/*Widget.swift for, and not tolerated as pending: {missing_ios}"
+        )
     if extra_ios:
         problems.append(
             f"ios/.../Widgets/ implements kinds widgets.json does not know: {extra_ios}"
@@ -678,9 +724,10 @@ def check_widget_kinds_agree() -> str:
     if problems:
         raise CheckFailure(*problems)
     pending_list = ", ".join(sorted(pending)) if pending else "none"
+    ios_pending_list = ", ".join(sorted(ios_pending)) if ios_pending else "none"
     return (
         f"{len(catalog_kinds)} widget kinds agree across widgets.json, web and iOS "
-        f"(pending on the web: {pending_list})"
+        f"(pending on the web: {pending_list}; pending on iOS: {ios_pending_list})"
     )
 
 
