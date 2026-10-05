@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -77,6 +77,39 @@ def test_the_demo_never_reads_the_clock() -> None:
     assert demo.DEMO_AS_OF == datetime(2026, 10, 12, 9, 0, 0)
     source = Path(demo.__file__).read_text(encoding="utf-8")
     assert "utcnow" not in source and "datetime.now" not in source and "date.today" not in source
+
+
+@pytest.mark.parametrize(
+    "clock", [datetime(2026, 10, 5, 1, 19), datetime(2026, 9, 1, 12, 0), datetime(2026, 10, 12, 8)]
+)
+def test_a_store_seeded_before_the_demos_moment_shows_nothing_after_the_clock(
+    tmp_path: Path, clock: datetime
+) -> None:
+    """An app started on 5 October 2026 must not show final scores dated 8 October: the calendar
+    moves back by whole days so every result is before the clock and round 5 is still ahead."""
+    engine = create_el_engine(f"sqlite:///{tmp_path / 'anchored.db'}")
+    init_el_db(engine)
+    with Session(engine) as session:
+        demo.seed_demo(session, anchor=clock)
+        session.commit()
+    finals = rows(engine, "SELECT game_date, tipoff_utc FROM el_game WHERE status = 'final'")
+    scheduled = rows(engine, "SELECT game_date, tipoff_utc FROM el_game WHERE status = 'scheduled'")
+    assert finals and scheduled
+    assert max(str(d) for d, _ in finals) < clock.date().isoformat()
+    assert max(datetime.fromisoformat(str(t)) for _, t in finals if t is not None) < clock
+    assert min(str(d) for d, _ in scheduled) >= clock.date().isoformat()
+    assert min(datetime.fromisoformat(str(t)) for _, t in scheduled if t is not None) > clock
+    published = rows(engine, "SELECT MAX(source_published_at) FROM el_intel_status")[0][0]
+    assert datetime.fromisoformat(str(published)) <= clock
+    shift = demo.demo_shift(clock)
+    assert shift.total_seconds() % 86400 == 0
+    assert clock - timedelta(days=1) < demo.DEMO_AS_OF + shift <= clock
+    engine.dispose()
+    # no anchor, or a clock at or after the demo's moment: the fixed calendar, unchanged
+    assert demo.demo_shift(None) == demo.demo_shift(datetime(2027, 1, 1)) == demo.demo_shift(
+        demo.DEMO_AS_OF
+    )
+    assert not demo.demo_shift(None)
 
 
 def test_seeding_is_idempotent_and_replace_rebuilds_the_same_rows(

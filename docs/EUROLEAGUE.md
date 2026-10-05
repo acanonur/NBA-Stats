@@ -136,7 +136,9 @@ A status drives a projection only while it is *in force*. It stops when its expe
 passed, when the player has played a game after the status was published (the box score
 supersedes it), or when it is more than 14 days old, unless it is long-term (it mentions
 "long-term", "indefinite", "season" or "surgery"), in which case it stays in force and is marked
-stale after 7 days. Out-of-force statuses still appear in the list, marked stale; they just stop
+stale after 7 days. A return text that names a month or a duration ("Until November", "Target:
+November", "Mid-October", "At least six weeks") keeps the status in force past 14 days until that
+month ends or that time has run out, because the source is still saying the player is out. Out-of-force statuses still appear in the list, marked stale; they just stop
 moving the numbers. An active manual override wins until cleared.
 
 ### 4.6 The player layer
@@ -248,7 +250,7 @@ any number that would be compared with a projection**, and nothing to type one i
 | 1 | Updates ratings with weights for two rounds only | Continues with `1 / (n + 9)` from the club's first game of the season, labelled extrapolated | The workbook's table stops. Counting from the season's start, not the import, keeps the weights continuing rather than restarting |
 | 2 | One round-2 update applied to the imported ratings | Updates apply only to games after the workbook's round | Counting rounds 1 and 2 again would double their effect |
 | 3 | Compares raw scores | Scales an overtime game's score to regulation length first | An overtime game would otherwise read as a collapse in defence. The workbook did not scale |
-| 4 | The boost cap limits each player but not the team | Default `consistent`: the team total equals the sum of its players. `workbook` stays selectable and is what the replay uses | When the cap binds the workbook counts points no player is credited with. The payload says when it binds |
+| 4 | The boost cap limits each player but not the team | Default `consistent`: the listed players take what the cap allows, and what they cannot take is credited, up to the replacement-level refill, to whoever fills the missing minutes (`replacementPoints`); the team total equals the players plus that line, and never falls below the replacement floor. `workbook` stays selectable and is what the replay uses | When the cap binds the workbook counts points no player is credited with. The payload says when it binds |
 | 5 | `repl + 0.6 · (lost − repl)` always | The same, but never more than was lost | When missing players score less than replacement level the sheet's formula makes an absence raise scoring |
 | 6 | Form from the last ten games in any competition | The last ten EuroLeague games with minutes | The any-competition logs are excluded ([DATA_SOURCES.md](DATA_SOURCES.md) §7B) |
 | 7 | "Picks": two per club, with a manual overrule | The top few per club by projection | A pick is curation against a number Hardwood does not hold |

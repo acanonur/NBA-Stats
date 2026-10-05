@@ -261,6 +261,40 @@ def test_only_the_application_and_the_worker_name_the_euroleague_to_importlib() 
     assert files <= {"api/app.py", "worker.py"}, sorted(files)
 
 
+#: Modules allowed to import a module whose name is computed at run time, and why each is safe.
+#: Anything else that builds an import name from a value could assemble "nbastats.euroleague"
+#: without spelling it, which the literal checks above cannot see.
+_COMPUTED_IMPORTS_ALLOWED: dict[str, str] = {
+    "api/app.py": "the optional routers, by a fixed list of names in this package",
+    "worker.py": "job targets named in the worker's own job table",
+    "api/__init__.py": "its own submodule, api.app, imported lazily",
+    "accounts/__init__.py": "its own submodules, for lazy attribute access",
+    "ingest/client.py": "an nba_api endpoint module (nba_api.stats.endpoints.*)",
+}
+
+
+def test_no_module_imports_a_computed_name_outside_the_allowlist() -> None:
+    """``importlib.import_module`` (or ``__import__``) with a non-literal name is confined to
+    the modules above. The widget layer reaches the EuroLeague's builders through the league
+    registry's ``read_side``, not through a module name built from a league key."""
+    offenders: list[str] = []
+    for path in _all_modules_except("euroleague"):
+        rel = str(path.relative_to(PACKAGE_DIR))
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+            if not isinstance(node, ast.Call):
+                continue
+            name = getattr(node.func, "attr", getattr(node.func, "id", ""))
+            if name not in ("import_module", "__import__") or not node.args:
+                continue
+            first = node.args[0]
+            literal = isinstance(first, ast.Constant) and isinstance(first.value, str)
+            if not literal and rel not in _COMPUTED_IMPORTS_ALLOWED:
+                offenders.append(f"{rel}:{node.lineno}: {ast.unparse(node)}")
+    assert offenders == [], "computed import names outside the allowlist:\n  " + "\n  ".join(
+        offenders
+    )
+
+
 def test_the_euroleague_imports_only_what_it_is_allowed_to() -> None:
     offenders = [
         f"{edge.source}:{edge.line} imports {edge.target}"

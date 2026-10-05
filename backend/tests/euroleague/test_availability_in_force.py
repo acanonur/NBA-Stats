@@ -30,6 +30,18 @@ from nbastats.euroleague.read.queries import build_context, clear_memo, game_sta
 from nbastats.euroleague.read.sources import KEYS_AVAILABILITY, freshness_for
 from nbastats.shared.market_guard import scan_keys
 
+
+#: The real refusal, kept before the fixture below replaces it, for the test that checks it.
+REAL_STATUSES_ALLOWED = av.statuses_allowed
+
+
+@pytest.fixture(autouse=True)
+def _statuses_writable_in_the_demo_store(monkeypatch):
+    """The invented demo store is the only store these tests can build, and it refuses a
+    hand-entered status (``av.statuses_allowed``). The status-writing path is exercised here
+    with that one refusal lifted; the refusal itself is tested with the real function."""
+    monkeypatch.setattr(av, "statuses_allowed", lambda session: True)
+
 NOW = DEMO_AS_OF.replace(tzinfo=timezone.utc)
 DAY = timedelta(days=1)
 
@@ -792,3 +804,26 @@ def test_retracting_something_that_does_not_exist_or_is_itself_a_retraction_is_r
     with pytest.raises(ApiError) as caught:
         av.retract_status(ctx_at(session), out["retractedBy"])
     assert caught.value.code == "bad_request"
+
+
+def test_the_demo_league_refuses_a_hand_entered_status_and_a_retraction(
+    session, monkeypatch
+) -> None:
+    """A real player's status, with a real source link, must never sit beside invented games:
+    the invented store refuses both writes, as the NBA's demo store does."""
+    monkeypatch.setattr(av, "statuses_allowed", REAL_STATUSES_ALLOWED)
+    ctx = ctx_at(session)
+    assert av.statuses_allowed(session) is False
+    with pytest.raises(ApiError) as refused:
+        av.record_status(
+            ctx,
+            club_code=next(iter(ctx.clubs)),
+            status="out",
+            source_label="example.org",
+            source_published_at="2026-10-01",
+            player_name="Real Person Name",
+            source_url="https://example.org/real-news",
+        )
+    assert refused.value.http_status == 400 and "Demo league" in refused.value.message
+    with pytest.raises(ApiError, match="Demo league"):
+        av.retract_status(ctx, 1)

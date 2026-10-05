@@ -39,6 +39,13 @@ Everything is drawn from ``random.Random(20261001)``, never from the NBA seeder'
 never from the clock, and every timestamp is fixed (:data:`DEMO_AS_OF`), so two runs produce the
 same rows byte for byte. A fixture built from the demo can therefore be reproduced and diffed.
 
+The one exception is a store seeded *before* that moment on the real clock (an app started on
+5 October 2026 would otherwise show final scores for 8 October). :func:`seed_demo` then takes an
+``anchor`` (the application passes its clock) and moves the whole calendar back by whole days
+until :data:`DEMO_AS_OF` is not after the anchor (by less than a day), so every result shown has
+happened by the clock the payload reports and the next round is still ahead. The gaps between
+dates are unchanged; the fixtures and the tests pass no anchor and stay byte for byte.
+
 Safe to name
 ------------
 Clubs and players are invented from syllables; the status links are on ``example.org``; the
@@ -53,7 +60,7 @@ from __future__ import annotations
 import json
 import random
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, Final
 
 from sqlalchemy import delete, func, select
@@ -106,6 +113,7 @@ __all__ = [
     "DemoSummary",
     "demo_clubs",
     "seed_demo",
+    "demo_shift",
     "clear_store",
     "has_games",
 ]
@@ -731,21 +739,46 @@ def clear_store(session: Session) -> None:
     session.flush()
 
 
+def demo_shift(anchor: datetime | None) -> timedelta:
+    """How far back the demo calendar moves for a store seeded at ``anchor`` (see the module
+    docstring): whole days, just enough that :data:`DEMO_AS_OF` is not after the anchor (so the
+    next round, three days after it, is still ahead), and nothing when the anchor is at or after
+    it (or absent)."""
+    if anchor is None:
+        return timedelta(0)
+    stamp = (
+        anchor.replace(tzinfo=None)
+        if anchor.tzinfo is None
+        else (anchor.astimezone(timezone.utc).replace(tzinfo=None))
+    )
+    if stamp >= DEMO_AS_OF:
+        return timedelta(0)
+    days = -(-(DEMO_AS_OF - stamp) // timedelta(days=1))  # ceiling division
+    return -timedelta(days=days)
+
+
 def seed_demo(
-    session: Session, *, replace: bool = False, now: datetime | None = None
+    session: Session,
+    *,
+    replace: bool = False,
+    now: datetime | None = None,
+    anchor: datetime | None = None,
 ) -> DemoSummary:
     """Seed the invented league into a synthetic store. Does not commit.
 
     A store that already holds games is left alone and reported (``seeded`` is false), unless
     ``replace`` is set, which rebuilds it from scratch (synthetic stores only). A real store
-    raises :class:`~nbastats.euroleague.db.StoreKindMismatch`.
+    raises :class:`~nbastats.euroleague.db.StoreKindMismatch`. ``anchor`` (the real clock) moves
+    the calendar back by whole days when it is earlier than :data:`DEMO_AS_OF`
+    (:func:`demo_shift`).
     """
-    ensure_identity(session, KIND_SYNTHETIC, now or DEMO_AS_OF)
+    shift = demo_shift(anchor)
+    ensure_identity(session, KIND_SYNTHETIC, now or (DEMO_AS_OF + shift))
     if has_games(session):
         if not replace:
             return _summary(session, seeded=False)
         clear_store(session)
-    moment = now or DEMO_AS_OF
+    moment = now or (DEMO_AS_OF + shift)
     # Independent streams from one seed: coaches, squads, results, statuses. Changing how one
     # is used can never move the others.
     rng = random.Random(DEMO_SEED + 3)
@@ -834,7 +867,7 @@ def seed_demo(
     last_final: date | None = None
     for round_index, pairs in enumerate(rounds):
         round_number = round_index + 1
-        first_day = _ROUND_DAYS[round_index]
+        first_day = _ROUND_DAYS[round_index] + shift
         final = round_number <= DEMO_ROUNDS_FINAL
         for slot, (home_code, away_code) in enumerate(pairs):
             home, away = by_code[home_code], by_code[away_code]
@@ -1080,6 +1113,10 @@ def _seed_statuses(
     for index in range(30):
         club = clubs[index % len(clubs)] if index < 28 else rng.choice(clubs)
         status, reason, expected, kind = _STATUS_PLAN[index % len(_STATUS_PLAN)]
+        if expected == "Around 20 Oct" and moment != DEMO_AS_OF:
+            # keep the promised return the same distance ahead of a calendar moved back
+            back = date(2026, 10, 20) + (moment - DEMO_AS_OF)
+            expected = f"Around {back.day} {back.strftime('%b')}"
         player = club.players[rng.randrange(0, min(len(club.players), 12))]
         published = moment - timedelta(days=rng.randint(1, 12), hours=rng.randint(0, 20))
         if kind == "manual":

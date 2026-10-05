@@ -716,6 +716,28 @@ def test_team_lines_scores_and_overtime(el_engine: Engine, mini_league: Any) -> 
     assert all(r[0] == 12_000 for r in regulation)
 
 
+def test_team_time_is_stored_exactly_once_the_invariant_accepts_the_game(
+    el_engine: Engine, mini_league: Any
+) -> None:
+    """The sheet types team minutes to two decimals (199.98 is 11999 s). A game the team-time
+    invariant accepted lasted exactly 200 minutes (plus 25 per overtime): that is what is stored,
+    so points per regulation equals points per game for a club that never went to overtime."""
+    play = mini_league._play
+
+    def rounded_minutes(*args: Any) -> Any:
+        game = play(*args)
+        if game.code == 1:
+            game.home_team.seconds, game.away_team.seconds = 11_999, 12_001
+        return game
+
+    mini_league._play = rounded_minutes
+    assert run(el_engine, mini_league).status == "ok"
+    stored = rows(
+        el_engine, "SELECT seconds_played FROM el_team_game WHERE game_id = 'E2026-0001'"
+    )
+    assert sorted(r[0] for r in stored) == [12_000, 12_000]
+
+
 def test_the_database_agrees_with_itself(el_engine: Engine, mini_league: Any) -> None:
     run(el_engine, mini_league)
     assert (
@@ -1394,30 +1416,30 @@ def test_the_batch_records_its_file(el_engine: Engine, mini_league: Any) -> None
         ("Stomach flu", None, "questionable", "illness"),
         ("Did not travel for Round 2", None, "questionable", "notWithTeam"),
         (
-            "Did not travel for Round 2; no injury reported",
+            "Did not travel for Round 1; no injury given",
             "Home game",
             "available",
             "coachDecision",
         ),
         (
-            "Left out in Rounds 1-2: coach's decision, not injured",
+            "Left out for Round 1 by coach's decision, fit to play",
             "Squad choice",
             "available",
             "coachDecision",
         ),
         (
-            "Coach's decision: left out of the last two games",
+            "Coach's decision: left out of the last game",
             "Out for Round 3",
             "out",
             "coachDecision",
         ),
         ("Not in the EuroLeague game roster", "n/a", "out", "notRegistered"),
         ("Now registered: debuted at Efes in Round 2", "Playing", "available", None),
-        ("Family wedding in the US; misses the double week", "After Round 3", "out", "personal"),
+        ("Away for a family event; misses the next game", "After Round 3", "out", "personal"),
         ("League suspension, two games", None, "out", "suspension"),
         ("Assigned to the G League affiliate", None, "out", "gLeague"),
         ("Rested after the long trip", None, "probable", "rest"),
-        ("Did not play in Round 2; no reason given", "Unclear", "questionable", None),
+        ("Sat out Round 1 with no reason given", "Unclear", "questionable", None),
         ("Undisclosed", "No update", "questionable", "other"),
         ("Out of the squad", "n/a", "out", "other"),
         (None, None, "out", None),

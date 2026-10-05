@@ -66,7 +66,14 @@ from ..read import sources as sources_module
 from ..read import stats as stats_module
 from ..read import teams as teams_module
 from ..db import bump_sync_version
-from ..read.queries import ReadContext, bad_request, build_context, context_for_game, naive_utc
+from ..read.queries import (
+    ReadContext,
+    bad_request,
+    build_context,
+    build_store_context,
+    context_for_game,
+    naive_utc,
+)
 from ..settings import InvalidSettingError, set_setting, validate_setting
 from .deps import (
     ElSession,
@@ -510,19 +517,19 @@ def post_news_link(
 
 @router.get("/sources", summary="Where every number came from, and how current it is")
 def sources(session: ElSession, now: NowDep) -> dict[str, Any]:
-    ctx = _ctx(session, None, now)
+    ctx = build_store_context(session, now=now)
     return sources_module.build_source_list(ctx, sources_module.freshness_for(ctx, ()))
 
 
 @router.get("/method", summary="Constants with provenance, deviations and limitations")
 def method(session: ElSession, now: NowDep) -> dict[str, Any]:
-    ctx = _ctx(session, None, now)
+    ctx = build_store_context(session, now=now)
     return method_module.build_method(ctx, sources_module.freshness_for(ctx, ()))
 
 
 @router.get("/model-settings", summary="The model's settings and where each came from")
 def model_settings(session: ElSession, now: NowDep) -> dict[str, Any]:
-    ctx = _ctx(session, None, now)
+    ctx = build_store_context(session, now=now)
     return model_settings_payload(ctx, sources_module.freshness_for(ctx, ()))
 
 
@@ -552,7 +559,7 @@ def patch_model_settings(
         raise bad_request(str(exc), "value") from exc
     bump_sync_version(session, None, None, moment)
     commit_after(session)
-    ctx = _ctx(session, None, now)
+    ctx = build_store_context(session, now=now)
     return model_settings_payload(ctx, sources_module.freshness_for(ctx, ()))
 
 

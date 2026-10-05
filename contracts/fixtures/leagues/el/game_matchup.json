@@ -478,6 +478,7 @@
       "defenceIndex": 1.017059056725461,
       "capBinding": false,
       "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
       "keyAbsences": []
     },
     "away": {
@@ -502,6 +503,7 @@
       "defenceIndex": 1.0140650978953536,
       "capBinding": false,
       "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
       "keyAbsences": []
     },
     "margin": 1.5817432851893898,

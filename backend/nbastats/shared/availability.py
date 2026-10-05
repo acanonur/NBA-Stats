@@ -108,6 +108,7 @@ __all__ = [
     "assumed_available_basis",
     "age_minutes",
     "is_long_term",
+    "return_horizon",
     "ExpectedReturn",
     "parse_expected_return",
     "StatusEntry",
@@ -402,6 +403,76 @@ def parse_expected_return(text: str | None, *, source_date: date | None = None) 
     return ExpectedReturn(None, None, None)
 
 
+# ---------------------------------------------------------------------------- horizon
+
+_NUMBER_WORDS: Final[dict[str, int]] = {
+    "a": 1, "an": 1, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+    "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12,
+    "couple": 2, "a couple": 2, "a couple of": 2, "few": 3, "a few": 3, "several": 3,
+}  # fmt: skip
+_COUNT = (
+    r"(\d{1,2}|a\s+couple(?:\s+of)?|a\s+few|couple|few|several|an?"
+    r"|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
+)
+_DURATION = re.compile(
+    r"\b" + _COUNT + r"(?:\s*(?:[-–—]|to|or)\s*" + _COUNT + r")?\s+(day|week|month)s?\b",
+    re.IGNORECASE,
+)
+_MONTH_WORD = re.compile(r"\b([a-z]{3,9})\b\.?", re.IGNORECASE)
+_UNIT_DAYS: Final[dict[str, int]] = {"day": 1, "week": 7, "month": 31}
+
+
+def _count(word: str) -> int | None:
+    folded = " ".join(word.lower().split())
+    return int(folded) if folded.isdigit() else _NUMBER_WORDS.get(folded)
+
+
+def _month_end(year: int, month: int) -> date:
+    return (date(year + month // 12, month % 12 + 1, 1)) - timedelta(days=1)
+
+
+def return_horizon(text: str | None, *, source_date: date | None) -> date | None:
+    """The latest day an expected-return text plausibly reaches, or ``None``.
+
+    :func:`parse_expected_return` keeps only the three exact forms for the structured columns;
+    this reads the free text sources actually write, for one purpose only: rule (c). An entry
+    saying ``Until November`` or ``At least six weeks`` must not stop driving the model after
+    fourteen days with no newer source. Two forms are read:
+
+    * a **month name** anywhere (``Target: November``, ``Mid-October``, ``Late October or early
+      November``): the end of the last month named, in ``source_date``'s year, or the next year
+      when that month ended more than a month before the source date;
+    * a **duration** (``6 weeks``, ``At least six weeks``, ``Several weeks``, ``2-3 months``):
+      ``source_date`` plus the longest duration named (``few``/``several`` count as 3, a month
+      as 31 days).
+
+    Without a ``source_date`` nothing can be anchored and the answer is ``None``. The horizon is
+    an upper bound, not a return date: it never takes an entry *out* of force, it only keeps
+    rule (c) from ending one the source says is still running.
+    """
+    if not text or source_date is None:
+        return None
+    horizons: list[date] = []
+    for match in _DURATION.finditer(text):
+        counts = [_count(g) for g in match.groups()[:2] if g]
+        unit = _UNIT_DAYS[match.group(3).lower()]
+        longest = max((c for c in counts if c is not None), default=None)
+        if longest:
+            horizons.append(source_date + timedelta(days=longest * unit))
+    months = [
+        _MONTHS[m.group(1).lower()]
+        for m in _MONTH_WORD.finditer(text)
+        if m.group(1).lower() in _MONTHS and m.group(1).lower() != "may"
+    ]
+    if months:
+        month = months[-1]
+        year = source_date.year
+        if _month_end(year, month) < source_date - timedelta(days=31):
+            year += 1
+        horizons.append(_month_end(year, month))
+    return max(horizons) if horizons else None
+
+
 # ---------------------------------------------------------------------------- entries
 
 
@@ -493,11 +564,16 @@ def entry_in_force(
     if last_played_at is not None and _utc(last_played_at) > published:
         return ForceVerdict(False, "playedSince")
 
-    # (c) too old, unless the source calls it a long absence
+    # (c) too old, unless the source calls it a long absence, or names a month or a duration
+    # that has not run out yet (``Until November``, ``Six weeks``)
     if now - published > timedelta(days=IN_FORCE_MAX_AGE_DAYS) and not is_long_term(
         entry.expected_return_text
     ):
-        return ForceVerdict(False, "tooOld")
+        source_day = published.astimezone(tz).date() if tz is not None else published.date()
+        horizon = return_horizon(entry.expected_return_text, source_date=source_day)
+        local_day = now.astimezone(tz).date() if tz is not None else now.date()
+        if horizon is None or local_day > horizon:
+            return ForceVerdict(False, "tooOld")
 
     return ForceVerdict(True, None)
 

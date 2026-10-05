@@ -63,6 +63,7 @@ import argparse
 import math
 import random
 import statistics
+import sys
 import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
@@ -73,7 +74,7 @@ from sqlalchemy import delete, insert
 from sqlalchemy.orm import Session
 
 from . import catalog, identities
-from .db import create_db_engine, init_db, utcnow
+from .db import NbaStoreError, create_db_engine, init_db, refuse_foreign_store, utcnow
 from .models import (
     SHOT_ZONES,
     Base,
@@ -2462,6 +2463,7 @@ def seed_database(
     league rather than doubling it.
     """
     started = time.perf_counter()
+    refuse_foreign_store(session.get_bind())  # never put the demo league in the EuroLeague's file
     _clear(session)
     generator = LeagueGenerator(
         session=session,
@@ -2495,7 +2497,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     engine = create_db_engine(args.database_url)
-    init_db(engine)
+    try:
+        init_db(engine)
+    except NbaStoreError as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
     seasons = args.seasons.split(",") if args.seasons else None
     as_of = date.fromisoformat(args.as_of) if args.as_of else None
 

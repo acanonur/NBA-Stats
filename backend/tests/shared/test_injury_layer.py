@@ -16,7 +16,8 @@ boost, squad points, the availability factor). The second duty is the two places
 
 Properties, on random squads, guard what no single example can: an absence never makes a squad
 score more than at full strength, the consistent policy never exceeds the workbook one, and
-under the consistent policy the team always equals the sum of its players.
+under the consistent policy the team always equals the sum of its players plus the
+replacement players' line, and never falls below the replacement floor.
 """
 
 from __future__ import annotations
@@ -71,18 +72,32 @@ def test_hand_worked_squad_under_the_default_policy() -> None:
     assert r.absorbed_points == pytest.approx(18.45)
     # 1 + 18.45/24 = 1.76875 exceeds the cap, so every player is boosted by exactly 1.35
     assert r.boost == pytest.approx(1.35) and r.cap_binding
-    # consistent: absorbedEff = min(18.45, 0.35 * 24 = 8.4) = 8.4;  squad = 24 + 8.4 = 32.4
-    assert r.absorbed_effective == pytest.approx(8.4) and r.unassigned_points == 0.0
-    assert r.squad_points == pytest.approx(32.4)
-    assert r.availability_factor == pytest.approx(32.4 / 48)
+    # consistent: the players take 0.35 * 24 = 8.4; the replacement players are credited the
+    # rest up to repl: absorbedEff = min(18.45, 8.4 + 10.125 = 18.525) = 18.45; squad = 42.45
+    assert r.absorbed_effective == pytest.approx(18.45) and r.unassigned_points == 0.0
+    assert r.replacement_credited == pytest.approx(18.45 - 8.4)
+    assert r.squad_points == pytest.approx(42.45)
+    assert r.availability_factor == pytest.approx(42.45 / 48)
     assert r.cap_policy == "consistent"
+
+
+def test_the_consistent_policy_never_caps_away_the_replacement_floor() -> None:
+    # A tight cap: the players can take only 0.05 * 24 = 1.2, so absorbedEff = 1.2 + 10.125
+    r = IL.apply_injury_layer(BIG_ABSENCE, settings(boost_cap=1.05))
+    assert r.cap_binding
+    assert r.absorbed_effective == pytest.approx(1.2 + 10.125)
+    assert r.replacement_credited == pytest.approx(10.125)
+    assert r.squad_points == pytest.approx(24 + 1.2 + 10.125)
+    assert r.squad_points >= r.available_points + min(r.replacement_points, r.lost_points)
 
 
 def test_the_consistent_policy_makes_the_team_equal_the_sum_of_its_players() -> None:
     r = IL.apply_injury_layer(BIG_ABSENCE, settings())
-    # p * c * boost: P2 13.5, P3 5.4, P4 8.1, P5 5.4, P1 0
+    # p * c * boost: P2 13.5, P3 5.4, P4 8.1, P5 5.4, P1 0; plus the replacement players' line
     assert [p.projected_points for p in r.players] == pytest.approx([0.0, 13.5, 5.4, 8.1, 5.4])
-    assert sum(p.projected_points for p in r.players) == pytest.approx(r.squad_points)
+    assert sum(p.projected_points for p in r.players) + r.replacement_credited == pytest.approx(
+        r.squad_points
+    )
 
 
 def test_the_workbook_policy_reproduces_the_sheet_and_reports_the_gap() -> None:
@@ -191,8 +206,11 @@ def test_everyone_out_under_each_policy() -> None:
     consistent = IL.apply_injury_layer(players, settings())
     assert consistent.available_points == 0.0 and consistent.boost == 1.0
     assert consistent.absorbed_points == pytest.approx(23.4)
-    assert consistent.absorbed_effective == 0.0 and consistent.squad_points == 0.0
-    assert consistent.availability_factor == 0.0 and consistent.cap_binding
+    # nobody listed plays, so only the replacement players score: min(23.4, 0 + 13.5) = 13.5
+    assert consistent.absorbed_effective == pytest.approx(13.5)
+    assert consistent.squad_points == pytest.approx(13.5)
+    assert consistent.replacement_credited == pytest.approx(13.5)
+    assert consistent.availability_factor == pytest.approx(13.5 / 30) and consistent.cap_binding
     workbook = IL.apply_injury_layer(players, settings(IL.CAP_WORKBOOK))
     # the sheet's own arithmetic: squad = 0 + absorbed, and no player can take any of it
     assert workbook.squad_points == pytest.approx(23.4)
@@ -204,8 +222,9 @@ def test_the_boost_never_exceeds_the_cap_and_never_falls_below_one() -> None:
     r = IL.apply_injury_layer(BIG_ABSENCE, settings(boost_cap=1.1))
     assert r.boost == pytest.approx(1.1)
     r = IL.apply_injury_layer(BIG_ABSENCE, settings(boost_cap=1.0))
-    assert r.boost == 1.0 and r.absorbed_effective == 0.0  # a cap of 1 forbids any boost
-    assert r.availability_factor == pytest.approx(24 / 48)
+    # a cap of 1 forbids any boost; only the replacement-level refill is credited
+    assert r.boost == 1.0 and r.absorbed_effective == pytest.approx(10.125)
+    assert r.availability_factor == pytest.approx((24 + 10.125) / 48)
 
 
 def test_zero_absorb_share_recovers_only_replacement() -> None:
@@ -261,9 +280,16 @@ def test_consistent_never_exceeds_workbook_and_always_matches_its_players(seed) 
         )
         assert consistent.squad_points <= workbook.squad_points + 1e-9
         assert consistent.unassigned_points == 0.0 and workbook.unassigned_points >= -1e-9
+        assert workbook.replacement_credited == 0.0 and consistent.replacement_credited >= 0.0
+        floor = consistent.available_points + min(
+            consistent.replacement_points, consistent.lost_points
+        )
+        assert consistent.squad_points >= floor - 1e-9  # the replacement floor survives the cap
+        total = sum(p.projected_points for p in consistent.players)
+        assert total + consistent.replacement_credited == pytest.approx(
+            consistent.squad_points, abs=1e-9
+        )
         if consistent.available_points > 0:
-            total = sum(p.projected_points for p in consistent.players)
-            assert total == pytest.approx(consistent.squad_points, abs=1e-9)
             gap = workbook.squad_points - sum(p.projected_points for p in workbook.players)
             assert gap == pytest.approx(workbook.unassigned_points, abs=1e-9)
         if not workbook.cap_binding:

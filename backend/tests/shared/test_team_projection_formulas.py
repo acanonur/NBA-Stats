@@ -323,17 +323,20 @@ def test_the_cap_binding_club_differs_between_the_two_policies_exactly_as_docume
     credited = sum(p.projected_points for p in a_w.players)
     assert a_w.squad_points - credited == pytest.approx(a_w.unassigned_points, abs=1e-9)
     assert a_w.unassigned_points > 1.0
-    # the consistent policy is lower, and equals the sum of the players
-    assert a_c.squad_points < a_w.squad_points
-    assert sum(p.projected_points for p in a_c.players) == pytest.approx(a_c.squad_points, abs=1e-9)
+    # the consistent policy is never higher, and equals the sum of the players plus the
+    # replacement players' line, which is what the capped boost leaves (at most repl)
+    assert a_c.squad_points <= a_w.squad_points + 1e-9
+    players_total = sum(p.projected_points for p in a_c.players)
+    assert players_total + a_c.replacement_credited == pytest.approx(a_c.squad_points, abs=1e-9)
+    assert 0.0 < a_c.replacement_credited <= a_c.replacement_points + 1e-9
     assert a_c.unassigned_points == 0.0
     # every player's own projection is the same under both policies (the cap binds each boost)
     for pw, pc in zip(a_w.players, a_c.players):
         assert pw.projected_points == pytest.approx(pc.projected_points, abs=1e-12)
-    # and the team projection that follows is lower under the consistent policy
+    # and the team projection that follows is never higher under the consistent policy
     sheet_game = TP.project_match(level, w_strengths["ZZA"], w_strengths["ZZB"], HCA)
     ours = TP.project_match(level, c_strengths["ZZA"], c_strengths["ZZB"], HCA)
-    assert ours.home_points < sheet_game.home_points
+    assert ours.home_points <= sheet_game.home_points + 1e-9
     # clubs where the cap does not bind are unchanged by the policy
     for code in ("ZZC", "ZZD", "ZZE", "ZZG"):
         assert consistent[code].squad_points == pytest.approx(workbook[code].squad_points, abs=1e-9)

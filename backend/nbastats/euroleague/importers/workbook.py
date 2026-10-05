@@ -2223,6 +2223,18 @@ def _write_lines(ctx: _Ctx, gid: str, game: _ParsedGame, home: str, away: str) -
             continue
         stats = _line_values(team)
         stats.pop("pts")
+        check = game.check
+        if (
+            stats.get("seconds_played") is not None
+            and check is not None
+            and check.ot_periods is not None
+            and not any(v.rule == "team_time" for v in check.hard)
+        ):
+            # The sheet's team minutes are two-decimal numbers (199.98 is 11999 s). Once the
+            # invariant has accepted the game, the team played exactly 200 minutes plus 25 per
+            # overtime; storing the rounding would make points per regulation differ from
+            # points per game for a club that never went to overtime.
+            stats["seconds_played"] = PROFILE.team_time_seconds(check.ot_periods)
         session.add(
             ElTeamGame(
                 game_id=gid,

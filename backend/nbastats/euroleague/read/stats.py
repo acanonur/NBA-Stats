@@ -146,13 +146,15 @@ class PlayerAggregate:
     games: int = 0
     seconds: int = 0
     seconds_lines: int = 0
-    #: column -> (sum, lines that carry it, minutes of lines that carry it and have minutes)
+    #: column -> (sum, lines that carry it, minutes of lines that carry it and have minutes,
+    #: sum over only those minuted lines: the per-40 numerator, so a line with no recorded
+    #: minutes adds to neither side of the rate)
     columns: dict[str, list[float]] = None  # type: ignore[assignment]
     #: percentage key -> (makes, attempts, lines that carry both, minutes of those lines)
     pairs: dict[str, list[float]] = None  # type: ignore[assignment]
 
     def __post_init__(self) -> None:
-        self.columns = defaultdict(lambda: [0.0, 0, 0.0])
+        self.columns = defaultdict(lambda: [0.0, 0, 0.0, 0.0])
         self.pairs = defaultdict(lambda: [0.0, 0.0, 0, 0.0])
 
 
@@ -186,6 +188,7 @@ def _aggregate(ctx: ReadContext) -> dict[str, PlayerAggregate]:
             slot[1] += 1
             if minutes is not None:
                 slot[2] += minutes
+                slot[3] += value
         for key, (makes_column, attempts_column) in PERCENTAGES.items():
             made, attempted = getattr(row, makes_column), getattr(row, attempts_column)
             if made is None or attempted is None:
@@ -224,14 +227,14 @@ def season_values(
         if key not in agg.columns:
             values[key], counts[key] = None, 0
             continue
-        total, lines, minutes = agg.columns[key]
+        total, lines, minutes, minuted_total = agg.columns[key]
         counts[key] = int(lines)
         if per_mode == "PerGame":
             values[key] = total / lines
         elif per_mode == "Totals":
             values[key] = total
         else:
-            values[key] = (40.0 * total / minutes) if minutes > 0 else None
+            values[key] = (40.0 * minuted_total / minutes) if minutes > 0 else None
     for key in PERCENTAGES:
         if key not in agg.pairs:
             values[key], counts[key] = None, 0

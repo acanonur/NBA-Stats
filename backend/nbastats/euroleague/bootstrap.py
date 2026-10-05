@@ -69,6 +69,7 @@ from .db import (
     init_el_db,
     read_identity,
     read_sync_state,
+    release_empty_real_stamp,
     utcnow,
 )
 from .demo import seed_demo
@@ -354,6 +355,21 @@ def _prepare(settings: ElSettings, moment: datetime) -> BootstrapResult:
         identity = None
         if existed:
             identity = read_identity(probe)
+            if (
+                identity is not None
+                and identity.kind in REAL_KINDS
+                and settings.demo
+                and not workbook_wanted
+                and release_empty_real_stamp(probe)
+            ):
+                # Stamped real by an earlier start, but nothing real ever arrived: the demo
+                # the person asked for may have it.
+                probe.commit()
+                notes.append(
+                    "This store was stamped for real data but never received any; it now "
+                    "holds the invented demo league."
+                )
+                identity = None
     if identity is None:
         if workbook_wanted:
             intended = KIND_WORKBOOK
@@ -380,7 +396,7 @@ def _prepare(settings: ElSettings, moment: datetime) -> BootstrapResult:
         kind = stamp.kind
         if kind == KIND_SYNTHETIC:
             if settings.demo or not existed:
-                seeded = seed_demo(session, now=None).seeded
+                seeded = seed_demo(session, now=None, anchor=moment).seeded
             if workbook_wanted:
                 notes.append(
                     "A workbook is waiting, but this store holds the invented demo league and "
@@ -391,8 +407,9 @@ def _prepare(settings: ElSettings, moment: datetime) -> BootstrapResult:
         else:
             if settings.demo and not workbook_wanted:
                 notes.append(
-                    "Demo mode is on, but this store holds real data and is never given the "
-                    "invented league."
+                    "Demo mode is on, but this store is stamped for real data and holds some, "
+                    "so it is never given the invented league. Point HARDWOOD_EL_DATABASE_URL "
+                    "at a new file for the demo."
                 )
             ensure_default_feeds(session)
         state = read_sync_state(session)

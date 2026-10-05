@@ -7,9 +7,12 @@ title names. Reading the article is the reader's job: they follow the link.
 
 Feeds
 -----
-Two candidate feeds ship configured, ``https://eurohoops.net/feed`` and
-``https://talkbasket.net/feed``, and **both are unverified**: nobody has fetched either from the
-development environment, whose network policy denies every news host. They are on by default
+One candidate feed ships configured, ``https://talkbasket.net/feed``, and it is **unverified**:
+nobody has fetched it from the development environment, whose network policy denies every news
+host. It covers European basketball as well as the NBA, so a feed headline that names no NBA team
+or player is **not stored** (it is not NBA news, and must never reach ``/v1/news`` linked to an
+NBA team by a common word). The EuroLeague-only candidate (``eurohoops.net``) belongs to the
+EuroLeague's own feed table and is never seeded here. Feeds are on by default
 (``HARDWOOD_NEWS``), which is the lead's decision: Hardwood is private and the posture in
 ``docs/LEGAL.md`` §2e covers it. What replaces a terms review is behaviour, applied to every fetch
 by :func:`nbastats.intel.feeds.fetch_feed`: ``robots.txt`` is read first and cached for a day, a
@@ -24,9 +27,11 @@ table, so removing or disabling one is never undone by the next run.
 
 Subjects: a unique name or no link
 ----------------------------------
-A headline is linked to a team when its title contains the team's full name or its nickname, and to
-a player when it contains his full name (at least two words), compared as folded text on word
-boundaries. A city alone is never enough ("Boston" is also a hockey team), and a phrase that belongs
+A headline is linked to a team when its title contains the team's full name, or its nickname
+capitalised *and* alongside another NBA team or player or the word "NBA" (a nickname alone is often
+an ordinary word: heat, magic, kings, thunder, jazz, suns); and to a player when it contains his
+full name (at least two words), compared as folded text on word boundaries. A city alone is never
+enough ("Boston" is also a hockey team), and a phrase that belongs
 to more than one team or player in the store produces **no** link at all: an ambiguous name is not
 resolved by taking the first. A player is linked together with the team he last played for (his
 latest line in this or the previous season), because a subject row needs a team.
@@ -44,6 +49,7 @@ the status themselves.
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Iterable
@@ -88,11 +94,11 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
-#: ``(name, url)`` of the candidate feeds seeded into an empty feed table. Both are unverified.
-DEFAULT_FEEDS: tuple[tuple[str, str], ...] = (
-    ("Eurohoops", "https://eurohoops.net/feed"),
-    ("TalkBasket", "https://talkbasket.net/feed"),
-)
+#: ``(name, url)`` of the candidate feed seeded into an empty feed table (unverified). It covers
+#: basketball on both sides of the Atlantic, so only headlines that name an NBA team or player
+#: are kept (:func:`_store_items`). The EuroLeague-only candidate is seeded into the EuroLeague's
+#: own feed table, never here.
+DEFAULT_FEEDS: tuple[tuple[str, str], ...] = (("TalkBasket", "https://talkbasket.net/feed"),)
 RETENTION = timedelta(days=30)
 MAX_NEWS_LIMIT = 100
 _FUTURE_TOLERANCE = timedelta(days=1)
@@ -157,10 +163,16 @@ class SubjectMatches:
 
 
 class SubjectIndex:
-    """Phrases that name a team or player uniquely within the NBA store. Built once per run."""
+    """Phrases that name a team or player uniquely within the NBA store. Built once per run.
+
+    A team is named by its full name (``Miami Heat``). Its nickname alone (``Heat``, ``Magic``,
+    ``Kings``) is an ordinary word, so it names the team only when it is capitalised in the
+    headline *and* the headline also names another NBA team or player or says ``NBA``: "Real
+    Madrid turn up the heat" and "Monaco kings of Europe?" name no NBA team."""
 
     def __init__(self, session: Session) -> None:
         self._teams: dict[str, int] = {}
+        self._nicknames: dict[str, tuple[re.Pattern[str], int]] = {}
         self._players: dict[str, tuple[int, int]] = {}
         self._player_team: dict[int, int] = {}
         self._build(session)
@@ -169,13 +181,21 @@ class SubjectIndex:
         if not store.table_exists(session, "teams"):
             return
         team_phrases: dict[str, set[int]] = {}
+        nick_phrases: dict[str, tuple[str, set[int]]] = {}
         for team_id, name, nickname in session.execute(
             text("SELECT team_id, name, nickname FROM teams")
         ):
-            for phrase in (fold_name(str(name)), fold_name(str(nickname))):
-                if phrase:
-                    team_phrases.setdefault(phrase, set()).add(int(team_id))
+            if fold_name(str(name)):
+                team_phrases.setdefault(fold_name(str(name)), set()).add(int(team_id))
+            raw = " ".join(str(nickname or "").split())
+            if fold_name(raw):
+                nick_phrases.setdefault(fold_name(raw), (raw, set()))[1].add(int(team_id))
         self._teams = {p: next(iter(ids)) for p, ids in team_phrases.items() if len(ids) == 1}
+        self._nicknames = {
+            folded: (re.compile(rf"(?<![\w-]){re.escape(raw)}(?![\w-])"), next(iter(ids)))
+            for folded, (raw, ids) in nick_phrases.items()
+            if len(ids) == 1 and folded not in self._teams
+        }
 
         if not (store.table_exists(session, "players") and store.table_exists(session, "games")):
             return
@@ -225,7 +245,14 @@ class SubjectIndex:
         players = {
             pid: team for phrase, (pid, team) in self._players.items() if f" {phrase} " in padded
         }
+        nicknamed = {tid for pattern, tid in self._nicknames.values() if pattern.search(title)}
+        context = bool(teams or players) or len(nicknamed) > 1 or _NBA_WORD.search(title)
+        if nicknamed and context:
+            teams |= nicknamed
         return SubjectMatches(frozenset(teams), players)
+
+
+_NBA_WORD = re.compile(r"\bNBA\b")
 
 
 def _add_subjects(session: Session, item_id: int, matches: SubjectMatches) -> None:
@@ -364,6 +391,12 @@ def _store_items(
         if item.guid in existing or item.published_at < cutoff:
             skipped += 1
             continue
+        matches = subjects.match(item.title)
+        if not matches.team_ids and not matches.players:
+            # A headline that names no NBA team or player is not NBA news (a mixed feed's
+            # EuroLeague story, say); it is not stored, so it can never reach /v1/news.
+            skipped += 1
+            continue
         row = NbaIntelNewsItem(
             feed_id=feed.feed_id,
             guid=item.guid,
@@ -375,7 +408,7 @@ def _store_items(
         )
         session.add(row)
         session.flush()
-        _add_subjects(session, row.item_id, subjects.match(item.title))
+        _add_subjects(session, row.item_id, matches)
         existing.add(item.guid)
         added += 1
     return added, skipped

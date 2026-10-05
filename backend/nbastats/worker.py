@@ -620,6 +620,12 @@ def gate_news(ctx: GateContext) -> Gate:
     )
 
 
+def gate_nba_news(ctx: GateContext) -> Gate:
+    """NBA headlines: switched on, private, and never linked to the invented demo league's
+    teams (real headlines are not shown next to invented games)."""
+    return _first_refusal(ctx, gate_news, gate_nba_real_store)
+
+
 def gate_el_store(ctx: GateContext) -> Gate:
     """The EuroLeague is on, and its store exists and is not the NBA's."""
     verdict = _switch_gate(ctx, "HARDWOOD_EL_ENABLED", "The EuroLeague")
@@ -748,7 +754,7 @@ def build_jobs() -> tuple[JobSpec, ...]:
                 CallTarget("nbastats.euroleague.model.ratings:run_ratings"), gate_el_store,
                 decides=True),
         JobSpec("nba.news", nba, "NBA headlines", Every(3600),
-                CallTarget(f"{intel}:run_news"), gate_news),
+                CallTarget(f"{intel}:run_news"), gate_nba_news),
         JobSpec("el.news", el, "EuroLeague headlines", Every(3600),
                 CallTarget(f"{jobs}:run_news"), gate_el_news),
         JobSpec("el.structure", el, "EuroLeague round calendar and clubs", Every(3600),

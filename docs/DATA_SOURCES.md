@@ -246,7 +246,7 @@ Attribution strings every client shows:
 | C | The NBA's official injury report, `ak-static.cms.nba.com` | Per-player status, reason and team report state | `HARDWOOD_NBA_INJURIES` | `nba.injuryReport` |
 | D | NBA `CommonTeamRoster` (through `nba_api`) | The position each rostered player is listed at | none | `nba.rosters` |
 | E | NBA scoreboard tip-off and arena fields | Tip-off time, arena name and city, where present | none | `nba.stats` |
-| F | Headline feeds (`eurohoops.net/feed`, `talkbasket.net/feed` as shipped candidates) | Title, link, date and the source's name | `HARDWOOD_NEWS` | `nba.news.<feed>`, `el.news.<feed>` |
+| F | Headline feeds (shipped candidates: `talkbasket.net/feed` for the NBA, `eurohoops.net/feed` and `talkbasket.net/feed` for the EuroLeague) | Title, link, date and the source's name | `HARDWOOD_NEWS` | `nba.news.<feed>`, `el.news.<feed>` |
 | G | Hand-entered availability (a pasted link, label and date) | What you type | none | `el.manual` |
 
 ### A. The EuroLeague data service
@@ -341,8 +341,11 @@ test proves it.
 
 ### F. Headlines
 
-Off the shelf, two candidate feeds are configured and **both are unverified**. For each enabled
-feed Hardwood:
+Off the shelf, candidate feeds are configured and **none is verified**: `talkbasket.net/feed` in
+the NBA's feed table, and `eurohoops.net/feed` and `talkbasket.net/feed` in the EuroLeague's. The
+EuroLeague-only site is never seeded into the NBA's table, and because a mixed feed carries both
+leagues, an NBA feed headline that names no NBA team or player is not stored at all. The NBA
+headline job does not run against the invented demo league. For each enabled feed Hardwood:
 
 * reads `robots.txt` with Python's `urllib.robotparser` before fetching, caches the answer for
   24 hours, and on a disallow switches that feed off, with the reason shown in `/v1/sources`;
@@ -352,7 +355,10 @@ feed Hardwood:
   else. `description` and `content:encoded` are never read into storage and **article bodies are
   never fetched**;
 * keeps feed items 30 days (a link you pasted yourself is kept), and links a headline to a team
-  or player only when the name is unambiguous within that league's own store.
+  or player only when the name is unambiguous within that league's own store. An NBA team is
+  named by its full name ("Miami Heat"); its nickname alone counts only when capitalised and
+  alongside another NBA team, an NBA player or the word "NBA", because "heat", "magic" or
+  "kings" is usually an ordinary word.
 
 A headline never becomes an availability status on its own: "Set from headline" pre-fills the
 link, label and date and a person confirms the status.

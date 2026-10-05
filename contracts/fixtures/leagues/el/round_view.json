@@ -122,6 +122,7 @@
         "defenceIndex": 1.008958214856137,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "away": {
@@ -146,6 +147,7 @@
         "defenceIndex": 1.0318584672809499,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -380,6 +382,7 @@
         "defenceIndex": 1.0515165859388653,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "away": {
@@ -404,6 +407,7 @@
         "defenceIndex": 0.9624706400553843,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -638,6 +642,7 @@
         "defenceIndex": 1.0196261931885617,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "away": {
@@ -662,6 +667,7 @@
         "defenceIndex": 1.0414785799059243,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "margin": 9.252753922610154,
@@ -868,6 +874,7 @@
         "defenceIndex": 0.9790472366716884,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "away": {
@@ -892,6 +899,7 @@
         "defenceIndex": 0.9960439991864826,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -1126,6 +1134,7 @@
         "defenceIndex": 1.0096320872123963,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -1178,6 +1187,7 @@
         "defenceIndex": 1.0120274508041958,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -1412,6 +1422,7 @@
         "defenceIndex": 1.0388517161077613,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "away": {
@@ -1436,6 +1447,7 @@
         "defenceIndex": 0.9726443750352458,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -1670,6 +1682,7 @@
         "defenceIndex": 0.983430786443974,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -1722,6 +1735,7 @@
         "defenceIndex": 1.0004797230400864,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "margin": 2.5391887779641706,
@@ -1928,6 +1942,7 @@
         "defenceIndex": 0.9627435703941033,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -1980,6 +1995,7 @@
         "defenceIndex": 1.0170165297002935,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -2214,6 +2230,7 @@
         "defenceIndex": 0.9963504336563965,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {
@@ -2266,6 +2283,7 @@
         "defenceIndex": 0.9890576662364907,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "margin": 2.4143560502311487,
@@ -2472,6 +2490,7 @@
         "defenceIndex": 1.015402937123859,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": []
       },
       "away": {
@@ -2496,6 +2515,7 @@
         "defenceIndex": 0.9952180021475763,
         "capBinding": false,
         "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
         "keyAbsences": [
           {
             "player": {

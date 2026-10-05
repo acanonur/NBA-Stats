@@ -87,7 +87,7 @@
       "provenance": "default",
       "isDefault": true,
       "setAt": null,
-      "description": "1: team and player projections agree (the boost cap binds the team too). 0: the workbook's behaviour, which can leave points unassigned."
+      "description": "1: team and player projections agree (the boost cap binds the players; what they cannot take is credited at replacement level). 0: the workbook's behaviour, which can leave points unassigned."
     },
     {
       "key": "squadReconcile",

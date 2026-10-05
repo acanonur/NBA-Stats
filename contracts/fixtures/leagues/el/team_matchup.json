@@ -582,6 +582,7 @@
       "defenceIndex": 1.008958214856137,
       "capBinding": false,
       "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
       "keyAbsences": []
     },
     "away": {
@@ -606,6 +607,7 @@
       "defenceIndex": 1.0318584672809499,
       "capBinding": false,
       "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
       "keyAbsences": [
         {
           "player": {

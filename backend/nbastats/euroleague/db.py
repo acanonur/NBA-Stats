@@ -83,6 +83,8 @@ __all__ = [
     "require_writer",
     "is_synthetic_store",
     "promote_to_live",
+    "holds_league_data",
+    "release_empty_real_stamp",
     "read_sync_state",
     "bump_sync_version",
     "sync_mode_for_kind",
@@ -311,6 +313,49 @@ def promote_to_live(session: Session) -> ElStoreIdentity | None:
         identity.kind = KIND_LIVE
         session.flush()
     return identity
+
+
+#: Tables whose rows are league data (or a record of having fetched some). A real store with none
+#: of them has only been *stamped*: no workbook was imported and live ingest never wrote.
+_DATA_TABLES: tuple[str, ...] = (
+    "el_season",
+    "el_club",
+    "el_person",
+    "el_game",
+    "el_intel_status",
+    "el_intel_news_item",
+    "el_raw_payload",
+    "el_ingest_log",
+)
+
+
+def holds_league_data(session: Session) -> bool:
+    """True when the store holds any league data or any record of an import or fetch."""
+    existing = set(inspect(session.get_bind()).get_table_names())
+    for table in _DATA_TABLES:
+        if table in existing and session.execute(
+            text(f"SELECT 1 FROM {table} LIMIT 1")  # noqa: S608 - names from the tuple above
+        ).first():
+            return True
+    return False
+
+
+def release_empty_real_stamp(session: Session) -> bool:
+    """Remove the stamp of a ``workbook``/``live`` store that holds no league data at all.
+
+    An app start with live ingest on stamps a new store ``live`` before anything is fetched; if
+    the person then asks for the invented demo league, that empty store must not refuse it as
+    though it held real data. Only the stamp and the default headline feeds (which a real store
+    is seeded with and a demo store never has) are removed; nothing of the person's is. Returns
+    whether the stamp was released.
+    """
+    identity = read_identity(session)
+    if identity is None or identity.kind not in REAL_KINDS or holds_league_data(session):
+        return False
+    session.execute(text("DELETE FROM el_intel_news_feed"))
+    session.delete(identity)
+    session.flush()
+    return True
 
 
 # --------------------------------------------------------------------------- sync cursor

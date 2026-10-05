@@ -44,6 +44,7 @@ from nbastats.api.errors import install_error_handlers
 from nbastats.euroleague import bootstrap
 from nbastats.euroleague.api import deps as el_deps
 from nbastats.euroleague.api.routes import router as el_router
+from nbastats.euroleague.read import availability as _availability
 from nbastats.euroleague.db import create_el_engine, dispose_el_engine, init_el_db
 from nbastats.euroleague.demo import DEMO_AS_OF, seed_demo
 from nbastats.euroleague.read.queries import clear_memo
@@ -80,6 +81,16 @@ NBA_GAME_ID = re.compile(r"^00\d{8}$")
 
 
 # --------------------------------------------------------------------------- the stores
+
+
+@pytest.fixture(autouse=True)
+def _statuses_writable_in_the_demo_store(monkeypatch):
+    """The invented demo store refuses a hand-entered status; these tests exercise the write
+    path itself, so the one refusal is lifted here (it is tested in
+    ``test_availability_in_force.py`` and below with the real function)."""
+    real = _availability.statuses_allowed
+    monkeypatch.setattr(_availability, "statuses_allowed", lambda session: True)
+    return real
 
 
 @pytest.fixture(scope="module")

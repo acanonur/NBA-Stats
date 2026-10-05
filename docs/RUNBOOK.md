@@ -216,14 +216,14 @@ replay what it missed. **Hardwood fetches only while the Mac is awake and online
 | --- | --- | --- |
 | `nba.rosters` | Fetches each NBA team's roster for the player positions defence-by-position needs | Mondays 05:30, and on start if the last run is over 7 days old |
 | `nba.injuries` | The NBA's official injury report | Checked every 15 minutes; it decides for itself: it only fetches when a game is within 36 hours, every 15 minutes inside the reporting windows and hourly otherwise |
-| `nba.news` | NBA headlines from the enabled feeds | Hourly |
+| `nba.news` | NBA headlines from the enabled feeds (only headlines that name an NBA team or player; not run against the demo league) | Hourly |
 | `projections.refresh` | Recomputes team projections for games in the next 48 hours, both leagues | Every 30 minutes |
 | `projections.lock` | Freezes each projection just before tip-off, so a review compares what was actually predicted | Every 5 minutes |
 | `projections.calibrate` | Fits the projection spreads from past results | Daily 05:00 |
 | `el.structure` | EuroLeague round calendar and clubs | Checked hourly; fetches weekly |
-| `el.round` | EuroLeague fixtures and results | Checked every 10 minutes; fetches daily and again after each game is due to have finished |
+| `el.round` | EuroLeague fixtures and results | Checked every 10 minutes; fetches daily and again after each game is due to have finished. The "current round" is the earliest with a scheduled game, so a postponed game never pins it; rounds holding a postponed game (at most 2, none older than 60 days) are re-read in the daily sweep so a new date is noticed. After an unreadable answer it waits 1 h, 2 h, 4 h, then 6 h before asking again |
 | `el.box` | Box scores for finished EuroLeague games | Checked every 10 minutes |
-| `el.rosters` | EuroLeague rosters and listed positions | Checked hourly; fetches Mondays and the day before each round |
+| `el.rosters` | EuroLeague rosters and listed positions | Checked hourly; fetches Mondays and the day before each round that has not begun |
 | `el.news` | EuroLeague headlines | Hourly |
 | `el.ratings` | Updates club ratings after each completed round | Checked every 15 minutes |
 | `el.workbook` | Imports any `.xlsx` you drop in `inbox/` | Checked every minute |

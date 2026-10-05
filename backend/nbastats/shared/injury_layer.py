@@ -37,8 +37,17 @@ binds (a club with four scorers out, as in the workbook's Round 3) the team proj
 no player is credited with, and the squad sums to less than the team says. Two policies:
 
 ``consistent`` (the default)
-    ``absorbedEff = min(absorbed, (kappa - 1) * avail)``. The team and its players agree: the
-    team projection equals the sum of the players' projections. ``unassigned`` is 0.
+    The listed players take what their capped boost allows, ``(kappa - 1) * avail``; what they
+    cannot take is credited, up to the replacement-level points ``repl``, to the replacement
+    players who fill the missing minutes (``replacementCredited``)::
+
+        absorbedEff = min(absorbed, (kappa - 1) * avail + repl)
+
+    The team and its players agree: the team projection equals the sum of the players'
+    projections plus ``replacementCredited`` (0 whenever the cap does not bind), and
+    ``unassigned`` is 0. The replacement floor is never capped away: the squad always scores
+    at least ``avail + min(repl, lost)``, so a club missing half its minutes is not projected as
+    though nobody played them.
 ``workbook`` (replay only)
     ``absorbedEff = absorbed``: reproduce the sheet exactly. The points no player can take are
     reported as ``unassigned``.
@@ -200,6 +209,10 @@ class InjuryResult:
     absorbed_effective: float
     #: Recovered points no player can take under the cap (``workbook`` policy only).
     unassigned_points: float
+    #: Points credited at replacement level to the players who fill the missing minutes when the
+    #: listed players' boost is capped (``consistent`` policy only; 0 when the cap does not bind).
+    #: ``squad_points == sum(projected_points) + replacement_credited``.
+    replacement_credited: float
     boost: float
     squad_points: float
     availability_factor: float
@@ -241,12 +254,15 @@ def apply_injury_layer(players: Sequence[PlayerInput], settings: InjurySettings)
         cap_binding = (1 + absorbed / avail) > kappa
         capacity = (kappa - 1) * avail
 
+    credited_to_players = (boost - 1) * avail
     if settings.cap_policy == CAP_CONSISTENT:
-        effective = min(absorbed, capacity)
+        effective = min(absorbed, capacity + repl)
         unassigned = 0.0
+        replacement = max(effective - credited_to_players, 0.0) if cap_binding else 0.0
     else:
         effective = absorbed
-        unassigned = absorbed - (boost - 1) * avail
+        unassigned = absorbed - credited_to_players
+        replacement = 0.0
 
     squad = avail + effective
     factor = squad / full if full != 0 else 1.0
@@ -273,6 +289,7 @@ def apply_injury_layer(players: Sequence[PlayerInput], settings: InjurySettings)
         absorbed_points=absorbed,
         absorbed_effective=effective,
         unassigned_points=unassigned,
+        replacement_credited=replacement,
         boost=boost,
         squad_points=squad,
         availability_factor=factor,

@@ -395,14 +395,45 @@ _DAY_ONE_REAL: Final = (
     "shows as result pending until live ingest is on or you import an updated workbook. "
     "Availability is researched and dated, never live."
 )
+_DAY_ONE_WORKBOOK_AND_LIVE: Final = (
+    "EuroLeague data comes from your workbook (results and box scores for the rounds it holds, "
+    "squads, ratings and a dated list of statuses) and from live ingest of the EuroLeague's data "
+    "service, which fills in later rounds as it reads them. A round that has been played shows as "
+    "result pending until its result is read. Availability is researched and dated, never live."
+)
+_DAY_ONE_LIVE: Final = (
+    "EuroLeague data comes from live ingest of the EuroLeague's data service, read politely a few "
+    "times a day; results and box scores appear as they are read, and a round that has been "
+    "played shows as result pending until then. To start from your own research, drop a workbook "
+    "in the inbox. Availability is researched and dated, never live."
+)
+_DAY_ONE_NO_SOURCE: Final = (
+    "No EuroLeague source is on: live ingest is off and no workbook has been imported. Import a "
+    "workbook, or turn live ingest on (HARDWOOD_EL_LIVE)."
+)
 _DAY_ONE_DEMO: Final = (
     "Demo league: invented clubs and players, shown so every screen works offline. "
     "Nothing here is real."
 )
 
 
+def _day_one_base(*, is_demo: bool, live: bool, has_workbook: bool) -> str:
+    """The notice for what the store actually holds and which sources are on."""
+    if is_demo:
+        return _DAY_ONE_DEMO
+    if has_workbook:
+        return _DAY_ONE_WORKBOOK_AND_LIVE if live else _DAY_ONE_REAL
+    return _DAY_ONE_LIVE if live else _DAY_ONE_NO_SOURCE
+
+
+def _live_on() -> bool:
+    state = get_state()
+    return bool(state.live) if state.ready else bool(get_el_settings().live)
+
+
 def _day_one_notice(ctx: ReadContext) -> str:
-    base = _DAY_ONE_DEMO if ctx.is_demo else _DAY_ONE_REAL
+    has_workbook = any((g.data_source or "").startswith("workbook:") for g in ctx.games)
+    base = _day_one_base(is_demo=ctx.is_demo, live=_live_on(), has_workbook=has_workbook)
     pending = sorted({g.round_number for g in ctx.games if ctx.game_status(g) == "resultPending"})
     if not pending or ctx.is_demo:
         return base
@@ -453,7 +484,9 @@ def build_meta(session: Session | None, *, now: datetime | None = None) -> dict[
         "unverifiedClubCodes": [],
         "attribution": PROFILE.attribution,
         "dataThrough": None,
-        "dayOneNotice": _DAY_ONE_REAL if not boot.is_demo else _DAY_ONE_DEMO,
+        "dayOneNotice": _day_one_base(
+            is_demo=boot.is_demo, live=_live_on(), has_workbook=bool(boot.imports)
+        ),
         "freshness": None,
     }
     if not boot.ready or session is None:

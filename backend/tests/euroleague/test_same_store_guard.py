@@ -294,6 +294,29 @@ def test_init_refuses_a_file_that_holds_an_nba_teams_table(tmp_path: Path) -> No
     assert not set(EL_TABLE_NAMES) & set(inspect(engine).get_table_names())
 
 
+def test_the_nba_side_refuses_a_euroleague_store_and_creates_nothing(tmp_path: Path) -> None:
+    """The mirror of the guard above: ``init_db`` and the seeder refuse a EuroLeague file, so a
+    mistyped ``DATABASE_URL`` can never put the NBA schema (or the demo league) in it, after
+    which the EuroLeague would refuse its own store for good."""
+    from sqlalchemy.orm import Session
+
+    from nbastats import seed
+    from nbastats.db import NbaStoreError, create_db_engine, init_db
+
+    url = f"sqlite:///{tmp_path / 'hardwood_el.db'}"
+    init_el_db(create_el_engine(url))
+    before = set(inspect(create_el_engine(url)).get_table_names())
+    engine = create_db_engine(url)
+    with pytest.raises(NbaStoreError, match="EuroLeague store"):
+        init_db(engine)
+    with Session(engine) as session, pytest.raises(NbaStoreError):
+        seed.seed_database(session, games_per_team=2, players_per_team=5)
+    assert seed.main(["--db", url, "--quiet"]) == 2
+    assert set(inspect(create_el_engine(url)).get_table_names()) == before
+    init_el_db(create_el_engine(url))  # and the EuroLeague still opens its own store
+    engine.dispose()
+
+
 def test_init_refuses_another_leagues_identity(tmp_path: Path) -> None:
     path = tmp_path / "other.db"
     connection = sqlite3.connect(path)

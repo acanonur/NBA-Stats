@@ -36,6 +36,7 @@ from nbastats.api.errors import install_error_handlers
 from nbastats.euroleague import bootstrap
 from nbastats.euroleague.api import deps
 from nbastats.euroleague.api.routes import router
+from nbastats.euroleague.read import availability as _availability
 from nbastats.euroleague.db import dispose_el_engine
 from nbastats.euroleague.demo import DEMO_AS_OF
 from nbastats.euroleague.models import (
@@ -89,6 +90,16 @@ EXPECTED_ROUTES = {
     ("GET", "/el/model-settings"),
     ("PATCH", "/el/model-settings"),
 }
+
+
+@pytest.fixture(autouse=True)
+def _statuses_writable_in_the_demo_store(monkeypatch):
+    """The invented demo store refuses a hand-entered status; these tests exercise the write
+    path itself, so the one refusal is lifted here (it is tested in
+    ``test_availability_in_force.py`` and below with the real function)."""
+    real = _availability.statuses_allowed
+    monkeypatch.setattr(_availability, "statuses_allowed", lambda session: True)
+    return real
 
 
 @pytest.fixture()
@@ -1113,3 +1124,125 @@ def test_the_registry_is_registered_by_importing_the_router(tmp_path) -> None:
     importlib.reload(routes_module)
     assert league_registry.is_registered("euroleague")
     league_registry.clear()
+
+
+def test_an_empty_live_store_still_answers_sources_method_and_settings(tmp_path, monkeypatch):
+    """First launch, live ingest on, nothing fetched yet (or the host blocked): no season row
+    exists. The store-wide routes must still say why nothing has arrived, and the settings must
+    be readable and writable; only the season-bound routes answer ``season_not_loaded``."""
+    from nbastats.euroleague.db import create_el_engine, ensure_identity, init_el_db
+
+    url = f"sqlite:///{tmp_path / 'empty_el.db'}"
+    engine = create_el_engine(url)
+    init_el_db(engine)
+    with Session(engine, future=True) as s:
+        ensure_identity(s, "live")
+        s.commit()
+    engine.dispose()
+    monkeypatch.setenv("HARDWOOD_EL_DATABASE_URL", url)
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'nba.db'}")
+    monkeypatch.setenv("HARDWOOD_API_KEY", KEY)
+    stats_config.reset_settings_cache()
+    stats_db.dispose_engine()
+    dispose_el_engine()
+    clear_memo()
+    bootstrap.set_state(bootstrap.BootstrapResult(state="ready", kind="live", is_demo=False))
+    try:
+        application = FastAPI()
+        install_error_handlers(application)
+        application.include_router(router, prefix="/v1")
+        application.dependency_overrides[deps.get_now] = lambda: NOW
+        client = TestClient(application)
+        sources = get(client, "/sources")
+        assert sources["store"]["kind"] == "live" and sources["sources"]
+        assert get(client, "/method")["league"] == "euroleague"
+        settings = get(client, "/model-settings")
+        assert any(s["key"] == "capPolicyConsistent" for s in settings["settings"])
+        patched = client.patch(
+            "/v1/el/model-settings",
+            json={"settings": [{"key": "formWeight", "value": 0.3}]},
+            headers={"X-API-Key": KEY},
+        )
+        assert patched.status_code == 200, patched.text[:300]
+        error_of(client.get("/v1/el/teams"), "season_not_loaded", 422)
+    finally:
+        bootstrap.reset_state()
+        dispose_el_engine()
+        stats_config.reset_settings_cache()
+        stats_db.dispose_engine()
+
+
+def test_a_line_with_no_recorded_minutes_adds_to_neither_side_of_a_per_40_rate(
+    fresh_demo_engine,
+) -> None:
+    """A played line whose minutes were not recorded (or recorded as zero) counts for per-game
+    averages but adds neither points nor minutes to a per-40 rate."""
+    from nbastats.euroleague.read import stats as stats_module
+    from nbastats.euroleague.read.queries import build_context
+
+    with Session(fresh_demo_engine, future=True) as s:
+        lines = (
+            s.execute(
+                select(ElPlayerGame)
+                .join(ElGame, ElGame.game_id == ElPlayerGame.game_id)
+                .where(
+                    ElPlayerGame.participation == "played",
+                    ElPlayerGame.pts.is_not(None),
+                    ElGame.status == "final",
+                    ElGame.stats_status == "ok",  # the games the stats table counts
+                )
+                .order_by(ElPlayerGame.person_code, ElPlayerGame.game_id)
+            )
+            .scalars()
+            .all()
+        )
+        person = next(
+            p
+            for p in sorted({line.person_code for line in lines})
+            if sum(1 for line in lines if line.person_code == p) >= 3
+        )
+        mine = [line for line in lines if line.person_code == person]
+        mine[0].seconds_played = None
+        mine[1].seconds_played = 0
+        s.commit()
+        clear_memo()
+        ctx = build_context(s, None, now=NOW)
+        agg = stats_module.aggregate_players(ctx)[person]
+        values, counts = stats_module.season_values(agg, "Per40")
+        timed = [line for line in mine[2:] if line.seconds_played]
+        expected = 40.0 * sum(line.pts for line in timed) / (
+            sum(line.seconds_played for line in timed) / 60.0
+        )
+        assert values["pts"] == pytest.approx(expected)
+        assert counts["pts"] == len(mine)
+        per_game, _ = stats_module.season_values(agg, "PerGame")
+        assert per_game["pts"] == pytest.approx(sum(line.pts for line in mine) / len(mine))
+
+
+def test_the_demo_league_refuses_a_hand_entered_status_over_http(
+    client, monkeypatch, _statuses_writable_in_the_demo_store
+) -> None:
+    """``POST /v1/el/availability`` on the invented league is refused, as the NBA demo refuses
+    it: a real player's status and source must never sit beside invented clubs."""
+    monkeypatch.setattr(_availability, "statuses_allowed", _statuses_writable_in_the_demo_store)
+    body = {**AVAILABILITY, "playerName": "Real Person Name", "sourceUrl": "https://example.org/n"}
+    body.pop("personCode", None)
+    response = client.post("/v1/el/availability", json=body, headers=HEADERS)
+    assert "Demo league" in error_of(response, "bad_request", 400)["message"]
+
+
+def test_the_day_one_notice_matches_the_sources_that_are_actually_on() -> None:
+    """A live-mode user with no workbook is never told the data comes from a workbook, nor that
+    live ingest needs turning on."""
+    from nbastats.euroleague.read import sources as sources_module
+
+    base = sources_module._day_one_base
+    live_only = base(is_demo=False, live=True, has_workbook=False)
+    assert "workbook" not in live_only.split("drop a workbook")[0]
+    assert "live ingest" in live_only and "until live ingest is on" not in live_only
+    both = base(is_demo=False, live=True, has_workbook=True)
+    assert "your workbook" in both and "until live ingest is on" not in both
+    workbook_only = base(is_demo=False, live=False, has_workbook=True)
+    assert "until live ingest is on" in workbook_only
+    assert "No EuroLeague source is on" in base(is_demo=False, live=False, has_workbook=False)
+    assert "Demo league" in base(is_demo=True, live=True, has_workbook=False)

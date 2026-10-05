@@ -94,6 +94,7 @@ __all__ = [
     "parse_retry_after",
     "is_cloudflare_rate_limit",
     "host_of",
+    "link_host",
     "check_url",
 ]
 
@@ -276,11 +277,26 @@ class BreakerState:
 
 
 def host_of(url: str) -> str:
-    """The lower-case host of ``url``, or an empty string."""
+    """The lower-case host of ``url`` without trailing dots (``example.org.`` is
+    ``example.org``), or an empty string."""
     try:
-        return (urlsplit(url).hostname or "").lower()
+        return (urlsplit(url).hostname or "").lower().rstrip(".")
     except ValueError:
         return ""
+
+
+def link_host(url: str) -> str | None:
+    """The host a browser would open for ``url``, normalised for comparison, or ``None``.
+
+    Lower-cased with trailing dots stripped (``WWW.Example.org.`` is ``www.example.org``). A URL
+    containing a backslash is ``None``: a browser reads ``\\`` as ``/`` in an http(s) URL, so
+    ``https://bad.example\\@good.example/`` opens ``bad.example`` while ``urlsplit`` reports
+    ``good.example``. Callers that screen links treat ``None`` as "cannot vouch for it".
+    """
+    if not isinstance(url, str) or "\\" in url:
+        return None
+    host = host_of(url.strip())
+    return host or None
 
 
 def check_url(url: str) -> str | None:
@@ -295,6 +311,8 @@ def check_url(url: str) -> str | None:
         return "the URL is too long"
     if _CONTROL_OR_SPACE.search(url):
         return "the URL contains whitespace or control characters"
+    if "\\" in url:
+        return "the URL contains a backslash, which a browser would read differently"
     try:
         parts = urlsplit(url)
         _ = parts.port  # raises ValueError on a malformed port

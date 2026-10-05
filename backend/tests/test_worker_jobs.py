@@ -211,6 +211,21 @@ def calls() -> list[str]:
 
 
 @pytest.fixture(autouse=True)
+def _restore_environment():
+    """``main()``'s env-file sync writes ``os.environ`` directly, and ``monkeypatch.delenv`` of a
+    variable that was not set records no undo, so a value a test's env file added would outlive
+    the test (a later app start then refuses the public address, or reads news as off). Put the
+    process environment back exactly as it was. Autouse and requested first, so it is torn down
+    after ``monkeypatch``."""
+    saved = dict(os.environ)
+    yield
+    if dict(os.environ) != saved:
+        os.environ.clear()
+        os.environ.update(saved)
+        stats_config.reset_settings_cache()
+
+
+@pytest.fixture(autouse=True)
 def _restore_logging():
     """``main()`` configures the root logger; leave it as the next test expects it."""
     root = logging.getLogger()
@@ -659,12 +674,14 @@ def test_a_public_address_refuses_every_job_that_brings_data_in(url: str) -> Non
     assert gates["el.ratings"][0] and gates["projections.refresh@euroleague"][0]
 
 
-def test_a_demo_league_never_gets_real_injuries_or_positions() -> None:
+def test_a_demo_league_never_gets_real_injuries_positions_or_headlines() -> None:
     gates = _gates(synthetic=True)
-    for job in ("nba.injuries", "nba.rosters"):
+    for job in ("nba.injuries", "nba.rosters", "nba.news"):
         enabled, reason = gates[job]
         assert not enabled and "Demo league" in (reason or "")
-    assert gates["projections.refresh@nba"][0] and gates["nba.news"][0]
+    # the EuroLeague's headlines do not depend on what the NBA store holds
+    assert gates["projections.refresh@nba"][0] and gates["el.news"][0]
+    assert _gates(synthetic=False)["nba.news"][0]
 
 
 def test_the_demo_check_reads_the_stores_own_rows(tmp_path, monkeypatch) -> None:

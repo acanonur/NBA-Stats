@@ -109,6 +109,7 @@ __all__ = [
     "round_status",
     "ReadContext",
     "build_context",
+    "build_store_context",
     "context_for_game",
     "load_team_games",
     "memoise",
@@ -531,6 +532,28 @@ def build_context(
     """Read a season's shared facts once. ``season`` is ``E2026``, ``2026-27``, ``latest`` or None."""
     row = _resolve_season(session, season)
     return _context(session, row, now)
+
+
+def build_store_context(session: Session, *, now: datetime | None = None) -> ReadContext:
+    """The latest season's context, or, on a store with no season yet, a context for the season
+    the calendar says is next (no clubs, no games), so the store-wide routes (sources, method,
+    model settings) still answer: an empty live store is exactly when a person needs to see why
+    nothing has arrived. The placeholder season is never written."""
+    try:
+        return build_context(session, None, now=now)
+    except api_errors.ApiError as exc:
+        if exc.code != "season_not_loaded":
+            raise
+    moment = aware(now) if now is not None else utc_now()
+    start = moment.year if moment.month >= 7 else moment.year - 1  # type: ignore[union-attr]
+    placeholder = ElSeason(
+        season_code=f"E{start}",
+        competition_code="E",
+        label=f"{start}-{(start + 1) % 100:02d}",
+        start_year=start,
+        is_current=True,
+    )
+    return _context(session, placeholder, now)
 
 
 def context_for_game(session: Session, game_id: str, *, now: datetime | None = None) -> ReadContext:

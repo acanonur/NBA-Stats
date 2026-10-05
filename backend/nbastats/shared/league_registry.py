@@ -32,6 +32,10 @@ What a provider supplies
 * ``team_exists`` (optional): ``club_code -> bool``, so a widget config naming a club can be
   validated against the live store. When it is absent, existence cannot be checked and
   :func:`team_exists` says so by returning ``None``.
+* ``read_side`` (optional): ``module name -> module``, the league's own read-side builders
+  (``"read"``, ``"read.queries"``), handed out by the league itself so the widget layer can call
+  the same builders the league's routes call without importing the sealed package. A name the
+  provider does not offer raises. Absent, :func:`read_side` reports the league unavailable.
 
 Thread safety
 -------------
@@ -61,6 +65,7 @@ __all__ = [
     "session_for",
     "league_entry",
     "team_exists",
+    "read_side",
 ]
 
 
@@ -87,6 +92,7 @@ class LeagueProvider:
     session_factory: Callable[[], Any]
     describe: Callable[[], Mapping[str, Any]]
     team_exists: Callable[[str], bool] | None = None
+    read_side: Callable[[str], Any] | None = None
 
 
 _LOCK = threading.Lock()
@@ -205,3 +211,23 @@ def team_exists(key: str, team_code: str) -> bool | None:
         return bool(provider.team_exists(team_code))
     except Exception:
         return None
+
+
+def read_side(key: str, module: str = "read") -> Any:
+    """A module of ``key``'s read side (``"read"`` for its builders), as its provider hands it out.
+
+    Raises :class:`LeagueUnavailableError` when the league is not registered, its provider offers
+    no read side, or the provider cannot supply ``module``, so a widget turns any of them into the
+    recoverable per-widget ``league_unavailable`` rather than a 500.
+    """
+    provider = get(key)
+    if provider is None:
+        raise LeagueUnavailableError(key, "This league is not available in this deployment.")
+    if provider.read_side is None:
+        raise LeagueUnavailableError(key, "This league offers no read side to the widgets.")
+    try:
+        return provider.read_side(module)
+    except Exception as exc:  # the provider owns its package; any failure means "unavailable"
+        raise LeagueUnavailableError(
+            key, f"The league's read side could not be loaded: {exc}"
+        ) from exc

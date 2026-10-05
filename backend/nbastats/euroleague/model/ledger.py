@@ -71,6 +71,7 @@ from ..read.queries import (
     naive_utc,
 )
 from ..settings import set_setting
+from .ratings import regulation_actual
 from .round_projection import (
     MODEL_VERSION,
     Model,
@@ -324,8 +325,14 @@ def _rms(values: list[float]) -> float:
 
 
 def calibrate(session: Session, ctx: ReadContext, now: datetime) -> CalibrationResult:
-    """Fit ``teamSd`` and ``marginSd`` from locked projections with results, once there are enough."""
+    """Fit ``teamSd`` and ``marginSd`` from locked projections with results, once there are enough.
+
+    A projection is a regulation score, so an overtime result is restated as regulation first
+    (``overtimeScaling``, exactly as the rating update does): a 45-minute 95-93 is not a 13-point
+    miss of an 82-80 projection.
+    """
     finals = {g.game_id: g for g in ctx.games if game_has_result(g)}
+    scaling = bool(ctx.setting("overtimeScaling"))
     team_residuals: list[float] = []
     margin_residuals: list[float] = []
     games = 0
@@ -335,9 +342,11 @@ def calibrate(session: Session, ctx: ReadContext, now: datetime) -> CalibrationR
             continue
         row = locked[-1]
         games += 1
-        team_residuals.append(game.home_pts - row.home_pts)
-        team_residuals.append(game.away_pts - row.away_pts)
-        margin_residuals.append((game.home_pts - game.away_pts) - (row.home_pts - row.away_pts))
+        home = regulation_actual(game.home_pts, game.ot_periods, scaling)
+        away = regulation_actual(game.away_pts, game.ot_periods, scaling)
+        team_residuals.append(home - row.home_pts)
+        team_residuals.append(away - row.away_pts)
+        margin_residuals.append((home - away) - (row.home_pts - row.away_pts))
     if games < MIN_CALIBRATION_GAMES:
         return CalibrationResult(games, False, None, None)
     team_sd, margin_sd = _rms(team_residuals), _rms(margin_residuals)

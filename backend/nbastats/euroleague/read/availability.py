@@ -74,7 +74,7 @@ from ...shared.availability import (
     select_effective_entry,
     status_label,
 )
-from ..db import bump_sync_version
+from ..db import bump_sync_version, is_synthetic_store
 from ..models import ElIntelOverride, ElIntelStatus, ElPersonAlias, ElPlayerGame
 from ..profile import PROFILE, fold_name, screen_source_link
 from .queries import (
@@ -104,7 +104,21 @@ __all__ = [
     "build_review_queue",
     "record_status",
     "retract_status",
+    "DEMO_REFUSAL",
+    "statuses_allowed",
 ]
+
+#: Why the invented league refuses a hand-entered status.
+DEMO_REFUSAL: Final = (
+    "Demo league: real availability statuses are not entered next to invented clubs and games"
+)
+
+
+def statuses_allowed(session: Any) -> bool:
+    """May a person enter (or retract) a status in this store? Not in the invented league: a
+    real player's status, with a real source link, must never sit beside invented games. Keyed
+    on the store's own stamp (``db.is_synthetic_store``), as the NBA's refusal is."""
+    return not is_synthetic_store(session)
 
 #: A player who does not play while listed at one of these did not have his minutes judged by
 #: the coach, so the round is no evidence about his role (the player-rate update leaves it out).
@@ -810,7 +824,10 @@ def record_status(
     The source kind is ``manual`` when there is no link; with a link it is ``clubStatement`` when
     the label names the club and ``pressArticle`` otherwise. The link is screened against the
     gambling-operator denylist; a withheld link keeps its label (suffixed) and its date.
+    Refused in the invented demo league (:func:`statuses_allowed`).
     """
+    if not statuses_allowed(ctx.session):
+        raise bad_request(DEMO_REFUSAL)
     club = ctx.require_club(club_code)
     try:
         normalised = normalise_status(status)
@@ -919,6 +936,8 @@ def retract_status(
     from ...api.errors import ApiError
 
     session = ctx.session
+    if not statuses_allowed(session):
+        raise bad_request(DEMO_REFUSAL)
     row = session.get(ElIntelStatus, status_id)
     if row is None:
         raise ApiError("not_found", f"No availability entry with id {status_id}.", http_status=404)

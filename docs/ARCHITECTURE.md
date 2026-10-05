@@ -27,14 +27,14 @@ Hardwood is three clients and one service, joined by one contract.
 
 ## 1. Why the contract is a separate top-level directory
 
-Three codebases in three languages have to agree on 61 metric definitions, 16 widget payload
+Three codebases in three languages have to agree on 62 metric definitions, 20 widget payload
 shapes and 12 preset dashboards. Encoding that agreement in prose alone guarantees drift, so it
 is encoded in data instead:
 
 * `contracts/metrics.json` — every metric's name, display format, direction, era availability
   and glossary line. The backend formats values with it; the app formats values with it; neither
   hard-codes a percentage or a decimal place.
-* `contracts/widgets.json` — the 16 widget kinds and, for each, a typed schema of its
+* `contracts/widgets.json` — the 20 widget kinds and, for each, a typed schema of its
   configuration fields. **Both configuration editors are generated from this file** — the iOS
   one at runtime, the web one from `generated/contracts.ts` — which is why adding a widget
   option does not require an app release.

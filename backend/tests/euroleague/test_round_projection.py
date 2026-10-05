@@ -175,14 +175,24 @@ def _four_scorers_out(session, boost_cap):
 
 
 def test_the_consistent_cap_policy_makes_the_team_equal_its_players(session) -> None:
+    """The team equals its players plus the replacement players' line, and the payload shows
+    that line, so nothing is unaccounted for and the replacement floor is never capped away."""
     game = _four_scorers_out(session, 1.05)
     ctx, model = open_model(session)
+    view = current_projection(ctx, model, game)
     side = model.project(ctx, game, as_of=NOW, kind="latest").home
-    assert side.injury.cap_binding
-    assert side.injury.cap_policy == "consistent"
-    assert side.injury.unassigned_points == 0.0
-    credited = math.fsum(o.projected_points for o in side.injury.players)
-    assert side.injury.squad_points == pytest.approx(credited, abs=1e-9)
+    injury = side.injury
+    assert injury.cap_binding
+    assert injury.cap_policy == "consistent"
+    assert injury.unassigned_points == 0.0
+    credited = math.fsum(o.projected_points for o in injury.players)
+    assert injury.squad_points == pytest.approx(credited + injury.replacement_credited, abs=1e-9)
+    assert injury.replacement_credited > 0
+    floor = injury.available_points + min(injury.replacement_points, injury.lost_points)
+    assert injury.squad_points >= floor - 1e-9
+    payload = round_module.projection_payload(ctx, game, view, freshness_for(ctx, KEYS_STATS))
+    assert payload["home"]["replacementPoints"] == pytest.approx(injury.replacement_credited)
+    assert payload["home"]["unassignedPoints"] == 0.0
 
 
 def test_the_workbook_cap_policy_leaves_points_no_player_is_credited_with(session) -> None:
@@ -713,6 +723,43 @@ def test_calibration_fits_the_spreads_from_locked_results_only(session, monkeypa
     )
 
 
+def test_calibration_restates_an_overtime_result_as_regulation(session, monkeypatch) -> None:
+    """A projection is a regulation score: a 45-minute 95-93 against a locked 82-80 is a miss of
+    about 2.5 points a side, not 13."""
+    monkeypatch.setattr(ledger_module, "MIN_CALIBRATION_GAMES", 1)
+    ctx, _ = open_model(session)
+    game = next(g for g in ctx.games if g.round_number == 3)
+    stored = session.get(ElGame, game.game_id)
+    stored.home_pts, stored.away_pts, stored.ot_periods = 95, 93, 1
+    session.add(
+        ElProjectionLedger(
+            game_id=game.game_id,
+            kind="locked",
+            model_version="el-1",
+            computed_at=game.tipoff_utc - timedelta(minutes=10),
+            inputs_cutoff=game.tipoff_utc - timedelta(minutes=10),
+            home_pts=82.0,
+            away_pts=80.0,
+            home_full_strength=82.0,
+            away_full_strength=80.0,
+            home_attack_index_after_availability=1.0,
+            away_attack_index_after_availability=1.0,
+            home_defence_index=1.0,
+            away_defence_index=1.0,
+            home_advantage_points=3.5,
+            cap_policy="consistent",
+        )
+    )
+    session.commit()
+    ctx, _ = open_model(session)
+    result = ledger_module.calibrate(session, ctx, NOW)
+    home, away = 95 * 12000 / 13500, 93 * 12000 / 13500
+    expected = math.sqrt(((home - 82) ** 2 + (away - 80) ** 2) / 2)
+    assert result.fitted and result.team_sd == pytest.approx(expected)
+    assert result.team_sd < 3.0
+    assert result.margin_sd == pytest.approx(abs((home - away) - 2.0))
+
+
 def test_calibration_waits_for_enough_games_and_never_overwrites_a_manual_value(
     session, monkeypatch
 ) -> None:
@@ -963,17 +1010,15 @@ def test_round_three_replay_matches_the_workbook(tmp_path) -> None:
     """Design gate G1: import the real workbook and reproduce its Round 3, to 1e-9.
 
     Run with the workbook's own settings (its cap policy, squads as typed). Real data is read here
-    and never written to the repository. Two steps, because the replay found something:
+    and never written to the repository, and no real name appears in this file. Two steps:
 
-    1. As imported, every game whose two clubs have no entry that the 14-day rule drops matches the
-       sheet to 1e-9, including the cap case. The two clubs that differ, DUB and PAR, differ
-       *because* of rule (c): their biggest absences (Musa, Marinkovic, "out until November") were
-       published more than fourteen days before tip-off and the return text names no round, date or
-       long-term word, so the entry is out of force and the model assumes he plays. The workbook
-       keeps them out. That is the rule behaving as written; it is reported to the lead.
+    1. As imported, all ten games match the sheet to 1e-9, including the cap case. Two clubs'
+       biggest absences were published more than fourteen days before tip-off with a return text
+       that names a month ("out until November") rather than a round or a date; rule (c) keeps
+       them in force until that month ends (``shared.availability.return_horizon``), as the
+       workbook does.
     2. With the Squads sheet's own statuses added as entries dated 30 September (the sheet's
-       "as of"), all ten games match, which shows the arithmetic is the workbook's and the only
-       gap is the rule.
+       "as of"), all ten games still match, which shows the arithmetic is the workbook's.
     """
     from nbastats.euroleague.db import create_el_engine, init_el_db
     from nbastats.euroleague.importers.workbook import import_workbook
@@ -1022,8 +1067,8 @@ def test_round_three_replay_matches_the_workbook(tmp_path) -> None:
                 compared += 1
             return compared
 
-        # Step 1: as imported, minus the two clubs the 14-day rule changes.
-        assert compare(skip_clubs=("DUB", "PAR")) == 8
+        # Step 1: as imported.
+        assert compare() == 10
         # Step 2: give the model the sheet's own statuses, dated as the sheet is.
         ctx = build_context(s, None, now=moment)
         squads = book.sheet("Squads")

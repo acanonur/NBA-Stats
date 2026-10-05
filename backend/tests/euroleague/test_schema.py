@@ -733,6 +733,9 @@ def test_the_denylist_names_the_two_operators() -> None:
         ("https://example.org/mozzartsport.com", False),  # a path is not a host
         ("https://notmozzartsport.com/x", False),
         ("https://mozzartsport.com@example.org/x", False),  # the host is example.org
+        # a browser reads the backslash as "/" and opens the operator's site: withheld
+        ("https://mozzartsport.com\\@example.org/x", True),
+        ("https://WWW.MozzartSport.com./a", True),  # case and a trailing dot change nothing
         ("not a url", False),
         ("", False),
         (None, False),

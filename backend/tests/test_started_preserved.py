@@ -312,3 +312,60 @@ def test_a_bulk_only_ingest_leaves_every_start_unrecorded(
     flags = _started_by_player(db)
     assert flags, "the bulk pass should have written the final game's lines"
     assert set(flags.values()) == {None}
+
+
+# --------------------------------------------------------------------------- #
+# The same rule through the Kaggle backfill
+# --------------------------------------------------------------------------- #
+
+
+def _kaggle_box(columns: list[str], rows: list[tuple[Any, ...]]) -> Any:
+    import sqlite3
+
+    connection = sqlite3.connect(":memory:")
+    connection.row_factory = sqlite3.Row  # as load_kaggle_sqlite opens the release
+    connection.execute(f"CREATE TABLE player_box ({', '.join(columns)})")
+    marks = ", ".join("?" for _ in columns)
+    connection.executemany(f"INSERT INTO player_box VALUES ({marks})", rows)
+    return connection
+
+
+_BOX_COLUMNS = ["game_id", "player_id", "team_id", "player_name", "min", "pts"]
+
+
+def test_a_backfill_file_with_no_starter_column_keeps_recorded_starters(db: Session) -> None:
+    """A Kaggle release that has no starter column says nothing about who started; it must not
+    write ``False`` over the ``True`` a V3 box score recorded (PlayerSeason.gs would drop to 0)."""
+    from nbastats.ingest import backfill
+
+    write(db, v3_line(STARTER, started=True))
+    write(db, v3_line(BENCH, started=False))
+    connection = _kaggle_box(
+        _BOX_COLUMNS,
+        [
+            (GAME_ID, STARTER, HOME_TEAM, "Ann Starter", "30:00", 22),
+            (GAME_ID, BENCH, HOME_TEAM, "Ben Bench", "12:00", 4),
+        ],
+    )
+    written, _, read = backfill._load_kaggle_player_box(
+        db, connection, "player_box", [GAME_ID], SEASON, 100
+    )
+    assert read == 2 and written == 2
+    assert stored(db, STARTER).started is True and stored(db, STARTER).pts == 22
+    assert stored(db, BENCH).started is False
+
+
+def test_a_backfill_file_with_a_starter_column_still_says_who_started(db: Session) -> None:
+    from nbastats.ingest import backfill
+
+    write(db, v3_line(STARTER, started=False))
+    connection = _kaggle_box(
+        [*_BOX_COLUMNS, "start_position"],
+        [
+            (GAME_ID, STARTER, HOME_TEAM, "Ann Starter", "30:00", 20, "F"),
+            (GAME_ID, BENCH, HOME_TEAM, "Ben Bench", "12:00", 4, None),  # a blank cell: bench
+        ],
+    )
+    backfill._load_kaggle_player_box(db, connection, "player_box", [GAME_ID], SEASON, 100)
+    assert stored(db, STARTER).started is True  # an explicit value from the file still wins
+    assert stored(db, BENCH).started is False

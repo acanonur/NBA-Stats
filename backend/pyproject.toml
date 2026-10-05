@@ -47,6 +47,8 @@ nbastats = [
     "accounts/schema.sql",
     "nba_intel/schema.sql",
     "nba_intel/data/*.json",
+    "euroleague/schema.sql",
+    "euroleague/data/*.json",
 ]
 
 [tool.pytest.ini_options]

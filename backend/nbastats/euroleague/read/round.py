@@ -182,6 +182,7 @@ def _side_from_result(
         "defenceIndex": side.defence,
         "capBinding": side.injury.cap_binding,
         "unassignedPoints": side.injury.unassigned_points,
+        "replacementPoints": side.injury.replacement_credited,
         "keyAbsences": side_absences(ctx, side, as_of),
     }
 
@@ -276,6 +277,7 @@ def projection_payload(
                 "defenceIndex": defence,
                 "capBinding": None,
                 "unassignedPoints": None,
+                "replacementPoints": None,
                 "keyAbsences": [],
             }
 

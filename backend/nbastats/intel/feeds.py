@@ -72,7 +72,7 @@ from .http import (
     TooLargeError,
     TransportFailure,
     check_url,
-    host_of,
+    link_host,
 )
 from .robots import DISALLOWED, UNAVAILABLE, RobotsChecker
 
@@ -222,11 +222,13 @@ def host_matches(url: str, domains: Iterable[str]) -> bool:
     a substring of the whole URL, so a club called "Partizan Mozzart Bet" in a headline's text, or a
     path that happens to contain a domain's name, never triggers it.
     """
-    host = host_of(url)
+    if isinstance(url, str) and "\\" in url:
+        return True  # a browser and urlsplit disagree on the host: never vouch for it
+    host = link_host(url)
     if not host:
         return False
     for domain in domains:
-        bare = domain.strip().lower().lstrip(".")
+        bare = domain.strip().lower().strip(".")
         if bare and (host == bare or host.endswith("." + bare)):
             return True
     return False

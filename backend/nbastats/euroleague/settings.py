@@ -178,7 +178,8 @@ def _build_defaults() -> dict[str, SettingDefault]:
         ),
         "capPolicyConsistent": _spec(
             1.0,
-            "1: team and player projections agree (the boost cap binds the team too). "
+            "1: team and player projections agree (the boost cap binds the players; what they "
+            "cannot take is credited at replacement level). "
             "0: the workbook's behaviour, which can leave points unassigned.",
             boolean=True,
         ),

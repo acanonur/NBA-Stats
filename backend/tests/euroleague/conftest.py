@@ -1080,7 +1080,7 @@ class MiniLeague:
                 "QUESTIONABLE",
                 "QUESTIONABLE",
                 "No update",
-                "https://live.euroleague.net/api/Boxscore?gamecode=3&seasoncode=E2026",
+                "https://live.euroleague.net/api/Boxscore?gamecode=99&seasoncode=E2031",
                 published,
             ],
             [

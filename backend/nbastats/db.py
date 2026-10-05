@@ -46,7 +46,7 @@ from contextlib import contextmanager
 from datetime import date, datetime, timezone
 from typing import Iterator
 
-from sqlalchemy import Engine, create_engine, event, select
+from sqlalchemy import Engine, create_engine, event, inspect, select
 from sqlalchemy.orm import Session, sessionmaker
 
 from .accounts.models import AccountBase
@@ -60,6 +60,8 @@ __all__ = [
     "get_session",
     "session_scope",
     "init_db",
+    "NbaStoreError",
+    "refuse_foreign_store",
     "dispose_engine",
     "read_sync_state",
     "bump_sync_version",
@@ -165,6 +167,27 @@ def session_scope(engine: Engine | None = None) -> Iterator[Session]:
         session.close()
 
 
+class NbaStoreError(RuntimeError):
+    """The database is not one the NBA tables may be created in (it is another league's)."""
+
+
+def refuse_foreign_store(engine: Engine) -> None:
+    """Raise :class:`NbaStoreError` when ``engine`` holds another league's store.
+
+    The EuroLeague store refuses a file holding an NBA ``teams`` table; this is the mirror. A file
+    with any ``el_`` table (``el_store_identity`` above all) is a EuroLeague store, and creating
+    the NBA schema in it would make the EuroLeague refuse to open it ever again. Nothing is created.
+    """
+    foreign = sorted(t for t in inspect(engine).get_table_names() if t.startswith("el_"))
+    if foreign:
+        raise NbaStoreError(
+            "Refusing to create the NBA tables in a database that holds EuroLeague tables "
+            f"({', '.join(foreign[:3])}{', ...' if len(foreign) > 3 else ''}): that is a "
+            "EuroLeague store. Point DATABASE_URL at the NBA store (HARDWOOD_EL_DATABASE_URL "
+            "names the EuroLeague's)."
+        )
+
+
 def init_db(engine: Engine | None = None) -> Engine:
     """Create every table that does not exist yet — all three metadata objects — and return the
     engine used.
@@ -180,10 +203,14 @@ def init_db(engine: Engine | None = None) -> Engine:
     import time: a package that is missing or half built has to show up as a ``notInstalled`` row,
     not as a crash at startup. ``init_db`` is where the tables are created, so it is where the
     import belongs.
+
+    A database that holds the EuroLeague's tables is refused before anything is created
+    (:func:`refuse_foreign_store`).
     """
     from .nba_intel.models import NbaIntelBase
 
     target = engine or get_engine()
+    refuse_foreign_store(target)
     Base.metadata.create_all(target)
     AccountBase.metadata.create_all(target)
     NbaIntelBase.metadata.create_all(target)

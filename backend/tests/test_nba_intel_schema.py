@@ -881,6 +881,20 @@ def test_the_denylist_withholds_the_link_and_keeps_the_label_and_date() -> None:
     assert status.is_denied("https://sub.mozzartbet.com/x") and not status.is_denied(None)
 
 
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://WWW.MozzartSport.com./a",  # upper case and a trailing dot
+        "https://mozzartbet.com./promo",
+        "https://mozzartsport.com\\@example.org/a",  # a browser opens the operator's site
+    ],
+)
+def test_a_spelling_trick_does_not_get_an_operators_link_stored(url: str) -> None:
+    assert status.is_denied(url)
+    label, kept = status.apply_denylist("Label", url)
+    assert kept is None and label.endswith("(link withheld: betting operator)")
+
+
 def test_a_withheld_row_satisfies_the_source_url_check(empty_engine: Engine) -> None:
     label, url = status.apply_denylist("Preview site", "https://mozzartsport.com/p")
     assert url is None

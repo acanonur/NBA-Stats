@@ -302,8 +302,9 @@ def test_the_replay_includes_the_neutral_game_and_the_capped_club(replay) -> Non
 
 
 def test_the_default_policy_makes_the_capped_team_agree_with_its_players(replay) -> None:
-    """Under ``consistent`` the capped club's projection is lower than the sheet's and equals
-    the sum of its players: the documented difference from the workbook."""
+    """Under ``consistent`` the capped club's projection is never above the sheet's, never
+    below the replacement floor, and equals the sum of its players plus the replacement
+    players' line: the documented difference from the workbook."""
     per40, absorb, cap, rotation = replay["levers"]  # the workbook's own levers
     consistent = IL.InjurySettings.from_per40(per40, absorb, cap, rotation_share=rotation)
     for code, r in replay["layer"].items():
@@ -311,5 +312,84 @@ def test_the_default_policy_makes_the_capped_team_agree_with_its_players(replay)
             continue
         players = [p for _, p in replay["roster"][code]]
         ours = IL.apply_injury_layer(players, consistent)
-        assert ours.squad_points < r.squad_points
-        assert abs(sum(p.projected_points for p in ours.players) - ours.squad_points) < TOLERANCE
+        assert ours.squad_points <= r.squad_points + TOLERANCE
+        floor = ours.available_points + min(ours.replacement_points, ours.lost_points)
+        assert ours.squad_points >= floor - TOLERANCE
+        credited = sum(p.projected_points for p in ours.players) + ours.replacement_credited
+        assert abs(credited - ours.squad_points) < TOLERANCE
+
+
+# ------------------------------------------------------------------ nothing real is committed
+
+REPO = Path(__file__).resolve().parents[3]
+#: Real NBA identities are committed on purpose (the seeder's names and headshots); a EuroLeague
+#: player who also played in the NBA legitimately appears there.
+NBA_IDENTITY_FILES = {"backend/nbastats/data/nba_identities.json"}
+#: Where a EuroLeague surname alone would be a leak (an NBA file may hold a real NBA surname).
+EUROLEAGUE_PATHS = (
+    "backend/nbastats/euroleague/",
+    "backend/tests/euroleague/",
+    "contracts/fixtures/leagues/el/",
+    "docs/EUROLEAGUE.md",
+)
+
+
+def _fold(text: str) -> str:
+    import unicodedata
+
+    decomposed = unicodedata.normalize("NFKD", text)
+    return "".join(c for c in decomposed if not unicodedata.combining(c)).casefold()
+
+
+def _committable_files() -> list[str]:
+    import subprocess
+
+    out = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=REPO,
+        check=True,
+        capture_output=True,
+    ).stdout
+    return [p for p in out.decode("utf-8").split("\0") if p]
+
+
+def test_no_real_name_or_absence_text_from_the_workbook_is_committable(book) -> None:
+    """A2: nothing real is committed. Every squad member's full name, every EuroLeague-side
+    surname and every Injury Report 'Problem' text is searched for in every file git would
+    commit (tracked, or untracked and not ignored)."""
+    squads = book.sheet("Squads")
+    names = {
+        _fold(str(squads[f"B{row}"])).strip()
+        for row in range(6, 400)
+        if isinstance(squads.get(f"B{row}"), str) and " " in str(squads[f"B{row}"]).strip()
+    }
+    assert len(names) > 200, "the Squads sheet did not read as expected"
+    surnames = {n.split()[-1] for n in names if len(n.split()[-1]) >= 6}
+    # A EuroLeague player who also played in the NBA is a committed NBA identity, on purpose.
+    nba_known = "\n".join(
+        _fold((REPO / f).read_text(encoding="utf-8")).replace(".", "") for f in NBA_IDENTITY_FILES
+    )
+    names = {n for n in names if n.replace(".", "") not in nba_known}
+    injuries = book.sheet("Injury Report")
+    problems = {
+        _fold(str(injuries[f"C{row}"])).strip()
+        for row in range(6, 400)
+        # seven words or more: a sentence about one person, not a generic phrase a classifier
+        # keyword list may legitimately share ("Not in the EuroLeague game roster")
+        if isinstance(injuries.get(f"C{row}"), str) and len(str(injuries[f"C{row}"]).split()) >= 7
+    }
+    surname_re = re.compile(r"\b(" + "|".join(map(re.escape, sorted(surnames))) + r")\b")
+    leaks: list[str] = []
+    for rel in _committable_files():
+        path = REPO / rel
+        if rel in NBA_IDENTITY_FILES or not path.is_file() or path.stat().st_size > 20_000_000:
+            continue
+        try:
+            text = _fold(path.read_text(encoding="utf-8"))
+        except (UnicodeDecodeError, OSError):
+            continue
+        leaks += [f"{rel}: name {n!r}" for n in names if n in text]
+        leaks += [f"{rel}: absence text {p!r}" for p in problems if p in text]
+        if rel.startswith(EUROLEAGUE_PATHS):
+            leaks += [f"{rel}: surname {m!r}" for m in sorted(set(surname_re.findall(text)))]
+    assert not leaks, "real workbook content would be committed:\n" + "\n".join(leaks[:40])

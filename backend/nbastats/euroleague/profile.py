@@ -450,9 +450,15 @@ def _host(url: str) -> str | None:
 
 
 def is_denied_url(url: Any, denylist: Iterable[str] | None = None) -> bool:
-    """True when the link's host is a denylisted domain or a subdomain of one."""
+    """True when the link's host is a denylisted domain or a subdomain of one.
+
+    A link with a backslash is denied outright: a browser reads ``\\`` as ``/`` in an http(s)
+    URL, so ``https://operator.example\\@example.org/`` opens the operator's site while
+    ``urlsplit`` reports ``example.org``. Nobody can vouch for such a link, so it is withheld."""
     if not isinstance(url, str) or not url.strip():
         return False
+    if "\\" in url:
+        return True
     host = _host(url)
     if host is None:
         return False

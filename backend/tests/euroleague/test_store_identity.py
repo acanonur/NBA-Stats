@@ -340,14 +340,36 @@ def test_a_workbook_cannot_be_imported_into_the_invented_store(
     ) == [(0,)]
 
 
-def test_a_real_store_is_never_given_the_invented_league(el_env: EnvFactory) -> None:
+def test_a_store_that_was_only_stamped_live_can_still_become_the_demo(el_env: EnvFactory) -> None:
+    """An ordinary first start (live ingest on by default) stamps the new store ``live`` before
+    anything is fetched. Asking for the demo afterwards must work: nothing real is in it."""
     _, settings = el_env()
-    assert bootstrap.prepare(settings).kind == "live"
+    first = bootstrap.prepare(settings)
+    assert first.kind == "live"
+    assert rows(_engine_of(settings), "SELECT COUNT(*) FROM el_intel_news_feed") == [(2,)]
     _, demo_settings = el_env(HARDWOOD_EL_DEMO="1")
     result = bootstrap.prepare(demo_settings)
-    assert result.ready and result.kind == "live" and not result.is_demo and not result.seeded_demo
-    assert "holds real data" in (result.reason or "")
-    assert rows(_engine_of(settings), "SELECT COUNT(*) FROM el_game") == [(0,)]
+    assert result.ready and result.kind == "synthetic" and result.is_demo and result.seeded_demo
+    assert "never received any" in (result.reason or "")
+    assert rows(_engine_of(settings), "SELECT kind FROM el_store_identity") == [("synthetic",)]
+    assert rows(_engine_of(settings), "SELECT COUNT(*) FROM el_intel_news_feed") == [(0,)]
+
+
+def test_a_real_store_holding_real_data_is_never_given_the_invented_league(
+    el_env: EnvFactory, tmp_path: Path, mini_league: Any
+) -> None:
+    path = tmp_path / "toolkit.xlsx"
+    path.write_bytes(mini_league.workbook())
+    _, settings = el_env(HARDWOOD_WORKBOOK_PATH=str(path))
+    imported = bootstrap.prepare(settings)
+    assert imported.kind in ("workbook", "live")
+    games = rows(_engine_of(settings), "SELECT COUNT(*) FROM el_game")
+    _, demo_settings = el_env(HARDWOOD_EL_DEMO="1")
+    result = bootstrap.prepare(demo_settings)
+    assert result.ready and result.kind == imported.kind and not result.is_demo
+    assert not result.seeded_demo
+    assert "stamped for real data and holds some" in (result.reason or "")
+    assert rows(_engine_of(settings), "SELECT COUNT(*) FROM el_game") == games
 
 
 def test_the_switch_turns_the_whole_thing_off(el_env: EnvFactory) -> None:

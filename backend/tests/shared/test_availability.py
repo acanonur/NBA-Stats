@@ -420,6 +420,61 @@ def test_a_non_long_term_text_does_not_exempt() -> None:
     assert A.entry_in_force(e, as_of=NOW).reason == "tooOld"
 
 
+@pytest.mark.parametrize(
+    ("text", "horizon"),
+    [
+        ("Target: November", date(2026, 11, 30)),
+        ("Until November", date(2026, 11, 30)),
+        ("Late October or early November", date(2026, 11, 30)),
+        ("Mid-October", date(2026, 10, 31)),
+        ("At least six weeks", date(2026, 10, 30)),
+        ("6 weeks", date(2026, 10, 30)),
+        ("2-3 weeks", date(2026, 10, 9)),
+        ("Several weeks", date(2026, 10, 9)),
+        ("Out for 10 days", date(2026, 9, 28)),
+        ("About a month", date(2026, 10, 19)),
+        ("January", date(2027, 1, 31)),  # a month already past this year means next year's
+        ("July", date(2027, 7, 31)),
+        ("August", date(2026, 8, 31)),  # ended under a month before: this year, already past
+    ],
+)
+def test_the_return_horizon_reads_months_and_durations(text, horizon) -> None:
+    assert A.return_horizon(text, source_date=date(2026, 9, 18)) == horizon
+
+
+@pytest.mark.parametrize(
+    "text", ["Rounds 2-4", "Likely Round 4", "Day-to-day", "Questionable", "May return", ""]
+)
+def test_texts_with_no_month_or_duration_have_no_horizon(text) -> None:
+    assert A.return_horizon(text, source_date=date(2026, 9, 18)) is None
+    assert A.return_horizon("Until November", source_date=None) is None
+
+
+def test_an_entry_whose_text_names_a_month_still_running_stays_in_force() -> None:
+    """``Until November`` published 17 days ago is still the source's word: rule (c) waits for
+    the end of November, then ends it."""
+    published = datetime(2026, 9, 17, 9, 0, tzinfo=UTC)
+    e = entry(published=published, expected_return_text="Until November")
+    assert A.entry_in_force(e, as_of=NOW).in_force
+    assert A.entry_in_force(e, as_of=datetime(2026, 11, 30, 21, 0, tzinfo=UTC)).in_force
+    late = A.entry_in_force(e, as_of=datetime(2026, 12, 1, 0, 30, tzinfo=UTC))
+    assert late == A.ForceVerdict(False, "tooOld")
+    # the league's day decides: 23:30 UTC on 30 November is already 1 December in Berlin
+    berlin = A.entry_in_force(e, as_of=datetime(2026, 11, 30, 23, 30, tzinfo=UTC), tz=BERLIN)
+    assert berlin.reason == "tooOld"
+
+
+def test_a_duration_keeps_an_entry_in_force_only_until_it_runs_out() -> None:
+    published = NOW - timedelta(days=20)
+    e = entry(published=published, expected_return_text="At least six weeks")
+    assert A.entry_in_force(e, as_of=NOW).in_force
+    assert A.entry_in_force(e, as_of=published + timedelta(days=43)).reason == "tooOld"
+    # a horizon never overrides the other rules
+    assert A.entry_in_force(e, as_of=NOW, last_played_at=NOW - timedelta(days=1)).reason == (
+        "playedSince"
+    )
+
+
 def test_rules_are_reported_in_a_then_b_then_c_order() -> None:
     old = NOW - timedelta(days=20)
     e = entry(published=old, expected_return_date=date(2026, 9, 1))

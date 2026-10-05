@@ -38,7 +38,16 @@ from .db import get_el_sessionmaker, read_sync_state
 from .models import ElClub, ElSeason
 from .profile import normalise_club_code
 
-__all__ = ["FEATURES", "session_factory", "describe", "team_exists", "register", "unregister"]
+__all__ = [
+    "FEATURES",
+    "READ_SIDE_MODULES",
+    "session_factory",
+    "describe",
+    "team_exists",
+    "read_side",
+    "register",
+    "unregister",
+]
 
 #: What the EuroLeague can do, by the names a client keys on.
 FEATURES: Final[tuple[str, ...]] = (
@@ -105,6 +114,24 @@ def team_exists(club_code: str) -> bool:
         return session.get(ElClub, code) is not None
 
 
+#: The read-side modules the widget layer may have: the builders and the context they read.
+READ_SIDE_MODULES: Final[tuple[str, ...]] = ("read", "read.queries")
+
+
+def read_side(module: str = "read") -> Any:
+    """One of :data:`READ_SIDE_MODULES`, imported by this package itself: the seam through which
+    the widget layer reaches the EuroLeague's builders without importing the sealed package."""
+    if module == "read":
+        from . import read
+
+        return read
+    if module == "read.queries":
+        from .read import queries
+
+        return queries
+    raise LookupError(f"the EuroLeague offers no read-side module {module!r}")
+
+
 def register() -> None:
     """Register (or re-register) the EuroLeague with the league registry."""
     league_registry.register(
@@ -113,6 +140,7 @@ def register() -> None:
             session_factory=session_factory,
             describe=describe,
             team_exists=team_exists,
+            read_side=read_side,
         )
     )
 

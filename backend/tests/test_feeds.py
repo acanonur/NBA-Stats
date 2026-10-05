@@ -738,9 +738,10 @@ def refresh(engine: Engine, site: Site, feed_id: int = 1, now: datetime = NOW) -
 
 def test_default_feeds_are_seeded_only_into_an_empty_table(intel_db: Engine) -> None:
     with Session(intel_db) as session:
-        assert news.ensure_default_feeds(session) == 2
+        assert news.ensure_default_feeds(session) == 1
         urls = {f.url for f in session.execute(select(NbaIntelNewsFeed)).scalars()}
-        assert urls == {"https://eurohoops.net/feed", "https://talkbasket.net/feed"}
+        # the EuroLeague-only candidate belongs to the EuroLeague's own feed table
+        assert urls == {"https://talkbasket.net/feed"}
         assert all(f.enabled for f in session.execute(select(NbaIntelNewsFeed)).scalars())
         assert news.ensure_default_feeds(session) == 0
         # A feed the person switched off is not seeded back on.
@@ -779,7 +780,8 @@ def test_a_refresh_stores_items_and_links_only_unique_names(intel_db: Engine) ->
         )
     )
     outcome = refresh(intel_db, site_with(items))
-    assert outcome.state == "ok" and outcome.new_items == 7
+    # four headlines name no team or player uniquely: they are not NBA news, so not stored
+    assert outcome.state == "ok" and outcome.new_items == 3 and outcome.skipped == 4
     with Session(intel_db) as session:
         by_title = {
             row.title: sorted(
@@ -793,15 +795,40 @@ def test_a_refresh_stores_items_and_links_only_unique_names(intel_db: Engine) ->
     # a team named and a player named: both rows, the player under his own team
     assert by_title["Alpha City Aces sign Alex Sample to a deal"] == [(9001, 0), (9001, 7001)]
     # two players share the name: no player link at all, and no team named either
-    assert by_title["Casey Mock returns to practice"] == []
+    assert "Casey Mock returns to practice" not in by_title
     # "Sparks" belongs to two teams: no link; the full name belongs to one
-    assert by_title["Sparks win again"] == []
+    assert "Sparks win again" not in by_title
     assert by_title["Echo Falls Sparks win again"] == [(9003, 0)]
     # a city alone is never enough
-    assert by_title["Alpha City is lovely in autumn"] == []
+    assert "Alpha City is lovely in autumn" not in by_title
     assert by_title["Bees and Aces meet"] == [(9001, 0), (9002, 0)]
     # an inactive player is not in the index
-    assert by_title["Retired Randy waves goodbye"] == []
+    assert "Retired Randy waves goodbye" not in by_title
+
+
+@pytest.mark.parametrize(
+    ("title", "expected"),
+    [
+        # a nickname alone is an ordinary word: lower case, or capitalised with nothing else NBA
+        ("Real Madrid turn up the aces on Olympiacos", set()),
+        ("Monaco bees of Europe? Fenerbahce wait", set()),
+        ("Aces of Europe: Belgrade crowd lifts the Serbs", set()),
+        # capitalised and beside another team, a player, or the word NBA: a team
+        ("Aces beat Bees in overtime", {9001, 9002}),
+        ("Aces rally late as Alex Sample scores 40", {9001}),
+        ("NBA: Aces rally late", {9001}),
+        # the full name always names the team
+        ("Alpha City Aces rally late", {9001}),
+        # a nickname two teams share never names either, nor counts as basketball company
+        ("Sparks beat Bees", set()),
+    ],
+)
+def test_a_nickname_names_a_team_only_capitalised_and_in_basketball_company(
+    intel_db: Engine, title: str, expected: set[int]
+) -> None:
+    with Session(intel_db) as session:
+        index = news.SubjectIndex(session)
+    assert set(index.match(title).team_ids) == expected
 
 
 def test_the_same_items_are_not_stored_twice_and_validators_are_kept(intel_db: Engine) -> None:
@@ -909,12 +936,12 @@ def test_a_denylisted_link_is_never_stored(intel_db: Engine) -> None:
 def test_items_older_than_thirty_days_are_not_stored_and_are_pruned(intel_db: Engine) -> None:
     seed_one_feed(intel_db)
     old = rss_item(
-        title="Ancient",
+        title="Ancient Aces beat Bees",
         guid="old",
         pub="Sat, 10 Sep 2026 09:00:00 GMT",
         link="https://feeds.example.org/old",
     )
-    fresh = rss_item(title="Fresh", guid="new", link="https://feeds.example.org/new")
+    fresh = rss_item(title="Fresh Aces beat Bees", guid="new", link="https://feeds.example.org/new")
     outcome = refresh(intel_db, site_with(old + fresh))
     assert outcome.new_items == 1
     with Session(intel_db) as session:
@@ -944,7 +971,7 @@ def test_items_older_than_thirty_days_are_not_stored_and_are_pruned(intel_db: En
         session.commit()
         titles = {i.title for i in session.execute(select(NbaIntelNewsItem)).scalars()}
     assert removed == 1
-    assert titles == {"Fresh", "Pasted long ago"}
+    assert titles == {"Fresh Aces beat Bees", "Pasted long ago"}
     assert pasted.feed_id is None
 
 
@@ -1056,11 +1083,11 @@ def test_the_job_seeds_fetches_and_reports(intel_db: Engine, patched_client: Any
     site = site_with(rss_item(title="Alpha City Aces win", guid="j1"))
     patched_client(site)
     result = jobs.run_news(now=NOW)
-    assert result["status"] == "ok" and result["newItems"] == 2  # two seeded feeds, one item each
-    assert "2 feeds checked" in result["detail"]
+    assert result["status"] == "ok" and result["newItems"] == 1  # one seeded feed, one item
+    assert "1 feeds checked" in result["detail"]
     with Session(intel_db) as session:
-        assert session.execute(select(func.count()).select_from(NbaIntelNewsFeed)).scalar() == 2
-        assert session.execute(select(func.count()).select_from(NbaIntelNewsItem)).scalar() == 2
+        assert session.execute(select(func.count()).select_from(NbaIntelNewsFeed)).scalar() == 1
+        assert session.execute(select(func.count()).select_from(NbaIntelNewsItem)).scalar() == 1
 
 
 def test_the_job_fetches_each_feed_at_most_hourly(intel_db: Engine, patched_client: Any) -> None:
