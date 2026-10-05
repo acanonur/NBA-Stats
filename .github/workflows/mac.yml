@@ -1,0 +1,60 @@
+name: Mac app
+
+# Builds the native Mac app, packs it into Hardwood.dmg (downloadable from the run's Artifacts),
+# then runs the unit tests on macOS.
+#
+# This is the only place the Mac half of the app meets a compiler. The iOS workflow builds for
+# the iPhone simulator, where every file behind `#if os(macOS)` compiles to nothing, so a green
+# iOS run says nothing about the Mac screens. The build runs scripts/make_dmg.sh -- the same
+# script a person runs on their own Mac -- so CI and a local build cannot drift apart.
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "ios/**"
+      - "contracts/**"
+      - "scripts/make_dmg.sh"
+      - ".github/workflows/mac.yml"
+  workflow_dispatch:
+
+jobs:
+  build-dmg:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+
+      - name: Build the Mac app and Hardwood.dmg
+        run: scripts/make_dmg.sh
+
+      - name: Upload Hardwood.dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hardwood-mac
+          path: dist/Hardwood.dmg
+          if-no-files-found: error
+          retention-days: 30
+
+      # After the upload, so a failing test still leaves a disk image to try -- and the run still
+      # goes red, so it is never mistaken for a clean one.
+      - name: Unit tests on macOS
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project NBAStats.xcodeproj \
+            -scheme Hardwood \
+            -destination 'platform=macOS' \
+            -derivedDataPath ../build/mac-test \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY=- \
+            DEVELOPMENT_TEAM= \
+            2>&1 | tee ../build/mac-test.log | xcpretty || {
+              echo "---- failures, once each ----"
+              grep -E '(error|fatal error): |: error -|Test Case .* failed' ../build/mac-test.log | sort -u | head -100
+              exit 1
+            }

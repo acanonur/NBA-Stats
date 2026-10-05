@@ -120,6 +120,30 @@ does not update the copy in Applications.
 
 ---
 
+### A disk image instead of Xcode
+
+Once the server is installed (step 1), you never have to open Xcode to get the app. In Terminal:
+
+```bash
+cd ~/NBA-Stats
+scripts/make_dmg.sh --open
+```
+
+It builds the app and opens `dist/Hardwood.dmg`: drag **Hardwood** onto **Applications** and open
+it from there. A disk image built on your own Mac opens with a plain double-click.
+
+Or skip building altogether: every push that touches the app runs the **Mac app** workflow on
+GitHub, and its run page has a **Hardwood-mac** download under *Artifacts* (GitHub zips it; unzip
+to get `Hardwood.dmg`). A downloaded copy is quarantined, so the first time macOS says it cannot
+verify the developer: click **Done**, then **System Settings ▸ Privacy & Security ▸ Open Anyway**
+(or run `xattr -dr com.apple.quarantine /Applications/Hardwood.app`). The app is signed to run
+locally, not by a registered Apple developer; removing that step would take a paid Developer ID and
+notarization, which only matters if the app were shared — see [LEGAL.md](LEGAL.md) before doing
+that.
+
+The disk image holds the app only. The server still comes from `install.sh`; the image's
+*Read Me First* says so.
+
 ## 3. If Xcode asks about signing
 
 The project signs Mac builds "to run locally": no Apple developer account, no team
