@@ -1,0 +1,141 @@
+{
+  "league": "nba",
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 1324,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T16:30:00Z",
+    "isDemo": true,
+    "sources": []
+  },
+  "settings": [
+    {
+      "key": "priorRegression",
+      "value": 0.3,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "How far last season's scoring is pulled back toward the league average: 0 keeps it as it was, 1 makes every team average. A default, not fitted."
+    },
+    {
+      "key": "priorWeightGames",
+      "value": 10.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "How slowly a team's in-season adjustment moves: each game moves it by 1 divided by (games played plus this number). Also the weight, in games, last season's per-game values carry in a player's blend. A default."
+    },
+    {
+      "key": "leagueLevelWeight",
+      "value": 150.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "How many team-games of weight last season's league scoring level carries when blended with this season's. A default."
+    },
+    {
+      "key": "homeAdvantagePoints",
+      "value": 2.5,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "Points a home team is worth. Replaced by the mean home margin once 300 games are final, unless set by hand. A default until then."
+    },
+    {
+      "key": "teamSd",
+      "value": 9.2,
+      "provenance": "manual",
+      "isDefault": false,
+      "setAt": "2026-01-03T15:30:00Z",
+      "description": "The spread of one team's score around its projection, in points. Fitted from results; it has no default, and no range is shown until it exists."
+    },
+    {
+      "key": "marginSd",
+      "value": 11.8,
+      "provenance": "manual",
+      "isDefault": false,
+      "setAt": "2026-01-03T15:30:00Z",
+      "description": "The spread of the projected margin around the result, in points. Fitted from results; it has no default, and no range is shown until it exists."
+    },
+    {
+      "key": "replacementShare",
+      "value": 0.52,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "A replacement player's scoring as a share of the league's points per minute. A default."
+    },
+    {
+      "key": "absorbShare",
+      "value": 0.6,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The share of the scoring missing above replacement level that teammates recover. A default."
+    },
+    {
+      "key": "boostCap",
+      "value": 1.35,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The most a teammate's scoring is raised when others are out (1.35 is 35% more). A default."
+    },
+    {
+      "key": "capPolicyConsistent",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "1 keeps a team's projected score equal to the sum of its players' (plus a replacement-level line for minutes the capped players cannot fill) when the cap binds; 0 reproduces the workbook's own arithmetic, where the two can differ."
+    },
+    {
+      "key": "statusChance.out",
+      "value": 0.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The chance of playing counted for a player listed as out. A default."
+    },
+    {
+      "key": "statusChance.doubtful",
+      "value": 0.25,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The chance of playing counted for a player listed as doubtful. A default."
+    },
+    {
+      "key": "statusChance.questionable",
+      "value": 0.5,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The chance of playing counted for a player listed as questionable. A default."
+    },
+    {
+      "key": "statusChance.probable",
+      "value": 0.85,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The chance of playing counted for a player listed as probable. A default."
+    },
+    {
+      "key": "statusChance.available",
+      "value": 1.0,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The chance of playing counted for a player listed as available. A default."
+    },
+    {
+      "key": "positionCoverageCeiling",
+      "value": 0.05,
+      "provenance": "default",
+      "isDefault": true,
+      "setAt": null,
+      "description": "The largest share of a team's (or the league's) points allowed that may go to players with no listed position before defence-by-position indices are withheld."
+    }
+  ]
+}

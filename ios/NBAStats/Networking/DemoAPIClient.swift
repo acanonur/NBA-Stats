@@ -19,6 +19,11 @@ public actor DemoAPIClient: APIClientProtocol {
 
     private var payloads: [WidgetKind: WidgetPayload] = [:]
     private var missingKinds: Set<WidgetKind> = []
+    /// The EuroLeague's bundled demo payloads for the four league widgets, kept apart from
+    /// `payloads` so a EuroLeague tile can never be answered with the NBA's fixture of the same
+    /// kind. A kind with no fixture is remembered as missing, as for `payloads`.
+    private var euroleaguePayloads: [WidgetKind: WidgetPayload] = [:]
+    private var missingEuroleagueKinds: Set<WidgetKind> = []
     private var players: [PlayerID: PlayerRef] = [:]
     private var teamsByID: [TeamID: TeamRef] = [:]
     private var didBuildIndex = false
@@ -184,6 +189,10 @@ public actor DemoAPIClient: APIClientProtocol {
         var results: [ResolveResult] = []
         results.reserveCapacity(request.widgets.count)
         for widget in request.widgets {
+            if DemoAPIClient.readsEuroleague(widget) {
+                results.append(euroleagueResult(for: widget, generatedAt: generatedAt))
+                continue
+            }
             if let payload = payload(for: widget.kind) {
                 results.append(ResolveResult(widgetId: widget.id,
                                              kindRaw: widget.kind.rawValue,
@@ -228,12 +237,69 @@ public actor DemoAPIClient: APIClientProtocol {
     /// "est." badge that `WidgetContainer` draws from this value, which is exactly the
     /// projection-dressed-as-a-record that `docs/PROJECTION.md` §7 rule 5 forbids.
     ///
-    /// Both projection kinds need it, for the same reason and with the same force.
+    /// Both projection kinds need it, for the same reason and with the same force, and so does the
+    /// league slate of projected scores (`contracts/CONTRACT.md` §4: a slate with games is `estimated`).
     private static func demoAvailability(for kind: WidgetKind) -> MetricAvailability {
         switch kind {
-        case .nextGameProjection, .projectionBoard, .fantasyDraftBoard, .fantasyTrade:
+        case .nextGameProjection, .projectionBoard, .fantasyDraftBoard, .fantasyTrade, .slateProjections:
             return .estimated
         default: return .full
+        }
+    }
+
+    // MARK: League widgets
+
+    /// True when this widget is one of the four league kinds and its own `league` setting asks for
+    /// the EuroLeague. The setting is the widget's, not the layout's, so it is read from the
+    /// request's config exactly as the service reads it.
+    private static func readsEuroleague(_ widget: ResolveWidgetRequest) -> Bool {
+        switch widget.kind {
+        case .teamMatchup, .defenseByPosition, .availabilityReport, .slateProjections:
+            return widget.config["league"]?.stringValue == "euroleague"
+        default:
+            return false
+        }
+    }
+
+    /// A EuroLeague tile in demo mode: the bundled `league_el_widget_<kind>.json`, or a per-widget
+    /// error that says so. Never the NBA fixture, which would put NBA numbers under a EuroLeague
+    /// title.
+    private func euroleagueResult(for widget: ResolveWidgetRequest, generatedAt: String) -> ResolveResult {
+        if let payload = euroleaguePayload(for: widget.kind) {
+            return ResolveResult(widgetId: widget.id,
+                                 kindRaw: widget.kind.rawValue,
+                                 status: .ok,
+                                 payload: payload,
+                                 generatedAt: generatedAt,
+                                 ttlSeconds: widget.kind.defaultCacheTTLSeconds,
+                                 availability: DemoAPIClient.demoAvailability(for: widget.kind),
+                                 notes: [])
+        }
+        return ResolveResult(widgetId: widget.id,
+                             kindRaw: widget.kind.rawValue,
+                             status: .error,
+                             error: APIErrorBody(code: "demo_fixture_missing",
+                                                 message: "Demo mode has no bundled EuroLeague data for this widget.",
+                                                 recoverable: false),
+                             generatedAt: generatedAt)
+    }
+
+    /// The EuroLeague demo payload for a league widget kind, decoded once and kept.
+    private func euroleaguePayload(for kind: WidgetKind) -> WidgetPayload? {
+        if let cached = euroleaguePayloads[kind] { return cached }
+        if missingEuroleagueKinds.contains(kind) { return nil }
+        guard let data = fixtureData(named: "league_el_widget_\(kind.rawValue)") else {
+            missingEuroleagueKinds.insert(kind)
+            return nil
+        }
+        do {
+            let payload = try decodePayload(kind: kind, data: data)
+            euroleaguePayloads[kind] = payload
+            return payload
+        } catch {
+            DemoAPIClient.logger.error("Fixture league_el_widget_\(kind.rawValue, privacy: .public).json could not be decoded: \(error.localizedDescription, privacy: .public)")
+            missingEuroleagueKinds.insert(kind)
+            return nil
         }
     }
 
@@ -351,6 +417,10 @@ public actor DemoAPIClient: APIClientProtocol {
             }
         case .careerArc(let value):
             note(player: value.player)
+        case .teamMatchup, .defenseByPosition, .availabilityReport, .slateProjections:
+            // League payloads name teams by `LeagueTeamRef` (a string id, or a EuroLeague club
+            // code), which is not the NBA `TeamRef` the player search and team list are built from.
+            break
         }
     }
 

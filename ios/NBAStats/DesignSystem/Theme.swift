@@ -1,6 +1,10 @@
 import Foundation
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 /// Hardwood's semantic color set.
 ///
@@ -11,6 +15,12 @@ public enum Palette {
 
     // MARK: - Construction
 
+    // The one place Hardwood touches a platform color class. Both branches build the same sRGB
+    // value from the same `0xRRGGBB` literal, so a color is pixel-identical on iOS and macOS, and
+    // every color declaration below this block is untouched. (contracts/tools/gen_theme.py parses
+    // those declaration lines to generate theme.json and rejects any other line in this enum that
+    // spells out a call to the constructor below, so no comment here may do so either.)
+    #if canImport(UIKit)
     private static func solid(_ hex: UInt32, alpha: CGFloat) -> UIColor {
         UIColor(
             red: CGFloat((hex >> 16) & 0xFF) / 255.0,
@@ -19,20 +29,41 @@ public enum Palette {
             alpha: alpha
         )
     }
+    #else
+    private static func solid(_ hex: UInt32, alpha: CGFloat) -> NSColor {
+        NSColor(
+            srgbRed: CGFloat((hex >> 16) & 0xFF) / 255.0,
+            green: CGFloat((hex >> 8) & 0xFF) / 255.0,
+            blue: CGFloat(hex & 0xFF) / 255.0,
+            alpha: alpha
+        )
+    }
+    #endif
 
     /// A color whose light and dark values are both chosen deliberately.
     /// - Parameters:
-    ///   - light: `0xRRGGBB` used when the trait collection is light (or unspecified).
-    ///   - dark: `0xRRGGBB` used when the trait collection is dark.
+    ///   - light: `0xRRGGBB` used when the appearance is light (or unspecified).
+    ///   - dark: `0xRRGGBB` used when the appearance is dark.
     public static func adaptive(light: UInt32,
                                 dark: UInt32,
                                 lightAlpha: CGFloat = 1,
                                 darkAlpha: CGFloat = 1) -> Color {
+        #if canImport(UIKit)
         let lightColor = solid(light, alpha: lightAlpha)
         let darkColor = solid(dark, alpha: darkAlpha)
         return Color(uiColor: UIColor { traits in
             traits.userInterfaceStyle == .dark ? darkColor : lightColor
         })
+        #else
+        // macOS: a dynamic NSColor re-evaluated for each appearance. The closure captures two
+        // NSColor values and nothing else (no `self`), so it is safe to run on any thread.
+        let lightColor = Palette.solid(light, alpha: lightAlpha)
+        let darkColor = Palette.solid(dark, alpha: darkAlpha)
+        return Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
+            let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            return isDark ? darkColor : lightColor
+        }))
+        #endif
     }
 
     // MARK: - Surfaces

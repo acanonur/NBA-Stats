@@ -1,0 +1,944 @@
+{
+  "league": "nba",
+  "asOf": "2026-01-03T15:30:00Z",
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 1324,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T16:30:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.injuryReport",
+        "label": "NBA official injury report",
+        "state": "ok",
+        "reason": "Not yet confirmed against a real report: the reader was built from the documented layout and has not read one on this machine.",
+        "lastSuccessAt": "2026-01-03T15:31:00Z"
+      },
+      {
+        "key": "nba.news.1",
+        "label": "Example Hoops Wire",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-01-03T15:00:00Z"
+      }
+    ]
+  },
+  "state": "fresh",
+  "message": "Statuses are from the league's official injury report and are dated.",
+  "teams": [
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612740",
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "shortName": "Pelicans",
+        "teamId": 1610612740
+      },
+      "reportState": "submitted",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500369",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": [
+        {
+          "statusId": 1,
+          "overrideId": null,
+          "player": {
+            "league": "nba",
+            "id": "9000032",
+            "name": "Micah Kaminski",
+            "position": "G",
+            "positionRaw": "G-F",
+            "jersey": "3",
+            "headshotUrl": null,
+            "playerId": 9000032
+          },
+          "playerName": "Micah Kaminski",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Injury/Illness - Left Knee; Sprain",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "nba",
+            "gameId": "0022500369",
+            "date": "2026-01-03",
+            "tipoffUtc": null,
+            "venue": null,
+            "isNeutral": null,
+            "round": null,
+            "phase": null,
+            "status": "scheduled",
+            "home": {
+              "league": "nba",
+              "id": "1610612740",
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "shortName": "Pelicans",
+              "teamId": 1610612740
+            },
+            "away": {
+              "league": "nba",
+              "id": "1610612764",
+              "abbr": "WAS",
+              "name": "Washington Wizards",
+              "shortName": "Wizards",
+              "teamId": 1610612764
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 60,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        },
+        {
+          "statusId": 2,
+          "overrideId": null,
+          "player": {
+            "league": "nba",
+            "id": "9000307",
+            "name": "Wyatt Hargrove",
+            "position": "G",
+            "positionRaw": "G-F",
+            "jersey": "17",
+            "headshotUrl": null,
+            "playerId": 9000307
+          },
+          "playerName": "Wyatt Hargrove",
+          "status": "probable",
+          "statusLabel": "Probable",
+          "chanceOfPlaying": 0.85,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Injury/Illness - Right Ankle; Soreness",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "nba",
+            "gameId": "0022500369",
+            "date": "2026-01-03",
+            "tipoffUtc": null,
+            "venue": null,
+            "isNeutral": null,
+            "round": null,
+            "phase": null,
+            "status": "scheduled",
+            "home": {
+              "league": "nba",
+              "id": "1610612740",
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "shortName": "Pelicans",
+              "teamId": 1610612740
+            },
+            "away": {
+              "league": "nba",
+              "id": "1610612764",
+              "abbr": "WAS",
+              "name": "Washington Wizards",
+              "shortName": "Wizards",
+              "teamId": 1610612764
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 60,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612764",
+        "abbr": "WAS",
+        "name": "Washington Wizards",
+        "shortName": "Wizards",
+        "teamId": 1610612764
+      },
+      "reportState": "submitted",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500369",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": [
+        {
+          "statusId": 4,
+          "overrideId": null,
+          "player": {
+            "league": "nba",
+            "id": "9000271",
+            "name": "Andre Ionescu",
+            "position": "G",
+            "positionRaw": "G",
+            "jersey": "37",
+            "headshotUrl": null,
+            "playerId": 9000271
+          },
+          "playerName": "Andre Ionescu",
+          "status": "doubtful",
+          "statusLabel": "Doubtful",
+          "chanceOfPlaying": 0.25,
+          "modelStatus": null,
+          "reasonCategory": "injury",
+          "reasonText": "Injury/Illness - Back; Spasms",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "nba",
+            "gameId": "0022500369",
+            "date": "2026-01-03",
+            "tipoffUtc": null,
+            "venue": null,
+            "isNeutral": null,
+            "round": null,
+            "phase": null,
+            "status": "scheduled",
+            "home": {
+              "league": "nba",
+              "id": "1610612740",
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "shortName": "Pelicans",
+              "teamId": 1610612740
+            },
+            "away": {
+              "league": "nba",
+              "id": "1610612764",
+              "abbr": "WAS",
+              "name": "Washington Wizards",
+              "shortName": "Wizards",
+              "teamId": 1610612764
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 60,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        },
+        {
+          "statusId": 3,
+          "overrideId": null,
+          "player": {
+            "league": "nba",
+            "id": "9000274",
+            "name": "Boris Ionescu",
+            "position": "G",
+            "positionRaw": "G-F",
+            "jersey": "49",
+            "headshotUrl": null,
+            "playerId": 9000274
+          },
+          "playerName": "Boris Ionescu",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "illness",
+          "reasonText": "Injury/Illness - Illness",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "nba",
+            "gameId": "0022500369",
+            "date": "2026-01-03",
+            "tipoffUtc": null,
+            "venue": null,
+            "isNeutral": null,
+            "round": null,
+            "phase": null,
+            "status": "scheduled",
+            "home": {
+              "league": "nba",
+              "id": "1610612740",
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "shortName": "Pelicans",
+              "teamId": 1610612740
+            },
+            "away": {
+              "league": "nba",
+              "id": "1610612764",
+              "abbr": "WAS",
+              "name": "Washington Wizards",
+              "shortName": "Wizards",
+              "teamId": 1610612764
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 60,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612766",
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "shortName": "Hornets",
+        "teamId": 1610612766
+      },
+      "reportState": "submitted",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500370",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612766",
+          "abbr": "CHA",
+          "name": "Charlotte Hornets",
+          "shortName": "Hornets",
+          "teamId": 1610612766
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612752",
+          "abbr": "NYK",
+          "name": "New York Knicks",
+          "shortName": "Knicks",
+          "teamId": 1610612752
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": [
+        {
+          "statusId": 5,
+          "overrideId": null,
+          "player": {
+            "league": "nba",
+            "id": "9000294",
+            "name": "Jarrett Silvera",
+            "position": "G",
+            "positionRaw": "G",
+            "jersey": "4",
+            "headshotUrl": null,
+            "playerId": 9000294
+          },
+          "playerName": "Jarrett Silvera",
+          "status": "out",
+          "statusLabel": "Out",
+          "chanceOfPlaying": 0.0,
+          "modelStatus": null,
+          "reasonCategory": "rest",
+          "reasonText": "Rest",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "nba",
+            "gameId": "0022500370",
+            "date": "2026-01-03",
+            "tipoffUtc": null,
+            "venue": null,
+            "isNeutral": null,
+            "round": null,
+            "phase": null,
+            "status": "scheduled",
+            "home": {
+              "league": "nba",
+              "id": "1610612766",
+              "abbr": "CHA",
+              "name": "Charlotte Hornets",
+              "shortName": "Hornets",
+              "teamId": 1610612766
+            },
+            "away": {
+              "league": "nba",
+              "id": "1610612752",
+              "abbr": "NYK",
+              "name": "New York Knicks",
+              "shortName": "Knicks",
+              "teamId": 1610612752
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 60,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        },
+        {
+          "statusId": 6,
+          "overrideId": null,
+          "player": null,
+          "playerName": "Okafor-Lindqvist, Tobias",
+          "status": "questionable",
+          "statusLabel": "Questionable",
+          "chanceOfPlaying": 0.5,
+          "modelStatus": null,
+          "reasonCategory": "other",
+          "reasonText": "Injury/Illness - Hamstring; Tightness",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": {
+            "league": "nba",
+            "gameId": "0022500370",
+            "date": "2026-01-03",
+            "tipoffUtc": null,
+            "venue": null,
+            "isNeutral": null,
+            "round": null,
+            "phase": null,
+            "status": "scheduled",
+            "home": {
+              "league": "nba",
+              "id": "1610612766",
+              "abbr": "CHA",
+              "name": "Charlotte Hornets",
+              "shortName": "Hornets",
+              "teamId": 1610612766
+            },
+            "away": {
+              "league": "nba",
+              "id": "1610612752",
+              "abbr": "NYK",
+              "name": "New York Knicks",
+              "shortName": "Knicks",
+              "teamId": 1610612752
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "isOverride": false,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 60,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612752",
+        "abbr": "NYK",
+        "name": "New York Knicks",
+        "shortName": "Knicks",
+        "teamId": 1610612752
+      },
+      "reportState": "notYetSubmitted",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500370",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612766",
+          "abbr": "CHA",
+          "name": "Charlotte Hornets",
+          "shortName": "Hornets",
+          "teamId": 1610612766
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612752",
+          "abbr": "NYK",
+          "name": "New York Knicks",
+          "shortName": "Knicks",
+          "teamId": 1610612752
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": [
+        {
+          "statusId": null,
+          "overrideId": 1,
+          "player": {
+            "league": "nba",
+            "id": "9000151",
+            "name": "Micah Silvera",
+            "position": "G",
+            "positionRaw": "G",
+            "jersey": "14",
+            "headshotUrl": null,
+            "playerId": 9000151
+          },
+          "playerName": "Micah Silvera",
+          "status": "doubtful",
+          "statusLabel": "Doubtful",
+          "chanceOfPlaying": 0.25,
+          "modelStatus": null,
+          "reasonCategory": null,
+          "reasonText": "Per a club statement read on 3 January",
+          "expectedReturnText": null,
+          "expectedReturn": null,
+          "game": null,
+          "isOverride": true,
+          "inForce": true,
+          "outOfForceReason": null,
+          "isStale": false,
+          "ageMinutes": 45,
+          "source": {
+            "kind": "manual",
+            "label": "Entered by hand",
+            "url": "https://news.example.org/hoops/club-statement-0",
+            "publishedAt": "2026-01-03T15:45:00Z",
+            "asOf": "2026-01-03T16:05:00Z",
+            "fetchedAt": "2026-01-03T16:05:00Z",
+            "snapshotId": null
+          }
+        }
+      ]
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612763",
+        "abbr": "MEM",
+        "name": "Memphis Grizzlies",
+        "shortName": "Grizzlies",
+        "teamId": 1610612763
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500371",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612763",
+          "abbr": "MEM",
+          "name": "Memphis Grizzlies",
+          "shortName": "Grizzlies",
+          "teamId": 1610612763
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612762",
+          "abbr": "UTA",
+          "name": "Utah Jazz",
+          "shortName": "Jazz",
+          "teamId": 1610612762
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612762",
+        "abbr": "UTA",
+        "name": "Utah Jazz",
+        "shortName": "Jazz",
+        "teamId": 1610612762
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500371",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612763",
+          "abbr": "MEM",
+          "name": "Memphis Grizzlies",
+          "shortName": "Grizzlies",
+          "teamId": 1610612763
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612762",
+          "abbr": "UTA",
+          "name": "Utah Jazz",
+          "shortName": "Jazz",
+          "teamId": 1610612762
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612755",
+        "abbr": "PHI",
+        "name": "Philadelphia 76ers",
+        "shortName": "76ers",
+        "teamId": 1610612755
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500372",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612755",
+          "abbr": "PHI",
+          "name": "Philadelphia 76ers",
+          "shortName": "76ers",
+          "teamId": 1610612755
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612737",
+          "abbr": "ATL",
+          "name": "Atlanta Hawks",
+          "shortName": "Hawks",
+          "teamId": 1610612737
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612737",
+        "abbr": "ATL",
+        "name": "Atlanta Hawks",
+        "shortName": "Hawks",
+        "teamId": 1610612737
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500372",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612755",
+          "abbr": "PHI",
+          "name": "Philadelphia 76ers",
+          "shortName": "76ers",
+          "teamId": 1610612755
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612737",
+          "abbr": "ATL",
+          "name": "Atlanta Hawks",
+          "shortName": "Hawks",
+          "teamId": 1610612737
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612742",
+        "abbr": "DAL",
+        "name": "Dallas Mavericks",
+        "shortName": "Mavericks",
+        "teamId": 1610612742
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500373",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612742",
+          "abbr": "DAL",
+          "name": "Dallas Mavericks",
+          "shortName": "Mavericks",
+          "teamId": 1610612742
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612747",
+          "abbr": "LAL",
+          "name": "Los Angeles Lakers",
+          "shortName": "Lakers",
+          "teamId": 1610612747
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612747",
+        "abbr": "LAL",
+        "name": "Los Angeles Lakers",
+        "shortName": "Lakers",
+        "teamId": 1610612747
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500373",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612742",
+          "abbr": "DAL",
+          "name": "Dallas Mavericks",
+          "shortName": "Mavericks",
+          "teamId": 1610612742
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612747",
+          "abbr": "LAL",
+          "name": "Los Angeles Lakers",
+          "shortName": "Lakers",
+          "teamId": 1610612747
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    }
+  ],
+  "news": [
+    {
+      "itemId": 1,
+      "title": "Micah Kaminski questionable to return",
+      "link": "https://news.example.org/hoops/story-0",
+      "publishedAt": "2026-01-03T13:00:00Z",
+      "sourceName": "Example Hoops Wire",
+      "teams": [
+        {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        }
+      ],
+      "players": [
+        {
+          "league": "nba",
+          "id": "9000032",
+          "name": "Micah Kaminski",
+          "position": "G",
+          "positionRaw": "G-F",
+          "jersey": "3",
+          "headshotUrl": null,
+          "playerId": 9000032
+        }
+      ]
+    },
+    {
+      "itemId": 2,
+      "title": "Previewing WAS at NOP",
+      "link": "https://news.example.org/hoops/story-1",
+      "publishedAt": "2026-01-03T11:30:00Z",
+      "sourceName": "Example Hoops Wire",
+      "teams": [
+        {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        }
+      ],
+      "players": []
+    }
+  ],
+  "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+}

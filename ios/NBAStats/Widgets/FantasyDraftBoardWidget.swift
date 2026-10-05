@@ -159,7 +159,7 @@ public struct FantasyDraftBoardWidget: View {
                 }
                 .frame(width: pinned, alignment: .leading)
 
-                ScrollView(.horizontal, showsIndicators: false) {
+                ScrollView(.horizontal, showsIndicators: PlatformMetrics.showsHorizontalIndicators) {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 0) {
                             ForEach(visibleColumns) { column in

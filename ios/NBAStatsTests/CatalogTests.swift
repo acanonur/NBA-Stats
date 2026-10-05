@@ -10,10 +10,10 @@ import XCTest
 final class CatalogTests: XCTestCase {
 
     /// The counts the contract commits to (`contracts/CONTRACT.md`, the table in its header).
-    /// `expectedWidgetCount` is the kinds this build renders; the catalog also carries the kinds
-    /// listed in `ios/NBAStats/Widgets/PENDING.txt` (20 in all), which the lenient decoder skips.
+    /// Every kind in the catalog has a Swift widget: the sixteen the app began with and the four
+    /// league widgets the Mac phase added.
     private let expectedMetricCount = 62
-    private let expectedWidgetCount = 16
+    private let expectedWidgetCount = 20
     private let expectedPresetCount = 12
 
     /// The field types whose value is a subject the reader has to choose; the catalog gives them
@@ -429,27 +429,21 @@ final class CatalogTests: XCTestCase {
         let document = try JSONDecoder().decode(JSONValue.self, from: data)
         let rawKinds = (document["widgets"]?.arrayValue ?? []).compactMap { $0["kind"]?.stringValue }
 
-        let pending = PendingWidgetKinds.all
         let builtKinds = Set(WidgetKind.allCases.map { $0.rawValue })
-        XCTAssertEqual(rawKinds.count, expectedWidgetCount + pending.count,
+        XCTAssertEqual(rawKinds.count, expectedWidgetCount,
                        "The widget catalog is not the size the contract says")
         XCTAssertEqual(Set(rawKinds).count, rawKinds.count, "Two catalog entries share a kind")
-        XCTAssertTrue(pending.isSubset(of: Set(rawKinds)),
-                      "PENDING.txt names kinds the catalog lacks: \(pending.subtracting(rawKinds).sorted())")
-        XCTAssertTrue(pending.isDisjoint(with: builtKinds),
-                      "PENDING.txt still lists built kinds: \(pending.intersection(builtKinds).sorted())")
-        let catalogBuilt = Set(rawKinds).subtracting(pending)
-        XCTAssertEqual(catalogBuilt, builtKinds, """
+        XCTAssertEqual(Set(rawKinds), builtKinds, """
             The bundled catalog and WidgetKind disagree. In the catalog only: \
-            \(catalogBuilt.subtracting(builtKinds).sorted()); \
+            \(Set(rawKinds).subtracting(builtKinds).sorted()); \
             in WidgetKind only: \
-            \(builtKinds.subtracting(catalogBuilt).sorted()).
+            \(builtKinds.subtracting(rawKinds).sorted()).
             """)
 
         for kind in WidgetKind.allCases {
             XCTAssertNotNil(catalog.widget(kind), "No catalog entry for \(kind.rawValue)")
         }
-        for raw in rawKinds where !pending.contains(raw) {
+        for raw in rawKinds {
             XCTAssertNotNil(WidgetKind(rawValue: raw), "The catalog offers \"\(raw)\", which this build cannot render")
         }
     }

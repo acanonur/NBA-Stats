@@ -1,0 +1,574 @@
+{
+  "league": "nba",
+  "game": {
+    "league": "nba",
+    "gameId": "0022500369",
+    "date": "2026-01-03",
+    "tipoffUtc": null,
+    "venue": null,
+    "isNeutral": null,
+    "round": null,
+    "phase": null,
+    "status": "scheduled",
+    "home": {
+      "league": "nba",
+      "id": "1610612740",
+      "abbr": "NOP",
+      "name": "New Orleans Pelicans",
+      "shortName": "Pelicans",
+      "teamId": 1610612740
+    },
+    "away": {
+      "league": "nba",
+      "id": "1610612764",
+      "abbr": "WAS",
+      "name": "Washington Wizards",
+      "shortName": "Wizards",
+      "teamId": 1610612764
+    },
+    "homePts": null,
+    "awayPts": null,
+    "overtimePeriods": null
+  },
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 1324,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T16:30:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.stats",
+        "label": "NBA statistics",
+        "state": "ok",
+        "reason": "Demo league: every game here is invented.",
+        "lastSuccessAt": "2026-01-03T16:30:00Z"
+      },
+      {
+        "key": "nba.rosters",
+        "label": "Team rosters (listed positions)",
+        "state": "ok",
+        "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "nba.injuryReport",
+        "label": "NBA official injury report",
+        "state": "ok",
+        "reason": "Not yet confirmed against a real report: the reader was built from the documented layout and has not read one on this machine.",
+        "lastSuccessAt": "2026-01-03T15:31:00Z"
+      }
+    ]
+  },
+  "current": {
+    "league": "nba",
+    "game": {
+      "league": "nba",
+      "gameId": "0022500369",
+      "date": "2026-01-03",
+      "tipoffUtc": null,
+      "venue": null,
+      "isNeutral": null,
+      "round": null,
+      "phase": null,
+      "status": "scheduled",
+      "home": {
+        "league": "nba",
+        "id": "1610612740",
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "shortName": "Pelicans",
+        "teamId": 1610612740
+      },
+      "away": {
+        "league": "nba",
+        "id": "1610612764",
+        "abbr": "WAS",
+        "name": "Washington Wizards",
+        "shortName": "Wizards",
+        "teamId": 1610612764
+      },
+      "homePts": null,
+      "awayPts": null,
+      "overtimePeriods": null
+    },
+    "freshness": {
+      "league": "nba",
+      "syncVersion": 1324,
+      "dataThrough": "2026-01-02",
+      "generatedAt": "2026-01-03T16:30:00Z",
+      "isDemo": true,
+      "sources": [
+        {
+          "key": "nba.stats",
+          "label": "NBA statistics",
+          "state": "ok",
+          "reason": "Demo league: every game here is invented.",
+          "lastSuccessAt": "2026-01-03T16:30:00Z"
+        },
+        {
+          "key": "nba.rosters",
+          "label": "Team rosters (listed positions)",
+          "state": "ok",
+          "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+          "lastSuccessAt": null
+        },
+        {
+          "key": "nba.injuryReport",
+          "label": "NBA official injury report",
+          "state": "ok",
+          "reason": "Not yet confirmed against a real report: the reader was built from the documented layout and has not read one on this machine.",
+          "lastSuccessAt": "2026-01-03T15:31:00Z"
+        }
+      ]
+    },
+    "home": {
+      "team": {
+        "league": "nba",
+        "id": "1610612740",
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "shortName": "Pelicans",
+        "teamId": 1610612740
+      },
+      "projectedPoints": 111.05197268191888,
+      "range80": {
+        "low": 99.26125268191888,
+        "high": 122.84269268191889
+      },
+      "fullStrengthPoints": 115.95971975286935,
+      "availabilityEffect": -4.907747070950464,
+      "attackIndex": 1.0072953349622342,
+      "attackIndexAfterAvailability": 0.9642187199919466,
+      "defenceIndex": 0.994272885057327,
+      "capBinding": false,
+      "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
+      "keyAbsences": [
+        {
+          "player": {
+            "league": "nba",
+            "id": "9000032",
+            "name": "Micah Kaminski",
+            "position": "G",
+            "positionRaw": "G-F",
+            "jersey": "3",
+            "headshotUrl": null,
+            "playerId": 9000032
+          },
+          "status": "out",
+          "chanceOfPlaying": 0.0,
+          "expectedPointsLost": 20.184659090909093,
+          "expectedMinutesLost": 31.772727272727273,
+          "inForce": true,
+          "isStale": false,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        },
+        {
+          "player": {
+            "league": "nba",
+            "id": "9000307",
+            "name": "Wyatt Hargrove",
+            "position": "G",
+            "positionRaw": "G-F",
+            "jersey": "17",
+            "headshotUrl": null,
+            "playerId": 9000307
+          },
+          "status": "probable",
+          "chanceOfPlaying": 0.85,
+          "expectedPointsLost": 2.2500000000000004,
+          "expectedMinutesLost": 5.184782608695653,
+          "inForce": true,
+          "isStale": false,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        }
+      ]
+    },
+    "away": {
+      "team": {
+        "league": "nba",
+        "id": "1610612764",
+        "abbr": "WAS",
+        "name": "Washington Wizards",
+        "shortName": "Wizards",
+        "teamId": 1610612764
+      },
+      "projectedPoints": 107.02459904765564,
+      "range80": {
+        "low": 95.23387904765565,
+        "high": 118.81531904765563
+      },
+      "fullStrengthPoints": 111.3987812643571,
+      "availabilityEffect": -4.374182216701456,
+      "attackIndex": 0.9940535411486565,
+      "attackIndexAfterAvailability": 0.9554363165594923,
+      "defenceIndex": 1.0000699717917616,
+      "capBinding": false,
+      "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
+      "keyAbsences": [
+        {
+          "player": {
+            "league": "nba",
+            "id": "9000271",
+            "name": "Andre Ionescu",
+            "position": "G",
+            "positionRaw": "G",
+            "jersey": "37",
+            "headshotUrl": null,
+            "playerId": 9000271
+          },
+          "status": "doubtful",
+          "chanceOfPlaying": 0.25,
+          "expectedPointsLost": 11.630190311418685,
+          "expectedMinutesLost": 26.31639273356401,
+          "inForce": true,
+          "isStale": false,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        },
+        {
+          "player": {
+            "league": "nba",
+            "id": "9000274",
+            "name": "Boris Ionescu",
+            "position": "G",
+            "positionRaw": "G-F",
+            "jersey": "49",
+            "headshotUrl": null,
+            "playerId": 9000274
+          },
+          "status": "questionable",
+          "chanceOfPlaying": 0.5,
+          "expectedPointsLost": 11.11212121212121,
+          "expectedMinutesLost": 16.7,
+          "inForce": true,
+          "isStale": false,
+          "source": {
+            "kind": "leagueReport",
+            "label": "NBA official injury report",
+            "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+            "publishedAt": "2026-01-03T15:30:00Z",
+            "asOf": "2026-01-03T15:30:00Z",
+            "fetchedAt": "2026-01-03T15:31:00Z",
+            "snapshotId": 1
+          }
+        }
+      ]
+    },
+    "margin": 4.027373634263242,
+    "marginRange80": {
+      "low": -11.09550636573676,
+      "high": 19.150253634263244
+    },
+    "projectedWinner": {
+      "league": "nba",
+      "id": "1610612740",
+      "abbr": "NOP",
+      "name": "New Orleans Pelicans",
+      "shortName": "Pelicans",
+      "teamId": 1610612740
+    },
+    "isTossUp": false,
+    "summary": "NOP by 4.0",
+    "combinedPoints": 218.07657172957454,
+    "combinedAvailabilityEffect": -9.281929287651906,
+    "homeAdvantagePoints": 2.395799676898223,
+    "venueAssumed": true,
+    "intervalBasis": "assumed",
+    "model": {
+      "key": "hardwood",
+      "version": "nba-1",
+      "kind": "latest",
+      "computedAt": "2026-01-03T16:30:00Z",
+      "inputsCutoff": "2026-01-03T16:30:00Z",
+      "computedAfterTipoff": false,
+      "capPolicy": "consistent",
+      "constants": [
+        {
+          "key": "priorRegression",
+          "value": 0.3,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "priorWeightGames",
+          "value": 10.0,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "leagueLevelWeight",
+          "value": 150.0,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "homeAdvantagePoints",
+          "value": 2.395799676898223,
+          "provenance": "derived",
+          "isDefault": false
+        },
+        {
+          "key": "teamSd",
+          "value": 9.2,
+          "provenance": "manual",
+          "isDefault": false
+        },
+        {
+          "key": "marginSd",
+          "value": 11.8,
+          "provenance": "manual",
+          "isDefault": false
+        },
+        {
+          "key": "replacementShare",
+          "value": 0.52,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "absorbShare",
+          "value": 0.6,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "boostCap",
+          "value": 1.35,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "capPolicyConsistent",
+          "value": 1.0,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "playerPriorGames",
+          "value": 10,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "leagueAveragePoints",
+          "value": 113.9226862302483,
+          "provenance": "derived",
+          "isDefault": false
+        }
+      ]
+    },
+    "assumptions": {
+      "assumedAvailable": {
+        "home": 8,
+        "away": 8,
+        "basis": "notOnSubmittedReport",
+        "homeBasis": "notOnSubmittedReport",
+        "awayBasis": "notOnSubmittedReport"
+      },
+      "staleEntriesIgnored": 0
+    },
+    "result": null,
+    "availability": "estimated",
+    "notes": [
+      "Defence indices are not changed by absences: absences move the projected scores only.",
+      "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+      "Absences are listed by season averages, not by the engine's own player projections."
+    ]
+  },
+  "locked": {
+    "league": "nba",
+    "game": {
+      "league": "nba",
+      "gameId": "0022500369",
+      "date": "2026-01-03",
+      "tipoffUtc": null,
+      "venue": null,
+      "isNeutral": null,
+      "round": null,
+      "phase": null,
+      "status": "scheduled",
+      "home": {
+        "league": "nba",
+        "id": "1610612740",
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "shortName": "Pelicans",
+        "teamId": 1610612740
+      },
+      "away": {
+        "league": "nba",
+        "id": "1610612764",
+        "abbr": "WAS",
+        "name": "Washington Wizards",
+        "shortName": "Wizards",
+        "teamId": 1610612764
+      },
+      "homePts": null,
+      "awayPts": null,
+      "overtimePeriods": null
+    },
+    "freshness": {
+      "league": "nba",
+      "syncVersion": 1324,
+      "dataThrough": "2026-01-02",
+      "generatedAt": "2026-01-03T16:30:00Z",
+      "isDemo": true,
+      "sources": [
+        {
+          "key": "nba.stats",
+          "label": "NBA statistics",
+          "state": "ok",
+          "reason": "Demo league: every game here is invented.",
+          "lastSuccessAt": "2026-01-03T16:30:00Z"
+        },
+        {
+          "key": "nba.rosters",
+          "label": "Team rosters (listed positions)",
+          "state": "ok",
+          "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+          "lastSuccessAt": null
+        },
+        {
+          "key": "nba.injuryReport",
+          "label": "NBA official injury report",
+          "state": "ok",
+          "reason": "Not yet confirmed against a real report: the reader was built from the documented layout and has not read one on this machine.",
+          "lastSuccessAt": "2026-01-03T15:31:00Z"
+        }
+      ]
+    },
+    "home": {
+      "team": {
+        "league": "nba",
+        "id": "1610612740",
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "shortName": "Pelicans",
+        "teamId": 1610612740
+      },
+      "projectedPoints": 111.05197268191888,
+      "range80": {
+        "low": 99.26125268191888,
+        "high": 122.84269268191889
+      },
+      "fullStrengthPoints": 115.95971975286935,
+      "availabilityEffect": -4.907747070950464,
+      "attackIndex": 1.0072953349622342,
+      "attackIndexAfterAvailability": 0.9642187199919466,
+      "defenceIndex": 0.994272885057327,
+      "capBinding": null,
+      "unassignedPoints": null,
+      "replacementPoints": null,
+      "keyAbsences": []
+    },
+    "away": {
+      "team": {
+        "league": "nba",
+        "id": "1610612764",
+        "abbr": "WAS",
+        "name": "Washington Wizards",
+        "shortName": "Wizards",
+        "teamId": 1610612764
+      },
+      "projectedPoints": 107.02459904765564,
+      "range80": {
+        "low": 95.23387904765565,
+        "high": 118.81531904765563
+      },
+      "fullStrengthPoints": 111.3987812643571,
+      "availabilityEffect": -4.374182216701456,
+      "attackIndex": 0.9940535411486565,
+      "attackIndexAfterAvailability": 0.9554363165594923,
+      "defenceIndex": 1.0000699717917616,
+      "capBinding": null,
+      "unassignedPoints": null,
+      "replacementPoints": null,
+      "keyAbsences": []
+    },
+    "margin": 4.027373634263242,
+    "marginRange80": {
+      "low": -11.09550636573676,
+      "high": 19.150253634263244
+    },
+    "projectedWinner": {
+      "league": "nba",
+      "id": "1610612740",
+      "abbr": "NOP",
+      "name": "New Orleans Pelicans",
+      "shortName": "Pelicans",
+      "teamId": 1610612740
+    },
+    "isTossUp": false,
+    "summary": "NOP by 4.0",
+    "combinedPoints": 218.07657172957454,
+    "combinedAvailabilityEffect": -9.281929287651906,
+    "homeAdvantagePoints": 2.395799676898223,
+    "venueAssumed": true,
+    "intervalBasis": "assumed",
+    "model": {
+      "key": "hardwood",
+      "version": "nba-1",
+      "kind": "locked",
+      "computedAt": "2026-01-03T16:30:00Z",
+      "inputsCutoff": "2026-01-03T16:30:00Z",
+      "computedAfterTipoff": false,
+      "capPolicy": "consistent",
+      "constants": []
+    },
+    "assumptions": {
+      "assumedAvailable": {
+        "home": null,
+        "away": null,
+        "basis": null
+      },
+      "staleEntriesIgnored": null
+    },
+    "result": null,
+    "availability": "estimated",
+    "notes": [
+      "Player detail was not frozen with this projection, so absences are not listed."
+    ]
+  },
+  "availability": "estimated",
+  "history": [
+    {
+      "computedAt": "2026-01-03T16:30:00Z",
+      "kind": "latest",
+      "homePts": 111.05197268191888,
+      "awayPts": 107.02459904765564
+    },
+    {
+      "computedAt": "2026-01-03T16:30:00Z",
+      "kind": "locked",
+      "homePts": 111.05197268191888,
+      "awayPts": 107.02459904765564
+    }
+  ],
+  "notes": []
+}

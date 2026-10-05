@@ -1,4 +1,6 @@
+#if os(iOS)
 import BackgroundTasks
+#endif
 import Foundation
 import OSLog
 
@@ -17,6 +19,7 @@ public enum BackgroundRefreshKind: String, Hashable, Sendable, CaseIterable {
     }
 }
 
+#if os(iOS)
 /// Registration and scheduling for the two background tasks declared in `Info.plist`.
 ///
 /// **iOS decides whether these ever run.** The system weighs battery, network, and how often the
@@ -153,3 +156,24 @@ public enum BackgroundRefresh {
             ?? now.addingTimeInterval(12 * 60 * 60)
     }
 }
+
+#else
+
+/// macOS has no BGTaskScheduler. The Mac app refreshes in the foreground (MacAppModel) and the
+/// launchd backend keeps collecting while the app is closed. These no-ops keep every caller
+/// compiling: `SyncService`, `AppEnvironment`, `RootView`, `HardwoodApp` and `SettingsScreen` all
+/// name this type, and the identifiers and interval are still read for display.
+public enum BackgroundRefresh {
+    public static let appRefreshIdentifier = "com.hardwood.nbastats.refresh"
+    public static let nightlyIdentifier = "com.hardwood.nbastats.nightly"
+    public static let defaultRefreshInterval: TimeInterval = 15 * 60
+
+    @MainActor
+    public static func register(handler: @escaping @Sendable (BackgroundRefreshKind) async -> Void) { }
+    public static func scheduleAll() { }
+    public static func schedule(_ kind: BackgroundRefreshKind) { }
+    public static func scheduleAppRefresh(after interval: TimeInterval = BackgroundRefresh.defaultRefreshInterval) { }
+    public static func scheduleNightly(earliestBeginDate: Date? = nil) { }
+    public static func cancelAll() { }
+}
+#endif

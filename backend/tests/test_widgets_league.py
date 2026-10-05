@@ -34,10 +34,11 @@ payload's own sentences; a projection is ``estimated`` and carries none.
 **The dashboard treats them as foreign.** None of the four is ever answered ``unchanged``, whatever
 the client's ``knownSyncVersion``, because their freshness is not the NBA's sync version.
 
-**The contract holds together.** ``check_contracts.py`` check (j) tolerates exactly the four kinds
-in the iOS ``PENDING.txt`` under a ceiling of four, and refuses a stale entry, an unknown kind and a
-fifth; no web ``PENDING.txt`` exists; the generated web registry draws none of the four yet. The
-four committed widget fixtures are NBA-configured league payloads with no forbidden key.
+**The contract holds together.** The Mac phase built the four kinds in Swift and deleted the iOS
+``PENDING.txt``, so ``check_contracts.py`` check (j) now tolerates nothing on iOS (its ceiling went
+from four to zero) and still refuses a stale entry, an unknown kind and any pending kind; no web
+``PENDING.txt`` exists; the generated web registry draws none of the four yet. The four committed
+widget fixtures are NBA-configured league payloads with no forbidden key.
 """
 
 from __future__ import annotations
@@ -462,13 +463,12 @@ def _ios_tree(tmp_path: Path, *, without: tuple[str, ...], pending: list[str] | 
     return directory
 
 
-def test_the_ios_pending_file_names_exactly_the_four_and_the_web_has_none() -> None:
-    names = {
-        line.strip()
-        for line in (ROOT / "ios/NBAStats/Widgets/PENDING.txt").read_text().splitlines()
-        if line.strip() and not line.strip().startswith("#")
-    }
-    assert names == set(KINDS)
+def test_the_ios_pending_file_is_gone_and_the_web_has_none() -> None:
+    """The Mac phase built the four league widgets in Swift, so the iOS escape hatch is closed:
+    ``ios/NBAStats/Widgets/PENDING.txt`` is deleted and each kind has its ``*Widget.swift``."""
+    assert not (ROOT / "ios/NBAStats/Widgets/PENDING.txt").exists()
+    for kind in KINDS:
+        assert (ROOT / "ios/NBAStats/Widgets" / f"{_pascal(kind)}Widget.swift").is_file(), kind
     # The web draws none of the four and says so through the filesystem, not a list: the web
     # ratchet reads directories, and four missing is inside its ceiling of twelve.
     assert not (ROOT / "web/src/widgets/PENDING.txt").exists()
@@ -479,13 +479,24 @@ def test_the_ios_pending_file_names_exactly_the_four_and_the_web_has_none() -> N
 def test_check_j_passes_on_the_real_tree() -> None:
     summary = _load_check_contracts().check_widget_kinds_agree()
     assert summary.startswith("20 widget kinds agree")
-    assert "pending on iOS: availability_report, defense_by_position" in summary
+    assert summary.endswith("pending on iOS: none)")
 
 
-def test_check_j_tolerates_the_four_under_the_ceiling(tmp_path: Path) -> None:
+def test_check_j_no_longer_tolerates_the_four(tmp_path: Path) -> None:
+    """The iOS ceiling went to zero when the Swift widgets landed: a PENDING.txt naming the four
+    (and four missing Swift files) is now a failure, not a pass."""
     module = _load_check_contracts()
+    assert module.MAX_TOLERATED_PENDING_IOS_WIDGETS == 0
     module.IOS_WIDGETS = _ios_tree(tmp_path, without=KINDS, pending=list(KINDS))
-    assert module.check_widget_kinds_agree().startswith("20 widget kinds agree")
+    with pytest.raises(module.CheckFailure) as caught:
+        module.check_widget_kinds_agree()
+    assert "more than the 0" in " ".join(caught.value.details)
+
+
+def test_check_j_passes_with_every_swift_widget_and_no_pending_file(tmp_path: Path) -> None:
+    module = _load_check_contracts()
+    module.IOS_WIDGETS = _ios_tree(tmp_path, without=(), pending=None)
+    assert module.check_widget_kinds_agree().endswith("pending on iOS: none)")
 
 
 def test_check_j_refuses_a_missing_swift_widget_that_is_not_pending(tmp_path: Path) -> None:
@@ -514,7 +525,7 @@ def test_check_j_refuses_an_unknown_pending_kind_and_a_fifth(tmp_path: Path) -> 
     with pytest.raises(module.CheckFailure) as caught:
         module.check_widget_kinds_agree()
     joined = " ".join(caught.value.details)
-    assert "teleporter" in joined and "more than the 4" in joined
+    assert "teleporter" in joined and "more than the 0" in joined
 
     fifth = tmp_path / "fifth"
     fifth.mkdir()
@@ -523,7 +534,7 @@ def test_check_j_refuses_an_unknown_pending_kind_and_a_fifth(tmp_path: Path) -> 
     )
     with pytest.raises(module.CheckFailure) as caught:
         module.check_widget_kinds_agree()
-    assert "more than the 4" in " ".join(caught.value.details)
+    assert "more than the 0" in " ".join(caught.value.details)
 
 
 def test_the_generated_web_registry_draws_none_of_the_four_yet() -> None:

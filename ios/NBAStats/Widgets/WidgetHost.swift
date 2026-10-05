@@ -87,7 +87,7 @@ public extension View {
 ///
 /// This is the single place where a payload meets a view: `WidgetContainer` owns the chrome —
 /// title, era badge, overflow menu — and hands the interior to this type. Four states and
-/// sixteen payloads are all handled here, so adding a widget kind is a change in exactly two
+/// twenty payloads are all handled here, so adding a widget kind is a change in exactly two
 /// files: the payload in `Core`, and the one `case` below.
 public struct WidgetHost: View {
     private let widget: DashboardWidget
@@ -149,7 +149,7 @@ public struct WidgetHost: View {
 
     // MARK: Payload dispatch
 
-    /// The sixteen payload cases, each rendered by the view that owns it. Every widget view takes
+    /// The twenty payload cases, each rendered by the view that owns it. Every widget view takes
     /// the same `(payload:size:)` shape, so this stays a flat mapping with nothing to decide.
     @ViewBuilder private func view(for payload: WidgetPayload) -> some View {
         switch payload {
@@ -185,6 +185,14 @@ public struct WidgetHost: View {
             FantasyTradeWidget(payload: value, size: widget.size)
         case .careerArc(let value):
             CareerArcWidget(payload: value, size: widget.size)
+        case .teamMatchup(let value):
+            TeamMatchupWidget(payload: value, size: widget.size)
+        case .defenseByPosition(let value):
+            DefenseByPositionWidget(payload: value, size: widget.size)
+        case .availabilityReport(let value):
+            AvailabilityReportWidget(payload: value, size: widget.size)
+        case .slateProjections(let value):
+            SlateProjectionsWidget(payload: value, size: widget.size)
         }
     }
 
@@ -205,8 +213,10 @@ public struct WidgetHost: View {
             return []
         case .estimated where kind == .fantasyDraftBoard || kind == .fantasyTrade:
             return ["Fantasy value, not a record. These are z-scores against this season's player pool, and FG% and FT% are weighted by how often a player shoots."]
-        case .estimated where kind == .nextGameProjection || kind == .projectionBoard:
+        case .estimated where kind == .nextGameProjection || kind == .projectionBoard || kind == .slateProjections:
             return ["Projected, not recorded. These are estimates of a game that has not been played, and each carries its own range."]
+        case .estimated where kind == .teamMatchup || kind == .defenseByPosition || kind == .availabilityReport:
+            return ["Estimated: some of these numbers are modelled or come from workbook estimates, not official records."]
         case .estimated:
             return ["Estimated from the box score. The league did not publish possession data before 1996-97."]
         case .partial:

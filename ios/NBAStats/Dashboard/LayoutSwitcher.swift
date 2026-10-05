@@ -15,7 +15,11 @@ public struct LayoutSwitcher: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    // `EditMode` and `\.editMode` are iOS-only. On macOS a List reorders by drag without an edit
+    // mode, so there is nothing to hold.
+    #if os(iOS)
     @State private var editMode: EditMode = .inactive
+    #endif
     @State private var layoutPendingDeletion: DashboardLayout?
 
     public init(store: DashboardStore,
@@ -50,16 +54,27 @@ public struct LayoutSwitcher: View {
 
     // MARK: Body
 
+    /// The list on its own, so `body` can attach the iOS-only edit-mode environment in one place.
+    @ViewBuilder private var dashboardsList: some View {
+        List {
+            dashboardsSection
+            createSection
+        }
+        .hardwoodGroupedListStyle()
+    }
+
     public var body: some View {
         NavigationStack {
-            List {
-                dashboardsSection
-                createSection
+            Group {
+                #if os(iOS)
+                dashboardsList
+                    .environment(\.editMode, $editMode)
+                #else
+                dashboardsList
+                #endif
             }
-            .listStyle(.insetGrouped)
-            .environment(\.editMode, $editMode)
             .navigationTitle("Dashboards")
-            .navigationBarTitleDisplayMode(.inline)
+            .hardwoodInlineTitle()
             .toolbar { toolbarContent }
             .navigationDestination(for: String.self) { layoutID in
                 destination(for: layoutID)
@@ -76,6 +91,8 @@ public struct LayoutSwitcher: View {
                 Text("“\(doomed.name)” and its widgets are removed from this device. Hardwood keeps one dashboard at all times, so deleting your last one starts you again from a preset.")
             }
         }
+        // A macOS sheet sizes itself to its content's ideal size, and a List has none.
+        .hardwoodSheetFrame(minWidth: 520, minHeight: 520)
     }
 
     // MARK: Sections
@@ -91,7 +108,7 @@ public struct LayoutSwitcher: View {
         } header: {
             Text("Your dashboards")
         } footer: {
-            Text("Tap a dashboard to rename it, recolour it or reset it. Swipe right to show it, left for duplicate and delete.")
+            Text(PlatformCopy.layoutListHint)
         }
     }
 
@@ -110,48 +127,92 @@ public struct LayoutSwitcher: View {
     }
 
     private func row(for layout: DashboardLayout) -> some View {
-        NavigationLink(value: layout.id) {
-            HStack(spacing: Spacing.md) {
-                Image(systemName: layout.icon)
-                    .font(.body)
-                    .foregroundStyle(layout.accent.color)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(layout.accent.softTint))
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: Spacing.xxs) {
-                    Text(layout.name)
-                        .hardwoodText(.widgetTitle)
-                        .lineLimit(1)
-                    Text(subtitle(for: layout))
-                        .hardwoodText(.caption)
-                        .lineLimit(1)
+        pushRow(for: layout)
+            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                Button {
+                    show(layout)
+                } label: {
+                    Label("Show", systemImage: "eye")
                 }
-                Spacer(minLength: Spacing.sm)
-                selectionMark(for: layout)
+                .tint(layout.accent.color)
             }
-            .padding(.vertical, Spacing.xxs)
-            .accessibilityElement(children: .combine)
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                Button(role: .destructive) {
+                    layoutPendingDeletion = layout
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+                Button {
+                    store.duplicate(layout)
+                } label: {
+                    Label("Duplicate", systemImage: "plus.square.on.square")
+                }
+                .tint(Palette.selection)
+            }
+            .hardwoodContextMenu {
+                rowMenu(for: layout)
+            }
+    }
+
+    /// The row that opens a dashboard's settings: a value-based push on iOS, a sheet on macOS.
+    ///
+    /// A page pushed inside a macOS sheet has no Back control (the sheet has no title bar), which
+    /// would strand the reader on the settings page, so the Mac opens it as a nested sheet with
+    /// its own Done button instead — the same reason `HardwoodPushLink` exists for the pickers.
+    @ViewBuilder private func pushRow(for layout: DashboardLayout) -> some View {
+        #if os(macOS)
+        HardwoodPushLink(title: layout.name) {
+            destination(for: layout.id)
+        } label: {
+            rowLabel(for: layout)
         }
-        .swipeActions(edge: .leading, allowsFullSwipe: true) {
-            Button {
-                show(layout)
-            } label: {
-                Label("Show", systemImage: "eye")
-            }
-            .tint(layout.accent.color)
+        #else
+        NavigationLink(value: layout.id) {
+            rowLabel(for: layout)
         }
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button(role: .destructive) {
-                layoutPendingDeletion = layout
-            } label: {
-                Label("Delete", systemImage: "trash")
+        #endif
+    }
+
+    private func rowLabel(for layout: DashboardLayout) -> some View {
+        HStack(spacing: Spacing.md) {
+            Image(systemName: layout.icon)
+                .font(.body)
+                .foregroundStyle(layout.accent.color)
+                .frame(width: 34, height: 34)
+                .background(Circle().fill(layout.accent.softTint))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                Text(layout.name)
+                    .hardwoodText(.widgetTitle)
+                    .lineLimit(1)
+                Text(subtitle(for: layout))
+                    .hardwoodText(.caption)
+                    .lineLimit(1)
             }
-            Button {
-                store.duplicate(layout)
-            } label: {
-                Label("Duplicate", systemImage: "plus.square.on.square")
-            }
-            .tint(Palette.selection)
+            Spacer(minLength: Spacing.sm)
+            selectionMark(for: layout)
+        }
+        .padding(.vertical, Spacing.xxs)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// macOS right-click menu: what the iOS swipe actions do, since a mouse cannot swipe.
+    @ViewBuilder private func rowMenu(for layout: DashboardLayout) -> some View {
+        Button {
+            show(layout)
+        } label: {
+            Label("Show", systemImage: "eye")
+        }
+        Button {
+            store.duplicate(layout)
+        } label: {
+            Label("Duplicate", systemImage: "plus.square.on.square")
+        }
+        Divider()
+        Button(role: .destructive) {
+            layoutPendingDeletion = layout
+        } label: {
+            Label("Delete…", systemImage: "trash")
         }
     }
 
@@ -177,10 +238,12 @@ public struct LayoutSwitcher: View {
     }
 
     @ToolbarContentBuilder private var toolbarContent: some ToolbarContent {
+        #if os(iOS)
         ToolbarItem(placement: .topBarLeading) {
             EditButton()
                 .disabled(store.layouts.count < 2)
         }
+        #endif
         ToolbarItem(placement: .confirmationAction) {
             Button("Done") { dismiss() }
         }
@@ -255,8 +318,9 @@ struct LayoutSettingsView: View {
                 }
             }
         }
+        .formStyle(.grouped)
         .navigationTitle(layout?.name ?? "Dashboard")
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
         .onDisappear(perform: commitName)
     }
 
@@ -265,7 +329,7 @@ struct LayoutSettingsView: View {
     private var nameSection: some View {
         Section {
             TextField("Name", text: $name)
-                .textInputAutocapitalization(.words)
+                .hardwoodCapitalizeWords()
                 .submitLabel(.done)
                 .onSubmit(commitName)
         } header: {

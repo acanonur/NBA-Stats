@@ -88,7 +88,7 @@ struct OnboardingSheetContent: View {
             }
             .background(Palette.background.ignoresSafeArea())
             .navigationTitle(page.title)
-            .navigationBarTitleDisplayMode(.inline)
+            .hardwoodInlineTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Skip", action: onFinish)
@@ -109,8 +109,7 @@ struct OnboardingSheetContent: View {
             freshnessPage
                 .tag(Page.freshness)
         }
-        .tabViewStyle(.page(indexDisplayMode: .always))
-        .indexViewStyle(.page(backgroundDisplayMode: .always))
+        .hardwoodPagedTabStyle()
     }
 
     private var footer: some View {
@@ -284,7 +283,7 @@ struct OnboardingSheetContent: View {
             TextField("Search players", text: $playerQuery)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
-                .textInputAutocapitalization(.words)
+                .hardwoodCapitalizeWords()
             playerResultList
         }
         .task(id: playerQuery) {
@@ -337,14 +336,14 @@ struct OnboardingSheetContent: View {
                                title: "Stats land game by game",
                                detail: "When a game goes final, that one box score is pulled and the season numbers behind it are recomputed. There is no nightly wait: a dashboard opened at half past eleven already has the early games on it.")
                 freshnessPoint(icon: "arrow.down.circle",
-                               title: "Pull down to refresh",
-                               detail: "Hardwood checks for finished games when you open it, when you pull the board down, and — if iOS allows it — quietly in the background.")
+                               title: PlatformCopy.onboardingRefreshTitle,
+                               detail: PlatformCopy.onboardingRefreshDetail)
                 freshnessPoint(icon: "minus.circle",
                                title: "An em dash is not a zero",
                                detail: "The league did not record blocks before 1973-74 or possessions before 1996-97. Where a stat never existed Hardwood shows “—” and explains why; where it can only be estimated from the box score, it says “est.” rather than pretending.")
                 freshnessPoint(icon: "square.and.pencil",
                                title: "Everything is editable",
-                               detail: "Tap Edit on the board to add, resize, reorder or remove widgets. Nothing is saved to a server — your dashboards live on this device.")
+                               detail: PlatformCopy.onboardingEditDetail)
                 Text(environment.attribution)
                     .hardwoodText(.caption)
                     .fixedSize(horizontal: false, vertical: true)

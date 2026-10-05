@@ -231,7 +231,7 @@ struct DashboardScreenContent: View {
                 mainContent
             }
             .navigationTitle(layout?.name ?? "Dashboard")
-            .navigationBarTitleDisplayMode(.inline)
+            .hardwoodInlineTitle()
             .toolbar { toolbarContent }
             .safeAreaInset(edge: .bottom, spacing: 0) { editingBar }
             .sheet(item: $sheet, onDismiss: presentPendingConfiguration) { presented in
@@ -291,6 +291,8 @@ struct DashboardScreenContent: View {
                               store: store,
                               onConfigure: { widget in sheet = .configure(widget) })
             }
+            // macOS: stop the tiles stretching without limit on a very wide window.
+            .hardwoodReadableWidth()
             .padding(.horizontal, Spacing.md)
             .padding(.top, Spacing.sm)
             .padding(.bottom, Spacing.xxl)
@@ -389,12 +391,41 @@ struct DashboardScreenContent: View {
     // MARK: Toolbar
 
     @ToolbarContentBuilder private var toolbarContent: some ToolbarContent {
+        #if os(iOS)
         ToolbarItem(placement: .principal) {
             layoutMenu
         }
-        ToolbarItem(placement: .topBarTrailing) {
+        #else
+        // Switching dashboards lives in the Mac sidebar, so the title menu is iOS-only. The two
+        // sheets that menu also opened (presets, dashboard settings) would otherwise have no way
+        // in, so the Mac keeps them in a small menu of their own.
+        ToolbarItem(placement: .primaryAction) {
+            dashboardsMenu
+        }
+        #endif
+        ToolbarItem(placement: .primaryAction) {
             editButton
         }
+    }
+
+    /// macOS: the presets gallery and the dashboard settings sheet.
+    private var dashboardsMenu: some View {
+        Menu {
+            Button {
+                sheet = .presets
+            } label: {
+                Label("Browse Presets…", systemImage: "rectangle.3.group")
+            }
+            Button {
+                sheet = .layouts
+            } label: {
+                Label("Manage Dashboards…", systemImage: "list.bullet.indent")
+            }
+        } label: {
+            Label("Dashboards", systemImage: "square.grid.2x2")
+        }
+        .help("Presets and dashboard settings")
+        .accessibilityLabel("Dashboards: presets and settings")
     }
 
     private var layoutMenu: some View {

@@ -70,11 +70,11 @@ struct SearchScreenContent: View {
                     resultsSection
                 }
             }
-            .listStyle(.insetGrouped)
+            .hardwoodGroupedListStyle()
             .navigationTitle("Search")
             .searchable(text: $query, prompt: "Players")
             .autocorrectionDisabled()
-            .textInputAutocapitalization(.words)
+            .hardwoodCapitalizeWords()
             .navigationDestination(item: $selectedPlayer) { player in
                 PlayerDetailScreen(player: player)
                     .environmentObject(environment)

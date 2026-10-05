@@ -1,0 +1,157 @@
+{
+  "league": "euroleague",
+  "season": "2026-27",
+  "seasonCode": "E2026",
+  "phase": null,
+  "scheme": "gfc",
+  "basis": "perGame",
+  "regulationMinutes": 40,
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      }
+    ]
+  },
+  "team": {
+    "league": "euroleague",
+    "id": "ZZA",
+    "abbr": "ZZA",
+    "name": "Alderwick Herons",
+    "shortName": "Alderwick",
+    "clubCode": "ZZA",
+    "tvCode": null
+  },
+  "window": {
+    "kind": "season",
+    "games": 4,
+    "requested": null
+  },
+  "pointsAllowedPerGame": 83.25,
+  "leaguePointsAllowedPerGame": 84.7,
+  "buckets": [
+    {
+      "position": "G",
+      "label": "Guards",
+      "pointsAllowedPerGame": 33.75,
+      "leagueAverage": 39.625,
+      "deltaPerGame": -5.875,
+      "opponentMinutesPerGame": 65.94583333333333,
+      "pointsPerRegulationMinutes": 20.471346433310167,
+      "leagueRate": 18.278180062176563,
+      "share": 0.40540540540540543,
+      "leagueShare": 0.467827626918536,
+      "rawIndex": null,
+      "index": null,
+      "standardError": null,
+      "band": null
+    },
+    {
+      "position": "F",
+      "label": "Forwards",
+      "pointsAllowedPerGame": 35.25,
+      "leagueAverage": 29.0375,
+      "deltaPerGame": 6.212499999999999,
+      "opponentMinutesPerGame": 88.6625,
+      "pointsPerRegulationMinutes": 15.903002960665447,
+      "leagueRate": 16.72993305266064,
+      "share": 0.42342342342342343,
+      "leagueShare": 0.342827626918536,
+      "rawIndex": null,
+      "index": null,
+      "standardError": null,
+      "band": null
+    },
+    {
+      "position": "C",
+      "label": "Centers",
+      "pointsAllowedPerGame": 14.25,
+      "leagueAverage": 16.0375,
+      "deltaPerGame": -1.7875000000000014,
+      "opponentMinutesPerGame": 45.391666666666666,
+      "pointsPerRegulationMinutes": 12.55737102992473,
+      "leagueRate": 14.221384728361022,
+      "share": 0.17117117117117117,
+      "leagueShare": 0.18934474616292798,
+      "rawIndex": null,
+      "index": null,
+      "standardError": null,
+      "band": null
+    },
+    {
+      "position": "unknown",
+      "label": "Position unknown",
+      "pointsAllowedPerGame": 0.0,
+      "leagueAverage": 0.0,
+      "deltaPerGame": 0.0,
+      "opponentMinutesPerGame": 0.0,
+      "pointsPerRegulationMinutes": null,
+      "leagueRate": null,
+      "share": 0.0,
+      "leagueShare": 0.0,
+      "rawIndex": null,
+      "index": null,
+      "standardError": null,
+      "band": null
+    }
+  ],
+  "provisional": true,
+  "withheld": {
+    "reason": "minimumGames",
+    "message": "Only 4 games, too few to judge a defence"
+  },
+  "coverage": {
+    "listed": 1.0,
+    "workbookListing": 0.0,
+    "unknown": 0.0
+  },
+  "reconciliation": {
+    "sumOfBuckets": 83.25,
+    "pointsAllowedPerGame": 83.25,
+    "unreconciledGames": 0,
+    "identity": "sum(deltaPerGame) = pointsAllowedPerGame - leaguePointsAllowedPerGame"
+  },
+  "method": {
+    "minimumGames": 6,
+    "provisionalBelowGames": 12,
+    "coverageCeiling": 0.05,
+    "shrinkage": "empiricalBayes",
+    "leagueReliability": {
+      "G": null,
+      "F": null,
+      "C": null
+    },
+    "leagueSignal": null,
+    "bandRule": "A position shows better or worse only when the table is not provisional, the league's reliability at that position is at least 0.2, and the shrunk index differs from 1 by more than z posterior standard deviations.",
+    "positionSource": "the EuroLeague registration, and the box score's own listing where the registration has none",
+    "taxonomy": "Guard, Forward and Center, as each roster lists a player for the season.",
+    "limitations": [
+      "Positions are the ones a roster lists for the season, not who guarded whom on the night.",
+      "No adjustment is made for the strength of the opponents a team has faced; the per-minute basis controls for how opponents distributed their minutes, and nothing more.",
+      "The injury layer never changes defence: absences move projected scores, not these figures.",
+      "Points from players with no listed position are shown as their own bucket and are never reassigned."
+    ]
+  },
+  "methodMessage": null,
+  "availability": "full",
+  "caveat": "Counts points scored by opposing players listed at each position. It does not measure who guarded whom.",
+  "notes": [
+    "EuroLeague games only: friendlies, domestic leagues and national-team games are not tracked."
+  ]
+}

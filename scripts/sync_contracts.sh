@@ -51,10 +51,34 @@ python3 "$root/contracts/tools/gen_web_tokens.py"
 python3 "$root/contracts/tools/gen_web_contracts.py"
 python3 "$root/contracts/tools/gen_parity_cases.py"
 
+app_fixtures="$root/ios/NBAStats/Resources/Fixtures"
+test_fixtures="$root/ios/NBAStatsTests/Fixtures"
+
+# The league payload fixtures (contracts/fixtures/leagues/{nba,el}/*.json: one recorded response of
+# every NBA and EuroLeague route, built from the invented demo leagues) go to BOTH bundles under
+# a `league_<nba|el>_` prefix. The prefix is what keeps them unique: Xcode 16 flattens resource
+# subdirectories into the bundle root, so `leagues/nba/news.json` and `leagues/el/news.json`
+# would otherwise both become `news.json`, and `leagues/el/meta.json` would collide with the flat
+# `meta.json`. check_contracts.py check (g) proves the names stay unique. The app bundle carries
+# them for demo mode (LeagueClient reads `league_el_meta.json` and so on); the test bundle for the
+# decoding tests. They are copied before the flat loop, and the old copies are removed first so a
+# fixture deleted from contracts/ does not live on in the app.
+league_copied=0
+mkdir -p "$app_fixtures" "$test_fixtures"
+rm -f "$app_fixtures"/league_*.json "$test_fixtures"/league_*.json
+for league_dir in nba el; do
+  src="$root/contracts/fixtures/leagues/$league_dir"
+  [ -d "$src" ] || continue
+  for source in "$src"/*.json; do
+    [ -e "$source" ] || continue
+    name="league_${league_dir}_$(basename "$source")"
+    cp "$source" "$app_fixtures/$name"
+    cp "$source" "$test_fixtures/$name"
+    league_copied=$((league_copied + 1))
+  done
+done
+
 if compgen -G "$root/contracts/fixtures/*.json" > /dev/null; then
-  app_fixtures="$root/ios/NBAStats/Resources/Fixtures"
-  test_fixtures="$root/ios/NBAStatsTests/Fixtures"
-  mkdir -p "$app_fixtures"
 
   # The test bundle takes everything; it has no catalog copies to collide with.
   cp "$root"/contracts/fixtures/*.json "$test_fixtures/"
@@ -76,7 +100,7 @@ if compgen -G "$root/contracts/fixtures/*.json" > /dev/null; then
     copied=$((copied + 1))
   done
 
-  echo "synced 3 catalogs, ${copied} app fixtures (${skipped} excluded), $(ls "$test_fixtures"/*.json | wc -l | tr -d ' ') test fixtures, web tokens/contracts/registry regenerated"
+  echo "synced 3 catalogs, ${copied} app fixtures (${skipped} excluded), $(ls "$test_fixtures"/*.json | wc -l | tr -d ' ') test fixtures, ${league_copied} league fixtures (in each), web tokens/contracts/registry regenerated"
 else
-  echo "synced 3 catalogs (no fixtures generated yet), web tokens/contracts/registry regenerated"
+  echo "synced 3 catalogs (no fixtures generated yet), ${league_copied} league fixtures, web tokens/contracts/registry regenerated"
 fi

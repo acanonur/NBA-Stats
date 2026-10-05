@@ -1,0 +1,493 @@
+{
+  "league": "euroleague",
+  "season": "2026-27",
+  "seasonCode": "E2026",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      }
+    ]
+  },
+  "teams": [
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZA",
+        "abbr": "ZZA",
+        "name": "Alderwick Herons",
+        "shortName": "Alderwick",
+        "clubCode": "ZZA",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 3,
+        "losses": 1
+      },
+      "games": 4,
+      "pointsPerGame": 88.25,
+      "pointsAllowedPerGame": 83.25,
+      "rating": {
+        "attackIndex": 1.0141867820032875,
+        "defenceIndex": 1.008958214856137,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZB",
+        "abbr": "ZZB",
+        "name": "Brindlemoor Stags",
+        "shortName": "Brindlemoor",
+        "clubCode": "ZZB",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 3,
+        "losses": 1
+      },
+      "games": 4,
+      "pointsPerGame": 84.25,
+      "pointsAllowedPerGame": 77.75,
+      "rating": {
+        "attackIndex": 1.0084489372774919,
+        "defenceIndex": 0.9726443750352458,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZC",
+        "abbr": "ZZC",
+        "name": "Cindervale Foxes",
+        "shortName": "Cindervale",
+        "clubCode": "ZZC",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 3,
+        "losses": 1
+      },
+      "games": 4,
+      "pointsPerGame": 89.0,
+      "pointsAllowedPerGame": 82.25,
+      "rating": {
+        "attackIndex": 1.012145188654521,
+        "defenceIndex": 0.983430786443974,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZD",
+        "abbr": "ZZD",
+        "name": "Dunmarrow Wolves",
+        "shortName": "Dunmarrow",
+        "clubCode": "ZZD",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 2,
+        "losses": 2
+      },
+      "games": 4,
+      "pointsPerGame": 83.25,
+      "pointsAllowedPerGame": 84.0,
+      "rating": {
+        "attackIndex": 1.0047920887574315,
+        "defenceIndex": 1.0170165297002935,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZE",
+        "abbr": "ZZE",
+        "name": "Eastmere Falcons",
+        "shortName": "Eastmere",
+        "clubCode": "ZZE",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 1,
+        "losses": 3
+      },
+      "games": 4,
+      "pointsPerGame": 86.0,
+      "pointsAllowedPerGame": 86.5,
+      "rating": {
+        "attackIndex": 1.0224422478258732,
+        "defenceIndex": 0.9963504336563965,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZF",
+        "abbr": "ZZF",
+        "name": "Fernhollow Otters",
+        "shortName": "Fernhollow",
+        "clubCode": "ZZF",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 1,
+        "losses": 3
+      },
+      "games": 4,
+      "pointsPerGame": 79.25,
+      "pointsAllowedPerGame": 82.5,
+      "rating": {
+        "attackIndex": 1.001189512549502,
+        "defenceIndex": 0.9952180021475763,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZG",
+        "abbr": "ZZG",
+        "name": "Glimmerton Lynx",
+        "shortName": "Glimmerton",
+        "clubCode": "ZZG",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 4,
+        "losses": 0
+      },
+      "games": 4,
+      "pointsPerGame": 97.25,
+      "pointsAllowedPerGame": 85.75,
+      "rating": {
+        "attackIndex": 1.0272202879170038,
+        "defenceIndex": 1.015402937123859,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZH",
+        "abbr": "ZZH",
+        "name": "Harrowfield Bears",
+        "shortName": "Harrowfield",
+        "clubCode": "ZZH",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 2,
+        "losses": 2
+      },
+      "games": 4,
+      "pointsPerGame": 87.5,
+      "pointsAllowedPerGame": 82.75,
+      "rating": {
+        "attackIndex": 1.0092793174828847,
+        "defenceIndex": 0.9890576662364907,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZI",
+        "abbr": "ZZI",
+        "name": "Ivorymead Hawks",
+        "shortName": "Ivorymead",
+        "clubCode": "ZZI",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 2,
+        "losses": 2
+      },
+      "games": 4,
+      "pointsPerGame": 85.0,
+      "pointsAllowedPerGame": 80.25,
+      "rating": {
+        "attackIndex": 1.0223233691441866,
+        "defenceIndex": 0.9627435703941033,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZJ",
+        "abbr": "ZZJ",
+        "name": "Juniper Falls Badgers",
+        "shortName": "Juniper Falls",
+        "clubCode": "ZZJ",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 2,
+        "losses": 2
+      },
+      "games": 4,
+      "pointsPerGame": 87.25,
+      "pointsAllowedPerGame": 87.25,
+      "rating": {
+        "attackIndex": 1.041253566792027,
+        "defenceIndex": 1.0004797230400864,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZK",
+        "abbr": "ZZK",
+        "name": "Kestrelburn Owls",
+        "shortName": "Kestrelburn",
+        "clubCode": "ZZK",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 2,
+        "losses": 2
+      },
+      "games": 4,
+      "pointsPerGame": 78.75,
+      "pointsAllowedPerGame": 84.0,
+      "rating": {
+        "attackIndex": 0.9498060221044211,
+        "defenceIndex": 1.0388517161077613,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZL",
+        "abbr": "ZZL",
+        "name": "Larkspur Rams",
+        "shortName": "Larkspur",
+        "clubCode": "ZZL",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 2,
+        "losses": 2
+      },
+      "games": 4,
+      "pointsPerGame": 84.75,
+      "pointsAllowedPerGame": 87.5,
+      "rating": {
+        "attackIndex": 1.0040119728008219,
+        "defenceIndex": 1.0120274508041958,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZM",
+        "abbr": "ZZM",
+        "name": "Mistral Point Gulls",
+        "shortName": "Mistral Point",
+        "clubCode": "ZZM",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 3,
+        "losses": 1
+      },
+      "games": 4,
+      "pointsPerGame": 84.0,
+      "pointsAllowedPerGame": 85.0,
+      "rating": {
+        "attackIndex": 1.0020474180102668,
+        "defenceIndex": 0.9790472366716884,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZN",
+        "abbr": "ZZN",
+        "name": "Northwick Bison",
+        "shortName": "Northwick",
+        "clubCode": "ZZN",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 1,
+        "losses": 3
+      },
+      "games": 4,
+      "pointsPerGame": 80.5,
+      "pointsAllowedPerGame": 91.0,
+      "rating": {
+        "attackIndex": 0.9663690436676635,
+        "defenceIndex": 1.0414785799059243,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZO",
+        "abbr": "ZZO",
+        "name": "Oakhaven Elks",
+        "shortName": "Oakhaven",
+        "clubCode": "ZZO",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 0,
+        "losses": 4
+      },
+      "games": 4,
+      "pointsPerGame": 79.5,
+      "pointsAllowedPerGame": 86.5,
+      "rating": {
+        "attackIndex": 1.0123567782861402,
+        "defenceIndex": 1.0515165859388653,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZP",
+        "abbr": "ZZP",
+        "name": "Pinecrest Panthers",
+        "shortName": "Pinecrest",
+        "clubCode": "ZZP",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 2,
+        "losses": 2
+      },
+      "games": 4,
+      "pointsPerGame": 80.5,
+      "pointsAllowedPerGame": 92.25,
+      "rating": {
+        "attackIndex": 0.9757550520222292,
+        "defenceIndex": 1.0318584672809499,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZQ",
+        "abbr": "ZZQ",
+        "name": "Quillon Ravens",
+        "shortName": "Quillon",
+        "clubCode": "ZZQ",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 3,
+        "losses": 1
+      },
+      "games": 4,
+      "pointsPerGame": 81.5,
+      "pointsAllowedPerGame": 76.0,
+      "rating": {
+        "attackIndex": 0.9725632681045303,
+        "defenceIndex": 0.9624706400553843,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZR",
+        "abbr": "ZZR",
+        "name": "Redmarsh Pikes",
+        "shortName": "Redmarsh",
+        "clubCode": "ZZR",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 3,
+        "losses": 1
+      },
+      "games": 4,
+      "pointsPerGame": 91.0,
+      "pointsAllowedPerGame": 85.5,
+      "rating": {
+        "attackIndex": 1.0114584378889753,
+        "defenceIndex": 1.0196261931885617,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZS",
+        "abbr": "ZZS",
+        "name": "Silverlake Orcas",
+        "shortName": "Silverlake",
+        "clubCode": "ZZS",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 1,
+        "losses": 3
+      },
+      "games": 4,
+      "pointsPerGame": 83.0,
+      "pointsAllowedPerGame": 89.25,
+      "rating": {
+        "attackIndex": 0.9854667313939366,
+        "defenceIndex": 0.9960439991864826,
+        "asOfRound": 4
+      }
+    },
+    {
+      "team": {
+        "league": "euroleague",
+        "id": "ZZT",
+        "abbr": "ZZT",
+        "name": "Thornfield Tigers",
+        "shortName": "Thornfield",
+        "clubCode": "ZZT",
+        "tvCode": null
+      },
+      "record": {
+        "wins": 0,
+        "losses": 4
+      },
+      "games": 4,
+      "pointsPerGame": 83.5,
+      "pointsAllowedPerGame": 84.75,
+      "rating": {
+        "attackIndex": 0.9542220457936248,
+        "defenceIndex": 1.0096320872123963,
+        "asOfRound": 4
+      }
+    }
+  ],
+  "notes": [
+    "EuroLeague games only: friendlies, domestic leagues and national-team games are not tracked."
+  ]
+}

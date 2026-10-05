@@ -84,8 +84,24 @@ public enum SubjectTokenCatalog {
 public enum ConfigDisplay {
 
     /// `"all_time"` becomes `"All Time"`; a string that already carries capitals is left alone.
+    ///
+    /// The league widgets' option keys are the exception: `nba` capitalised is "Nba", `perGame` is
+    /// left as the key it is, and neither says what the choice means, so those six are worded the
+    /// way the league screens word them (`LeagueFormatting`).
     public static func humanize(_ raw: String) -> String {
         guard !raw.isEmpty else { return raw }
+        switch raw {
+        case "nba":
+            return "NBA"
+        case "euroleague":
+            return "EuroLeague"
+        case "perGame", "perMinute":
+            return LeagueFormatting.defenseBasisWord(raw)
+        case "gfc", "workbook5":
+            return LeagueFormatting.schemeWord(raw)
+        default:
+            break
+        }
         let spaced = raw.replacingOccurrences(of: "_", with: " ")
         guard spaced == spaced.lowercased() else { return spaced }
         return spaced
@@ -320,10 +336,32 @@ public enum ConfigValidator {
             if let options = field.options, let selected = value.stringValue, !options.contains(selected) {
                 return "“\(selected)” is no longer one of the choices."
             }
-        case .season, .metric, .player, .team, .subject, .bool, .date, .club:
+        case .club:
+            if let message = clubIssue(for: field, value: value) {
+                return message
+            }
+        case .season, .metric, .player, .team, .subject, .bool, .date:
             break
         }
         return nil
+    }
+
+    /// A club field holds a EuroLeague club code: three letters, as the catalog and the server both
+    /// say (`PAN`). Case is not checked here because the editor and the server both upper-case
+    /// what they are given; a code that still is not three letters A to Z is flagged.
+    private static func clubIssue(for field: WidgetSpec.ConfigField, value: JSONValue) -> String? {
+        guard let text = value.stringValue else {
+            return "Club codes are three capital letters."
+        }
+        let code = text.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        let scalars = Array(code.unicodeScalars)
+        var isCode = scalars.count == 3
+        for scalar in scalars {
+            if scalar.value < 65 || scalar.value > 90 {
+                isCode = false
+            }
+        }
+        return isCode ? nil : "Club codes are three capital letters."
     }
 
     /// Empty means "the reader has not chosen anything", which is what `required` is about.
@@ -443,7 +481,7 @@ struct SeasonFieldEditor: View {
                 Text(season).tag(season)
             }
         }
-        .pickerStyle(.navigationLink)
+        .hardwoodNavigationPickerStyle()
     }
 }
 
@@ -590,16 +628,47 @@ struct DoubleFieldEditor: View {
     }
 }
 
-/// A slate date, or the `latest` token that follows the schedule forward.
+/// A slate date, or a token that follows the schedule: `latest` (the most recent completed slate)
+/// or `next` (the next one, which is what the league slate tile's `date` field defaults to).
+///
+/// Which word the switch uses is decided by the value held, or when there is none by the field's
+/// own default, so a field that defaults to `next` reads "Next slate" and every other date field
+/// keeps reading "Latest slate". Both words are tokens: neither is ever turned into a calendar day
+/// just by opening the sheet.
 struct DateFieldEditor: View {
     let field: WidgetSpec.ConfigField
     @Binding var value: JSONValue?
 
-    private var raw: String {
-        value?.stringValue ?? field.`default`?.stringValue ?? "latest"
+    private static let nextToken = "next"
+    private static let latestToken = "latest"
+
+    /// The token this field falls back to: `next` when the catalog says so, else `latest`.
+    private var defaultToken: String {
+        let declared = field.`default`?.stringValue?.lowercased() ?? ""
+        return declared == DateFieldEditor.nextToken ? DateFieldEditor.nextToken : DateFieldEditor.latestToken
     }
 
-    private var isLatest: Bool { raw.lowercased() == "latest" || raw.isEmpty }
+    private var raw: String {
+        value?.stringValue ?? field.`default`?.stringValue ?? defaultToken
+    }
+
+    private var isToken: Bool {
+        let lowered = raw.lowercased()
+        return lowered.isEmpty || lowered == DateFieldEditor.latestToken || lowered == DateFieldEditor.nextToken
+    }
+
+    /// The token in force: what is stored when that is a token, else the field's default.
+    private var activeToken: String {
+        let lowered = raw.lowercased()
+        if lowered == DateFieldEditor.nextToken || lowered == DateFieldEditor.latestToken {
+            return lowered
+        }
+        return defaultToken
+    }
+
+    private var toggleTitle: String {
+        activeToken == DateFieldEditor.nextToken ? "Next slate" : "Latest slate"
+    }
 
     private var date: Date {
         Formatting.parseDate(raw) ?? Date()
@@ -607,15 +676,15 @@ struct DateFieldEditor: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
-            Toggle("Latest slate", isOn: Binding(
-                get: { isLatest },
+            Toggle(toggleTitle, isOn: Binding(
+                get: { isToken },
                 set: { newValue in
-                    value = newValue ? .string("latest") : .string(ConfigDisplay.dayString(date))
+                    value = newValue ? .string(activeToken) : .string(ConfigDisplay.dayString(date))
                 }
             ))
             .tint(Palette.selection)
 
-            if !isLatest {
+            if !isToken {
                 DatePicker(field.label,
                            selection: Binding(get: { date },
                                               set: { value = .string(ConfigDisplay.dayString($0)) }),
@@ -660,7 +729,7 @@ struct MultiSelectPickerView: View {
             }
         }
         .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
     }
 
     private func toggle(_ option: String) {
@@ -681,7 +750,7 @@ struct EnumListFieldEditor: View {
     }
 
     var body: some View {
-        NavigationLink {
+        HardwoodPushLink(title: field.label) {
             MultiSelectPickerView(title: field.label,
                                   options: field.options ?? [],
                                   selection: Binding(get: { selected },
@@ -751,9 +820,9 @@ struct MetricPickerView: View {
                 }
             }
         }
-        .searchable(text: $query, prompt: "Search metrics")
+        .hardwoodSearchField(text: $query, prompt: "Search metrics")
         .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
     }
 }
 
@@ -770,7 +839,7 @@ struct MetricFieldEditor: View {
     }
 
     var body: some View {
-        NavigationLink {
+        HardwoodPushLink(title: field.label) {
             MetricPickerView(catalog: catalog,
                              scope: field.metricScope ?? "any",
                              title: field.label,
@@ -815,7 +884,7 @@ struct OrderedMetricPickerView: View {
                         .hardwoodText(.tableCell, color: Palette.textSecondary)
                 }
                 ForEach(keys, id: \.self) { key in
-                    row(for: key)
+                    keyRow(key)
                 }
                 .onMove { offsets, destination in
                     keys.move(fromOffsets: offsets, toOffset: destination)
@@ -823,6 +892,18 @@ struct OrderedMetricPickerView: View {
                 .onDelete { offsets in
                     keys.remove(atOffsets: offsets)
                 }
+                #if os(macOS)
+                // The toolbar "+" below may not render in a macOS sheet, and `.onDelete` needs a
+                // selection and the Delete key there, so the list carries its own Add row and
+                // each row its own remove button.
+                Button {
+                    isAdding = true
+                } label: {
+                    Label("Add a metric…", systemImage: "plus.circle")
+                }
+                .buttonStyle(.borderless)
+                .disabled(isFull)
+                #endif
             } header: {
                 Text("Chosen")
             } footer: {
@@ -830,10 +911,12 @@ struct OrderedMetricPickerView: View {
             }
         }
         .navigationTitle(field.label)
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
         .toolbar {
+            #if os(iOS)
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
-            ToolbarItem(placement: .topBarTrailing) {
+            #endif
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     isAdding = true
                 } label: {
@@ -844,7 +927,7 @@ struct OrderedMetricPickerView: View {
             }
         }
         .sheet(isPresented: $isAdding) {
-            NavigationStack {
+            HardwoodPickerSheet(title: "Add Metric") {
                 MetricPickerView(catalog: catalog,
                                  scope: field.metricScope ?? "any",
                                  title: "Add Metric",
@@ -856,6 +939,27 @@ struct OrderedMetricPickerView: View {
                                                     }))
             }
         }
+    }
+
+    /// One chosen metric. On macOS it carries a remove button, because swipe-to-delete does not
+    /// exist there.
+    @ViewBuilder private func keyRow(_ key: String) -> some View {
+        #if os(macOS)
+        HStack(spacing: Spacing.sm) {
+            row(for: key)
+            Spacer(minLength: Spacing.sm)
+            Button {
+                keys.removeAll { $0 == key }
+            } label: {
+                Image(systemName: "minus.circle")
+            }
+            .buttonStyle(.borderless)
+            .help("Remove")
+            .accessibilityLabel("Remove")
+        }
+        #else
+        row(for: key)
+        #endif
     }
 
     @ViewBuilder private func row(for key: String) -> some View {
@@ -890,7 +994,7 @@ struct MetricListFieldEditor: View {
     }
 
     var body: some View {
-        NavigationLink {
+        HardwoodPushLink(title: field.label) {
             OrderedMetricPickerView(catalog: catalog,
                                     field: field,
                                     keys: Binding(get: { keys },
@@ -968,9 +1072,9 @@ struct PlayerPickerView: View {
                 }
             }
         }
-        .searchable(text: $query, prompt: "Search players")
+        .hardwoodSearchField(text: $query, prompt: "Search players")
         .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
         .task(id: query) {
             // A short pause so a fast typist makes one request instead of eight.
             try? await Task.sleep(for: .milliseconds(280))
@@ -1042,9 +1146,9 @@ struct TeamPickerView: View {
                     .hardwoodText(.tableCell, color: Palette.textSecondary)
             }
         }
-        .searchable(text: $query, prompt: "Search teams")
+        .hardwoodSearchField(text: $query, prompt: "Search teams")
         .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
         .task { await directory.loadTeamsIfNeeded() }
     }
 
@@ -1082,7 +1186,7 @@ struct SubjectFieldEditor: View {
     }
 
     var body: some View {
-        NavigationLink {
+        HardwoodPushLink(title: field.label) {
             destination
         } label: {
             ConfigValueRow(label: field.label,
@@ -1111,6 +1215,8 @@ struct SubjectFieldEditor: View {
 /// collide as `ForEach` ids, so each row carries its own index-derived identity.
 private struct SubjectEntry: Identifiable, Hashable {
     let id: String
+    /// Position in the stored list, so a remove button can drop exactly this row.
+    let index: Int
     let value: JSONValue
 }
 
@@ -1125,7 +1231,7 @@ struct OrderedSubjectPickerView: View {
     @State private var isAdding = false
 
     private var entries: [SubjectEntry] {
-        values.enumerated().map { SubjectEntry(id: "\($0.offset)-\($0.element.description)", value: $0.element) }
+        values.enumerated().map { SubjectEntry(id: "\($0.offset)-\($0.element.description)", index: $0.offset, value: $0.element) }
     }
 
     private var chosenIDs: Set<Int> {
@@ -1153,8 +1259,7 @@ struct OrderedSubjectPickerView: View {
                         .hardwoodText(.tableCell, color: Palette.textSecondary)
                 }
                 ForEach(entries) { entry in
-                    Text(directory.title(for: entry.value, kind: kind) ?? entry.value.description)
-                        .foregroundStyle(Palette.textPrimary)
+                    entryRow(entry)
                 }
                 .onMove { offsets, destination in
                     values.move(fromOffsets: offsets, toOffset: destination)
@@ -1162,6 +1267,16 @@ struct OrderedSubjectPickerView: View {
                 .onDelete { offsets in
                     values.remove(atOffsets: offsets)
                 }
+                #if os(macOS)
+                // See `OrderedMetricPickerView`: the toolbar "+" may not render in a macOS sheet.
+                Button {
+                    isAdding = true
+                } label: {
+                    Label(kind == .player ? "Add a player…" : "Add a team…", systemImage: "plus.circle")
+                }
+                .buttonStyle(.borderless)
+                .disabled(isFull)
+                #endif
             } header: {
                 Text("Chosen")
             } footer: {
@@ -1169,10 +1284,12 @@ struct OrderedSubjectPickerView: View {
             }
         }
         .navigationTitle(field.label)
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
         .toolbar {
+            #if os(iOS)
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
-            ToolbarItem(placement: .topBarTrailing) {
+            #endif
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     isAdding = true
                 } label: {
@@ -1183,10 +1300,41 @@ struct OrderedSubjectPickerView: View {
             }
         }
         .sheet(isPresented: $isAdding) {
-            NavigationStack {
+            HardwoodPickerSheet(title: kind == .player ? "Add Player" : "Add Team") {
                 addDestination
             }
         }
+    }
+
+    /// One chosen player or team. On macOS it carries a remove button, because swipe-to-delete
+    /// does not exist there.
+    @ViewBuilder private func entryRow(_ entry: SubjectEntry) -> some View {
+        #if os(macOS)
+        HStack(spacing: Spacing.sm) {
+            entryTitle(entry)
+            Spacer(minLength: Spacing.sm)
+            Button {
+                removeEntry(at: entry.index)
+            } label: {
+                Image(systemName: "minus.circle")
+            }
+            .buttonStyle(.borderless)
+            .help("Remove")
+            .accessibilityLabel("Remove")
+        }
+        #else
+        entryTitle(entry)
+        #endif
+    }
+
+    private func entryTitle(_ entry: SubjectEntry) -> some View {
+        Text(directory.title(for: entry.value, kind: kind) ?? entry.value.description)
+            .foregroundStyle(Palette.textPrimary)
+    }
+
+    private func removeEntry(at index: Int) {
+        guard values.indices.contains(index) else { return }
+        values.remove(at: index)
     }
 
     @ViewBuilder private var addDestination: some View {
@@ -1230,7 +1378,7 @@ struct SubjectListFieldEditor: View {
     }
 
     var body: some View {
-        NavigationLink {
+        HardwoodPushLink(title: field.label) {
             OrderedSubjectPickerView(field: field,
                                      kind: kind,
                                      tokens: tokens,
@@ -1284,6 +1432,8 @@ struct ConfigFieldEditor: View {
             DoubleFieldEditor(field: field, value: $value)
         case .date:
             DateFieldEditor(field: field, value: $value)
+        case .club:
+            ClubFieldEditor(field: field, value: $value)
         default:
             EmptyView()
         }

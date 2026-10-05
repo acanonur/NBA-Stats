@@ -2,26 +2,6 @@ import Foundation
 import XCTest
 @testable import Hardwood
 
-// MARK: - Widget kinds not built yet
-
-/// Widget kinds the service resolves and the native app has not built yet: the lines of
-/// `ios/NBAStats/Widgets/PENDING.txt`, which the Mac phase empties kind by kind (and then deletes,
-/// which makes this set empty and every test below strict again). Read from the source tree beside
-/// this file, which is where Xcode runs the tests from.
-enum PendingWidgetKinds {
-    static let all: Set<String> = {
-        let file = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-            .appendingPathComponent("NBAStats/Widgets/PENDING.txt")
-        guard let text = try? String(contentsOf: file, encoding: .utf8) else { return [] }
-        let lines = text.split(whereSeparator: \.isNewline)
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty && !$0.hasPrefix("#") }
-        return Set(lines)
-    }()
-}
-
 // MARK: - Bundles and fixtures
 
 /// Where the tests find the JSON they read.
@@ -188,6 +168,9 @@ enum StubWidgetOutcome: Sendable {
     case failure(code: String, message: String, recoverable: Bool)
     /// A result whose `availability` is `unavailable`: the era rule, not an error.
     case unavailable(reason: String)
+    /// `unavailable` WITH a payload: how the four league kinds say "nothing yet" (no games this
+    /// season, no report published). Not the era rule; the widget draws its own empty state.
+    case unavailableWithPayload(WidgetPayload, notes: [String])
     /// A success the server sent no payload with, which the client treats as a failure.
     case okWithNoPayload
 }
@@ -396,6 +379,15 @@ actor StubAPIClient: APIClientProtocol {
                                  generatedAt: generatedAt,
                                  availability: .unavailable,
                                  notes: [reason])
+        case .unavailableWithPayload(let payload, let notes):
+            return ResolveResult(widgetId: widget.id,
+                                 kindRaw: widget.kind.rawValue,
+                                 status: .ok,
+                                 payload: payload,
+                                 generatedAt: generatedAt,
+                                 ttlSeconds: widget.kind.defaultCacheTTLSeconds,
+                                 availability: .unavailable,
+                                 notes: notes)
         case .okWithNoPayload:
             return ResolveResult(widgetId: widget.id,
                                  kindRaw: widget.kind.rawValue,

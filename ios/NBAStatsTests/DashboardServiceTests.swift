@@ -128,6 +128,41 @@ final class DashboardServiceTests: XCTestCase {
         }
     }
 
+    /// The four league kinds say `unavailable` for "nothing yet" (a new season, an injury report
+    /// not published yet) and still send their payload. That is not the era rule: the tile keeps
+    /// the payload so the widget can draw its own empty state, and the chrome does not show the
+    /// era badge whose explainer says the league never tracked the stat.
+    func testALeagueTileThatHasNothingYetKeepsItsPayload() async throws {
+        let (service, client, _) = makeService("league-nothing-yet")
+        let layout = TestLayouts.layout(widgets: [
+            TestLayouts.widget(id: "report", kind: .availabilityReport, size: .medium),
+            TestLayouts.widget(id: "matchup", kind: .teamMatchup, size: .medium),
+            TestLayouts.widget(id: "era", kind: .careerArc, size: .large)
+        ])
+        await client.setOutcomes([
+            "report": .unavailableWithPayload(.availabilityReport(LeagueAvailabilityReport.preview),
+                                              notes: ["No report has been published yet."]),
+            "matchup": .unavailableWithPayload(.teamMatchup(LeagueMatchup.preview),
+                                               notes: ["No games yet this season."]),
+            "era": .unavailable(reason: "Shot locations were not recorded before 1996-97.")
+        ])
+
+        await service.load(layout: layout, context: context, force: true)
+
+        let report = try XCTUnwrap(service.results["report"])
+        XCTAssertEqual(report.payload, .availabilityReport(LeagueAvailabilityReport.preview))
+        XCTAssertEqual(report.availability, .full, "A report not out yet wore the era badge")
+        XCTAssertEqual(report.notes, [], "The report banner already prints the server's message")
+
+        let matchup = try XCTUnwrap(service.results["matchup"])
+        XCTAssertEqual(matchup.payload, .teamMatchup(LeagueMatchup.preview))
+        XCTAssertEqual(matchup.availability, .full)
+        XCTAssertEqual(matchup.notes, ["No games yet this season."])
+
+        // Every other kind still follows the era rule.
+        XCTAssertTrue(isUnavailable(service.results["era"]))
+    }
+
     func testASuccessWithNoPayloadIsAFailedTileRatherThanABlankOne() async throws {
         let (service, client, _) = makeService("no-payload")
         let layout = TestLayouts.layout(widgets: [TestLayouts.widget(id: "w1", kind: .statTile)])

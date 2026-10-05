@@ -25,9 +25,9 @@ i. the generated web artifacts (design tokens, the web's typed contracts, the cr
 j. the widget kinds ``widgets.json`` declares, the directories under ``web/src/widgets/``, and
    the ``*Widget.swift`` files under ``ios/NBAStats/Widgets/`` all name the same kinds (twenty
    today), tolerating whatever ``web/src/widgets/PENDING.txt`` (or, before that file exists, simply
-   "no directory yet") says the web has not ported, and whatever ``ios/NBAStats/Widgets/
-   PENDING.txt`` says the native app has not built yet (the four league widgets, until the Mac phase
-   writes them), under a ceiling that only ever goes down;
+   "no directory yet") says the web has not ported, under a ceiling that only ever goes down. The
+   native app's own escape hatch (``ios/NBAStats/Widgets/PENDING.txt``) is closed: its ceiling is
+   zero since the Mac phase built the four league widgets, so iOS must draw every kind;
 k. every widget kind has a ``contracts/fixtures/widget_<kind>.json`` payload fixture, and — once
    the web test that enumerates them exists — that it lists every one;
 l. each cross-language parity fixture (§8's ``gen_parity_cases.py`` output) is referenced by
@@ -77,6 +77,13 @@ FIXTURES = CONTRACTS / "fixtures"
 IOS_CONTRACTS = ROOT / "ios" / "NBAStats" / "Resources" / "Contracts"
 IOS_WIDGETS = ROOT / "ios" / "NBAStats" / "Widgets"
 IOS_TESTS = ROOT / "ios" / "NBAStatsTests"
+IOS_APP_FIXTURES = ROOT / "ios" / "NBAStats" / "Resources" / "Fixtures"
+IOS_TEST_FIXTURES = IOS_TESTS / "Fixtures"
+#: The flat fixtures ``scripts/sync_contracts.sh`` keeps OUT of the app bundle (its
+#: ``APP_BUNDLE_EXCLUDE``; the script explains each). They still go to the test bundle.
+APP_BUNDLE_FIXTURE_EXCLUDE: frozenset[str] = frozenset(
+    {"presets.json", "layout_migration_cases.json", "monogram_cases.json", "format_cases.json"}
+)
 WEB = ROOT / "web"
 WEB_WIDGETS = WEB / "src" / "widgets"
 WEB_GENERATED = WEB / "src" / "generated"
@@ -299,8 +306,63 @@ def check_widget_kinds_match() -> str:
 # --------------------------------------------------------------------------- e. iOS copies
 
 
+def _bundled_fixture_problems() -> tuple[list[str], int]:
+    """Compare every fixture copy ``sync_contracts.sh`` makes with its source, byte for byte.
+
+    Why this exists: the app's demo mode and the Swift decoding tests read these copies, not
+    ``contracts/fixtures/``. Until this was added, check (e) compared only the three catalogs, so
+    when the backend's fixtures gained a key (``computedAfterTipoff``) and only the league block
+    of the sync was re-run, three flat copies (``widget_team_matchup``,
+    ``widget_slate_projections``, ``dashboard_resolve``) went stale with every check still green.
+    Check (g) only proves the basenames are unique; it never reads a byte.
+
+    The mapping is the sync script's: ``contracts/fixtures/<name>.json`` goes to the test bundle
+    and, unless excluded, to the app bundle under the same name;
+    ``contracts/fixtures/leagues/<nba|el>/<name>.json`` goes to both as
+    ``league_<nba|el>_<name>.json``. A ``league_*`` copy with no source is reported too, since
+    the sync deletes those and a leftover means the sync was not run. Returns the problems and
+    the number of copies compared.
+    """
+    expected: list[tuple[Path, str]] = [
+        (path, path.name) for path in sorted(FIXTURES.glob("*.json"))
+    ]
+    for league in ("nba", "el"):
+        for path in sorted((LEAGUE_FIXTURES / league).glob("*.json")):
+            expected.append((path, f"league_{league}_{path.name}"))
+
+    problems: list[str] = []
+    compared = 0
+    for source, name in expected:
+        folders = [IOS_TEST_FIXTURES]
+        if name not in APP_BUNDLE_FIXTURE_EXCLUDE:
+            folders.append(IOS_APP_FIXTURES)
+        for folder in folders:
+            bundled = folder / name
+            where = bundled.relative_to(ROOT)
+            if not bundled.is_file():
+                problems.append(f"{where} is missing (run scripts/sync_contracts.sh)")
+                continue
+            compared += 1
+            if bundled.read_bytes() != source.read_bytes():
+                problems.append(
+                    f"{where} differs from {source.relative_to(ROOT)} "
+                    "(run scripts/sync_contracts.sh)"
+                )
+
+    expected_names = {name for _, name in expected}
+    for folder in (IOS_APP_FIXTURES, IOS_TEST_FIXTURES):
+        for path in sorted(folder.glob("league_*.json")):
+            if path.name not in expected_names:
+                problems.append(
+                    f"{path.relative_to(ROOT)} has no source under contracts/fixtures/leagues/ "
+                    "(run scripts/sync_contracts.sh, which removes stale league copies)"
+                )
+    return problems, compared
+
+
 def check_ios_bundle_matches() -> str:
-    """(e) The catalogs bundled in the app are byte-identical to ``contracts/``."""
+    """(e) The catalogs AND the fixture copies bundled in the iOS app are byte-identical to
+    ``contracts/`` (see ``_bundled_fixture_problems`` for why the fixtures are compared too)."""
     if not IOS_CONTRACTS.is_dir():
         raise CheckFailure(f"{IOS_CONTRACTS.relative_to(ROOT)} does not exist")
     problems: list[str] = []
@@ -318,9 +380,14 @@ def check_ios_bundle_matches() -> str:
     stray = sorted(path.name for path in IOS_CONTRACTS.glob("*.json") if path.name not in expected)
     if stray:
         problems.append(f"the app bundles catalogs contracts/ does not have: {stray}")
+    fixture_problems, compared = _bundled_fixture_problems()
+    problems.extend(fixture_problems)
     if problems:
         raise CheckFailure(*problems)
-    return f"{len(expected)} bundled catalogs match contracts/"
+    return (
+        f"{len(expected)} bundled catalogs and {compared} bundled fixture copies "
+        "match contracts/"
+    )
 
 
 # --------------------------------------------------------------------------- f. fixtures
@@ -592,14 +659,14 @@ def check_web_artifacts_regenerate() -> str:
 #: unported, the check itself starts failing so the tolerance list has to shrink, not just grow.
 MAX_TOLERATED_PENDING_WIDGETS = 12
 
-#: The same escape hatch for the native app, and a much tighter one. ``ios/NBAStats/Widgets/
-#: PENDING.txt`` is transient: it names the four league widget kinds (``team_matchup``,
-#: ``defense_by_position``, ``availability_report``, ``slate_projections``), which the service
-#: resolves today and the Swift app draws in the Mac phase, and the Mac phase empties it kind by
-#: kind. The ceiling is the size it was born with, so it can only shrink, and a kind that is listed
-#: *and* already has its ``*Widget.swift`` is an error: a stale entry would let a widget go
-#: missing again without anyone noticing.
-MAX_TOLERATED_PENDING_IOS_WIDGETS = 4
+#: The same escape hatch for the native app, now closed. ``ios/NBAStats/Widgets/PENDING.txt`` was
+#: transient: it named the four league widget kinds (``team_matchup``, ``defense_by_position``,
+#: ``availability_report``, ``slate_projections``) while the service resolved them and the Swift
+#: app did not draw them yet. The Mac phase built all four and deleted the file, so the ceiling,
+#: which could only ever go down, is now zero: a PENDING.txt that comes back naming any kind fails
+#: this check, and every kind needs its ``*Widget.swift``. A kind that is listed *and* already has
+#: its ``*Widget.swift`` is reported too, so the message says exactly what to remove.
+MAX_TOLERATED_PENDING_IOS_WIDGETS = 0
 
 
 def _kind_from_swift_widget_filename(filename: str) -> str:
@@ -620,7 +687,8 @@ def _read_pending(path: Path) -> set[str]:
 
 def check_widget_kinds_agree() -> str:
     """(j) ``widgets.json``, ``web/src/widgets/``, and ``ios/.../Widgets/*Widget.swift`` name the
-    same kinds, tolerating whatever is still pending on the web and on iOS."""
+    same kinds, tolerating whatever is still pending on the web. iOS tolerates nothing any more
+    (``MAX_TOLERATED_PENDING_IOS_WIDGETS`` is zero)."""
     catalog_kinds = {widget["kind"] for widget in _load("widgets.json")["widgets"]}
 
     if not IOS_WIDGETS.is_dir():

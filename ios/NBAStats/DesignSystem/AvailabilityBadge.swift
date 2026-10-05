@@ -106,14 +106,11 @@ public struct AvailabilityBadge: View {
             EmptyView()
         } else {
             markerControl
-                .sheet(isPresented: $isExplaining) {
-                    AvailabilityExplainer(availability: availability,
-                                          metricName: metricName,
-                                          season: season,
-                                          notes: notes)
-                        .presentationDetents([.medium, .large])
-                        .presentationDragIndicator(.visible)
-                }
+                .explainerPresentation(isPresented: $isExplaining,
+                                       availability: availability,
+                                       metricName: metricName,
+                                       season: season,
+                                       notes: notes)
         }
     }
 
@@ -248,13 +245,45 @@ public extension View {
         modifier(AvailabilityTreatment(availability: availability))
     }
 
-    /// Presents the explainer as a half-height sheet.
+    /// Presents the explainer: a half-height sheet on iOS, a popover anchored to the marker on
+    /// macOS.
     func availabilityExplainer(isPresented: Binding<Bool>,
                                availability: MetricAvailability,
                                metricName: String? = nil,
                                season: String? = nil,
                                notes: [String] = []) -> some View {
-        sheet(isPresented: isPresented) {
+        explainerPresentation(isPresented: isPresented,
+                              availability: availability,
+                              metricName: metricName,
+                              season: season,
+                              notes: notes)
+    }
+}
+
+private extension View {
+    /// The one place that decides how the explainer is put on screen, so the badge and the public
+    /// modifier cannot drift apart.
+    ///
+    /// iOS: a medium or large sheet with a drag indicator. macOS: a popover. A Mac sheet is a
+    /// modal panel that cannot be sized by detents and would hide the number being explained,
+    /// whereas a popover points at the marker, closes on a click outside, and is what a Mac reader
+    /// expects from an explanation of one value. The explainer is a `ScrollView`, which has no
+    /// ideal size, so the popover gives it an explicit one.
+    @ViewBuilder func explainerPresentation(isPresented: Binding<Bool>,
+                                            availability: MetricAvailability,
+                                            metricName: String?,
+                                            season: String?,
+                                            notes: [String]) -> some View {
+        #if os(macOS)
+        self.popover(isPresented: isPresented) {
+            AvailabilityExplainer(availability: availability,
+                                  metricName: metricName,
+                                  season: season,
+                                  notes: notes)
+                .frame(width: 400, height: 460)
+        }
+        #else
+        self.sheet(isPresented: isPresented) {
             AvailabilityExplainer(availability: availability,
                                   metricName: metricName,
                                   season: season,
@@ -262,6 +291,7 @@ public extension View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
+        #endif
     }
 }
 

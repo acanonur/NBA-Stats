@@ -1,0 +1,15 @@
+{
+  "league": "euroleague",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": []
+  },
+  "items": [],
+  "notes": [
+    "Title, link, date and source only: article text is never fetched or stored."
+  ]
+}

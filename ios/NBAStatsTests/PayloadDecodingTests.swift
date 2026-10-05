@@ -56,9 +56,9 @@ final class PayloadDecodingTests: XCTestCase {
             decoded[kind] = payload
         }
         let missing = missingWidgetFixtures()
-        // The tripwire survives the skip below: a *fourteenth* kind added with neither a fixture
+        // The tripwire survives the skip below: a *twenty-first* kind added with neither a fixture
         // nor a test still fails here rather than quietly widening the skip.
-        XCTAssertEqual(decoded.count + missing.count, 16, "A widget kind was added without a fixture or a test")
+        XCTAssertEqual(decoded.count + missing.count, 20, "A widget kind was added without a fixture or a test")
         XCTAssertEqual(decoded.count + missing.count, WidgetKind.allCases.count)
         try skipIfFixturesAreMissing(missing)
     }
@@ -403,12 +403,6 @@ final class PayloadDecodingTests: XCTestCase {
         var kindsSeen: Set<WidgetKind> = []
         for result in response.results {
             XCTAssertFalse(result.widgetId.isEmpty)
-            // A kind the service resolves and this build has no widget for yet (PENDING.txt) is
-            // decoded as unknown and skipped by the app, which is what it must do.
-            if PendingWidgetKinds.all.contains(result.kindRaw) {
-                XCTAssertNil(result.kind, "\(result.kindRaw) is listed as pending but has a WidgetKind")
-                continue
-            }
             let kind = try XCTUnwrap(result.kind, "Unknown widget kind \"\(result.kindRaw)\"")
             kindsSeen.insert(kind)
             XCTAssertNil(result.decodeError,
@@ -448,9 +442,7 @@ final class PayloadDecodingTests: XCTestCase {
         let response = try decoder.decode(DashboardResolveResponse.self,
                                           from: try fixture("dashboard_resolve"))
 
-        let failures = response.results.filter {
-            $0.effectiveStatus == .error && !PendingWidgetKinds.all.contains($0.kindRaw)
-        }
+        let failures = response.results.filter { $0.effectiveStatus == .error }
         XCTAssertEqual(failures.count, 1,
                        "The resolve fixture must exercise exactly one failed widget")
         let failure = try XCTUnwrap(failures.first)
