@@ -1,0 +1,273 @@
+{
+  "league": "euroleague",
+  "state": "ready",
+  "reason": null,
+  "isDemo": true,
+  "mode": "demo",
+  "seasons": [
+    {
+      "code": "E2026",
+      "label": "2026-27",
+      "isCurrent": true
+    }
+  ],
+  "currentSeason": "2026-27",
+  "currentSeasonCode": "E2026",
+  "rounds": [
+    {
+      "round": 1,
+      "phase": "RS",
+      "firstTipoffUtc": null,
+      "games": 10,
+      "status": "complete"
+    },
+    {
+      "round": 2,
+      "phase": "RS",
+      "firstTipoffUtc": null,
+      "games": 10,
+      "status": "complete"
+    },
+    {
+      "round": 3,
+      "phase": "RS",
+      "firstTipoffUtc": "2026-10-01T17:30:00Z",
+      "games": 10,
+      "status": "complete"
+    },
+    {
+      "round": 4,
+      "phase": "RS",
+      "firstTipoffUtc": "2026-10-08T17:30:00Z",
+      "games": 10,
+      "status": "complete"
+    },
+    {
+      "round": 5,
+      "phase": "RS",
+      "firstTipoffUtc": "2026-10-15T17:30:00Z",
+      "games": 10,
+      "status": "upcoming"
+    }
+  ],
+  "clubs": [
+    {
+      "league": "euroleague",
+      "id": "ZZA",
+      "abbr": "ZZA",
+      "name": "Alderwick Herons",
+      "shortName": "Alderwick",
+      "clubCode": "ZZA",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZB",
+      "abbr": "ZZB",
+      "name": "Brindlemoor Stags",
+      "shortName": "Brindlemoor",
+      "clubCode": "ZZB",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZC",
+      "abbr": "ZZC",
+      "name": "Cindervale Foxes",
+      "shortName": "Cindervale",
+      "clubCode": "ZZC",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZD",
+      "abbr": "ZZD",
+      "name": "Dunmarrow Wolves",
+      "shortName": "Dunmarrow",
+      "clubCode": "ZZD",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZE",
+      "abbr": "ZZE",
+      "name": "Eastmere Falcons",
+      "shortName": "Eastmere",
+      "clubCode": "ZZE",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZF",
+      "abbr": "ZZF",
+      "name": "Fernhollow Otters",
+      "shortName": "Fernhollow",
+      "clubCode": "ZZF",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZG",
+      "abbr": "ZZG",
+      "name": "Glimmerton Lynx",
+      "shortName": "Glimmerton",
+      "clubCode": "ZZG",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZH",
+      "abbr": "ZZH",
+      "name": "Harrowfield Bears",
+      "shortName": "Harrowfield",
+      "clubCode": "ZZH",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZI",
+      "abbr": "ZZI",
+      "name": "Ivorymead Hawks",
+      "shortName": "Ivorymead",
+      "clubCode": "ZZI",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZJ",
+      "abbr": "ZZJ",
+      "name": "Juniper Falls Badgers",
+      "shortName": "Juniper Falls",
+      "clubCode": "ZZJ",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZK",
+      "abbr": "ZZK",
+      "name": "Kestrelburn Owls",
+      "shortName": "Kestrelburn",
+      "clubCode": "ZZK",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZL",
+      "abbr": "ZZL",
+      "name": "Larkspur Rams",
+      "shortName": "Larkspur",
+      "clubCode": "ZZL",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZM",
+      "abbr": "ZZM",
+      "name": "Mistral Point Gulls",
+      "shortName": "Mistral Point",
+      "clubCode": "ZZM",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZN",
+      "abbr": "ZZN",
+      "name": "Northwick Bison",
+      "shortName": "Northwick",
+      "clubCode": "ZZN",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZO",
+      "abbr": "ZZO",
+      "name": "Oakhaven Elks",
+      "shortName": "Oakhaven",
+      "clubCode": "ZZO",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZP",
+      "abbr": "ZZP",
+      "name": "Pinecrest Panthers",
+      "shortName": "Pinecrest",
+      "clubCode": "ZZP",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZQ",
+      "abbr": "ZZQ",
+      "name": "Quillon Ravens",
+      "shortName": "Quillon",
+      "clubCode": "ZZQ",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZR",
+      "abbr": "ZZR",
+      "name": "Redmarsh Pikes",
+      "shortName": "Redmarsh",
+      "clubCode": "ZZR",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZS",
+      "abbr": "ZZS",
+      "name": "Silverlake Orcas",
+      "shortName": "Silverlake",
+      "clubCode": "ZZS",
+      "tvCode": null
+    },
+    {
+      "league": "euroleague",
+      "id": "ZZT",
+      "abbr": "ZZT",
+      "name": "Thornfield Tigers",
+      "shortName": "Thornfield",
+      "clubCode": "ZZT",
+      "tvCode": null
+    }
+  ],
+  "regulationMinutes": 40,
+  "perModes": [
+    "PerGame",
+    "Totals",
+    "Per40"
+  ],
+  "positionBuckets": [
+    "G",
+    "F",
+    "C"
+  ],
+  "unverifiedClubCodes": [],
+  "attribution": "EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources.",
+  "dataThrough": "2026-10-09",
+  "dayOneNotice": "Demo league: invented clubs and players, shown so every screen works offline. Nothing here is real.",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,995 @@
+{
+  "league": "euroleague",
+  "scope": {
+    "season": "2026-27",
+    "seasonCode": "E2026",
+    "round": null
+  },
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.manual",
+        "label": "Entered by hand",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-10-12T09:00:00Z"
+      }
+    ]
+  },
+  "byModel": [],
+  "reconstructed": {
+    "modelKey": "hardwood",
+    "games": 20,
+    "decidedGames": 18,
+    "winnersCalled": 13,
+    "tossUps": 2,
+    "meanAbsMarginMiss": 8.984091084571329,
+    "meanAbsScoreMiss": 6.706117775216993,
+    "meanAbsCombinedMiss": 10.840601456904844
+  },
+  "games": [
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0021",
+        "date": "2026-10-01",
+        "tipoffUtc": "2026-10-01T17:30:00Z",
+        "venue": "Neutral Court Arena",
+        "isNeutral": true,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZA",
+          "abbr": "ZZA",
+          "name": "Alderwick Herons",
+          "shortName": "Alderwick",
+          "clubCode": "ZZA",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZR",
+          "abbr": "ZZR",
+          "name": "Redmarsh Pikes",
+          "shortName": "Redmarsh",
+          "clubCode": "ZZR",
+          "tvCode": null
+        },
+        "homePts": 96,
+        "awayPts": 82,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 86.73608072153817,
+        "awayPts": 85.15433743634878
+      },
+      "result": {
+        "homePts": 96,
+        "awayPts": 82
+      },
+      "marginMiss": 12.41825671481061,
+      "combinedMiss": 6.109581842113045,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0022",
+        "date": "2026-10-01",
+        "tipoffUtc": "2026-10-01T18:45:00Z",
+        "venue": "Quillon Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZQ",
+          "abbr": "ZZQ",
+          "name": "Quillon Ravens",
+          "shortName": "Quillon",
+          "clubCode": "ZZQ",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZS",
+          "abbr": "ZZS",
+          "name": "Silverlake Orcas",
+          "shortName": "Silverlake",
+          "clubCode": "ZZS",
+          "tvCode": null
+        },
+        "homePts": 92,
+        "awayPts": 76,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 82.12834203024133,
+        "awayPts": 79.13442073467371
+      },
+      "result": {
+        "homePts": 92,
+        "awayPts": 76
+      },
+      "marginMiss": 13.006078704432383,
+      "combinedMiss": 6.737237235084962,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0023",
+        "date": "2026-10-01",
+        "tipoffUtc": "2026-10-01T19:30:00Z",
+        "venue": "Thornfield Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZT",
+          "abbr": "ZZT",
+          "name": "Thornfield Tigers",
+          "shortName": "Thornfield",
+          "clubCode": "ZZT",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZP",
+          "abbr": "ZZP",
+          "name": "Pinecrest Panthers",
+          "shortName": "Pinecrest",
+          "clubCode": "ZZP",
+          "tvCode": null
+        },
+        "homePts": 85,
+        "awayPts": 86,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 83.49985083165193,
+        "awayPts": 79.72726045212838
+      },
+      "result": {
+        "homePts": 85,
+        "awayPts": 86
+      },
+      "marginMiss": -4.77259037952355,
+      "combinedMiss": 7.772888716219711,
+      "winnerCalled": false
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0024",
+        "date": "2026-10-01",
+        "tipoffUtc": "2026-10-01T20:45:00Z",
+        "venue": "Oakhaven Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZO",
+          "abbr": "ZZO",
+          "name": "Oakhaven Elks",
+          "shortName": "Oakhaven",
+          "clubCode": "ZZO",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZB",
+          "abbr": "ZZB",
+          "name": "Brindlemoor Stags",
+          "shortName": "Brindlemoor",
+          "clubCode": "ZZB",
+          "tvCode": null
+        },
+        "homePts": 68,
+        "awayPts": 83,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 87.57049888646625,
+        "awayPts": 87.6530941322253
+      },
+      "result": {
+        "homePts": 68,
+        "awayPts": 83
+      },
+      "marginMiss": -14.917404754240948,
+      "combinedMiss": -24.22359301869156,
+      "winnerCalled": null
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0025",
+        "date": "2026-10-01",
+        "tipoffUtc": "2026-10-01T21:30:00Z",
+        "venue": "Cindervale Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZC",
+          "abbr": "ZZC",
+          "name": "Cindervale Foxes",
+          "shortName": "Cindervale",
+          "clubCode": "ZZC",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZN",
+          "abbr": "ZZN",
+          "name": "Northwick Bison",
+          "shortName": "Northwick",
+          "clubCode": "ZZN",
+          "tvCode": null
+        },
+        "homePts": 92,
+        "awayPts": 82,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 91.74206046734749,
+        "awayPts": 77.93380365431611
+      },
+      "result": {
+        "homePts": 92,
+        "awayPts": 82
+      },
+      "marginMiss": -3.8082568130313774,
+      "combinedMiss": 4.324135878336392,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0026",
+        "date": "2026-10-02",
+        "tipoffUtc": "2026-10-02T17:45:00Z",
+        "venue": "Mistral Point Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZM",
+          "abbr": "ZZM",
+          "name": "Mistral Point Gulls",
+          "shortName": "Mistral Point",
+          "clubCode": "ZZM",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZD",
+          "abbr": "ZZD",
+          "name": "Dunmarrow Wolves",
+          "shortName": "Dunmarrow",
+          "clubCode": "ZZD",
+          "tvCode": null
+        },
+        "homePts": 89,
+        "awayPts": 77,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 87.76657838199009,
+        "awayPts": 80.48365341793534
+      },
+      "result": {
+        "homePts": 89,
+        "awayPts": 77
+      },
+      "marginMiss": 4.717075035945257,
+      "combinedMiss": -2.250231799925416,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0027",
+        "date": "2026-10-02",
+        "tipoffUtc": "2026-10-02T18:30:00Z",
+        "venue": "Eastmere Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZE",
+          "abbr": "ZZE",
+          "name": "Eastmere Falcons",
+          "shortName": "Eastmere",
+          "clubCode": "ZZE",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZL",
+          "abbr": "ZZL",
+          "name": "Larkspur Rams",
+          "shortName": "Larkspur",
+          "clubCode": "ZZL",
+          "tvCode": null
+        },
+        "homePts": 87,
+        "awayPts": 89,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 91.18145159256716,
+        "awayPts": 81.17561627864528
+      },
+      "result": {
+        "homePts": 87,
+        "awayPts": 89
+      },
+      "marginMiss": -12.005835313921878,
+      "combinedMiss": 3.6429321287875496,
+      "winnerCalled": false
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0028",
+        "date": "2026-10-02",
+        "tipoffUtc": "2026-10-02T19:45:00Z",
+        "venue": "Kestrelburn Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZK",
+          "abbr": "ZZK",
+          "name": "Kestrelburn Owls",
+          "shortName": "Kestrelburn",
+          "clubCode": "ZZK",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZF",
+          "abbr": "ZZF",
+          "name": "Fernhollow Otters",
+          "shortName": "Fernhollow",
+          "clubCode": "ZZF",
+          "tvCode": null
+        },
+        "homePts": 80,
+        "awayPts": 75,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 83.2008559255238,
+        "awayPts": 88.39376078035228
+      },
+      "result": {
+        "homePts": 80,
+        "awayPts": 75
+      },
+      "marginMiss": 10.192904854828484,
+      "combinedMiss": -16.594616705876092,
+      "winnerCalled": false
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0029",
+        "date": "2026-10-02",
+        "tipoffUtc": "2026-10-02T20:30:00Z",
+        "venue": "Glimmerton Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZG",
+          "abbr": "ZZG",
+          "name": "Glimmerton Lynx",
+          "shortName": "Glimmerton",
+          "clubCode": "ZZG",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZJ",
+          "abbr": "ZZJ",
+          "name": "Juniper Falls Badgers",
+          "shortName": "Juniper Falls",
+          "clubCode": "ZZJ",
+          "tvCode": null
+        },
+        "homePts": 100,
+        "awayPts": 90,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 86.94837415139608,
+        "awayPts": 86.03395334752408
+      },
+      "result": {
+        "homePts": 100,
+        "awayPts": 90
+      },
+      "marginMiss": 9.085579196127995,
+      "combinedMiss": 17.017672501079858,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0030",
+        "date": "2026-10-02",
+        "tipoffUtc": "2026-10-02T21:45:00Z",
+        "venue": "Ivorymead Hall",
+        "isNeutral": false,
+        "round": 3,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZI",
+          "abbr": "ZZI",
+          "name": "Ivorymead Hawks",
+          "shortName": "Ivorymead",
+          "clubCode": "ZZI",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZH",
+          "abbr": "ZZH",
+          "name": "Harrowfield Bears",
+          "shortName": "Harrowfield",
+          "clubCode": "ZZH",
+          "tvCode": null
+        },
+        "homePts": 95,
+        "awayPts": 82,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 85.75087536554699,
+        "awayPts": 80.37956085549709
+      },
+      "result": {
+        "homePts": 95,
+        "awayPts": 82
+      },
+      "marginMiss": 7.628685489950101,
+      "combinedMiss": 10.869563778955921,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0031",
+        "date": "2026-10-08",
+        "tipoffUtc": "2026-10-08T17:30:00Z",
+        "venue": "Quillon Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZQ",
+          "abbr": "ZZQ",
+          "name": "Quillon Ravens",
+          "shortName": "Quillon",
+          "clubCode": "ZZQ",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZA",
+          "abbr": "ZZA",
+          "name": "Alderwick Herons",
+          "shortName": "Alderwick",
+          "clubCode": "ZZA",
+          "tvCode": null
+        },
+        "homePts": 80,
+        "awayPts": 74,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 85.48194449237988,
+        "awayPts": 81.83523702247463
+      },
+      "result": {
+        "homePts": 80,
+        "awayPts": 74
+      },
+      "marginMiss": 2.3532925300947483,
+      "combinedMiss": -13.317181514854497,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0032",
+        "date": "2026-10-08",
+        "tipoffUtc": "2026-10-08T18:45:00Z",
+        "venue": "Redmarsh Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZR",
+          "abbr": "ZZR",
+          "name": "Redmarsh Pikes",
+          "shortName": "Redmarsh",
+          "clubCode": "ZZR",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZP",
+          "abbr": "ZZP",
+          "name": "Pinecrest Panthers",
+          "shortName": "Pinecrest",
+          "clubCode": "ZZP",
+          "tvCode": null
+        },
+        "homePts": 112,
+        "awayPts": 79,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 85.88833573065894,
+        "awayPts": 82.92679634224197
+      },
+      "result": {
+        "homePts": 112,
+        "awayPts": 79
+      },
+      "marginMiss": 30.038460611583034,
+      "combinedMiss": 22.184867927099106,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0033",
+        "date": "2026-10-08",
+        "tipoffUtc": "2026-10-08T19:30:00Z",
+        "venue": "Oakhaven Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZO",
+          "abbr": "ZZO",
+          "name": "Oakhaven Elks",
+          "shortName": "Oakhaven",
+          "clubCode": "ZZO",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZS",
+          "abbr": "ZZS",
+          "name": "Silverlake Orcas",
+          "shortName": "Silverlake",
+          "clubCode": "ZZS",
+          "tvCode": null
+        },
+        "homePts": 86,
+        "awayPts": 90,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 82.1582930255911,
+        "awayPts": 85.03998436491891
+      },
+      "result": {
+        "homePts": 86,
+        "awayPts": 90
+      },
+      "marginMiss": -1.1183086606721986,
+      "combinedMiss": 8.801722609489985,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0034",
+        "date": "2026-10-08",
+        "tipoffUtc": "2026-10-08T20:45:00Z",
+        "venue": "Thornfield Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZT",
+          "abbr": "ZZT",
+          "name": "Thornfield Tigers",
+          "shortName": "Thornfield",
+          "clubCode": "ZZT",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZN",
+          "abbr": "ZZN",
+          "name": "Northwick Bison",
+          "shortName": "Northwick",
+          "clubCode": "ZZN",
+          "tvCode": null
+        },
+        "homePts": 78,
+        "awayPts": 80,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 87.13847719166314,
+        "awayPts": 80.82333178074234
+      },
+      "result": {
+        "homePts": 78,
+        "awayPts": 80
+      },
+      "marginMiss": -8.315145410920806,
+      "combinedMiss": -9.961808972405493,
+      "winnerCalled": false
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0035",
+        "date": "2026-10-08",
+        "tipoffUtc": "2026-10-08T21:30:00Z",
+        "venue": "Mistral Point Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZM",
+          "abbr": "ZZM",
+          "name": "Mistral Point Gulls",
+          "shortName": "Mistral Point",
+          "clubCode": "ZZM",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZB",
+          "abbr": "ZZB",
+          "name": "Brindlemoor Stags",
+          "shortName": "Brindlemoor",
+          "clubCode": "ZZB",
+          "tvCode": null
+        },
+        "homePts": 88,
+        "awayPts": 87,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 83.41517491104662,
+        "awayPts": 79.3537559974517
+      },
+      "result": {
+        "homePts": 88,
+        "awayPts": 87
+      },
+      "marginMiss": -3.0614189135949204,
+      "combinedMiss": 12.231069091501695,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0036",
+        "date": "2026-10-09",
+        "tipoffUtc": "2026-10-09T17:45:00Z",
+        "venue": "Cindervale Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZC",
+          "abbr": "ZZC",
+          "name": "Cindervale Foxes",
+          "shortName": "Cindervale",
+          "clubCode": "ZZC",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZL",
+          "abbr": "ZZL",
+          "name": "Larkspur Rams",
+          "shortName": "Larkspur",
+          "clubCode": "ZZL",
+          "tvCode": null
+        },
+        "homePts": 85,
+        "awayPts": 82,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 88.06454215063174,
+        "awayPts": 81.630231031669
+      },
+      "result": {
+        "homePts": 85,
+        "awayPts": 82
+      },
+      "marginMiss": -3.4343111189627393,
+      "combinedMiss": -2.694773182300736,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0037",
+        "date": "2026-10-09",
+        "tipoffUtc": "2026-10-09T18:30:00Z",
+        "venue": "Kestrelburn Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZK",
+          "abbr": "ZZK",
+          "name": "Kestrelburn Owls",
+          "shortName": "Kestrelburn",
+          "clubCode": "ZZK",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZD",
+          "abbr": "ZZD",
+          "name": "Dunmarrow Wolves",
+          "shortName": "Dunmarrow",
+          "clubCode": "ZZD",
+          "tvCode": null
+        },
+        "homePts": 78,
+        "awayPts": 96,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 84.06292462497028,
+        "awayPts": 84.27786459049304
+      },
+      "result": {
+        "homePts": 78,
+        "awayPts": 96
+      },
+      "marginMiss": -17.78506003447724,
+      "combinedMiss": 5.659210784536697,
+      "winnerCalled": null
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0038",
+        "date": "2026-10-09",
+        "tipoffUtc": "2026-10-09T19:45:00Z",
+        "venue": "Eastmere Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZE",
+          "abbr": "ZZE",
+          "name": "Eastmere Falcons",
+          "shortName": "Eastmere",
+          "clubCode": "ZZE",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZJ",
+          "abbr": "ZZJ",
+          "name": "Juniper Falls Badgers",
+          "shortName": "Juniper Falls",
+          "clubCode": "ZZJ",
+          "tvCode": null
+        },
+        "homePts": 77,
+        "awayPts": 89,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 90.26841374905447,
+        "awayPts": 85.34678038185137
+      },
+      "result": {
+        "homePts": 77,
+        "awayPts": 89
+      },
+      "marginMiss": -16.9216333672031,
+      "combinedMiss": -9.615194130905849,
+      "winnerCalled": false
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0039",
+        "date": "2026-10-09",
+        "tipoffUtc": "2026-10-09T20:30:00Z",
+        "venue": "Ivorymead Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZI",
+          "abbr": "ZZI",
+          "name": "Ivorymead Hawks",
+          "shortName": "Ivorymead",
+          "clubCode": "ZZI",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZF",
+          "abbr": "ZZF",
+          "name": "Fernhollow Otters",
+          "shortName": "Fernhollow",
+          "clubCode": "ZZF",
+          "tvCode": null
+        },
+        "homePts": 81,
+        "awayPts": 70,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 88.9677983024722,
+        "awayPts": 80.93150882950265
+      },
+      "result": {
+        "homePts": 81,
+        "awayPts": 70
+      },
+      "marginMiss": 2.963710527030443,
+      "combinedMiss": -18.899307131974865,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-0040",
+        "date": "2026-10-09",
+        "tipoffUtc": "2026-10-09T21:45:00Z",
+        "venue": "Glimmerton Hall",
+        "isNeutral": false,
+        "round": 4,
+        "phase": "RS",
+        "status": "final",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZG",
+          "abbr": "ZZG",
+          "name": "Glimmerton Lynx",
+          "shortName": "Glimmerton",
+          "clubCode": "ZZG",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZH",
+          "abbr": "ZZH",
+          "name": "Harrowfield Bears",
+          "shortName": "Harrowfield",
+          "clubCode": "ZZH",
+          "tvCode": null
+        },
+        "homePts": 93,
+        "awayPts": 91,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 86.61668653605865,
+        "awayPts": 83.47887327598389
+      },
+      "result": {
+        "homePts": 93,
+        "awayPts": 91
+      },
+      "marginMiss": -1.1378132600747648,
+      "combinedMiss": 13.904440187957448,
+      "winnerCalled": true
+    }
+  ],
+  "notes": [
+    "Reconstructed projections were made after the game from inputs before tip-off; they are reported apart from locked ones.",
+    "20 final game(s) are in or before round 2, which the imported ratings already contain, so the model made no projection for them; the workbook's own are reviewed under 'workbook'."
+  ]
+}

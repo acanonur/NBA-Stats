@@ -87,18 +87,35 @@ public struct FileLayoutPersistence: LayoutPersisting {
         self.fileURL = base.appendingPathComponent(fileName, isDirectory: false)
     }
 
-    /// `Application Support/Hardwood`, falling back to the temporary directory on the (effectively
-    /// impossible) chance that Application Support cannot be created.
+    /// The folder under Application Support that holds the layout document.
+    ///
+    /// iOS: `Hardwood`. macOS: `com.hardwood.nbastats`, deliberately NOT `Hardwood`. On the Mac,
+    /// `~/Library/Application Support/Hardwood/` is the launchd backend's `HARDWOOD_DATA_DIR`
+    /// (its database, its virtualenv, `hardwood.env`), and
+    /// `backend/scripts/macos/uninstall.sh --purge-data` runs `rm -rf` on exactly that folder. A
+    /// dashboard file stored there would be deleted along with the server's data the day the
+    /// server is uninstalled. The bundle identifier is a name nothing else uses. There is no
+    /// migration: no Mac install exists yet that could hold a file under the old name.
+    private static var folderName: String {
+        #if os(macOS)
+        return "com.hardwood.nbastats"
+        #else
+        return "Hardwood"
+        #endif
+    }
+
+    /// `Application Support/<folderName>`, falling back to the temporary directory on the
+    /// (effectively impossible) chance that Application Support cannot be created.
     private static func defaultDirectory() -> URL {
         let manager = FileManager.default
         if let support = try? manager.url(for: .applicationSupportDirectory,
                                           in: .userDomainMask,
                                           appropriateFor: nil,
                                           create: true) {
-            return support.appendingPathComponent("Hardwood", isDirectory: true)
+            return support.appendingPathComponent(folderName, isDirectory: true)
         }
         return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent("Hardwood", isDirectory: true)
+            .appendingPathComponent(folderName, isDirectory: true)
     }
 
     // MARK: Reading

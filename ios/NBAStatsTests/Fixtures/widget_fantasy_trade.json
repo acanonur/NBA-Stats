@@ -1,0 +1,225 @@
+{
+  "season": "2025-26",
+  "seasonType": "Regular Season",
+  "puntCategories": [],
+  "give": {
+    "label": "give",
+    "count": 1,
+    "totalZ": 0.455,
+    "espnPoints": 35.2,
+    "yahooPoints": 34.55,
+    "players": [
+      {
+        "player": {
+          "playerId": 1631260,
+          "name": "AJ Green",
+          "firstName": "AJ",
+          "lastName": "Green",
+          "teamId": 1610612743,
+          "teamAbbr": "DEN",
+          "position": "G",
+          "jersey": "44",
+          "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631260.png",
+          "isActive": true
+        },
+        "totalZ": 0.455,
+        "baselineRank": 66,
+        "gamesPlayed": 25,
+        "categories": {
+          "pts": 0.637,
+          "fg3m": -0.207,
+          "reb": -0.71,
+          "ast": 0.902,
+          "stl": 0.93,
+          "blk": -0.643,
+          "tov": -0.776,
+          "fg_pct": -0.126,
+          "ft_pct": 0.447
+        },
+        "availability": "estimated"
+      }
+    ],
+    "missing": []
+  },
+  "get": {
+    "label": "get",
+    "count": 1,
+    "totalZ": 4.601,
+    "espnPoints": 49.29,
+    "yahooPoints": 47.0,
+    "players": [
+      {
+        "player": {
+          "playerId": 1642920,
+          "name": "Kobe Sanders",
+          "firstName": "Kobe",
+          "lastName": "Sanders",
+          "teamId": 1610612747,
+          "teamAbbr": "LAL",
+          "position": "G",
+          "jersey": "31",
+          "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642920.png",
+          "isActive": true
+        },
+        "totalZ": 4.601,
+        "baselineRank": 4,
+        "gamesPlayed": 24,
+        "categories": {
+          "pts": 3.705,
+          "fg3m": 0.48,
+          "reb": -0.835,
+          "ast": 2.095,
+          "stl": 0.679,
+          "blk": -1.045,
+          "tov": -2.539,
+          "fg_pct": 1.036,
+          "ft_pct": 1.025
+        },
+        "availability": "estimated"
+      }
+    ],
+    "missing": []
+  },
+  "categories": [
+    {
+      "category": "pts",
+      "give": 0.637,
+      "get": 3.705,
+      "change": 3.067,
+      "net": 3.067,
+      "verdict": "gain",
+      "punted": false
+    },
+    {
+      "category": "fg3m",
+      "give": -0.207,
+      "get": 0.48,
+      "change": 0.688,
+      "net": 0.688,
+      "verdict": "gain",
+      "punted": false
+    },
+    {
+      "category": "reb",
+      "give": -0.71,
+      "get": -0.835,
+      "change": -0.125,
+      "net": -0.125,
+      "verdict": "level",
+      "punted": false
+    },
+    {
+      "category": "ast",
+      "give": 0.902,
+      "get": 2.095,
+      "change": 1.193,
+      "net": 1.193,
+      "verdict": "gain",
+      "punted": false
+    },
+    {
+      "category": "stl",
+      "give": 0.93,
+      "get": 0.679,
+      "change": -0.251,
+      "net": -0.251,
+      "verdict": "loss",
+      "punted": false
+    },
+    {
+      "category": "blk",
+      "give": -0.643,
+      "get": -1.045,
+      "change": -0.402,
+      "net": -0.402,
+      "verdict": "loss",
+      "punted": false
+    },
+    {
+      "category": "tov",
+      "give": -0.776,
+      "get": -2.539,
+      "change": -1.763,
+      "net": -1.763,
+      "verdict": "loss",
+      "punted": false
+    },
+    {
+      "category": "fg_pct",
+      "give": -0.126,
+      "get": 1.036,
+      "change": 1.162,
+      "net": 1.162,
+      "verdict": "gain",
+      "punted": false
+    },
+    {
+      "category": "ft_pct",
+      "give": 0.447,
+      "get": 1.025,
+      "change": 0.578,
+      "net": 0.578,
+      "verdict": "gain",
+      "punted": false
+    }
+  ],
+  "changeZ": 4.147,
+  "rosterAdjustment": -0.0,
+  "netZ": 4.147,
+  "replacementValue": -3.584,
+  "poolSpread": 1.908,
+  "verdict": "clear win",
+  "bands": {
+    "fair": 0.75,
+    "clear": 2.0
+  },
+  "points": {
+    "espn_points": {
+      "change": 14.09,
+      "net": 14.09,
+      "verdict": "clear win"
+    },
+    "yahoo_points": {
+      "change": 12.44,
+      "net": 12.44,
+      "verdict": "clear win"
+    }
+  },
+  "sensitivity": {
+    "base": 4.147,
+    "low": 1.672,
+    "high": 4.269,
+    "width": 2.596,
+    "lowScenario": "The player you get loses 15% of his minutes",
+    "highScenario": "The player you give up misses 22 games",
+    "flips": false,
+    "scenarios": [
+      {
+        "key": "base",
+        "label": "As projected",
+        "net": 4.147
+      },
+      {
+        "key": "get_injured",
+        "label": "The player you get misses 22 games",
+        "net": 2.912
+      },
+      {
+        "key": "get_role_loss",
+        "label": "The player you get loses 15% of his minutes",
+        "net": 1.672
+      },
+      {
+        "key": "give_injured",
+        "label": "The player you give up misses 22 games",
+        "net": 4.269
+      },
+      {
+        "key": "give_breakout",
+        "label": "The player you give up gains 15% of his minutes",
+        "net": 2.295
+      }
+    ]
+  },
+  "note": "The range is a sweep over named assumptions, not a confidence interval: nothing here is a probability. A trade whose sign survives every scenario is a different proposition from one that only wins if everybody stays healthy."
+}

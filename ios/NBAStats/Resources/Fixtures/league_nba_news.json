@@ -1,0 +1,79 @@
+{
+  "league": "nba",
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 1324,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T16:30:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.news.1",
+        "label": "Example Hoops Wire",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-01-03T15:00:00Z"
+      }
+    ]
+  },
+  "items": [
+    {
+      "itemId": 1,
+      "title": "Micah Kaminski questionable to return",
+      "link": "https://news.example.org/hoops/story-0",
+      "publishedAt": "2026-01-03T13:00:00Z",
+      "sourceName": "Example Hoops Wire",
+      "teams": [
+        {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        }
+      ],
+      "players": [
+        {
+          "league": "nba",
+          "id": "9000032",
+          "name": "Micah Kaminski",
+          "position": "G",
+          "positionRaw": "G-F",
+          "jersey": "3",
+          "headshotUrl": null,
+          "playerId": 9000032
+        }
+      ]
+    },
+    {
+      "itemId": 2,
+      "title": "Previewing WAS at NOP",
+      "link": "https://news.example.org/hoops/story-1",
+      "publishedAt": "2026-01-03T11:30:00Z",
+      "sourceName": "Example Hoops Wire",
+      "teams": [
+        {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        }
+      ],
+      "players": []
+    }
+  ],
+  "notes": [
+    "Title, link, date and source only: article text is never fetched or stored."
+  ]
+}

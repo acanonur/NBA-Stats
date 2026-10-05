@@ -1,0 +1,80 @@
+/*
+ * `game_log` — a player's recent games as a real table. Mirrors
+ * `ios/NBAStats/Widgets/GameLogWidget.swift`'s pinned-identity-column layout, built on
+ * `design/PinnedColumnTable.tsx` rather than reinventing the grid mechanics.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  height: 100%;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.playerName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emptyNote {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+}
+
+.tableWrap {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.pinnedHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hw-space-xs);
+}
+
+.pinnedCell {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.pinnedDate {
+  flex: none;
+}
+
+.pinnedMatchup {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pinnedResult {
+  flex: none;
+  min-width: 12px;
+  text-align: right;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

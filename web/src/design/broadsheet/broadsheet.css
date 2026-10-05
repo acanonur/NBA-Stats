@@ -1,0 +1,90 @@
+/*
+ * The broadsheet presentation's page furniture — `ios/NBAStats/DesignSystem/BroadsheetTheme.swift`,
+ * ported. A **separate component family**, not a theme override: one column always, no card
+ * fill, no border, no radius, no shadow, serif body, tabular figures, hairline rules. Deliberately
+ * not folded into the app's `.hw-*` tile classes the way `\.isBroadsheet` in Swift is a distinct
+ * environment flag rather than "dark mode with different assets" — a tile widget must not be
+ * able to reach for a broadsheet colour by accident and half-apply the aesthetic.
+ *
+ * This is a plain (non-module) stylesheet, imported once by `BroadsheetPage.tsx`: broadsheet
+ * class names are namespaced under `hw-bs-*` precisely so they are safe to load globally
+ * alongside the app's own `.hw-grid`/`.hw-tile` classes without colliding.
+ *
+ * Every colour below is one of the nine `--hw-bs-*` custom properties `generated/tokens.css`
+ * emits (WEB_DESIGN.md §7.9's raw-colour ban applies here exactly as it does everywhere else in
+ * `src/design` — only `generated/tokens.css` itself is exempt).
+ */
+
+.hw-bs-page {
+  background-color: var(--hw-bs-background);
+  color: var(--hw-bs-text);
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  min-height: 100%;
+}
+
+.hw-bs-column {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--hw-space-xl) var(--hw-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-lg);
+}
+
+.hw-bs-figures {
+  font-variant-numeric: tabular-nums;
+}
+
+.hw-bs-kicker {
+  text-transform: uppercase;
+  letter-spacing: var(--hw-bs-kicker-tracking);
+  color: var(--hw-bs-text-muted);
+  font-weight: 600;
+  font-size: 11px;
+  margin: 0;
+}
+
+.hw-bs-rule {
+  border: none;
+  height: 1px;
+  background-color: var(--hw-bs-rule);
+  margin: 0;
+}
+
+.hw-bs-rule-heavy {
+  height: 1px;
+  background-color: var(--hw-bs-rule);
+  margin: 0;
+}
+
+.hw-bs-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+}
+
+.hw-bs-row-label {
+  color: var(--hw-bs-text-muted);
+  font-size: 13px;
+  white-space: nowrap;
+  flex: none;
+}
+
+.hw-bs-row-leader {
+  flex: 1 1 auto;
+  min-width: var(--hw-space-lg);
+  height: 1px;
+  align-self: flex-end;
+  margin-bottom: 3px;
+  background-image: linear-gradient(to right, var(--hw-bs-rule) 1px, transparent 1px);
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
+}
+
+.hw-bs-row-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  flex: none;
+}

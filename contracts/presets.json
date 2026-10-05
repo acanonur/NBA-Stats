@@ -977,6 +977,89 @@
       ]
     },
     {
+      "id": "preset.fantasy_manager",
+      "presetKey": "fantasy_manager",
+      "name": "Fantasy Manager",
+      "icon": "checklist",
+      "tagline": "Draft it, trade it, and see what each move costs.",
+      "accent": "green",
+      "isPreset": true,
+      "schemaVersion": 1,
+      "presentation": "tiles",
+      "widgets": [
+        {
+          "kind": "fantasy_draft_board",
+          "size": "large",
+          "title": "Draft Board",
+          "config": {
+            "season": "latest",
+            "scoring": "categories",
+            "puntCategories": [],
+            "teams": 12,
+            "rosterSpots": 13,
+            "poolSize": 150,
+            "draftedPlayerIds": [],
+            "myPlayerIds": [],
+            "limit": 30,
+            "seasonType": "Regular Season"
+          },
+          "id": "fantasy_manager.01.fantasy_draft_board"
+        },
+        {
+          "kind": "fantasy_trade",
+          "size": "large",
+          "title": "Trade Analyzer",
+          "config": {
+            "season": "latest",
+            "givePlayerIds": [],
+            "getPlayerIds": [],
+            "puntCategories": [],
+            "poolSize": 150,
+            "fairBand": 0.75,
+            "clearBand": 2.0,
+            "showSensitivity": true,
+            "seasonType": "Regular Season"
+          },
+          "id": "fantasy_manager.02.fantasy_trade"
+        },
+        {
+          "kind": "player_snapshot",
+          "size": "medium",
+          "title": "Your Player",
+          "config": {
+            "playerId": "$favorite_player",
+            "season": "latest",
+            "seasonType": "Regular Season",
+            "metrics": [
+              "pts",
+              "reb",
+              "ast",
+              "fg3m",
+              "stl",
+              "blk",
+              "tov",
+              "ts_pct"
+            ],
+            "showPercentiles": true
+          },
+          "id": "fantasy_manager.03.player_snapshot"
+        },
+        {
+          "kind": "daily_movers",
+          "size": "medium",
+          "title": "Waiver Watch",
+          "config": {
+            "date": "latest",
+            "metric": "fantasy_pts",
+            "limit": 6,
+            "minMinutes": 12.0,
+            "direction": "best"
+          },
+          "id": "fantasy_manager.04.daily_movers"
+        }
+      ]
+    },
+    {
       "id": "preset.blank",
       "presetKey": "blank",
       "name": "Blank Canvas",

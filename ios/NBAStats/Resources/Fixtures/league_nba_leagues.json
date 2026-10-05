@@ -1,0 +1,57 @@
+[
+  {
+    "key": "nba",
+    "name": "NBA",
+    "apiPrefix": "/v1",
+    "enabled": true,
+    "state": "ready",
+    "reason": null,
+    "isDemo": true,
+    "currentSeason": "2025-26",
+    "syncVersion": 1324,
+    "dataThrough": "2026-01-02",
+    "regulationMinutes": 48,
+    "perModes": [
+      "PerGame",
+      "Totals",
+      "Per36",
+      "Per100"
+    ],
+    "positionBuckets": [
+      "G",
+      "F",
+      "C"
+    ],
+    "features": [
+      "matchup",
+      "defenseByPosition",
+      "projections",
+      "availability",
+      "news"
+    ]
+  },
+  {
+    "key": "euroleague",
+    "name": "EuroLeague",
+    "apiPrefix": "/v1/el",
+    "enabled": false,
+    "state": "unavailable",
+    "reason": "This league is not available in this deployment.",
+    "isDemo": false,
+    "currentSeason": null,
+    "syncVersion": null,
+    "dataThrough": null,
+    "regulationMinutes": 40,
+    "perModes": [
+      "PerGame",
+      "Totals",
+      "Per40"
+    ],
+    "positionBuckets": [
+      "G",
+      "F",
+      "C"
+    ],
+    "features": []
+  }
+]

@@ -1,0 +1,51 @@
+name: Web
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "web/**"
+      - "contracts/**"
+      - "ios/NBAStats/DesignSystem/**"
+      - ".github/workflows/web.yml"
+  pull_request:
+    paths:
+      - "web/**"
+      - "contracts/**"
+      - "ios/NBAStats/DesignSystem/**"
+      - ".github/workflows/web.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm --prefix web ci
+
+      - name: Lint
+        run: npm --prefix web run lint
+
+      - name: Typecheck
+        run: npm --prefix web run typecheck
+
+      - name: Test
+        run: npm --prefix web run test
+
+      - name: Build
+        run: npm --prefix web run build
+
+      # web/dist is committed on purpose (WEB_DESIGN.md §0.1-A): `uvicorn` alone must be able to
+      # serve a working site with no npm step in production. That only stays true if the checked
+      # in bundle is always what the current source actually builds, so a source change pushed
+      # without also running `npm run build` — or a build that is not reproducible — fails here
+      # instead of quietly serving yesterday's JavaScript.
+      - name: Committed dist matches a fresh build
+        run: git diff --exit-code -- web/dist

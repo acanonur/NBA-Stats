@@ -392,7 +392,12 @@ public final class DashboardService: ObservableObject {
     @discardableResult
     private func apply(_ result: ResolveResult, widget: DashboardWidget) -> Bool {
         // The era rule comes first: a stat that did not exist is never an error, and never a zero.
-        if result.availability == .unavailable {
+        // The four league kinds are the exception (see `drawsItsOwnEmptyState`): for them
+        // `unavailable` means "nothing yet", and their payload says so better than an era tile.
+        let isLeagueEmpty = result.availability == .unavailable
+            && result.payload != nil
+            && DashboardService.drawsItsOwnEmptyState(widget.kind)
+        if result.availability == .unavailable && !isLeagueEmpty {
             results[widget.id] = .unavailable(reason: unavailableReason(for: result))
             return false
         }
@@ -406,10 +411,13 @@ public final class DashboardService: ObservableObject {
             // Never default *upward*: a result the server called `partial` is qualified even
             // when it did not spell out how, and `.full` is the one answer that would render it
             // as fully trustworthy — no caret, no footnote (ARCHITECTURE.md §3 rule 1).
-            let availability = result.availability ?? (result.effectiveStatus == .partial ? .partial : .full)
-            results[widget.id] = .loaded(payload, availability: availability, notes: result.notes, stale: false)
+            let served = result.availability ?? (result.effectiveStatus == .partial ? .partial : .full)
+            let availability = DashboardService.tileAvailability(served, kind: widget.kind)
+            let notes = DashboardService.tileNotes(result.notes, served: served, kind: widget.kind)
+            results[widget.id] = .loaded(payload, availability: availability, notes: notes, stale: false)
             resultKeys[widget.id] = cacheKey(for: widget)
-            persist(payload: payload, result: result, widget: widget)
+            persist(payload: payload, result: result, availability: availability, notes: notes,
+                    widget: widget)
             return false
 
         case .unchanged:
@@ -460,6 +468,47 @@ public final class DashboardService: ObservableObject {
         results[widget.id] = .failed(error)
     }
 
+    /// The four league kinds, whose `unavailable` is not the era rule.
+    ///
+    /// For every other kind `unavailable` means the league never recorded the stat for that era
+    /// (CONTRACT.md §6), and the era tile with its "did not track this yet" explainer is true.
+    /// For these four the backend says `unavailable` when there is simply nothing *yet*: no games
+    /// played this season (matchup, defence), no projectable game (slate), no injury report
+    /// published, unreadable or switched off (availability report). Each still sends its full
+    /// payload, and each widget draws its own empty state from it ("No games yet this season",
+    /// "No games to project", the report's state banner with the server's message, the attribution
+    /// and the next game line). Throwing that payload away for an era tile would hide the server's
+    /// own words and tell the reader something false about an injury report that is not out yet.
+    nonisolated static func drawsItsOwnEmptyState(_ kind: WidgetKind) -> Bool {
+        switch kind {
+        case .teamMatchup, .defenseByPosition, .availabilityReport, .slateProjections:
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// The availability the tile chrome shows. A league tile's "nothing yet" is shown as `.full`
+    /// in the chrome on purpose: the era badge and its explainer would be the false sentence the
+    /// rule above exists to avoid, and the widget itself shows em dashes and the empty state, so
+    /// there is no number on screen that `.full` could make look more trustworthy than it is.
+    nonisolated static func tileAvailability(_ served: MetricAvailability, kind: WidgetKind) -> MetricAvailability {
+        if served == .unavailable && drawsItsOwnEmptyState(kind) {
+            return .full
+        }
+        return served
+    }
+
+    /// The footnotes a tile keeps. An availability report that is not fresh prints the server's
+    /// message in its own state banner, and the result's note is that same message, so the note
+    /// is dropped there rather than printed twice. Every other tile keeps the server's notes.
+    nonisolated static func tileNotes(_ notes: [String], served: MetricAvailability, kind: WidgetKind) -> [String] {
+        if served == .unavailable && kind == .availabilityReport {
+            return []
+        }
+        return notes
+    }
+
     private func unavailableReason(for result: ResolveResult) -> String {
         if let message = result.error?.message, !message.isEmpty { return message }
         if let note = result.notes.first, !note.isEmpty { return note }
@@ -481,10 +530,16 @@ public final class DashboardService: ObservableObject {
                       context: context)
     }
 
-    private func persist(payload: WidgetPayload, result: ResolveResult, widget: DashboardWidget) {
+    /// `availability` and `notes` are what the tile shows (after the league-kind rule), so a tile
+    /// restored from disk looks the same as the one that was stored.
+    private func persist(payload: WidgetPayload,
+                         result: ResolveResult,
+                         availability: MetricAvailability,
+                         notes: [String],
+                         widget: DashboardWidget) {
         let envelope = CachedTileEnvelope(kind: widget.kind.rawValue,
-                                          availability: (result.availability ?? .full).rawValue,
-                                          notes: result.notes,
+                                          availability: availability.rawValue,
+                                          notes: notes,
                                           generatedAt: result.generatedAt,
                                           payload: payload)
         guard let data = try? encoder.encode(envelope) else { return }
@@ -503,8 +558,11 @@ public final class DashboardService: ObservableObject {
         guard let envelope = try? decoder.decode(StoredTileEnvelope.self, from: entry.data) else { return nil }
         guard let payloadData = try? encoder.encode(envelope.payload) else { return nil }
         guard let payload = try? WidgetPayload.decode(kind: widget.kind, from: payloadData, using: decoder) else { return nil }
-        let availability = envelope.availability.flatMap { MetricAvailability(rawValue: $0) } ?? .full
-        return .loaded(payload, availability: availability, notes: envelope.notes ?? [], stale: true)
+        let stored = envelope.availability.flatMap { MetricAvailability(rawValue: $0) } ?? .full
+        // An entry written before the league-kind rule may still say `unavailable`.
+        let availability = DashboardService.tileAvailability(stored, kind: widget.kind)
+        let notes = DashboardService.tileNotes(envelope.notes ?? [], served: stored, kind: widget.kind)
+        return .loaded(payload, availability: availability, notes: notes, stale: true)
     }
 }
 

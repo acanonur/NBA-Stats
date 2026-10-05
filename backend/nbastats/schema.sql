@@ -147,6 +147,26 @@ CREATE INDEX ix_games_game_date ON games (game_date);
 CREATE INDEX ix_games_home_team ON games (home_team_id, game_date);
 CREATE INDEX ix_games_season_type ON games (season, season_type);
 
+CREATE TABLE player_position_season (
+	player_id INTEGER NOT NULL, 
+	season VARCHAR(8) NOT NULL, 
+	team_id INTEGER, 
+	position_raw VARCHAR(32), 
+	g_weight FLOAT, 
+	f_weight FLOAT, 
+	c_weight FLOAT, 
+	source VARCHAR(20) NOT NULL, 
+	fetched_at DATETIME NOT NULL, 
+	data_source VARCHAR(16), 
+	PRIMARY KEY (player_id, season), 
+	CONSTRAINT ck_pps_source CHECK (source IN ('commonTeamRoster', 'kaggleCurrent', 'seedArchetype')), 
+	CONSTRAINT ck_pps_weights_null_or_sum_to_one CHECK ((g_weight IS NULL AND f_weight IS NULL AND c_weight IS NULL) OR (g_weight IS NOT NULL AND f_weight IS NOT NULL AND c_weight IS NOT NULL AND g_weight >= 0 AND f_weight >= 0 AND c_weight >= 0 AND abs(g_weight + f_weight + c_weight - 1.0) < 1e-9)), 
+	FOREIGN KEY(player_id) REFERENCES players (player_id), 
+	FOREIGN KEY(team_id) REFERENCES teams (team_id)
+);
+
+CREATE INDEX ix_pps_team_season ON player_position_season (team_id, season);
+
 CREATE TABLE player_season (
 	player_id INTEGER NOT NULL, 
 	season VARCHAR(8) NOT NULL, 
@@ -300,6 +320,18 @@ CREATE TABLE team_season (
 
 CREATE INDEX ix_team_season_season ON team_season (season, season_type);
 
+CREATE TABLE game_schedule_detail (
+	game_id VARCHAR(16) NOT NULL, 
+	tipoff_utc DATETIME, 
+	arena_name VARCHAR(96), 
+	arena_city VARCHAR(64), 
+	source VARCHAR(16) NOT NULL, 
+	ingested_at DATETIME NOT NULL, 
+	PRIMARY KEY (game_id), 
+	CONSTRAINT ck_gsd_source CHECK (source IN ('scoreboard', 'manual')), 
+	FOREIGN KEY(game_id) REFERENCES games (game_id)
+);
+
 CREATE TABLE player_game_advanced (
 	game_id VARCHAR(16) NOT NULL, 
 	player_id INTEGER NOT NULL, 
@@ -411,3 +443,34 @@ CREATE TABLE team_game (
 );
 
 CREATE INDEX ix_team_game_team ON team_game (team_id);
+
+CREATE TABLE team_projection_ledger (
+	ledger_id INTEGER NOT NULL, 
+	game_id VARCHAR(16) NOT NULL, 
+	kind VARCHAR(14) NOT NULL, 
+	model_version VARCHAR(24) NOT NULL, 
+	computed_at DATETIME NOT NULL, 
+	inputs_cutoff DATETIME NOT NULL, 
+	home_pts FLOAT NOT NULL, 
+	away_pts FLOAT NOT NULL, 
+	home_full_strength FLOAT NOT NULL, 
+	away_full_strength FLOAT NOT NULL, 
+	home_attack_index FLOAT NOT NULL, 
+	away_attack_index FLOAT NOT NULL, 
+	home_defence_index FLOAT NOT NULL, 
+	away_defence_index FLOAT NOT NULL, 
+	home_availability_factor FLOAT NOT NULL, 
+	away_availability_factor FLOAT NOT NULL, 
+	home_advantage_points FLOAT NOT NULL, 
+	team_sd FLOAT, 
+	margin_sd FLOAT, 
+	availability_snapshot_id INTEGER, 
+	settings_sha256 VARCHAR(64) NOT NULL, 
+	inputs_sha256 VARCHAR(64) NOT NULL, 
+	PRIMARY KEY (ledger_id), 
+	CONSTRAINT ck_tpl_kind CHECK (kind IN ('latest', 'locked')), 
+	CONSTRAINT uq_tpl_game_kind_inputs UNIQUE (game_id, kind, inputs_sha256), 
+	FOREIGN KEY(game_id) REFERENCES games (game_id)
+);
+
+CREATE INDEX ix_tpl_game_kind ON team_projection_ledger (game_id, kind, computed_at);

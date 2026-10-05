@@ -1,0 +1,64 @@
+/*
+ * One grid tile's own chrome: the `.hw-tile` span variables (`design/theme.css` owns the
+ * `.hw-grid`/`.hw-tile` rules themselves — this file only adds what a tile needs beyond that:
+ * the widget-title row and the edit-mode control strip.
+ */
+.tile {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hw-space-sm);
+  margin-bottom: var(--hw-space-xs);
+}
+
+.headerStart {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.editControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hw-space-xs);
+  margin-top: var(--hw-space-sm);
+  padding-top: var(--hw-space-sm);
+  border-top: 1px solid var(--hw-separator);
+}
+
+.editButton {
+  appearance: none;
+  border: 1px solid var(--hw-separator);
+  background: var(--hw-surface);
+  color: var(--hw-text-secondary);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.editButton:hover {
+  color: var(--hw-text-primary);
+}
+
+.editButton:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}
+
+.editButtonDanger {
+  color: var(--hw-negative);
+  border-color: var(--hw-negative);
+}

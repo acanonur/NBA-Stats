@@ -144,12 +144,23 @@ final class LayoutTests: XCTestCase {
     // MARK: - Sizes
 
     func testWidgetSizeSpansAndHeights() {
+        // The Bool spelling exists on both platforms and is what the size-class spelling calls.
+        XCTAssertEqual(WidgetSize.small.columnSpan(isRegular: false), 1)
+        XCTAssertEqual(WidgetSize.medium.columnSpan(isRegular: false), 2)
+        XCTAssertEqual(WidgetSize.large.columnSpan(isRegular: false), 2)
+        XCTAssertEqual(WidgetSize.large.columnSpan(isRegular: true), 4)
+        XCTAssertEqual(WidgetSize.small.columnSpan(isRegular: true), 1)
+        XCTAssertEqual(WidgetSize.medium.columnSpan(isRegular: true), 2)
+
+        // `UserInterfaceSizeClass` does not exist on macOS, so the size-class spelling is iOS-only.
+        #if os(iOS)
         XCTAssertEqual(WidgetSize.small.columnSpan(horizontalSizeClass: .compact), 1)
         XCTAssertEqual(WidgetSize.medium.columnSpan(horizontalSizeClass: .compact), 2)
         XCTAssertEqual(WidgetSize.large.columnSpan(horizontalSizeClass: .compact), 2)
         XCTAssertEqual(WidgetSize.large.columnSpan(horizontalSizeClass: .regular), 4)
         // An unknown size class is treated as compact, so a tile is never wider than the grid.
         XCTAssertEqual(WidgetSize.large.columnSpan(horizontalSizeClass: nil), 2)
+        #endif
 
         XCTAssertEqual(WidgetSize.small.estimatedHeight, 148)
         XCTAssertEqual(WidgetSize.medium.estimatedHeight, 232)
@@ -161,7 +172,7 @@ final class LayoutTests: XCTestCase {
     }
 
     func testWidgetKindRawValuesMatchTheContract() {
-        XCTAssertEqual(WidgetKind.allCases.count, 14)
+        XCTAssertEqual(WidgetKind.allCases.count, 20)
         XCTAssertEqual(WidgetKind.statTile.rawValue, "stat_tile")
         XCTAssertEqual(WidgetKind.playerSnapshot.rawValue, "player_snapshot")
         XCTAssertEqual(WidgetKind.gameLog.rawValue, "game_log")
@@ -172,7 +183,13 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(WidgetKind.teamEfficiency.rawValue, "team_efficiency")
         XCTAssertEqual(WidgetKind.nextGameProjection.rawValue, "next_game_projection")
         XCTAssertEqual(WidgetKind.projectionBoard.rawValue, "projection_board")
+        XCTAssertEqual(WidgetKind.fantasyDraftBoard.rawValue, "fantasy_draft_board")
+        XCTAssertEqual(WidgetKind.fantasyTrade.rawValue, "fantasy_trade")
         XCTAssertEqual(WidgetKind.careerArc.rawValue, "career_arc")
+        XCTAssertEqual(WidgetKind.teamMatchup.rawValue, "team_matchup")
+        XCTAssertEqual(WidgetKind.defenseByPosition.rawValue, "defense_by_position")
+        XCTAssertEqual(WidgetKind.availabilityReport.rawValue, "availability_report")
+        XCTAssertEqual(WidgetKind.slateProjections.rawValue, "slate_projections")
         for kind in WidgetKind.allCases {
             XCTAssertFalse(kind.fallbackName.isEmpty)
             XCTAssertFalse(kind.fallbackIcon.isEmpty)

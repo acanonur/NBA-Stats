@@ -35,13 +35,27 @@ Rules this module keeps
   declared property of the source rather than a guess about a value.
 * **Missing is ``None``, never ``0``.** An empty string, a ``"-"`` and an absent
   key are all missing; a real ``0`` survives as ``0``.
+
+Two readers that fail closed
+----------------------------
+:func:`normalize_common_team_roster` and :func:`normalize_scoreboard_schedule` read fields
+whose presence has not been verified against a live response (the development environment
+cannot reach stats.nba.com): the roster's ``POSITION`` column and the scoreboard's tip-off and
+arena. Neither guesses. The roster reader reports whether the ``POSITION`` column exists at
+all, separately from whether any row has a value, because "the league removed the column" and
+"this player has no listed position" are different failures with different remedies. The
+schedule reader returns a tip-off only when it can be derived exactly (an explicit UTC or
+offset-carrying timestamp, or a scheduled game's ``"7:30 pm ET"`` status text combined with its
+Eastern date and the real time-zone database), and ``None`` otherwise. Nothing is assumed
+about a time zone, a date or an hour.
 """
 from __future__ import annotations
 
 import logging
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Any, Callable, Iterable, Mapping, NamedTuple, Sequence
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 __all__ = [
     "LEAGUE_GAME_LOG_COLUMNS",
@@ -53,11 +67,15 @@ __all__ = [
     "BOX_SCORE_V3_TEAM_COLUMNS",
     "LEAGUE_DASH_PLAYER_STATS_COLUMNS",
     "COMMON_ALL_PLAYERS_COLUMNS",
+    "COMMON_TEAM_ROSTER_COLUMNS",
     "SCOREBOARD_GAME_HEADER_COLUMNS",
+    "SCOREBOARD_SCHEDULE_COLUMNS",
     "SCOREBOARD_LINE_SCORE_COLUMNS",
     "SEASON_TYPE_BY_GAME_ID_PREFIX",
     "BoxScore",
     "BoxScoreTeam",
+    "TeamRoster",
+    "ScheduleDetailRow",
     "parse_minutes",
     "parse_game_status",
     "parse_date",
@@ -77,7 +95,10 @@ __all__ = [
     "normalize_box_score",
     "normalize_league_dash_player_stats",
     "normalize_common_all_players",
+    "normalize_common_team_roster",
     "normalize_scoreboard",
+    "normalize_scoreboard_schedule",
+    "eastern_wall_clock_to_utc",
     "opponent_from_matchup",
     "is_home_from_matchup",
 ]
@@ -86,6 +107,8 @@ logger = logging.getLogger("nbastats.ingest.normalize")
 
 #: Values that mean "no value". A real ``0`` is never one of them.
 _MISSING = {"", "-", "--", "none", "null", "nan"}
+
+_ISO_DATETIME = re.compile(r"^\d{4}-\d{2}-\d{2}T")
 
 _ISO_MINUTES = re.compile(r"^PT(?:(\d+)M)?(?:([\d.]+)S)?$", re.IGNORECASE)
 
@@ -207,7 +230,9 @@ def parse_date(value: Any) -> date | None:
         return value
 
     text = str(value).strip()
-    if "T" in text:
+    # Only an ISO datetime has a "T" separator. A bare `"T" in text` also matched the month in
+    # `"OCT 23, 1995"` (the V2 formats are upper case) and cut it to `"OC"`.
+    if _ISO_DATETIME.match(text):
         text = text.split("T", 1)[0]
     if " " in text and "," not in text:
         text = text.split(" ", 1)[0]
@@ -554,6 +579,38 @@ COMMON_ALL_PLAYERS_COLUMNS: dict[str, str] = {
     "GAMES_PLAYED_FLAG": "games_played_flag",
 }
 
+#: ``CommonTeamRoster``'s ``CommonTeamRoster`` result set → a roster row. ``POSITION`` is the
+#: league's listed position (``G``, ``F-C``, ``Guard-Forward`` have all been seen from one
+#: source or another); its presence in a live response is unverified, which is why
+#: :func:`normalize_common_team_roster` reports it separately. ``NUM`` is the jersey.
+COMMON_TEAM_ROSTER_COLUMNS: dict[str, str] = {
+    "PLAYER_ID": "player_id",
+    "TeamID": "team_id",
+    "TEAM_ID": "team_id",
+    "PLAYER": "full_name",
+    "PLAYER_SLUG": "player_slug",
+    "NUM": "jersey",
+    "POSITION": "position",
+    "HEIGHT": "height",
+    "WEIGHT": "weight",
+    "BIRTH_DATE": "birthdate",
+    "AGE": "age",
+    "SCHOOL": "school",
+}
+
+#: ``ScoreboardV2``'s ``GameHeader`` columns the schedule reader may take, by role. Only the
+#: first of each role that holds a usable value is used. ``ARENA_NAME`` is the one documented
+#: for the V2 header; the others are the spellings the league's other scoreboard shapes use,
+#: accepted so a shape change does not silently turn the arena off. Tip-off has no documented
+#: V2 column, so the explicit timestamps listed are tolerated if present and the scheduled
+#: game's ``GAME_STATUS_TEXT`` is the fallback.
+SCOREBOARD_SCHEDULE_COLUMNS: dict[str, tuple[str, ...]] = {
+    "arena_name": ("ARENA_NAME", "arenaName", "ARENA"),
+    "arena_city": ("ARENA_CITY", "arenaCity"),
+    "tipoff_utc": ("GAME_TIME_UTC", "GAME_DATE_TIME_UTC", "gameTimeUTC", "GAMETIMEUTC"),
+    "tipoff_with_offset": ("GAME_ET", "gameEt"),
+}
+
 #: ``ScoreboardV2``'s ``GameHeader`` result set → the ``games`` row.
 SCOREBOARD_GAME_HEADER_COLUMNS: dict[str, str] = {
     "GAME_ID": "game_id",
@@ -596,6 +653,8 @@ _TARGET_PARSERS: dict[str, Callable[[Any], Any]] = {
     "losses": parse_int,
     "from_year": parse_int,
     "to_year": parse_int,
+    "weight": parse_int,
+    "birthdate": parse_date,
     **{
         column: parse_int
         for column in (
@@ -1035,6 +1094,75 @@ def normalize_common_all_players(payload: Mapping[str, Any]) -> list[dict[str, A
     return rows
 
 
+class TeamRoster(NamedTuple):
+    """One ``CommonTeamRoster`` response, read.
+
+    ``position_column_present`` is a property of the *response*: whether the ``POSITION``
+    column exists. It is ``False`` for a payload whose result set has no such header, and also
+    for an already-normalised payload that carries no rows to inspect. A row whose player has no
+    listed position still has ``position = None``; that is a different, per-player condition.
+    """
+
+    rows: list[dict[str, Any]]
+    position_column_present: bool
+
+
+def _result_set_headers(payload: Mapping[str, Any], name: str) -> list[str] | None:
+    """Header names of one named V2 result set, or ``None`` when the set is absent.
+
+    Also handles the already-normalised style (``{"CommonTeamRoster": [{...}]}``): the headers
+    are then the keys of the rows, and an empty list of rows has none to report.
+    """
+    named = payload.get(name)
+    if isinstance(named, list):
+        keys: list[str] = []
+        for row in named:
+            if isinstance(row, Mapping):
+                keys.extend(str(key) for key in row if str(key) not in keys)
+        return keys or None
+    sets = payload.get("resultSets") or payload.get("resultSet") or []
+    if isinstance(sets, Mapping):
+        sets = [sets]
+    if not isinstance(sets, Sequence) or isinstance(sets, (str, bytes)):
+        return None
+    for item in sets:
+        if isinstance(item, Mapping) and str(item.get("name", "")) == name:
+            return [str(header) for header in item.get("headers", []) or []]
+    return None
+
+
+def normalize_common_team_roster(payload: Mapping[str, Any]) -> TeamRoster:
+    """``CommonTeamRoster`` → one row per rostered player, plus whether ``POSITION`` exists.
+
+    Rows carry ``player_id``, ``team_id``, ``full_name``, ``jersey``, ``position`` (the raw
+    string, untouched: turning it into bucket weights is
+    :func:`nbastats.shared.positions.normalise_nba_position`'s job, so there is one table of
+    what a position string means) and the biographical columns the response happens to hold.
+    A row with no ``PLAYER_ID`` cannot be attached to a player and is dropped with a warning.
+    A payload that is not a mapping at all is an empty roster with no ``POSITION`` column.
+
+    The ``Coaches`` result set in the same response is ignored.
+    """
+    if not isinstance(payload, Mapping):
+        return TeamRoster(rows=[], position_column_present=False)
+    headers = _result_set_headers(payload, "CommonTeamRoster")
+    rows = normalize_rows(
+        result_set_rows(payload, "CommonTeamRoster"),
+        COMMON_TEAM_ROSTER_COLUMNS,
+        required=("PLAYER_ID", "POSITION"),
+        context="CommonTeamRoster",
+    )
+    kept: list[dict[str, Any]] = []
+    for row in rows:
+        if row.get("player_id") is None:
+            logger.warning("roster_row_without_player_id name=%s", row.get("full_name"))
+            continue
+        position = row.get("position")
+        row["position"] = (str(position).strip() or None) if position is not None else None
+        kept.append(row)
+    return TeamRoster(rows=kept, position_column_present="POSITION" in (headers or ()))
+
+
 def normalize_scoreboard(
     payload: Mapping[str, Any], *, game_date: date | None = None
 ) -> list[dict[str, Any]]:
@@ -1086,3 +1214,156 @@ def normalize_scoreboard(
             }
         )
     return games
+
+
+# --------------------------------------------------------------------------- #
+# Schedule detail: tip-off and arena from the scoreboard
+# --------------------------------------------------------------------------- #
+
+_EASTERN_ZONE = "America/New_York"
+
+#: A scheduled game's status text is its tip-off in US Eastern: ``7:30 pm ET``. Anything else
+#: (``Final``, ``Q3 4:21``, ``Halftime``, ``PPD``, ``TBD``) does not match and gives no tip-off.
+_TIPOFF_STATUS_TEXT = re.compile(
+    r"^\s*(?P<hour>\d{1,2}):(?P<minute>\d{2})\s*(?P<half>[ap])\.?m\.?\s*ET\s*$", re.IGNORECASE
+)
+
+
+class ScheduleDetailRow(NamedTuple):
+    """What one scoreboard row says about when and where a game is played.
+
+    Every field but ``game_id`` is ``None`` when the scoreboard did not carry it (or carried
+    something this reader refuses to interpret). ``tipoff_utc`` is a naive UTC ``datetime``,
+    like every timestamp the schema stores.
+    """
+
+    game_id: str
+    tipoff_utc: datetime | None
+    arena_name: str | None
+    arena_city: str | None
+
+    @property
+    def has_detail(self) -> bool:
+        return any(v is not None for v in (self.tipoff_utc, self.arena_name, self.arena_city))
+
+
+def eastern_wall_clock_to_utc(day: date, hour: int, minute: int) -> datetime | None:
+    """A US Eastern wall-clock time on ``day`` as a naive UTC ``datetime``.
+
+    Uses the real time-zone database, so the answer is right on both sides of a daylight-saving
+    change. Returns ``None`` when the database is not installed, rather than approximating with
+    a fixed offset: a tip-off an hour wrong would let a "locked" projection be computed after
+    the game started, which is the one thing the ledger exists to prevent.
+    """
+    try:
+        zone = ZoneInfo(_EASTERN_ZONE)
+    except (ZoneInfoNotFoundError, ValueError):  # pragma: no cover - needs a host with no tzdata
+        logger.warning("no_tz_database zone=%s", _EASTERN_ZONE)
+        return None
+    try:
+        local = datetime(day.year, day.month, day.day, hour, minute, tzinfo=zone)
+    except ValueError:
+        return None
+    return local.astimezone(timezone.utc).replace(tzinfo=None)
+
+
+def _clean_text(value: Any, limit: int) -> str | None:
+    """A stripped, bounded string, or ``None`` for anything that is not a non-empty string."""
+    if not isinstance(value, str):
+        return None
+    text = " ".join(value.split())
+    if not text or text.lower() in _MISSING:
+        return None
+    return text[:limit]
+
+
+def _first_text(row: Mapping[str, Any], names: Sequence[str], limit: int) -> str | None:
+    for name in names:
+        text = _clean_text(row.get(name), limit)
+        if text is not None:
+            return text
+    return None
+
+
+def _aware_to_utc(value: Any) -> datetime | None:
+    """An ISO timestamp *with an explicit offset* as naive UTC; ``None`` for anything else.
+
+    A timestamp with no offset is ambiguous (it may be Eastern, it may be UTC) and is refused.
+    """
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith(("Z", "z")):
+        text = text[:-1] + "+00:00"
+    try:
+        moment = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if moment.tzinfo is None or moment.utcoffset() is None:
+        return None
+    return moment.astimezone(timezone.utc).replace(tzinfo=None)
+
+
+def _plausible_tipoff(moment: datetime, day: date | None) -> bool:
+    """Refuse a tip-off more than a day from the game's Eastern date.
+
+    A UTC tip-off falls on the Eastern date or the one after it, so one day either side is
+    generous; a ``0001-01-01`` or a ``1970-01-01`` placeholder is not, and is dropped. With no
+    date to compare to there is nothing to check against, and the value stands.
+    """
+    if day is None:
+        return True
+    return abs((moment.date() - day).days) <= 1
+
+
+def _tipoff_for(header: Mapping[str, Any], day: date | None) -> datetime | None:
+    columns = SCOREBOARD_SCHEDULE_COLUMNS
+    for name in columns["tipoff_utc"] + columns["tipoff_with_offset"]:
+        moment = _aware_to_utc(header.get(name))
+        if moment is not None and _plausible_tipoff(moment, day):
+            return moment
+    status_id = parse_int(header.get("GAME_STATUS_ID"))
+    if status_id not in (None, 1):
+        return None  # live or final: the status text is a clock or a score line, not a tip-off
+    match = _TIPOFF_STATUS_TEXT.match(str(header.get("GAME_STATUS_TEXT") or ""))
+    if match is None or day is None:
+        return None
+    hour, minute = int(match["hour"]), int(match["minute"])
+    if not (1 <= hour <= 12 and 0 <= minute <= 59):
+        return None
+    hour = hour % 12 + (12 if match["half"].lower() == "p" else 0)
+    return eastern_wall_clock_to_utc(day, hour, minute)
+
+
+def normalize_scoreboard_schedule(
+    payload: Mapping[str, Any], *, game_date: date | None = None
+) -> list[ScheduleDetailRow]:
+    """``ScoreboardV2`` → one :class:`ScheduleDetailRow` per game on the slate.
+
+    Reads the ``GameHeader`` result set. The game's Eastern date comes from the row's own
+    ``GAME_DATE_EST`` and falls back to ``game_date``. A row with no ``GAME_ID`` is dropped.
+    Rows are returned for every game, including those with nothing to say (all fields
+    ``None``): whether to write them is the writer's decision, not the reader's.
+
+    Tip-off, in order of trust: an explicit timestamp with a UTC offset (``GAME_TIME_UTC`` and
+    its spellings), then a scheduled game's ``GAME_STATUS_TEXT`` of the form ``7:30 pm ET``
+    read in ``America/New_York`` on the game's Eastern date. See the module docstring for
+    why nothing else is attempted.
+    """
+    out: list[ScheduleDetailRow] = []
+    if not isinstance(payload, Mapping):
+        return out
+    for header in result_set_rows(payload, "GameHeader"):
+        game_id = str(header.get("GAME_ID") or header.get("gameId") or "").strip()
+        if not game_id:
+            continue
+        day = parse_date(header.get("GAME_DATE_EST")) or game_date
+        out.append(
+            ScheduleDetailRow(
+                game_id=game_id,
+                tipoff_utc=_tipoff_for(header, day),
+                arena_name=_first_text(header, SCOREBOARD_SCHEDULE_COLUMNS["arena_name"], 96),
+                arena_city=_first_text(header, SCOREBOARD_SCHEDULE_COLUMNS["arena_city"], 64),
+            )
+        )
+    return out

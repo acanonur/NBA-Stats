@@ -1,0 +1,14 @@
+.controls {
+  display: flex;
+  gap: var(--hw-space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--hw-space-md);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  padding: var(--hw-space-xs) 0;
+  border-bottom: 1px solid var(--hw-separator);
+}

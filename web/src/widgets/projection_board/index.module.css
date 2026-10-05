@@ -1,0 +1,79 @@
+/*
+ * `projection_board`'s own layout — the context line, the row list (bar + head), and the
+ * footnotes. Two independent row idioms live here: `.row`/`.rowHead` for the ordinary tile
+ * presentation, `.bsRow`/`.bsRowHead` for the broadsheet one — kept as separate classes rather
+ * than one reskinned with an ancestor selector, matching WEB_DESIGN.md §7.7's "broadsheet is a
+ * separate component family, not a theme override".
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-md);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.rowHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.rowName {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+}
+
+.rowSpacer {
+  flex: 1 1 auto;
+}
+
+.rowMetric {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+  flex: none;
+}
+
+.bsBoard {
+  display: flex;
+  flex-direction: column;
+}
+
+.bsRowWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.bsRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+  padding: var(--hw-space-xs) 0;
+}
+
+.bsRowHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.footnotes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}

@@ -1,0 +1,70 @@
+/*
+ * `ios/NBAStats/DesignSystem/RangeBar.swift`'s `RangeBar`, ported: a filled band from low to
+ * high, a rule at the mean, and an optional reference tick — the tick is a projection's own
+ * season average, never a market line (`RangeBar.swift`'s own docstring is explicit about this;
+ * see `RangeBar.tsx`'s docstring for the same point in this codebase).
+ *
+ * Structurally different from `FactorBar`: that one fills from a floor, this one fills a *band*
+ * between two bounds. Conflating the two idioms is the documented trap (WEB_DESIGN.md §7.4 item
+ * 14) — a band is a predictive interval, a floor-fill is a value inside a domain, and drawing one
+ * as the other would misstate what the picture means.
+ */
+
+.frame {
+  position: relative;
+  width: 100%;
+}
+
+.baseline {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--hw-rangebar-rule, var(--hw-separator));
+}
+
+.band {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: var(--hw-bs-band-height);
+  border-radius: var(--hw-radius-pill);
+  background-color: var(--hw-rangebar-band, var(--hw-track));
+}
+
+.tick {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--hw-bs-tick-width);
+  height: var(--hw-bs-tick-height);
+  background-color: var(--hw-rangebar-accent, var(--hw-text-primary));
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--hw-bs-dot-size);
+  height: var(--hw-bs-dot-size);
+  border-radius: var(--hw-radius-pill);
+  background-color: var(--hw-rangebar-dot, var(--hw-text-primary));
+  box-sizing: border-box;
+  border: 1.5px solid var(--hw-rangebar-page, var(--hw-surface));
+}
+
+.labels {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+  margin-top: var(--hw-space-xxs);
+}
+
+.labelMiddle {
+  flex: 1 1 auto;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

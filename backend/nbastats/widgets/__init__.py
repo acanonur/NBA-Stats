@@ -16,6 +16,16 @@ into ``"partial"``.
 the process from starting rather than producing a 500 the first time somebody's dashboard
 happens to contain that tile. Same for :data:`TTL_SECONDS`, which has to agree with the
 catalog's ``minRefreshSeconds`` and with ``contracts/CONTRACT.md`` §8.
+
+The league kinds
+----------------
+Sixteen of the twenty kinds are the NBA player and team tiles. The other four
+(``team_matchup``, ``defense_by_position``, ``availability_report``, ``slate_projections``) read
+either the NBA or the EuroLeague, chosen by the widget's own ``league`` config value, and each is a
+thin resolver over the builder the matching ``/v1`` or ``/v1/el`` route calls, so a tile's payload
+is the route's payload. What they share is in :mod:`nbastats.widgets.league_common`. Their freshness
+travels in the payload's own ``freshness`` block, not in the NBA's ``syncVersion``, which is why
+``routes_dashboard`` never answers them ``unchanged``.
 """
 from __future__ import annotations
 
@@ -23,19 +33,25 @@ from typing import Any, Protocol
 
 from .. import catalog
 from . import (
+    availability_report,
     career_arc,
     comparison,
     daily_movers,
+    defense_by_position,
     four_factors,
     game_log,
     leaderboard,
     next_game_projection,
     player_snapshot,
+    fantasy_draft_board,
+    fantasy_trade,
     projection_board,
     scoreboard,
     shot_profile,
+    slate_projections,
     stat_tile,
     team_efficiency,
+    team_matchup,
     trend_chart,
 )
 from .base import ResolveContext, WidgetError
@@ -79,7 +95,13 @@ RESOLVERS: dict[str, Resolver] = {
     "team_efficiency": team_efficiency.resolve,
     "next_game_projection": next_game_projection.resolve,
     "projection_board": projection_board.resolve,
+    "fantasy_draft_board": fantasy_draft_board.resolve,
+    "fantasy_trade": fantasy_trade.resolve,
     "career_arc": career_arc.resolve,
+    "team_matchup": team_matchup.resolve,
+    "defense_by_position": defense_by_position.resolve,
+    "availability_report": availability_report.resolve,
+    "slate_projections": slate_projections.resolve,
 }
 
 #: How long a payload of each kind stays good for (``contracts/CONTRACT.md`` §8):
@@ -101,7 +123,18 @@ TTL_SECONDS: dict[str, int] = {
     # catalog's ``minRefreshSeconds`` for the kind says 600 and §8 groups it with the tables.
     "next_game_projection": 600,
     "projection_board": 600,
+    # Season aggregates, the leaderboard/team-table group in CONTRACT.md section 8.
+    "fantasy_draft_board": 600,
+    "fantasy_trade": 600,
     "career_arc": 3600,
+    # The league tiles. A matchup and a projected slate move with results and the schedule, the
+    # same group as the other team tables; an availability report moves with the injury report
+    # (refreshed as often as every fifteen minutes on a game day), so it is the faster of the
+    # four. ``contracts/widgets.json`` says the same through ``minRefreshSeconds``.
+    "team_matchup": 600,
+    "defense_by_position": 600,
+    "availability_report": 300,
+    "slate_projections": 600,
 }
 
 

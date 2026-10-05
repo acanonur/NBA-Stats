@@ -69,6 +69,7 @@ BASIC_PLAYER_METRICS: tuple[str, ...] = (
     "ftm",
     "fta",
     "plus_minus",
+    "fantasy_pts",
 )
 
 ADVANCED_PLAYER_METRICS: tuple[str, ...] = (

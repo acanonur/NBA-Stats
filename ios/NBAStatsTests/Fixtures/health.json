@@ -4,5 +4,7 @@
   "syncVersion": 4861,
   "dataThrough": "2026-01-02",
   "databaseReady": true,
-  "seededDemoData": true
+  "seededDemoData": true,
+  "authReady": true,
+  "authWarnings": []
 }

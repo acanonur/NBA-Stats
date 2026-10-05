@@ -4577,7 +4577,1130 @@
       "notes": []
     },
     {
-      "widgetId": "w14.career_arc",
+      "widgetId": "w14.fantasy_draft_board",
+      "kind": "fantasy_draft_board",
+      "status": "partial",
+      "payload": {
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "scoring": "categories",
+        "categories": [
+          "pts",
+          "fg3m",
+          "reb",
+          "ast",
+          "stl",
+          "blk",
+          "tov",
+          "fg_pct",
+          "ft_pct"
+        ],
+        "puntCategories": [],
+        "teams": 12,
+        "rosterSpots": 13,
+        "nextPick": {
+          "overall": 1,
+          "round": 1,
+          "pickInRound": 1
+        },
+        "poolSize": 150,
+        "replacementValue": -3.584,
+        "weakestCategories": [
+          "pts",
+          "fg3m",
+          "reb"
+        ],
+        "rosterStrength": {
+          "pts": 0,
+          "fg3m": 0,
+          "reb": 0,
+          "ast": 0,
+          "stl": 0,
+          "blk": 0,
+          "tov": 0,
+          "fg_pct": 0,
+          "ft_pct": 0
+        },
+        "columns": [
+          {
+            "key": "score",
+            "label": "Value",
+            "format": "decimal2",
+            "group": "summary",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "team",
+            "label": "Team",
+            "format": null,
+            "group": "summary",
+            "align": "leading",
+            "higherIsBetter": null,
+            "punted": false
+          },
+          {
+            "key": "gp",
+            "label": "GP",
+            "format": "integer",
+            "group": "summary",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "mpg",
+            "label": "MPG",
+            "format": "decimal1",
+            "group": "summary",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "pts",
+            "label": "PTS",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "fg3m",
+            "label": "TPM",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "reb",
+            "label": "REB",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "ast",
+            "label": "AST",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "stl",
+            "label": "STL",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "blk",
+            "label": "BLK",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "tov",
+            "label": "TOV",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": false,
+            "punted": false
+          },
+          {
+            "key": "fg_pct",
+            "label": "FG%",
+            "format": "percent1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "fga",
+            "label": "FGA",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": null,
+            "punted": false
+          },
+          {
+            "key": "ft_pct",
+            "label": "FT%",
+            "format": "percent1",
+            "group": "production",
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "fta",
+            "label": "FTA",
+            "format": "decimal1",
+            "group": "production",
+            "higherIsBetter": null,
+            "punted": false
+          },
+          {
+            "key": "z_pts",
+            "label": "zPTS",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_fg3m",
+            "label": "zTPM",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_ast",
+            "label": "zAST",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_reb",
+            "label": "zREB",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_stl",
+            "label": "zSTL",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_blk",
+            "label": "zBLK",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_tov",
+            "label": "zTOV",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_fg_pct",
+            "label": "zFG%",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          },
+          {
+            "key": "z_ft_pct",
+            "label": "zFT%",
+            "format": "decimal2",
+            "group": "impact",
+            "signed": true,
+            "higherIsBetter": true,
+            "punted": false
+          }
+        ],
+        "rows": [
+          {
+            "rank": 1,
+            "round": 1,
+            "pickInRound": 1,
+            "player": {
+              "playerId": 1630558,
+              "name": "Davion Mitchell",
+              "firstName": "Davion",
+              "lastName": "Mitchell",
+              "teamId": 1610612755,
+              "teamAbbr": "PHI",
+              "position": "C",
+              "jersey": "37",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630558.png",
+              "isActive": true
+            },
+            "baselineRank": 1,
+            "totalZ": 5.775,
+            "valueOverReplacement": 9.359,
+            "suggestion": 5.775,
+            "espnPoints": 50.08,
+            "yahooPoints": 48.21,
+            "values": {
+              "score": 0.642,
+              "team": "PHI",
+              "gp": 24,
+              "mpg": 37.9,
+              "pts": 21.5,
+              "z_pts": 1.323,
+              "fg3m": 0.12,
+              "z_fg3m": -1.511,
+              "reb": 13.75,
+              "z_reb": 2.996,
+              "ast": 1.92,
+              "z_ast": -0.898,
+              "stl": 0.79,
+              "z_stl": -0.605,
+              "blk": 2.29,
+              "z_blk": 2.659,
+              "tov": 1.92,
+              "z_tov": 0.094,
+              "fg_pct": 0.5876,
+              "fga": 14.3,
+              "z_fg_pct": 3.277,
+              "ft_pct": 0.7033,
+              "fta": 4.7,
+              "z_ft_pct": -1.56
+            },
+            "fills": [],
+            "reason": "Best available; carries FG% and rebounds; costs you FT%",
+            "availability": "estimated"
+          },
+          {
+            "rank": 2,
+            "round": 1,
+            "pickInRound": 2,
+            "player": {
+              "playerId": 1642358,
+              "name": "AJ Johnson",
+              "firstName": "AJ",
+              "lastName": "Johnson",
+              "teamId": 1610612745,
+              "teamAbbr": "HOU",
+              "position": "G",
+              "jersey": "30",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642358.png",
+              "isActive": true
+            },
+            "baselineRank": 2,
+            "totalZ": 5.504,
+            "valueOverReplacement": 9.088,
+            "suggestion": 5.504,
+            "espnPoints": 47.76,
+            "yahooPoints": 44.97,
+            "values": {
+              "score": 0.612,
+              "team": "HOU",
+              "gp": 21,
+              "mpg": 36.2,
+              "pts": 26.48,
+              "z_pts": 2.646,
+              "fg3m": 3.67,
+              "z_fg3m": 1.459,
+              "reb": 5.33,
+              "z_reb": -0.398,
+              "ast": 6.86,
+              "z_ast": 1.811,
+              "stl": 1.48,
+              "z_stl": 1.739,
+              "blk": 0.19,
+              "z_blk": -0.933,
+              "tov": 3.19,
+              "z_tov": -2.025,
+              "fg_pct": 0.4675,
+              "fga": 20.5,
+              "z_fg_pct": 0.049,
+              "ft_pct": 0.8642,
+              "fta": 4.0,
+              "z_ft_pct": 1.155
+            },
+            "fills": [],
+            "reason": "carries points and assists; turns it over",
+            "availability": "estimated"
+          },
+          {
+            "rank": 3,
+            "round": 1,
+            "pickInRound": 3,
+            "player": {
+              "playerId": 1628502,
+              "name": "Nigel Hayes-Davis",
+              "firstName": "Nigel",
+              "lastName": "Hayes-Davis",
+              "teamId": 1610612749,
+              "teamAbbr": "MIL",
+              "position": "G",
+              "jersey": "37",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628502.png",
+              "isActive": true
+            },
+            "baselineRank": 3,
+            "totalZ": 4.628,
+            "valueOverReplacement": 8.212,
+            "suggestion": 4.628,
+            "espnPoints": 49.5,
+            "yahooPoints": 47.83,
+            "values": {
+              "score": 0.514,
+              "team": "MIL",
+              "gp": 22,
+              "mpg": 36.8,
+              "pts": 26.18,
+              "z_pts": 2.568,
+              "fg3m": 1.95,
+              "z_fg3m": 0.023,
+              "reb": 4.73,
+              "z_reb": -0.642,
+              "ast": 10.41,
+              "z_ast": 3.759,
+              "stl": 1.32,
+              "z_stl": 1.198,
+              "blk": 0.05,
+              "z_blk": -1.181,
+              "tov": 3.73,
+              "z_tov": -2.917,
+              "fg_pct": 0.4553,
+              "fga": 22.2,
+              "z_fg_pct": -0.462,
+              "ft_pct": 0.9322,
+              "fta": 4.2,
+              "z_ft_pct": 2.283
+            },
+            "fills": [],
+            "reason": "carries assists and points; turns it over",
+            "availability": "estimated"
+          },
+          {
+            "rank": 4,
+            "round": 1,
+            "pickInRound": 4,
+            "player": {
+              "playerId": 1642920,
+              "name": "Kobe Sanders",
+              "firstName": "Kobe",
+              "lastName": "Sanders",
+              "teamId": 1610612747,
+              "teamAbbr": "LAL",
+              "position": "G",
+              "jersey": "31",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642920.png",
+              "isActive": true
+            },
+            "baselineRank": 4,
+            "totalZ": 4.601,
+            "valueOverReplacement": 8.185,
+            "suggestion": 4.601,
+            "espnPoints": 49.29,
+            "yahooPoints": 47.0,
+            "values": {
+              "score": 0.511,
+              "team": "LAL",
+              "gp": 24,
+              "mpg": 36.6,
+              "pts": 30.46,
+              "z_pts": 3.705,
+              "fg3m": 2.5,
+              "z_fg3m": 0.48,
+              "reb": 4.25,
+              "z_reb": -0.835,
+              "ast": 7.38,
+              "z_ast": 2.095,
+              "stl": 1.17,
+              "z_stl": 0.679,
+              "blk": 0.12,
+              "z_blk": -1.045,
+              "tov": 3.5,
+              "z_tov": -2.539,
+              "fg_pct": 0.4886,
+              "fga": 24.5,
+              "z_fg_pct": 1.036,
+              "ft_pct": 0.852,
+              "fta": 4.3,
+              "z_ft_pct": 1.025
+            },
+            "fills": [],
+            "reason": "carries points and assists; turns it over",
+            "availability": "estimated"
+          },
+          {
+            "rank": 5,
+            "round": 1,
+            "pickInRound": 5,
+            "player": {
+              "playerId": 204060,
+              "name": "Joe Ingles",
+              "firstName": "Joe",
+              "lastName": "Ingles",
+              "teamId": 1610612737,
+              "teamAbbr": "ATL",
+              "position": "G",
+              "jersey": "23",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/204060.png",
+              "isActive": true
+            },
+            "baselineRank": 5,
+            "totalZ": 4.321,
+            "valueOverReplacement": 7.905,
+            "suggestion": 4.321,
+            "espnPoints": 47.82,
+            "yahooPoints": 45.99,
+            "values": {
+              "score": 0.48,
+              "team": "ATL",
+              "gp": 22,
+              "mpg": 37.2,
+              "pts": 27.82,
+              "z_pts": 3.003,
+              "fg3m": 3.95,
+              "z_fg3m": 1.7,
+              "reb": 4.82,
+              "z_reb": -0.605,
+              "ast": 8.32,
+              "z_ast": 2.612,
+              "stl": 1.09,
+              "z_stl": 0.419,
+              "blk": 0.09,
+              "z_blk": -1.103,
+              "tov": 3.64,
+              "z_tov": -2.766,
+              "fg_pct": 0.4481,
+              "fga": 21.9,
+              "z_fg_pct": -0.75,
+              "ft_pct": 0.8868,
+              "fta": 4.9,
+              "z_ft_pct": 1.81
+            },
+            "fills": [],
+            "reason": "carries points and assists; turns it over",
+            "availability": "estimated"
+          },
+          {
+            "rank": 6,
+            "round": 1,
+            "pickInRound": 6,
+            "player": {
+              "playerId": 203507,
+              "name": "Giannis Antetokounmpo",
+              "firstName": "Giannis",
+              "lastName": "Antetokounmpo",
+              "teamId": 1610612750,
+              "teamAbbr": "MIN",
+              "position": "F",
+              "jersey": "21",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/203507.png",
+              "isActive": true
+            },
+            "baselineRank": 6,
+            "totalZ": 4.084,
+            "valueOverReplacement": 7.667,
+            "suggestion": 4.084,
+            "espnPoints": 44.0,
+            "yahooPoints": 43.15,
+            "values": {
+              "score": 0.454,
+              "team": "MIN",
+              "gp": 22,
+              "mpg": 37.9,
+              "pts": 22.32,
+              "z_pts": 1.541,
+              "fg3m": 3.32,
+              "z_fg3m": 1.166,
+              "reb": 10.18,
+              "z_reb": 1.557,
+              "ast": 3.5,
+              "z_ast": -0.03,
+              "stl": 0.91,
+              "z_stl": -0.203,
+              "blk": 1.0,
+              "z_blk": 0.451,
+              "tov": 2.36,
+              "z_tov": -0.649,
+              "fg_pct": 0.4664,
+              "fga": 17.4,
+              "z_fg_pct": 0.006,
+              "ft_pct": 0.8087,
+              "fta": 3.4,
+              "z_ft_pct": 0.244
+            },
+            "fills": [],
+            "reason": "carries rebounds and points",
+            "availability": "estimated"
+          },
+          {
+            "rank": 7,
+            "round": 1,
+            "pickInRound": 7,
+            "player": {
+              "playerId": 1642867,
+              "name": "Collin Murray-Boyles",
+              "firstName": "Collin",
+              "lastName": "Murray-Boyles",
+              "teamId": 1610612745,
+              "teamAbbr": "HOU",
+              "position": "C",
+              "jersey": "6",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642867.png",
+              "isActive": true
+            },
+            "baselineRank": 7,
+            "totalZ": 4.018,
+            "valueOverReplacement": 7.601,
+            "suggestion": 4.018,
+            "espnPoints": 47.68,
+            "yahooPoints": 46.12,
+            "values": {
+              "score": 0.446,
+              "team": "HOU",
+              "gp": 22,
+              "mpg": 34.8,
+              "pts": 18.73,
+              "z_pts": 0.586,
+              "fg3m": 0.09,
+              "z_fg3m": -1.54,
+              "reb": 13.91,
+              "z_reb": 3.061,
+              "ast": 1.95,
+              "z_ast": -0.877,
+              "stl": 0.5,
+              "z_stl": -1.604,
+              "blk": 2.68,
+              "z_blk": 3.325,
+              "tov": 1.77,
+              "z_tov": 0.333,
+              "fg_pct": 0.5797,
+              "fga": 12.6,
+              "z_fg_pct": 2.698,
+              "ft_pct": 0.6672,
+              "fta": 4.2,
+              "z_ft_pct": -1.965
+            },
+            "fills": [],
+            "reason": "carries blocks and rebounds; costs you FT%",
+            "availability": "estimated"
+          },
+          {
+            "rank": 8,
+            "round": 1,
+            "pickInRound": 8,
+            "player": {
+              "playerId": 1629012,
+              "name": "Collin Sexton",
+              "firstName": "Collin",
+              "lastName": "Sexton",
+              "teamId": 1610612743,
+              "teamAbbr": "DEN",
+              "position": "G",
+              "jersey": "51",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629012.png",
+              "isActive": true
+            },
+            "baselineRank": 8,
+            "totalZ": 3.69,
+            "valueOverReplacement": 7.274,
+            "suggestion": 3.69,
+            "espnPoints": 44.24,
+            "yahooPoints": 43.04,
+            "values": {
+              "score": 0.41,
+              "team": "DEN",
+              "gp": 21,
+              "mpg": 36.8,
+              "pts": 25.95,
+              "z_pts": 2.507,
+              "fg3m": 2.33,
+              "z_fg3m": 0.341,
+              "reb": 4.95,
+              "z_reb": -0.551,
+              "ast": 6.1,
+              "z_ast": 1.393,
+              "stl": 1.33,
+              "z_stl": 1.25,
+              "blk": 0.29,
+              "z_blk": -0.77,
+              "tov": 2.86,
+              "z_tov": -1.47,
+              "fg_pct": 0.4646,
+              "fga": 21.7,
+              "z_fg_pct": -0.066,
+              "ft_pct": 0.8604,
+              "fta": 3.9,
+              "z_ft_pct": 1.058
+            },
+            "fills": [],
+            "reason": "carries points and assists; turns it over",
+            "availability": "estimated"
+          },
+          {
+            "rank": 9,
+            "round": 1,
+            "pickInRound": 9,
+            "player": {
+              "playerId": 1627747,
+              "name": "Caris LeVert",
+              "firstName": "Caris",
+              "lastName": "LeVert",
+              "teamId": 1610612740,
+              "teamAbbr": "NOP",
+              "position": "C",
+              "jersey": "51",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627747.png",
+              "isActive": true
+            },
+            "baselineRank": 9,
+            "totalZ": 3.679,
+            "valueOverReplacement": 7.263,
+            "suggestion": 3.679,
+            "espnPoints": 44.24,
+            "yahooPoints": 42.12,
+            "values": {
+              "score": 0.409,
+              "team": "NOP",
+              "gp": 21,
+              "mpg": 38.1,
+              "pts": 19.0,
+              "z_pts": 0.659,
+              "fg3m": 0.05,
+              "z_fg3m": -1.576,
+              "reb": 11.19,
+              "z_reb": 1.964,
+              "ast": 1.67,
+              "z_ast": -1.035,
+              "stl": 0.86,
+              "z_stl": -0.381,
+              "blk": 2.1,
+              "z_blk": 2.323,
+              "tov": 1.67,
+              "z_tov": 0.51,
+              "fg_pct": 0.5913,
+              "fga": 11.8,
+              "z_fg_pct": 2.78,
+              "ft_pct": 0.7082,
+              "fta": 5.0,
+              "z_ft_pct": -1.564
+            },
+            "fills": [],
+            "reason": "carries FG% and blocks; costs you threes",
+            "availability": "estimated"
+          },
+          {
+            "rank": 10,
+            "round": 1,
+            "pickInRound": 10,
+            "player": {
+              "playerId": 1628998,
+              "name": "Cody Martin",
+              "firstName": "Cody",
+              "lastName": "Martin",
+              "teamId": 1610612752,
+              "teamAbbr": "NYK",
+              "position": "F",
+              "jersey": "36",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628998.png",
+              "isActive": true
+            },
+            "baselineRank": 10,
+            "totalZ": 3.226,
+            "valueOverReplacement": 6.81,
+            "suggestion": 3.226,
+            "espnPoints": 39.17,
+            "yahooPoints": 37.37,
+            "values": {
+              "score": 0.358,
+              "team": "NYK",
+              "gp": 23,
+              "mpg": 38.0,
+              "pts": 20.78,
+              "z_pts": 1.133,
+              "fg3m": 4.26,
+              "z_fg3m": 1.957,
+              "reb": 5.74,
+              "z_reb": -0.234,
+              "ast": 4.61,
+              "z_ast": 0.578,
+              "stl": 1.26,
+              "z_stl": 1.001,
+              "blk": 0.43,
+              "z_blk": -0.515,
+              "tov": 2.3,
+              "z_tov": -0.551,
+              "fg_pct": 0.4254,
+              "fga": 17.2,
+              "z_fg_pct": -1.328,
+              "ft_pct": 0.9239,
+              "fta": 2.3,
+              "z_ft_pct": 1.185
+            },
+            "fills": [],
+            "reason": "carries threes and FT%; costs you FG%",
+            "availability": "estimated"
+          },
+          {
+            "rank": 11,
+            "round": 1,
+            "pickInRound": 11,
+            "player": {
+              "playerId": 1630164,
+              "name": "James Wiseman",
+              "firstName": "James",
+              "lastName": "Wiseman",
+              "teamId": 1610612762,
+              "teamAbbr": "UTA",
+              "position": "F",
+              "jersey": "49",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630164.png",
+              "isActive": true
+            },
+            "baselineRank": 11,
+            "totalZ": 3.151,
+            "valueOverReplacement": 6.735,
+            "suggestion": 3.151,
+            "espnPoints": 35.91,
+            "yahooPoints": 33.7,
+            "values": {
+              "score": 0.35,
+              "team": "UTA",
+              "gp": 23,
+              "mpg": 38.3,
+              "pts": 18.0,
+              "z_pts": 0.393,
+              "fg3m": 4.35,
+              "z_fg3m": 2.03,
+              "reb": 5.78,
+              "z_reb": -0.217,
+              "ast": 2.83,
+              "z_ast": -0.399,
+              "stl": 1.48,
+              "z_stl": 1.746,
+              "blk": 0.65,
+              "z_blk": -0.144,
+              "tov": 1.87,
+              "z_tov": 0.172,
+              "fg_pct": 0.4278,
+              "fga": 14.0,
+              "z_fg_pct": -1.022,
+              "ft_pct": 0.858,
+              "fta": 2.3,
+              "z_ft_pct": 0.591
+            },
+            "fills": [],
+            "reason": "carries threes and steals; costs you FG%",
+            "availability": "estimated"
+          },
+          {
+            "rank": 12,
+            "round": 1,
+            "pickInRound": 12,
+            "player": {
+              "playerId": 1629661,
+              "name": "Cameron Johnson",
+              "firstName": "Cameron",
+              "lastName": "Johnson",
+              "teamId": 1610612765,
+              "teamAbbr": "DET",
+              "position": "F",
+              "jersey": "37",
+              "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629661.png",
+              "isActive": true
+            },
+            "baselineRank": 12,
+            "totalZ": 3.111,
+            "valueOverReplacement": 6.695,
+            "suggestion": 3.111,
+            "espnPoints": 33.32,
+            "yahooPoints": 30.37,
+            "values": {
+              "score": 0.346,
+              "team": "DET",
+              "gp": 22,
+              "mpg": 34.9,
+              "pts": 15.32,
+              "z_pts": -0.32,
+              "fg3m": 2.73,
+              "z_fg3m": 0.671,
+              "reb": 5.14,
+              "z_reb": -0.477,
+              "ast": 2.32,
+              "z_ast": -0.678,
+              "stl": 1.64,
+              "z_stl": 2.287,
+              "blk": 0.59,
+              "z_blk": -0.248,
+              "tov": 1.27,
+              "z_tov": 1.165,
+              "fg_pct": 0.4665,
+              "fga": 11.3,
+              "z_fg_pct": 0.006,
+              "ft_pct": 0.8759,
+              "fta": 2.1,
+              "z_ft_pct": 0.705
+            },
+            "fills": [],
+            "reason": "carries steals; protects the ball",
+            "availability": "estimated"
+          }
+        ],
+        "note": "Values are z-scores against the top 150 players of 2025-26. FG% and FT% are volume-weighted, so a high percentage on few attempts is worth little, and zTOV is sign-flipped, so a high number there means few turnovers."
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "estimated",
+      "notes": [
+        "Set your team name to rank by what your roster still needs."
+      ]
+    },
+    {
+      "widgetId": "w15.fantasy_trade",
+      "kind": "fantasy_trade",
+      "status": "partial",
+      "payload": {
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "puntCategories": [],
+        "give": {
+          "label": "give",
+          "count": 1,
+          "totalZ": 0.455,
+          "espnPoints": 35.2,
+          "yahooPoints": 34.55,
+          "players": [
+            {
+              "player": {
+                "playerId": 1631260,
+                "name": "AJ Green",
+                "firstName": "AJ",
+                "lastName": "Green",
+                "teamId": 1610612743,
+                "teamAbbr": "DEN",
+                "position": "G",
+                "jersey": "44",
+                "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631260.png",
+                "isActive": true
+              },
+              "totalZ": 0.455,
+              "baselineRank": 66,
+              "gamesPlayed": 25,
+              "categories": {
+                "pts": 0.637,
+                "fg3m": -0.207,
+                "reb": -0.71,
+                "ast": 0.902,
+                "stl": 0.93,
+                "blk": -0.643,
+                "tov": -0.776,
+                "fg_pct": -0.126,
+                "ft_pct": 0.447
+              },
+              "availability": "estimated"
+            }
+          ],
+          "missing": []
+        },
+        "get": {
+          "label": "get",
+          "count": 1,
+          "totalZ": 4.601,
+          "espnPoints": 49.29,
+          "yahooPoints": 47.0,
+          "players": [
+            {
+              "player": {
+                "playerId": 1642920,
+                "name": "Kobe Sanders",
+                "firstName": "Kobe",
+                "lastName": "Sanders",
+                "teamId": 1610612747,
+                "teamAbbr": "LAL",
+                "position": "G",
+                "jersey": "31",
+                "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642920.png",
+                "isActive": true
+              },
+              "totalZ": 4.601,
+              "baselineRank": 4,
+              "gamesPlayed": 24,
+              "categories": {
+                "pts": 3.705,
+                "fg3m": 0.48,
+                "reb": -0.835,
+                "ast": 2.095,
+                "stl": 0.679,
+                "blk": -1.045,
+                "tov": -2.539,
+                "fg_pct": 1.036,
+                "ft_pct": 1.025
+              },
+              "availability": "estimated"
+            }
+          ],
+          "missing": []
+        },
+        "categories": [
+          {
+            "category": "pts",
+            "give": 0.637,
+            "get": 3.705,
+            "change": 3.067,
+            "net": 3.067,
+            "verdict": "gain",
+            "punted": false
+          },
+          {
+            "category": "fg3m",
+            "give": -0.207,
+            "get": 0.48,
+            "change": 0.688,
+            "net": 0.688,
+            "verdict": "gain",
+            "punted": false
+          },
+          {
+            "category": "reb",
+            "give": -0.71,
+            "get": -0.835,
+            "change": -0.125,
+            "net": -0.125,
+            "verdict": "level",
+            "punted": false
+          },
+          {
+            "category": "ast",
+            "give": 0.902,
+            "get": 2.095,
+            "change": 1.193,
+            "net": 1.193,
+            "verdict": "gain",
+            "punted": false
+          },
+          {
+            "category": "stl",
+            "give": 0.93,
+            "get": 0.679,
+            "change": -0.251,
+            "net": -0.251,
+            "verdict": "loss",
+            "punted": false
+          },
+          {
+            "category": "blk",
+            "give": -0.643,
+            "get": -1.045,
+            "change": -0.402,
+            "net": -0.402,
+            "verdict": "loss",
+            "punted": false
+          },
+          {
+            "category": "tov",
+            "give": -0.776,
+            "get": -2.539,
+            "change": -1.763,
+            "net": -1.763,
+            "verdict": "loss",
+            "punted": false
+          },
+          {
+            "category": "fg_pct",
+            "give": -0.126,
+            "get": 1.036,
+            "change": 1.162,
+            "net": 1.162,
+            "verdict": "gain",
+            "punted": false
+          },
+          {
+            "category": "ft_pct",
+            "give": 0.447,
+            "get": 1.025,
+            "change": 0.578,
+            "net": 0.578,
+            "verdict": "gain",
+            "punted": false
+          }
+        ],
+        "changeZ": 4.147,
+        "rosterAdjustment": -0.0,
+        "netZ": 4.147,
+        "replacementValue": -3.584,
+        "poolSpread": 1.908,
+        "verdict": "clear win",
+        "bands": {
+          "fair": 0.75,
+          "clear": 2.0
+        },
+        "points": {
+          "espn_points": {
+            "change": 14.09,
+            "net": 14.09,
+            "verdict": "clear win"
+          },
+          "yahoo_points": {
+            "change": 12.44,
+            "net": 12.44,
+            "verdict": "clear win"
+          }
+        },
+        "sensitivity": {
+          "base": 4.147,
+          "low": 1.672,
+          "high": 4.269,
+          "width": 2.596,
+          "lowScenario": "The player you get loses 15% of his minutes",
+          "highScenario": "The player you give up misses 22 games",
+          "flips": false,
+          "scenarios": [
+            {
+              "key": "base",
+              "label": "As projected",
+              "net": 4.147
+            },
+            {
+              "key": "get_injured",
+              "label": "The player you get misses 22 games",
+              "net": 2.912
+            },
+            {
+              "key": "get_role_loss",
+              "label": "The player you get loses 15% of his minutes",
+              "net": 1.672
+            },
+            {
+              "key": "give_injured",
+              "label": "The player you give up misses 22 games",
+              "net": 4.269
+            },
+            {
+              "key": "give_breakout",
+              "label": "The player you give up gains 15% of his minutes",
+              "net": 2.295
+            }
+          ]
+        },
+        "note": "The range is a sweep over named assumptions, not a confidence interval: nothing here is a probability. A trade whose sign survives every scenario is a different proposition from one that only wins if everybody stays healthy."
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "estimated",
+      "notes": [
+        "The pool's own spread of total z is 1.91; the fair band is 0.75. Bands are editable — read them against that spread rather than as universal thresholds."
+      ]
+    },
+    {
+      "widgetId": "w16.career_arc",
       "kind": "career_arc",
       "status": "ok",
       "payload": {
@@ -4682,6 +5805,2596 @@
       "generatedAt": "2026-01-03T07:12:44Z",
       "ttlSeconds": 3600,
       "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w17.team_matchup",
+      "kind": "team_matchup",
+      "status": "ok",
+      "payload": {
+        "league": "nba",
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "phase": null,
+        "freshness": {
+          "league": "nba",
+          "syncVersion": 4861,
+          "dataThrough": "2026-01-02",
+          "generatedAt": "2026-01-03T07:12:44Z",
+          "isDemo": true,
+          "sources": [
+            {
+              "key": "nba.stats",
+              "label": "NBA statistics",
+              "state": "ok",
+              "reason": "Demo league: every game here is invented.",
+              "lastSuccessAt": "2026-01-03T07:12:44Z"
+            },
+            {
+              "key": "nba.rosters",
+              "label": "Team rosters (listed positions)",
+              "state": "ok",
+              "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+              "lastSuccessAt": null
+            },
+            {
+              "key": "nba.injuryReport",
+              "label": "NBA official injury report",
+              "state": "disabled",
+              "reason": "Demo league: real injury statuses are not shown next to invented games",
+              "lastSuccessAt": null
+            }
+          ]
+        },
+        "game": {
+          "league": "nba",
+          "gameId": "0022500379",
+          "date": "2026-01-05",
+          "tipoffUtc": null,
+          "venue": null,
+          "isNeutral": null,
+          "round": null,
+          "phase": null,
+          "status": "scheduled",
+          "home": {
+            "league": "nba",
+            "id": "1610612750",
+            "abbr": "MIN",
+            "name": "Minnesota Timberwolves",
+            "shortName": "Timberwolves",
+            "teamId": 1610612750
+          },
+          "away": {
+            "league": "nba",
+            "id": "1610612743",
+            "abbr": "DEN",
+            "name": "Denver Nuggets",
+            "shortName": "Nuggets",
+            "teamId": 1610612743
+          },
+          "homePts": null,
+          "awayPts": null,
+          "overtimePeriods": null
+        },
+        "teams": [
+          {
+            "side": "home",
+            "team": {
+              "league": "nba",
+              "id": "1610612750",
+              "abbr": "MIN",
+              "name": "Minnesota Timberwolves",
+              "shortName": "Timberwolves",
+              "teamId": 1610612750
+            },
+            "record": {
+              "wins": 7,
+              "losses": 18
+            },
+            "games": 25,
+            "pointsPerGame": 113.6,
+            "pointsAllowedPerGame": 118.92,
+            "differentialPerGame": -5.320000000000007,
+            "pointsPerRegulation": 113.6,
+            "pointsAllowedPerRegulation": 118.92,
+            "latestGame": {
+              "gameId": "0022500363",
+              "date": "2026-01-01",
+              "opponent": {
+                "league": "nba",
+                "id": "1610612760",
+                "abbr": "OKC",
+                "name": "Oklahoma City Thunder",
+                "shortName": "Thunder",
+                "teamId": 1610612760
+              },
+              "isHome": true,
+              "isNeutral": null,
+              "teamScore": 92,
+              "opponentScore": 118,
+              "result": "L",
+              "overtimePeriods": 0
+            },
+            "form": [
+              {
+                "gameId": "0022500363",
+                "date": "2026-01-01",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612760",
+                  "abbr": "OKC",
+                  "name": "Oklahoma City Thunder",
+                  "shortName": "Thunder",
+                  "teamId": 1610612760
+                },
+                "isHome": true,
+                "isNeutral": null,
+                "teamScore": 92,
+                "opponentScore": 118,
+                "result": "L",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500347",
+                "date": "2025-12-29",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612744",
+                  "abbr": "GSW",
+                  "name": "Golden State Warriors",
+                  "shortName": "Warriors",
+                  "teamId": 1610612744
+                },
+                "isHome": true,
+                "isNeutral": null,
+                "teamScore": 111,
+                "opponentScore": 95,
+                "result": "W",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500331",
+                "date": "2025-12-26",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612738",
+                  "abbr": "BOS",
+                  "name": "Boston Celtics",
+                  "shortName": "Celtics",
+                  "teamId": 1610612738
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 108,
+                "opponentScore": 107,
+                "result": "W",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500317",
+                "date": "2025-12-23",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612765",
+                  "abbr": "DET",
+                  "name": "Detroit Pistons",
+                  "shortName": "Pistons",
+                  "teamId": 1610612765
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 116,
+                "opponentScore": 124,
+                "result": "L",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500303",
+                "date": "2025-12-21",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612758",
+                  "abbr": "SAC",
+                  "name": "Sacramento Kings",
+                  "shortName": "Kings",
+                  "teamId": 1610612758
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 103,
+                "opponentScore": 111,
+                "result": "L",
+                "overtimePeriods": 0
+              }
+            ],
+            "lastN": {
+              "window": 5,
+              "games": 5,
+              "pointsPerGame": 106.0,
+              "pointsAllowedPerGame": 111.0
+            },
+            "last10": {
+              "window": 10,
+              "games": 10,
+              "pointsPerGame": 111.1,
+              "pointsAllowedPerGame": 117.9
+            },
+            "venueSplits": {
+              "home": {
+                "games": 2,
+                "pointsPerGame": 101.5,
+                "pointsAllowedPerGame": 106.5
+              },
+              "away": {
+                "games": 23,
+                "pointsPerGame": 114.65217391304348,
+                "pointsAllowedPerGame": 120.0
+              },
+              "neutral": null
+            },
+            "adjustedPointsAgainst": {
+              "value": 6.117028985507246,
+              "games": 25
+            },
+            "adjustedPointsFor": {
+              "value": 1.2206521739130438,
+              "games": 25
+            },
+            "availability": {
+              "out": 0,
+              "doubtful": 0,
+              "questionable": 0,
+              "probable": 0,
+              "keyAbsences": [],
+              "freshnessState": "disabled",
+              "asOf": null
+            },
+            "defenseSummary": {
+              "pointsAllowedPerGame": 118.92,
+              "buckets": [
+                {
+                  "position": "G",
+                  "pointsAllowedPerGame": 51.34,
+                  "deltaPerGame": 4.874646739130441,
+                  "band": null
+                },
+                {
+                  "position": "F",
+                  "pointsAllowedPerGame": 45.44,
+                  "deltaPerGame": 1.2130978260869512,
+                  "band": null
+                },
+                {
+                  "position": "C",
+                  "pointsAllowedPerGame": 22.14,
+                  "deltaPerGame": -0.0658423913043471,
+                  "band": null
+                },
+                {
+                  "position": "unknown",
+                  "pointsAllowedPerGame": 0.0,
+                  "deltaPerGame": 0.0,
+                  "band": null
+                }
+              ],
+              "withheld": null
+            }
+          },
+          {
+            "side": "away",
+            "team": {
+              "league": "nba",
+              "id": "1610612743",
+              "abbr": "DEN",
+              "name": "Denver Nuggets",
+              "shortName": "Nuggets",
+              "teamId": 1610612743
+            },
+            "record": {
+              "wins": 11,
+              "losses": 14
+            },
+            "games": 25,
+            "pointsPerGame": 108.96,
+            "pointsAllowedPerGame": 110.48,
+            "differentialPerGame": -1.5200000000000102,
+            "pointsPerRegulation": 108.96,
+            "pointsAllowedPerRegulation": 110.48,
+            "latestGame": {
+              "gameId": "0022500365",
+              "date": "2026-01-02",
+              "opponent": {
+                "league": "nba",
+                "id": "1610612765",
+                "abbr": "DET",
+                "name": "Detroit Pistons",
+                "shortName": "Pistons",
+                "teamId": 1610612765
+              },
+              "isHome": false,
+              "isNeutral": null,
+              "teamScore": 106,
+              "opponentScore": 108,
+              "result": "L",
+              "overtimePeriods": 0
+            },
+            "form": [
+              {
+                "gameId": "0022500365",
+                "date": "2026-01-02",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612765",
+                  "abbr": "DET",
+                  "name": "Detroit Pistons",
+                  "shortName": "Pistons",
+                  "teamId": 1610612765
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 106,
+                "opponentScore": 108,
+                "result": "L",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500351",
+                "date": "2025-12-30",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612758",
+                  "abbr": "SAC",
+                  "name": "Sacramento Kings",
+                  "shortName": "Kings",
+                  "teamId": 1610612758
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 107,
+                "opponentScore": 92,
+                "result": "W",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500337",
+                "date": "2025-12-27",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612761",
+                  "abbr": "TOR",
+                  "name": "Toronto Raptors",
+                  "shortName": "Raptors",
+                  "teamId": 1610612761
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 115,
+                "opponentScore": 116,
+                "result": "L",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500323",
+                "date": "2025-12-25",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612756",
+                  "abbr": "PHX",
+                  "name": "Phoenix Suns",
+                  "shortName": "Suns",
+                  "teamId": 1610612756
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 110,
+                "opponentScore": 123,
+                "result": "L",
+                "overtimePeriods": 0
+              },
+              {
+                "gameId": "0022500309",
+                "date": "2025-12-22",
+                "opponent": {
+                  "league": "nba",
+                  "id": "1610612747",
+                  "abbr": "LAL",
+                  "name": "Los Angeles Lakers",
+                  "shortName": "Lakers",
+                  "teamId": 1610612747
+                },
+                "isHome": false,
+                "isNeutral": null,
+                "teamScore": 99,
+                "opponentScore": 110,
+                "result": "L",
+                "overtimePeriods": 0
+              }
+            ],
+            "lastN": {
+              "window": 5,
+              "games": 5,
+              "pointsPerGame": 107.4,
+              "pointsAllowedPerGame": 109.8
+            },
+            "last10": {
+              "window": 10,
+              "games": 10,
+              "pointsPerGame": 108.9,
+              "pointsAllowedPerGame": 110.9
+            },
+            "venueSplits": {
+              "home": {
+                "games": 0,
+                "pointsPerGame": null,
+                "pointsAllowedPerGame": null
+              },
+              "away": {
+                "games": 25,
+                "pointsPerGame": 108.96,
+                "pointsAllowedPerGame": 110.48
+              },
+              "neutral": null
+            },
+            "adjustedPointsAgainst": {
+              "value": -3.065869565217393,
+              "games": 25
+            },
+            "adjustedPointsFor": {
+              "value": -4.1921739130434785,
+              "games": 25
+            },
+            "availability": {
+              "out": 0,
+              "doubtful": 0,
+              "questionable": 0,
+              "probable": 0,
+              "keyAbsences": [],
+              "freshnessState": "disabled",
+              "asOf": null
+            },
+            "defenseSummary": {
+              "pointsAllowedPerGame": 110.48,
+              "buckets": [
+                {
+                  "position": "G",
+                  "pointsAllowedPerGame": 43.16,
+                  "deltaPerGame": -3.305353260869566,
+                  "band": null
+                },
+                {
+                  "position": "F",
+                  "pointsAllowedPerGame": 44.34,
+                  "deltaPerGame": 0.11309782608695684,
+                  "band": null
+                },
+                {
+                  "position": "C",
+                  "pointsAllowedPerGame": 22.98,
+                  "deltaPerGame": 0.7741576086956528,
+                  "band": null
+                },
+                {
+                  "position": "unknown",
+                  "pointsAllowedPerGame": 0.0,
+                  "deltaPerGame": 0.0,
+                  "band": null
+                }
+              ],
+              "withheld": null
+            }
+          }
+        ],
+        "leagueAverage": {
+          "pointsPerGame": 112.89809782608695,
+          "teams": 30
+        },
+        "projection": {
+          "league": "nba",
+          "game": {
+            "league": "nba",
+            "gameId": "0022500379",
+            "date": "2026-01-05",
+            "tipoffUtc": null,
+            "venue": null,
+            "isNeutral": null,
+            "round": null,
+            "phase": null,
+            "status": "scheduled",
+            "home": {
+              "league": "nba",
+              "id": "1610612750",
+              "abbr": "MIN",
+              "name": "Minnesota Timberwolves",
+              "shortName": "Timberwolves",
+              "teamId": 1610612750
+            },
+            "away": {
+              "league": "nba",
+              "id": "1610612743",
+              "abbr": "DEN",
+              "name": "Denver Nuggets",
+              "shortName": "Nuggets",
+              "teamId": 1610612743
+            },
+            "homePts": null,
+            "awayPts": null,
+            "overtimePeriods": null
+          },
+          "freshness": {
+            "league": "nba",
+            "syncVersion": 4861,
+            "dataThrough": "2026-01-02",
+            "generatedAt": "2026-01-03T07:12:44Z",
+            "isDemo": true,
+            "sources": [
+              {
+                "key": "nba.stats",
+                "label": "NBA statistics",
+                "state": "ok",
+                "reason": "Demo league: every game here is invented.",
+                "lastSuccessAt": "2026-01-03T07:12:44Z"
+              },
+              {
+                "key": "nba.rosters",
+                "label": "Team rosters (listed positions)",
+                "state": "ok",
+                "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+                "lastSuccessAt": null
+              },
+              {
+                "key": "nba.injuryReport",
+                "label": "NBA official injury report",
+                "state": "disabled",
+                "reason": "Demo league: real injury statuses are not shown next to invented games",
+                "lastSuccessAt": null
+              }
+            ]
+          },
+          "home": {
+            "team": {
+              "league": "nba",
+              "id": "1610612750",
+              "abbr": "MIN",
+              "name": "Minnesota Timberwolves",
+              "shortName": "Timberwolves",
+              "teamId": 1610612750
+            },
+            "projectedPoints": 112.29846139286494,
+            "range80": null,
+            "fullStrengthPoints": 112.29846139286494,
+            "availabilityEffect": 0.0,
+            "attackIndex": 1.015101283290073,
+            "attackIndexAfterAvailability": 1.015101283290073,
+            "defenceIndex": 1.0366058249698555,
+            "capBinding": false,
+            "unassignedPoints": 0.0,
+            "replacementPoints": 0.0,
+            "keyAbsences": []
+          },
+          "away": {
+            "team": {
+              "league": "nba",
+              "id": "1610612743",
+              "abbr": "DEN",
+              "name": "Denver Nuggets",
+              "shortName": "Nuggets",
+              "teamId": 1610612743
+            },
+            "projectedPoints": 112.31145105737897,
+            "range80": null,
+            "fullStrengthPoints": 112.31145105737897,
+            "availabilityEffect": 0.0,
+            "attackIndex": 0.9690582610661361,
+            "attackIndexAfterAvailability": 0.9690582610661361,
+            "defenceIndex": 0.9716158169682044,
+            "capBinding": false,
+            "unassignedPoints": 0.0,
+            "replacementPoints": 0.0,
+            "keyAbsences": []
+          },
+          "margin": -0.012989664514037713,
+          "marginRange80": null,
+          "projectedWinner": null,
+          "isTossUp": true,
+          "summary": "Toss-up",
+          "combinedPoints": 224.6099124502439,
+          "combinedAvailabilityEffect": 0.0,
+          "homeAdvantagePoints": 2.0452342487883683,
+          "venueAssumed": true,
+          "intervalBasis": null,
+          "model": {
+            "key": "hardwood",
+            "version": "nba-1",
+            "kind": "latest",
+            "computedAt": "2026-01-03T07:12:44Z",
+            "inputsCutoff": "2026-01-03T07:12:44Z",
+            "computedAfterTipoff": false,
+            "capPolicy": "consistent",
+            "constants": [
+              {
+                "key": "priorRegression",
+                "value": 0.3,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "priorWeightGames",
+                "value": 10.0,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "leagueLevelWeight",
+                "value": 150.0,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "homeAdvantagePoints",
+                "value": 2.0452342487883683,
+                "provenance": "derived",
+                "isDefault": false
+              },
+              {
+                "key": "teamSd",
+                "value": null,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "marginSd",
+                "value": null,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "replacementShare",
+                "value": 0.52,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "absorbShare",
+                "value": 0.6,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "boostCap",
+                "value": 1.35,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "capPolicyConsistent",
+                "value": 1.0,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "playerPriorGames",
+                "value": 10,
+                "provenance": "default",
+                "isDefault": true
+              },
+              {
+                "key": "leagueAveragePoints",
+                "value": 112.82281855686152,
+                "provenance": "derived",
+                "isDefault": false
+              }
+            ]
+          },
+          "assumptions": {
+            "assumedAvailable": {
+              "home": 10,
+              "away": 10,
+              "basis": "noReportPublished",
+              "homeBasis": "noReportPublished",
+              "awayBasis": "noReportPublished"
+            },
+            "staleEntriesIgnored": 0
+          },
+          "result": null,
+          "availability": "estimated",
+          "notes": [
+            "Defence indices are not changed by absences: absences move the projected scores only.",
+            "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+            "Absences are listed by season averages, not by the engine's own player projections.",
+            "No spread has been fitted yet, so no range is shown."
+          ]
+        },
+        "availability": "full",
+        "notes": [
+          "The NBA store does not record neutral-site games, so every venue is an assumption."
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w18.defense_by_position",
+      "kind": "defense_by_position",
+      "status": "ok",
+      "payload": {
+        "league": "nba",
+        "season": "2025-26",
+        "seasonType": "Regular Season",
+        "scheme": "gfc",
+        "basis": "perGame",
+        "regulationMinutes": 48,
+        "freshness": {
+          "league": "nba",
+          "syncVersion": 4861,
+          "dataThrough": "2026-01-02",
+          "generatedAt": "2026-01-03T07:12:44Z",
+          "isDemo": true,
+          "sources": [
+            {
+              "key": "nba.stats",
+              "label": "NBA statistics",
+              "state": "ok",
+              "reason": "Demo league: every game here is invented.",
+              "lastSuccessAt": "2026-01-03T07:12:44Z"
+            },
+            {
+              "key": "nba.rosters",
+              "label": "Team rosters (listed positions)",
+              "state": "ok",
+              "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+              "lastSuccessAt": null
+            }
+          ]
+        },
+        "team": {
+          "league": "nba",
+          "id": "1610612743",
+          "abbr": "DEN",
+          "name": "Denver Nuggets",
+          "shortName": "Nuggets",
+          "teamId": 1610612743
+        },
+        "window": {
+          "kind": "season",
+          "games": 25,
+          "requested": null
+        },
+        "pointsAllowedPerGame": 110.48,
+        "leaguePointsAllowedPerGame": 112.89809782608695,
+        "buckets": [
+          {
+            "position": "G",
+            "label": "Guards",
+            "pointsAllowedPerGame": 43.16,
+            "leagueAverage": 46.46535326086956,
+            "deltaPerGame": -3.305353260869566,
+            "opponentMinutesPerGame": 99.4,
+            "pointsPerRegulationMinutes": 20.84185110663984,
+            "leagueRate": 22.255366312471402,
+            "share": 0.390658942795076,
+            "leagueShare": 0.4115689648947565,
+            "rawIndex": 0.9288641314677544,
+            "index": 1.0,
+            "standardError": 0.0801142080566833,
+            "band": null
+          },
+          {
+            "position": "F",
+            "label": "Forwards",
+            "pointsAllowedPerGame": 44.34,
+            "leagueAverage": 44.22690217391305,
+            "deltaPerGame": 0.11309782608695684,
+            "opponentMinutesPerGame": 93.67,
+            "pointsPerRegulationMinutes": 22.721468986868793,
+            "leagueRate": 22.76111325578516,
+            "share": 0.40133960897900073,
+            "leagueShare": 0.39174178330304604,
+            "rawIndex": 1.002557217904212,
+            "index": 1.0,
+            "standardError": 0.046538637833321524,
+            "band": null
+          },
+          {
+            "position": "C",
+            "label": "Centers",
+            "pointsAllowedPerGame": 22.98,
+            "leagueAverage": 22.205842391304348,
+            "deltaPerGame": 0.7741576086956528,
+            "opponentMinutesPerGame": 46.93,
+            "pointsPerRegulationMinutes": 23.503942041338163,
+            "leagueRate": 22.914292807956596,
+            "share": 0.20800144822592326,
+            "leagueShare": 0.19668925180219754,
+            "rawIndex": 1.0348627894881757,
+            "index": 1.0,
+            "standardError": 0.10366180788018008,
+            "band": null
+          },
+          {
+            "position": "unknown",
+            "label": "Position unknown",
+            "pointsAllowedPerGame": 0.0,
+            "leagueAverage": 0.0,
+            "deltaPerGame": 0.0,
+            "opponentMinutesPerGame": 0.0,
+            "pointsPerRegulationMinutes": null,
+            "leagueRate": null,
+            "share": 0.0,
+            "leagueShare": 0.0,
+            "rawIndex": null,
+            "index": null,
+            "standardError": null,
+            "band": null
+          }
+        ],
+        "provisional": false,
+        "withheld": null,
+        "coverage": {
+          "listed": 1.0,
+          "workbookListing": 0.0,
+          "unknown": 0.0
+        },
+        "reconciliation": {
+          "sumOfBuckets": 110.48,
+          "pointsAllowedPerGame": 110.48,
+          "unreconciledGames": 0,
+          "identity": "sum(deltaPerGame) = pointsAllowedPerGame - leaguePointsAllowedPerGame"
+        },
+        "method": {
+          "minimumGames": 10,
+          "provisionalBelowGames": 25,
+          "coverageCeiling": 0.05,
+          "shrinkage": "empiricalBayes",
+          "leagueReliability": {
+            "G": 0.0,
+            "F": 0.0,
+            "C": 0.0
+          },
+          "leagueSignal": "none detected",
+          "bandRule": "A position shows better or worse only when the table is not provisional, the league's reliability at that position is at least 0.2, and the shrunk index differs from 1 by more than z posterior standard deviations (z = 3.261, a Bonferroni family of 90 cells).",
+          "positionSource": "Each player's listed position for the season, from the demo league's own labels.",
+          "taxonomy": "Guard, Forward and Center, as each roster lists a player for the season.",
+          "limitations": [
+            "Positions are the ones a roster lists for the season, not who guarded whom on the night.",
+            "No adjustment is made for the strength of the opponents a team has faced; the per-minute basis controls for how opponents distributed their minutes, and nothing more.",
+            "The injury layer never changes defence: absences move projected scores, not these figures.",
+            "Points from players with no listed position are shown as their own bucket and are never reassigned."
+          ]
+        },
+        "methodMessage": "No team's points allowed at this position differ from the league by more than chance this season",
+        "availability": "full",
+        "caveat": "Counts points scored by opposing players listed at each position. It does not measure who guarded whom.",
+        "notes": [
+          "Regular Season games of 2025-26 only."
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "full",
+      "notes": []
+    },
+    {
+      "widgetId": "w19.availability_report",
+      "kind": "availability_report",
+      "status": "partial",
+      "payload": {
+        "league": "nba",
+        "asOf": null,
+        "freshness": {
+          "league": "nba",
+          "syncVersion": 4861,
+          "dataThrough": "2026-01-02",
+          "generatedAt": "2026-01-03T07:12:44Z",
+          "isDemo": true,
+          "sources": [
+            {
+              "key": "nba.injuryReport",
+              "label": "NBA official injury report",
+              "state": "disabled",
+              "reason": "Demo league: real injury statuses are not shown next to invented games",
+              "lastSuccessAt": null
+            }
+          ]
+        },
+        "state": "disabled",
+        "message": "Demo league: real injury statuses are not shown next to invented games",
+        "teams": [
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612761",
+              "abbr": "TOR",
+              "name": "Toronto Raptors",
+              "shortName": "Raptors",
+              "teamId": 1610612761
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500369",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612761",
+                "abbr": "TOR",
+                "name": "Toronto Raptors",
+                "shortName": "Raptors",
+                "teamId": 1610612761
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612749",
+                "abbr": "MIL",
+                "name": "Milwaukee Bucks",
+                "shortName": "Bucks",
+                "teamId": 1610612749
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612749",
+              "abbr": "MIL",
+              "name": "Milwaukee Bucks",
+              "shortName": "Bucks",
+              "teamId": 1610612749
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500369",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612761",
+                "abbr": "TOR",
+                "name": "Toronto Raptors",
+                "shortName": "Raptors",
+                "teamId": 1610612761
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612749",
+                "abbr": "MIL",
+                "name": "Milwaukee Bucks",
+                "shortName": "Bucks",
+                "teamId": 1610612749
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612754",
+              "abbr": "IND",
+              "name": "Indiana Pacers",
+              "shortName": "Pacers",
+              "teamId": 1610612754
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500370",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612754",
+                "abbr": "IND",
+                "name": "Indiana Pacers",
+                "shortName": "Pacers",
+                "teamId": 1610612754
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612766",
+                "abbr": "CHA",
+                "name": "Charlotte Hornets",
+                "shortName": "Hornets",
+                "teamId": 1610612766
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612766",
+              "abbr": "CHA",
+              "name": "Charlotte Hornets",
+              "shortName": "Hornets",
+              "teamId": 1610612766
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500370",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612754",
+                "abbr": "IND",
+                "name": "Indiana Pacers",
+                "shortName": "Pacers",
+                "teamId": 1610612754
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612766",
+                "abbr": "CHA",
+                "name": "Charlotte Hornets",
+                "shortName": "Hornets",
+                "teamId": 1610612766
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612756",
+              "abbr": "PHX",
+              "name": "Phoenix Suns",
+              "shortName": "Suns",
+              "teamId": 1610612756
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500371",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612756",
+                "abbr": "PHX",
+                "name": "Phoenix Suns",
+                "shortName": "Suns",
+                "teamId": 1610612756
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612757",
+                "abbr": "POR",
+                "name": "Portland Trail Blazers",
+                "shortName": "Trail Blazers",
+                "teamId": 1610612757
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612757",
+              "abbr": "POR",
+              "name": "Portland Trail Blazers",
+              "shortName": "Trail Blazers",
+              "teamId": 1610612757
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500371",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612756",
+                "abbr": "PHX",
+                "name": "Phoenix Suns",
+                "shortName": "Suns",
+                "teamId": 1610612756
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612757",
+                "abbr": "POR",
+                "name": "Portland Trail Blazers",
+                "shortName": "Trail Blazers",
+                "teamId": 1610612757
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612764",
+              "abbr": "WAS",
+              "name": "Washington Wizards",
+              "shortName": "Wizards",
+              "teamId": 1610612764
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500372",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612764",
+                "abbr": "WAS",
+                "name": "Washington Wizards",
+                "shortName": "Wizards",
+                "teamId": 1610612764
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612740",
+                "abbr": "NOP",
+                "name": "New Orleans Pelicans",
+                "shortName": "Pelicans",
+                "teamId": 1610612740
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612740",
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "shortName": "Pelicans",
+              "teamId": 1610612740
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500372",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612764",
+                "abbr": "WAS",
+                "name": "Washington Wizards",
+                "shortName": "Wizards",
+                "teamId": 1610612764
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612740",
+                "abbr": "NOP",
+                "name": "New Orleans Pelicans",
+                "shortName": "Pelicans",
+                "teamId": 1610612740
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612747",
+              "abbr": "LAL",
+              "name": "Los Angeles Lakers",
+              "shortName": "Lakers",
+              "teamId": 1610612747
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500373",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612747",
+                "abbr": "LAL",
+                "name": "Los Angeles Lakers",
+                "shortName": "Lakers",
+                "teamId": 1610612747
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612746",
+                "abbr": "LAC",
+                "name": "Los Angeles Clippers",
+                "shortName": "Clippers",
+                "teamId": 1610612746
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          },
+          {
+            "team": {
+              "league": "nba",
+              "id": "1610612746",
+              "abbr": "LAC",
+              "name": "Los Angeles Clippers",
+              "shortName": "Clippers",
+              "teamId": 1610612746
+            },
+            "reportState": "noReport",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500373",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612747",
+                "abbr": "LAL",
+                "name": "Los Angeles Lakers",
+                "shortName": "Lakers",
+                "teamId": 1610612747
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612746",
+                "abbr": "LAC",
+                "name": "Los Angeles Clippers",
+                "shortName": "Clippers",
+                "teamId": 1610612746
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "entries": []
+          }
+        ],
+        "news": null,
+        "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 300,
+      "availability": "unavailable",
+      "notes": [
+        "Demo league: real injury statuses are not shown next to invented games"
+      ]
+    },
+    {
+      "widgetId": "w20.slate_projections",
+      "kind": "slate_projections",
+      "status": "ok",
+      "payload": {
+        "league": "nba",
+        "date": "2026-01-03",
+        "round": null,
+        "freshness": {
+          "league": "nba",
+          "syncVersion": 4861,
+          "dataThrough": "2026-01-02",
+          "generatedAt": "2026-01-03T07:12:44Z",
+          "isDemo": true,
+          "sources": [
+            {
+              "key": "nba.stats",
+              "label": "NBA statistics",
+              "state": "ok",
+              "reason": "Demo league: every game here is invented.",
+              "lastSuccessAt": "2026-01-03T07:12:44Z"
+            },
+            {
+              "key": "nba.rosters",
+              "label": "Team rosters (listed positions)",
+              "state": "ok",
+              "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+              "lastSuccessAt": null
+            },
+            {
+              "key": "nba.injuryReport",
+              "label": "NBA official injury report",
+              "state": "disabled",
+              "reason": "Demo league: real injury statuses are not shown next to invented games",
+              "lastSuccessAt": null
+            }
+          ]
+        },
+        "model": {
+          "key": "hardwood",
+          "version": "nba-1",
+          "kind": "latest",
+          "computedAt": "2026-01-03T07:12:44Z",
+          "inputsCutoff": "2026-01-03T07:12:44Z",
+          "computedAfterTipoff": null,
+          "capPolicy": "consistent",
+          "constants": [
+            {
+              "key": "priorRegression",
+              "value": 0.3,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "priorWeightGames",
+              "value": 10.0,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "leagueLevelWeight",
+              "value": 150.0,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "homeAdvantagePoints",
+              "value": 2.0452342487883683,
+              "provenance": "derived",
+              "isDefault": false
+            },
+            {
+              "key": "teamSd",
+              "value": null,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "marginSd",
+              "value": null,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "replacementShare",
+              "value": 0.52,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "absorbShare",
+              "value": 0.6,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "boostCap",
+              "value": 1.35,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "capPolicyConsistent",
+              "value": 1.0,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "playerPriorGames",
+              "value": 10,
+              "provenance": "default",
+              "isDefault": true
+            },
+            {
+              "key": "leagueAveragePoints",
+              "value": 112.82281855686152,
+              "provenance": "derived",
+              "isDefault": false
+            }
+          ]
+        },
+        "games": [
+          {
+            "league": "nba",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500369",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612761",
+                "abbr": "TOR",
+                "name": "Toronto Raptors",
+                "shortName": "Raptors",
+                "teamId": 1610612761
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612749",
+                "abbr": "MIL",
+                "name": "Milwaukee Bucks",
+                "shortName": "Bucks",
+                "teamId": 1610612749
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "freshness": {
+              "league": "nba",
+              "syncVersion": 4861,
+              "dataThrough": "2026-01-02",
+              "generatedAt": "2026-01-03T07:12:44Z",
+              "isDemo": true,
+              "sources": [
+                {
+                  "key": "nba.stats",
+                  "label": "NBA statistics",
+                  "state": "ok",
+                  "reason": "Demo league: every game here is invented.",
+                  "lastSuccessAt": "2026-01-03T07:12:44Z"
+                },
+                {
+                  "key": "nba.rosters",
+                  "label": "Team rosters (listed positions)",
+                  "state": "ok",
+                  "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+                  "lastSuccessAt": null
+                },
+                {
+                  "key": "nba.injuryReport",
+                  "label": "NBA official injury report",
+                  "state": "disabled",
+                  "reason": "Demo league: real injury statuses are not shown next to invented games",
+                  "lastSuccessAt": null
+                }
+              ]
+            },
+            "home": {
+              "team": {
+                "league": "nba",
+                "id": "1610612761",
+                "abbr": "TOR",
+                "name": "Toronto Raptors",
+                "shortName": "Raptors",
+                "teamId": 1610612761
+              },
+              "projectedPoints": 115.72615795242864,
+              "range80": null,
+              "fullStrengthPoints": 115.72615795242864,
+              "availabilityEffect": 0.0,
+              "attackIndex": 1.022209943231376,
+              "attackIndexAfterAvailability": 1.022209943231376,
+              "defenceIndex": 1.0018392932475997,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "away": {
+              "team": {
+                "league": "nba",
+                "id": "1610612749",
+                "abbr": "MIL",
+                "name": "Milwaukee Bucks",
+                "shortName": "Bucks",
+                "teamId": 1610612749
+              },
+              "projectedPoints": 111.68273691779036,
+              "range80": null,
+              "fullStrengthPoints": 111.68273691779036,
+              "availabilityEffect": 0.0,
+              "attackIndex": 0.9971248535241968,
+              "attackIndexAfterAvailability": 0.9971248535241968,
+              "defenceIndex": 0.9945801294171723,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "margin": 4.043421034638271,
+            "marginRange80": null,
+            "projectedWinner": {
+              "league": "nba",
+              "id": "1610612761",
+              "abbr": "TOR",
+              "name": "Toronto Raptors",
+              "shortName": "Raptors",
+              "teamId": 1610612761
+            },
+            "isTossUp": false,
+            "summary": "TOR by 4.0",
+            "combinedPoints": 227.408894870219,
+            "combinedAvailabilityEffect": 0.0,
+            "homeAdvantagePoints": 2.0452342487883683,
+            "venueAssumed": true,
+            "intervalBasis": null,
+            "model": {
+              "key": "hardwood",
+              "version": "nba-1",
+              "kind": "latest",
+              "computedAt": "2026-01-03T07:12:44Z",
+              "inputsCutoff": "2026-01-03T07:12:44Z",
+              "computedAfterTipoff": false,
+              "capPolicy": "consistent",
+              "constants": [
+                {
+                  "key": "priorRegression",
+                  "value": 0.3,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "priorWeightGames",
+                  "value": 10.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueLevelWeight",
+                  "value": 150.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "homeAdvantagePoints",
+                  "value": 2.0452342487883683,
+                  "provenance": "derived",
+                  "isDefault": false
+                },
+                {
+                  "key": "teamSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "marginSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "replacementShare",
+                  "value": 0.52,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "absorbShare",
+                  "value": 0.6,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "boostCap",
+                  "value": 1.35,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "capPolicyConsistent",
+                  "value": 1.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "playerPriorGames",
+                  "value": 10,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueAveragePoints",
+                  "value": 112.82281855686152,
+                  "provenance": "derived",
+                  "isDefault": false
+                }
+              ]
+            },
+            "assumptions": {
+              "assumedAvailable": {
+                "home": 10,
+                "away": 10,
+                "basis": "noReportPublished",
+                "homeBasis": "noReportPublished",
+                "awayBasis": "noReportPublished"
+              },
+              "staleEntriesIgnored": 0
+            },
+            "result": null,
+            "availability": "estimated",
+            "notes": [
+              "Defence indices are not changed by absences: absences move the projected scores only.",
+              "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+              "Absences are listed by season averages, not by the engine's own player projections.",
+              "No spread has been fitted yet, so no range is shown."
+            ]
+          },
+          {
+            "league": "nba",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500370",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612754",
+                "abbr": "IND",
+                "name": "Indiana Pacers",
+                "shortName": "Pacers",
+                "teamId": 1610612754
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612766",
+                "abbr": "CHA",
+                "name": "Charlotte Hornets",
+                "shortName": "Hornets",
+                "teamId": 1610612766
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "freshness": {
+              "league": "nba",
+              "syncVersion": 4861,
+              "dataThrough": "2026-01-02",
+              "generatedAt": "2026-01-03T07:12:44Z",
+              "isDemo": true,
+              "sources": [
+                {
+                  "key": "nba.stats",
+                  "label": "NBA statistics",
+                  "state": "ok",
+                  "reason": "Demo league: every game here is invented.",
+                  "lastSuccessAt": "2026-01-03T07:12:44Z"
+                },
+                {
+                  "key": "nba.rosters",
+                  "label": "Team rosters (listed positions)",
+                  "state": "ok",
+                  "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+                  "lastSuccessAt": null
+                },
+                {
+                  "key": "nba.injuryReport",
+                  "label": "NBA official injury report",
+                  "state": "disabled",
+                  "reason": "Demo league: real injury statuses are not shown next to invented games",
+                  "lastSuccessAt": null
+                }
+              ]
+            },
+            "home": {
+              "team": {
+                "league": "nba",
+                "id": "1610612754",
+                "abbr": "IND",
+                "name": "Indiana Pacers",
+                "shortName": "Pacers",
+                "teamId": 1610612754
+              },
+              "projectedPoints": 111.20144739462246,
+              "range80": null,
+              "fullStrengthPoints": 111.20144739462246,
+              "availabilityEffect": 0.0,
+              "attackIndex": 0.9853610798170216,
+              "attackIndexAfterAvailability": 0.9853610798170216,
+              "defenceIndex": 1.0208158677191355,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "away": {
+              "team": {
+                "league": "nba",
+                "id": "1610612766",
+                "abbr": "CHA",
+                "name": "Charlotte Hornets",
+                "shortName": "Hornets",
+                "teamId": 1610612766
+              },
+              "projectedPoints": 108.85293298749188,
+              "range80": null,
+              "fullStrengthPoints": 108.85293298749188,
+              "availabilityEffect": 0.0,
+              "attackIndex": 0.9540182993966705,
+              "attackIndexAfterAvailability": 0.9540182993966705,
+              "defenceIndex": 0.9910733722122207,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "margin": 2.3485144071305797,
+            "marginRange80": null,
+            "projectedWinner": {
+              "league": "nba",
+              "id": "1610612754",
+              "abbr": "IND",
+              "name": "Indiana Pacers",
+              "shortName": "Pacers",
+              "teamId": 1610612754
+            },
+            "isTossUp": false,
+            "summary": "IND by 2.3",
+            "combinedPoints": 220.05438038211435,
+            "combinedAvailabilityEffect": 0.0,
+            "homeAdvantagePoints": 2.0452342487883683,
+            "venueAssumed": true,
+            "intervalBasis": null,
+            "model": {
+              "key": "hardwood",
+              "version": "nba-1",
+              "kind": "latest",
+              "computedAt": "2026-01-03T07:12:44Z",
+              "inputsCutoff": "2026-01-03T07:12:44Z",
+              "computedAfterTipoff": false,
+              "capPolicy": "consistent",
+              "constants": [
+                {
+                  "key": "priorRegression",
+                  "value": 0.3,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "priorWeightGames",
+                  "value": 10.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueLevelWeight",
+                  "value": 150.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "homeAdvantagePoints",
+                  "value": 2.0452342487883683,
+                  "provenance": "derived",
+                  "isDefault": false
+                },
+                {
+                  "key": "teamSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "marginSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "replacementShare",
+                  "value": 0.52,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "absorbShare",
+                  "value": 0.6,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "boostCap",
+                  "value": 1.35,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "capPolicyConsistent",
+                  "value": 1.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "playerPriorGames",
+                  "value": 10,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueAveragePoints",
+                  "value": 112.82281855686152,
+                  "provenance": "derived",
+                  "isDefault": false
+                }
+              ]
+            },
+            "assumptions": {
+              "assumedAvailable": {
+                "home": 10,
+                "away": 10,
+                "basis": "noReportPublished",
+                "homeBasis": "noReportPublished",
+                "awayBasis": "noReportPublished"
+              },
+              "staleEntriesIgnored": 0
+            },
+            "result": null,
+            "availability": "estimated",
+            "notes": [
+              "Defence indices are not changed by absences: absences move the projected scores only.",
+              "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+              "Absences are listed by season averages, not by the engine's own player projections.",
+              "No spread has been fitted yet, so no range is shown."
+            ]
+          },
+          {
+            "league": "nba",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500371",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612756",
+                "abbr": "PHX",
+                "name": "Phoenix Suns",
+                "shortName": "Suns",
+                "teamId": 1610612756
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612757",
+                "abbr": "POR",
+                "name": "Portland Trail Blazers",
+                "shortName": "Trail Blazers",
+                "teamId": 1610612757
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "freshness": {
+              "league": "nba",
+              "syncVersion": 4861,
+              "dataThrough": "2026-01-02",
+              "generatedAt": "2026-01-03T07:12:44Z",
+              "isDemo": true,
+              "sources": [
+                {
+                  "key": "nba.stats",
+                  "label": "NBA statistics",
+                  "state": "ok",
+                  "reason": "Demo league: every game here is invented.",
+                  "lastSuccessAt": "2026-01-03T07:12:44Z"
+                },
+                {
+                  "key": "nba.rosters",
+                  "label": "Team rosters (listed positions)",
+                  "state": "ok",
+                  "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+                  "lastSuccessAt": null
+                },
+                {
+                  "key": "nba.injuryReport",
+                  "label": "NBA official injury report",
+                  "state": "disabled",
+                  "reason": "Demo league: real injury statuses are not shown next to invented games",
+                  "lastSuccessAt": null
+                }
+              ]
+            },
+            "home": {
+              "team": {
+                "league": "nba",
+                "id": "1610612756",
+                "abbr": "PHX",
+                "name": "Phoenix Suns",
+                "shortName": "Suns",
+                "teamId": 1610612756
+              },
+              "projectedPoints": 114.5087994978632,
+              "range80": null,
+              "fullStrengthPoints": 114.5087994978632,
+              "availabilityEffect": 0.0,
+              "attackIndex": 1.0098888267635213,
+              "attackIndexAfterAvailability": 1.0098888267635213,
+              "defenceIndex": 1.0127301126024948,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "away": {
+              "team": {
+                "league": "nba",
+                "id": "1610612757",
+                "abbr": "POR",
+                "name": "Portland Trail Blazers",
+                "shortName": "Trail Blazers",
+                "teamId": 1610612757
+              },
+              "projectedPoints": 110.78053645474785,
+              "range80": null,
+              "fullStrengthPoints": 110.78053645474785,
+              "availabilityEffect": 0.0,
+              "attackIndex": 0.9785057566666838,
+              "attackIndexAfterAvailability": 0.9785057566666838,
+              "defenceIndex": 0.9960301261142478,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "margin": 3.728263043115348,
+            "marginRange80": null,
+            "projectedWinner": {
+              "league": "nba",
+              "id": "1610612756",
+              "abbr": "PHX",
+              "name": "Phoenix Suns",
+              "shortName": "Suns",
+              "teamId": 1610612756
+            },
+            "isTossUp": false,
+            "summary": "PHX by 3.7",
+            "combinedPoints": 225.28933595261105,
+            "combinedAvailabilityEffect": 0.0,
+            "homeAdvantagePoints": 2.0452342487883683,
+            "venueAssumed": true,
+            "intervalBasis": null,
+            "model": {
+              "key": "hardwood",
+              "version": "nba-1",
+              "kind": "latest",
+              "computedAt": "2026-01-03T07:12:44Z",
+              "inputsCutoff": "2026-01-03T07:12:44Z",
+              "computedAfterTipoff": false,
+              "capPolicy": "consistent",
+              "constants": [
+                {
+                  "key": "priorRegression",
+                  "value": 0.3,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "priorWeightGames",
+                  "value": 10.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueLevelWeight",
+                  "value": 150.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "homeAdvantagePoints",
+                  "value": 2.0452342487883683,
+                  "provenance": "derived",
+                  "isDefault": false
+                },
+                {
+                  "key": "teamSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "marginSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "replacementShare",
+                  "value": 0.52,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "absorbShare",
+                  "value": 0.6,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "boostCap",
+                  "value": 1.35,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "capPolicyConsistent",
+                  "value": 1.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "playerPriorGames",
+                  "value": 10,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueAveragePoints",
+                  "value": 112.82281855686152,
+                  "provenance": "derived",
+                  "isDefault": false
+                }
+              ]
+            },
+            "assumptions": {
+              "assumedAvailable": {
+                "home": 10,
+                "away": 10,
+                "basis": "noReportPublished",
+                "homeBasis": "noReportPublished",
+                "awayBasis": "noReportPublished"
+              },
+              "staleEntriesIgnored": 0
+            },
+            "result": null,
+            "availability": "estimated",
+            "notes": [
+              "Defence indices are not changed by absences: absences move the projected scores only.",
+              "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+              "Absences are listed by season averages, not by the engine's own player projections.",
+              "No spread has been fitted yet, so no range is shown."
+            ]
+          },
+          {
+            "league": "nba",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500372",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612764",
+                "abbr": "WAS",
+                "name": "Washington Wizards",
+                "shortName": "Wizards",
+                "teamId": 1610612764
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612740",
+                "abbr": "NOP",
+                "name": "New Orleans Pelicans",
+                "shortName": "Pelicans",
+                "teamId": 1610612740
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "freshness": {
+              "league": "nba",
+              "syncVersion": 4861,
+              "dataThrough": "2026-01-02",
+              "generatedAt": "2026-01-03T07:12:44Z",
+              "isDemo": true,
+              "sources": [
+                {
+                  "key": "nba.stats",
+                  "label": "NBA statistics",
+                  "state": "ok",
+                  "reason": "Demo league: every game here is invented.",
+                  "lastSuccessAt": "2026-01-03T07:12:44Z"
+                },
+                {
+                  "key": "nba.rosters",
+                  "label": "Team rosters (listed positions)",
+                  "state": "ok",
+                  "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+                  "lastSuccessAt": null
+                },
+                {
+                  "key": "nba.injuryReport",
+                  "label": "NBA official injury report",
+                  "state": "disabled",
+                  "reason": "Demo league: real injury statuses are not shown next to invented games",
+                  "lastSuccessAt": null
+                }
+              ]
+            },
+            "home": {
+              "team": {
+                "league": "nba",
+                "id": "1610612764",
+                "abbr": "WAS",
+                "name": "Washington Wizards",
+                "shortName": "Wizards",
+                "teamId": 1610612764
+              },
+              "projectedPoints": 116.3180292632157,
+              "range80": null,
+              "fullStrengthPoints": 116.3180292632157,
+              "availabilityEffect": 0.0,
+              "attackIndex": 1.0235701690294388,
+              "attackIndexAfterAvailability": 1.0235701690294388,
+              "defenceIndex": 1.032515001927611,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "away": {
+              "team": {
+                "league": "nba",
+                "id": "1610612740",
+                "abbr": "NOP",
+                "name": "New Orleans Pelicans",
+                "shortName": "Pelicans",
+                "teamId": 1610612740
+              },
+              "projectedPoints": 119.72583398588615,
+              "range80": null,
+              "fullStrengthPoints": 119.72583398588615,
+              "availabilityEffect": 0.0,
+              "attackIndex": 1.036545219414946,
+              "attackIndexAfterAvailability": 1.036545219414946,
+              "defenceIndex": 0.9983836510772448,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "margin": -3.4078047226704484,
+            "marginRange80": null,
+            "projectedWinner": {
+              "league": "nba",
+              "id": "1610612740",
+              "abbr": "NOP",
+              "name": "New Orleans Pelicans",
+              "shortName": "Pelicans",
+              "teamId": 1610612740
+            },
+            "isTossUp": false,
+            "summary": "NOP by 3.4",
+            "combinedPoints": 236.04386324910186,
+            "combinedAvailabilityEffect": 0.0,
+            "homeAdvantagePoints": 2.0452342487883683,
+            "venueAssumed": true,
+            "intervalBasis": null,
+            "model": {
+              "key": "hardwood",
+              "version": "nba-1",
+              "kind": "latest",
+              "computedAt": "2026-01-03T07:12:44Z",
+              "inputsCutoff": "2026-01-03T07:12:44Z",
+              "computedAfterTipoff": false,
+              "capPolicy": "consistent",
+              "constants": [
+                {
+                  "key": "priorRegression",
+                  "value": 0.3,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "priorWeightGames",
+                  "value": 10.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueLevelWeight",
+                  "value": 150.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "homeAdvantagePoints",
+                  "value": 2.0452342487883683,
+                  "provenance": "derived",
+                  "isDefault": false
+                },
+                {
+                  "key": "teamSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "marginSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "replacementShare",
+                  "value": 0.52,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "absorbShare",
+                  "value": 0.6,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "boostCap",
+                  "value": 1.35,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "capPolicyConsistent",
+                  "value": 1.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "playerPriorGames",
+                  "value": 10,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueAveragePoints",
+                  "value": 112.82281855686152,
+                  "provenance": "derived",
+                  "isDefault": false
+                }
+              ]
+            },
+            "assumptions": {
+              "assumedAvailable": {
+                "home": 10,
+                "away": 10,
+                "basis": "noReportPublished",
+                "homeBasis": "noReportPublished",
+                "awayBasis": "noReportPublished"
+              },
+              "staleEntriesIgnored": 0
+            },
+            "result": null,
+            "availability": "estimated",
+            "notes": [
+              "Defence indices are not changed by absences: absences move the projected scores only.",
+              "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+              "Absences are listed by season averages, not by the engine's own player projections.",
+              "No spread has been fitted yet, so no range is shown."
+            ]
+          },
+          {
+            "league": "nba",
+            "game": {
+              "league": "nba",
+              "gameId": "0022500373",
+              "date": "2026-01-03",
+              "tipoffUtc": null,
+              "venue": null,
+              "isNeutral": null,
+              "round": null,
+              "phase": null,
+              "status": "scheduled",
+              "home": {
+                "league": "nba",
+                "id": "1610612747",
+                "abbr": "LAL",
+                "name": "Los Angeles Lakers",
+                "shortName": "Lakers",
+                "teamId": 1610612747
+              },
+              "away": {
+                "league": "nba",
+                "id": "1610612746",
+                "abbr": "LAC",
+                "name": "Los Angeles Clippers",
+                "shortName": "Clippers",
+                "teamId": 1610612746
+              },
+              "homePts": null,
+              "awayPts": null,
+              "overtimePeriods": null
+            },
+            "freshness": {
+              "league": "nba",
+              "syncVersion": 4861,
+              "dataThrough": "2026-01-02",
+              "generatedAt": "2026-01-03T07:12:44Z",
+              "isDemo": true,
+              "sources": [
+                {
+                  "key": "nba.stats",
+                  "label": "NBA statistics",
+                  "state": "ok",
+                  "reason": "Demo league: every game here is invented.",
+                  "lastSuccessAt": "2026-01-03T07:12:44Z"
+                },
+                {
+                  "key": "nba.rosters",
+                  "label": "Team rosters (listed positions)",
+                  "state": "ok",
+                  "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+                  "lastSuccessAt": null
+                },
+                {
+                  "key": "nba.injuryReport",
+                  "label": "NBA official injury report",
+                  "state": "disabled",
+                  "reason": "Demo league: real injury statuses are not shown next to invented games",
+                  "lastSuccessAt": null
+                }
+              ]
+            },
+            "home": {
+              "team": {
+                "league": "nba",
+                "id": "1610612747",
+                "abbr": "LAL",
+                "name": "Los Angeles Lakers",
+                "shortName": "Lakers",
+                "teamId": 1610612747
+              },
+              "projectedPoints": 114.81260206004241,
+              "range80": null,
+              "fullStrengthPoints": 114.81260206004241,
+              "availabilityEffect": 0.0,
+              "attackIndex": 1.0310836367037122,
+              "attackIndexAfterAvailability": 1.0310836367037122,
+              "defenceIndex": 1.008940533399203,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "away": {
+              "team": {
+                "league": "nba",
+                "id": "1610612746",
+                "abbr": "LAC",
+                "name": "Los Angeles Clippers",
+                "shortName": "Clippers",
+                "teamId": 1610612746
+              },
+              "projectedPoints": 110.11816258682062,
+              "range80": null,
+              "fullStrengthPoints": 110.11816258682062,
+              "availabilityEffect": 0.0,
+              "attackIndex": 0.9763621258187973,
+              "attackIndexAfterAvailability": 0.9763621258187973,
+              "defenceIndex": 0.9781674347120489,
+              "capBinding": false,
+              "unassignedPoints": 0.0,
+              "replacementPoints": 0.0,
+              "keyAbsences": []
+            },
+            "margin": 4.694439473221792,
+            "marginRange80": null,
+            "projectedWinner": {
+              "league": "nba",
+              "id": "1610612747",
+              "abbr": "LAL",
+              "name": "Los Angeles Lakers",
+              "shortName": "Lakers",
+              "teamId": 1610612747
+            },
+            "isTossUp": false,
+            "summary": "LAL by 4.7",
+            "combinedPoints": 224.93076464686303,
+            "combinedAvailabilityEffect": 0.0,
+            "homeAdvantagePoints": 2.0452342487883683,
+            "venueAssumed": true,
+            "intervalBasis": null,
+            "model": {
+              "key": "hardwood",
+              "version": "nba-1",
+              "kind": "latest",
+              "computedAt": "2026-01-03T07:12:44Z",
+              "inputsCutoff": "2026-01-03T07:12:44Z",
+              "computedAfterTipoff": false,
+              "capPolicy": "consistent",
+              "constants": [
+                {
+                  "key": "priorRegression",
+                  "value": 0.3,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "priorWeightGames",
+                  "value": 10.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueLevelWeight",
+                  "value": 150.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "homeAdvantagePoints",
+                  "value": 2.0452342487883683,
+                  "provenance": "derived",
+                  "isDefault": false
+                },
+                {
+                  "key": "teamSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "marginSd",
+                  "value": null,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "replacementShare",
+                  "value": 0.52,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "absorbShare",
+                  "value": 0.6,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "boostCap",
+                  "value": 1.35,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "capPolicyConsistent",
+                  "value": 1.0,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "playerPriorGames",
+                  "value": 10,
+                  "provenance": "default",
+                  "isDefault": true
+                },
+                {
+                  "key": "leagueAveragePoints",
+                  "value": 112.82281855686152,
+                  "provenance": "derived",
+                  "isDefault": false
+                }
+              ]
+            },
+            "assumptions": {
+              "assumedAvailable": {
+                "home": 10,
+                "away": 10,
+                "basis": "noReportPublished",
+                "homeBasis": "noReportPublished",
+                "awayBasis": "noReportPublished"
+              },
+              "staleEntriesIgnored": 0
+            },
+            "result": null,
+            "availability": "estimated",
+            "notes": [
+              "Defence indices are not changed by absences: absences move the projected scores only.",
+              "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+              "Absences are listed by season averages, not by the engine's own player projections.",
+              "No spread has been fitted yet, so no range is shown."
+            ]
+          }
+        ],
+        "review": {
+          "byModel": [],
+          "reconstructed": {
+            "modelKey": "hardwood",
+            "games": 368,
+            "decidedGames": 330,
+            "winnersCalled": 201,
+            "tossUps": 38,
+            "meanAbsMarginMiss": 8.473336919276143,
+            "meanAbsScoreMiss": 7.133934648985199,
+            "meanAbsCombinedMiss": 11.573475642707939
+          }
+        },
+        "availability": "estimated",
+        "notes": [
+          "Projections are estimates. Players with no status in force are assumed to play."
+        ]
+      },
+      "error": null,
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "ttlSeconds": 600,
+      "availability": "estimated",
       "notes": []
     },
     {
@@ -4904,318 +8617,7 @@
       ]
     },
     {
-      "widgetId": "e03.game_log",
-      "kind": "game_log",
-      "status": "partial",
-      "payload": {
-        "player": {
-          "playerId": 371,
-          "name": "Terry Mills",
-          "firstName": "Terry",
-          "lastName": "Mills",
-          "teamId": 1610612743,
-          "teamAbbr": "DEN",
-          "position": "G",
-          "jersey": "5",
-          "headshotUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/371.png",
-          "isActive": false
-        },
-        "season": "1985-86",
-        "seasonType": "Regular Season",
-        "columns": [
-          {
-            "key": "min",
-            "name": "Minutes",
-            "shortName": "MIN",
-            "category": "volume",
-            "format": "minutes",
-            "higherIsBetter": true,
-            "scope": [
-              "player",
-              "team"
-            ],
-            "availability": {
-              "seasonFrom": "1951-52",
-              "perGameFrom": "1951-52",
-              "seasonLevelOnly": false,
-              "estimatedBefore": null
-            },
-            "domain": null,
-            "glossary": "Minutes played."
-          },
-          {
-            "key": "pts",
-            "name": "Points",
-            "shortName": "PTS",
-            "category": "volume",
-            "format": "decimal1",
-            "higherIsBetter": true,
-            "scope": [
-              "player",
-              "team"
-            ],
-            "availability": {
-              "seasonFrom": "1946-47",
-              "perGameFrom": "1946-47",
-              "seasonLevelOnly": false,
-              "estimatedBefore": null
-            },
-            "domain": null,
-            "glossary": "Points scored."
-          },
-          {
-            "key": "reb",
-            "name": "Rebounds",
-            "shortName": "REB",
-            "category": "volume",
-            "format": "decimal1",
-            "higherIsBetter": true,
-            "scope": [
-              "player",
-              "team"
-            ],
-            "availability": {
-              "seasonFrom": "1950-51",
-              "perGameFrom": "1950-51",
-              "seasonLevelOnly": false,
-              "estimatedBefore": null
-            },
-            "domain": null,
-            "glossary": "Total rebounds. Offensive/defensive split only from 1973-74."
-          },
-          {
-            "key": "ast",
-            "name": "Assists",
-            "shortName": "AST",
-            "category": "volume",
-            "format": "decimal1",
-            "higherIsBetter": true,
-            "scope": [
-              "player",
-              "team"
-            ],
-            "availability": {
-              "seasonFrom": "1946-47",
-              "perGameFrom": "1946-47",
-              "seasonLevelOnly": false,
-              "estimatedBefore": null
-            },
-            "domain": null,
-            "glossary": "Assists."
-          },
-          {
-            "key": "ts_pct",
-            "name": "True Shooting %",
-            "shortName": "TS%",
-            "category": "shooting",
-            "format": "percent1",
-            "higherIsBetter": true,
-            "scope": [
-              "player",
-              "team"
-            ],
-            "availability": {
-              "seasonFrom": "1946-47",
-              "perGameFrom": "1996-97",
-              "seasonLevelOnly": false,
-              "estimatedBefore": null
-            },
-            "domain": {
-              "min": 0.35,
-              "max": 0.75
-            },
-            "glossary": "PTS / (2 * (FGA + 0.44*FTA)). Shooting efficiency including free throws."
-          },
-          {
-            "key": "usg_pct",
-            "name": "Usage %",
-            "shortName": "USG%",
-            "category": "usage",
-            "format": "percent1",
-            "higherIsBetter": true,
-            "scope": [
-              "player",
-              "team"
-            ],
-            "availability": {
-              "seasonFrom": "1977-78",
-              "perGameFrom": "1996-97",
-              "seasonLevelOnly": false,
-              "estimatedBefore": "1996-97"
-            },
-            "domain": {
-              "min": 0.05,
-              "max": 0.42
-            },
-            "glossary": "Share of team possessions a player ends while on the floor."
-          },
-          {
-            "key": "plus_minus",
-            "name": "Plus/Minus",
-            "shortName": "+/-",
-            "category": "impact",
-            "format": "plusMinus1",
-            "higherIsBetter": true,
-            "scope": [
-              "player",
-              "team"
-            ],
-            "availability": {
-              "seasonFrom": "1996-97",
-              "perGameFrom": "1996-97",
-              "seasonLevelOnly": false,
-              "estimatedBefore": null
-            },
-            "domain": null,
-            "glossary": "Team point differential while the player is on the floor."
-          },
-          {
-            "key": "game_score",
-            "name": "Game Score",
-            "shortName": "GmSc",
-            "category": "impact",
-            "format": "decimal1",
-            "higherIsBetter": true,
-            "scope": [
-              "player"
-            ],
-            "availability": {
-              "seasonFrom": "1973-74",
-              "perGameFrom": "1973-74",
-              "seasonLevelOnly": false,
-              "estimatedBefore": null
-            },
-            "domain": null,
-            "glossary": "Hollinger's single-game rating: PTS + 0.4*FGM - 0.7*FGA - 0.4*(FTA-FTM) + 0.7*OREB + 0.3*DREB + STL + 0.7*AST + 0.7*BLK - 0.4*PF - TOV."
-          }
-        ],
-        "seasonBests": {
-          "min": 46.0,
-          "pts": 53,
-          "reb": 9,
-          "ast": 18,
-          "game_score": 36.50000000000001
-        },
-        "rows": [
-          {
-            "gameId": "0028500657",
-            "date": "1986-04-17",
-            "opponentAbbr": "POR",
-            "isHome": true,
-            "result": "L",
-            "score": "97-114",
-            "started": true,
-            "minutes": 39.0,
-            "values": {
-              "min": 39.0,
-              "pts": 30,
-              "reb": 4,
-              "ast": 8,
-              "ts_pct": null,
-              "usg_pct": null,
-              "plus_minus": null,
-              "game_score": 17.0
-            },
-            "availability": "partial"
-          },
-          {
-            "gameId": "0028500645",
-            "date": "1986-04-13",
-            "opponentAbbr": "MIL",
-            "isHome": true,
-            "result": "L",
-            "score": "113-124",
-            "started": true,
-            "minutes": 38.0,
-            "values": {
-              "min": 38.0,
-              "pts": 46,
-              "reb": 4,
-              "ast": 3,
-              "ts_pct": null,
-              "usg_pct": null,
-              "plus_minus": null,
-              "game_score": 26.4
-            },
-            "availability": "partial"
-          },
-          {
-            "gameId": "0028500633",
-            "date": "1986-04-10",
-            "opponentAbbr": "CHI",
-            "isHome": true,
-            "result": "W",
-            "score": "118-103",
-            "started": true,
-            "minutes": 41.0,
-            "values": {
-              "min": 41.0,
-              "pts": 43,
-              "reb": 5,
-              "ast": 14,
-              "ts_pct": null,
-              "usg_pct": null,
-              "plus_minus": null,
-              "game_score": 33.5
-            },
-            "availability": "partial"
-          },
-          {
-            "gameId": "0028500609",
-            "date": "1986-04-04",
-            "opponentAbbr": "LAL",
-            "isHome": true,
-            "result": "W",
-            "score": "119-109",
-            "started": true,
-            "minutes": 38.0,
-            "values": {
-              "min": 38.0,
-              "pts": 38,
-              "reb": 6,
-              "ast": 9,
-              "ts_pct": null,
-              "usg_pct": null,
-              "plus_minus": null,
-              "game_score": 25.099999999999998
-            },
-            "availability": "partial"
-          },
-          {
-            "gameId": "0028500597",
-            "date": "1986-04-01",
-            "opponentAbbr": "DAL",
-            "isHome": true,
-            "result": "L",
-            "score": "101-108",
-            "started": true,
-            "minutes": 41.0,
-            "values": {
-              "min": 41.0,
-              "pts": 33,
-              "reb": 6,
-              "ast": 5,
-              "ts_pct": null,
-              "usg_pct": null,
-              "plus_minus": null,
-              "game_score": 20.5
-            },
-            "availability": "partial"
-          }
-        ]
-      },
-      "error": null,
-      "generatedAt": "2026-01-03T07:12:44Z",
-      "ttlSeconds": 300,
-      "availability": "partial",
-      "notes": [
-        "True Shooting % per game begins in 1996-97; the 1985-86 season predates it.",
-        "Usage % per game begins in 1996-97; the 1985-86 season predates it.",
-        "Plus/Minus per game begins in 1996-97; the 1985-86 season predates it."
-      ]
-    },
-    {
-      "widgetId": "e04.shot_profile",
+      "widgetId": "e03.shot_profile",
       "kind": "shot_profile",
       "status": "partial",
       "payload": {

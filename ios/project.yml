@@ -1,13 +1,23 @@
-# XcodeGen spec — an alternative to the checked-in NBAStats.xcodeproj.
+# XcodeGen spec — a MIRROR of the checked-in NBAStats.xcodeproj, not its source.
 #
-# The .xcodeproj in this directory is hand-maintained and uses Xcode 16 file-system
-# synchronized groups, so new Swift files are picked up without touching the project file.
-# If it ever gets corrupted, `xcodegen generate` here regenerates an equivalent project.
+# The checked-in .xcodeproj is canonical: it is hand-maintained, it is what Xcode and
+# scripts/check_contracts.py (check h) and scripts/check_swift_portability.py (rule P12) read, and
+# it uses Xcode 16 file-system synchronized groups, so new Swift files are picked up without
+# touching the project file. If it ever gets corrupted, `xcodegen generate` here regenerates an
+# equivalent project — but nobody has run xcodegen against the multiplatform settings below (there
+# is no Swift or Xcode tooling where this was written), so after a regenerate compare the
+# build settings against the .xcodeproj before trusting it.
+#
+# One target, two platforms. `Hardwood` builds for iOS 17 (the original app, which only has to
+# keep compiling) and macOS 14 (the product: a native Mac app). No Mac Catalyst and no "Designed
+# for iPad": SwiftUI targets macOS directly. Platform-specific code lives behind the
+# `#if os(macOS)` / `#if os(iOS)` seams that scripts/check_swift_portability.py polices.
 name: NBAStats
 options:
   bundleIdPrefix: com.hardwood
   deploymentTarget:
     iOS: "17.0"
+    macOS: "14.0"
   createIntermediateGroups: true
   groupSortPosition: top
 
@@ -20,7 +30,9 @@ settings:
 targets:
   Hardwood:
     type: application
-    platform: iOS
+    # `supportedDestinations` replaces `platform: iOS`; XcodeGen then emits SDKROOT = auto and
+    # SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx", which is what the .xcodeproj has.
+    supportedDestinations: [iOS, macOS]
     sources:
       - path: NBAStats
     # Info.plist deliberately lives at ios/Info.plist, OUTSIDE the NBAStats folder. Anything
@@ -28,6 +40,8 @@ targets:
     # copied into Hardwood.app/Info.plist as a resource while INFOPLIST_FILE is producing the
     # same path — "Multiple commands produce ..." and the build stops. Keeping it out of the
     # source folder removes the mechanism rather than trying to except one file from it.
+    # The macOS plist (ios/Info-macOS.plist) lives beside it for the same reason; the SDK-
+    # conditional INFOPLIST_FILE[sdk=macosx*] below selects it.
     #
     # No `info:` block on purpose either: that would make XcodeGen *generate* a plist and
     # overwrite the hand-written one, losing the background-task identifiers and the
@@ -40,10 +54,21 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ENABLE_PREVIEWS: YES
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        # macOS-only overrides. The Mac build signs "to run locally" (no team needed), takes its
+        # plist from Info-macOS.plist, asks actool for no Mac app icon (there is no Mac icon art
+        # yet) and finds embedded frameworks where a macOS bundle keeps them. No sandbox and no
+        # hardened runtime on purpose: the app reads ~/Library/Application Support/Hardwood/
+        # hardwood.env, opens ~/Library/Logs/Hardwood and talks plain HTTP to 127.0.0.1.
+        "INFOPLIST_FILE[sdk=macosx*]": Info-macOS.plist
+        "CODE_SIGN_IDENTITY[sdk=macosx*]": "-"
+        "ASSETCATALOG_COMPILER_APPICON_NAME[sdk=macosx*]": ""
+        "LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]": ["$(inherited)", "@executable_path/../Frameworks"]
 
   HardwoodTests:
     type: bundle.unit-test
-    platform: iOS
+    supportedDestinations: [iOS, macOS]
     sources:
       - path: NBAStatsTests
     dependencies:
@@ -51,6 +76,9 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hardwood.nbastats.tests
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        "CODE_SIGN_IDENTITY[sdk=macosx*]": "-"
 
 schemes:
   Hardwood:

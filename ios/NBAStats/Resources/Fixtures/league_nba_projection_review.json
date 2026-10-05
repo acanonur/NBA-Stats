@@ -1,0 +1,307 @@
+{
+  "league": "nba",
+  "scope": {
+    "season": "2025-26",
+    "date": "2026-01-02"
+  },
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 1324,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T16:30:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.stats",
+        "label": "NBA statistics",
+        "state": "ok",
+        "reason": "Demo league: every game here is invented.",
+        "lastSuccessAt": "2026-01-03T16:30:00Z"
+      },
+      {
+        "key": "nba.rosters",
+        "label": "Team rosters (listed positions)",
+        "state": "ok",
+        "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "nba.injuryReport",
+        "label": "NBA official injury report",
+        "state": "ok",
+        "reason": "Not yet confirmed against a real report: the reader was built from the documented layout and has not read one on this machine.",
+        "lastSuccessAt": "2026-01-03T15:31:00Z"
+      }
+    ]
+  },
+  "byModel": [
+    {
+      "modelKey": "hardwood",
+      "games": 4,
+      "decidedGames": 4,
+      "winnersCalled": 3,
+      "tossUps": 0,
+      "meanAbsMarginMiss": 8.871030148024115,
+      "meanAbsScoreMiss": 6.437563539228096,
+      "meanAbsCombinedMiss": 12.875127078456188
+    }
+  ],
+  "reconstructed": {
+    "modelKey": "hardwood",
+    "games": 1,
+    "decidedGames": 1,
+    "winnersCalled": 1,
+    "tossUps": 0,
+    "meanAbsMarginMiss": 4.124382519388533,
+    "meanAbsScoreMiss": 3.9935722837691188,
+    "meanAbsCombinedMiss": 7.987144567538223
+  },
+  "games": [
+    {
+      "game": {
+        "league": "nba",
+        "gameId": "0022500364",
+        "date": "2026-01-02",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "final",
+        "home": {
+          "league": "nba",
+          "id": "1610612754",
+          "abbr": "IND",
+          "name": "Indiana Pacers",
+          "shortName": "Pacers",
+          "teamId": 1610612754
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612757",
+          "abbr": "POR",
+          "name": "Portland Trail Blazers",
+          "shortName": "Trail Blazers",
+          "teamId": 1610612757
+        },
+        "homePts": 120,
+        "awayPts": 104,
+        "overtimePeriods": 0
+      },
+      "kind": "locked",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 120.78600679068221,
+        "awayPts": 112.21579701543564
+      },
+      "locked": {
+        "homePts": 120.78600679068221,
+        "awayPts": 112.21579701543564
+      },
+      "result": {
+        "homePts": 120,
+        "awayPts": 104
+      },
+      "marginMiss": 7.429790224753432,
+      "combinedMiss": -9.001803806117834,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "nba",
+        "gameId": "0022500365",
+        "date": "2026-01-02",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "final",
+        "home": {
+          "league": "nba",
+          "id": "1610612765",
+          "abbr": "DET",
+          "name": "Detroit Pistons",
+          "shortName": "Pistons",
+          "teamId": 1610612765
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612749",
+          "abbr": "MIL",
+          "name": "Milwaukee Bucks",
+          "shortName": "Bucks",
+          "teamId": 1610612749
+        },
+        "homePts": 127,
+        "awayPts": 111,
+        "overtimePeriods": 0
+      },
+      "kind": "locked",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 117.71673897832379,
+        "awayPts": 109.43570928387
+      },
+      "locked": {
+        "homePts": 117.71673897832379,
+        "awayPts": 109.43570928387
+      },
+      "result": {
+        "homePts": 127,
+        "awayPts": 111
+      },
+      "marginMiss": 7.7189703055462076,
+      "combinedMiss": 10.847551737806214,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "nba",
+        "gameId": "0022500366",
+        "date": "2026-01-02",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "final",
+        "home": {
+          "league": "nba",
+          "id": "1610612761",
+          "abbr": "TOR",
+          "name": "Toronto Raptors",
+          "shortName": "Raptors",
+          "teamId": 1610612761
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612750",
+          "abbr": "MIN",
+          "name": "Minnesota Timberwolves",
+          "shortName": "Timberwolves",
+          "teamId": 1610612750
+        },
+        "homePts": 121,
+        "awayPts": 110,
+        "overtimePeriods": 0
+      },
+      "kind": "locked",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 117.12586089794455,
+        "awayPts": 107.22523942559691
+      },
+      "locked": {
+        "homePts": 117.12586089794455,
+        "awayPts": 107.22523942559691
+      },
+      "result": {
+        "homePts": 121,
+        "awayPts": 110
+      },
+      "marginMiss": 1.0993785276523624,
+      "combinedMiss": 6.648899676458541,
+      "winnerCalled": true
+    },
+    {
+      "game": {
+        "league": "nba",
+        "gameId": "0022500367",
+        "date": "2026-01-02",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "final",
+        "home": {
+          "league": "nba",
+          "id": "1610612743",
+          "abbr": "DEN",
+          "name": "Denver Nuggets",
+          "shortName": "Nuggets",
+          "teamId": 1610612743
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612745",
+          "abbr": "HOU",
+          "name": "Houston Rockets",
+          "shortName": "Rockets",
+          "teamId": 1610612745
+        },
+        "homePts": 122,
+        "awayPts": 137,
+        "overtimePeriods": 0
+      },
+      "kind": "locked",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 119.11686422035115,
+        "awayPts": 114.88088268620669
+      },
+      "locked": {
+        "homePts": 119.11686422035115,
+        "awayPts": 114.88088268620669
+      },
+      "result": {
+        "homePts": 122,
+        "awayPts": 137
+      },
+      "marginMiss": -19.235981534144457,
+      "combinedMiss": 25.002253093442164,
+      "winnerCalled": false
+    },
+    {
+      "game": {
+        "league": "nba",
+        "gameId": "0022500368",
+        "date": "2026-01-02",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "final",
+        "home": {
+          "league": "nba",
+          "id": "1610612753",
+          "abbr": "ORL",
+          "name": "Orlando Magic",
+          "shortName": "Magic",
+          "teamId": 1610612753
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612744",
+          "abbr": "GSW",
+          "name": "Golden State Warriors",
+          "shortName": "Warriors",
+          "teamId": 1610612744
+        },
+        "homePts": 111,
+        "awayPts": 101,
+        "overtimePeriods": 0
+      },
+      "kind": "reconstructed",
+      "modelKey": "hardwood",
+      "projected": {
+        "homePts": 112.93138102407485,
+        "awayPts": 107.05576354346339
+      },
+      "locked": null,
+      "result": {
+        "homePts": 111,
+        "awayPts": 101
+      },
+      "marginMiss": 4.124382519388533,
+      "combinedMiss": -7.987144567538223,
+      "winnerCalled": true
+    }
+  ],
+  "notes": [
+    "Reconstructed projections were made after the game from inputs recorded before it; they are reported apart from locked ones, which are the only ones that test the model.",
+    "No projection was recorded before tip-off for 1 of 5 final games."
+  ]
+}

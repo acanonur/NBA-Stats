@@ -1,0 +1,698 @@
+{
+  "league": "nba",
+  "season": "2025-26",
+  "seasonType": "Regular Season",
+  "phase": null,
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 4861,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T07:12:44Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.stats",
+        "label": "NBA statistics",
+        "state": "ok",
+        "reason": "Demo league: every game here is invented.",
+        "lastSuccessAt": "2026-01-03T07:12:44Z"
+      },
+      {
+        "key": "nba.rosters",
+        "label": "Team rosters (listed positions)",
+        "state": "ok",
+        "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "nba.injuryReport",
+        "label": "NBA official injury report",
+        "state": "disabled",
+        "reason": "Demo league: real injury statuses are not shown next to invented games",
+        "lastSuccessAt": null
+      }
+    ]
+  },
+  "game": {
+    "league": "nba",
+    "gameId": "0022500379",
+    "date": "2026-01-05",
+    "tipoffUtc": null,
+    "venue": null,
+    "isNeutral": null,
+    "round": null,
+    "phase": null,
+    "status": "scheduled",
+    "home": {
+      "league": "nba",
+      "id": "1610612750",
+      "abbr": "MIN",
+      "name": "Minnesota Timberwolves",
+      "shortName": "Timberwolves",
+      "teamId": 1610612750
+    },
+    "away": {
+      "league": "nba",
+      "id": "1610612743",
+      "abbr": "DEN",
+      "name": "Denver Nuggets",
+      "shortName": "Nuggets",
+      "teamId": 1610612743
+    },
+    "homePts": null,
+    "awayPts": null,
+    "overtimePeriods": null
+  },
+  "teams": [
+    {
+      "side": "home",
+      "team": {
+        "league": "nba",
+        "id": "1610612750",
+        "abbr": "MIN",
+        "name": "Minnesota Timberwolves",
+        "shortName": "Timberwolves",
+        "teamId": 1610612750
+      },
+      "record": {
+        "wins": 7,
+        "losses": 18
+      },
+      "games": 25,
+      "pointsPerGame": 113.6,
+      "pointsAllowedPerGame": 118.92,
+      "differentialPerGame": -5.320000000000007,
+      "pointsPerRegulation": 113.6,
+      "pointsAllowedPerRegulation": 118.92,
+      "latestGame": {
+        "gameId": "0022500363",
+        "date": "2026-01-01",
+        "opponent": {
+          "league": "nba",
+          "id": "1610612760",
+          "abbr": "OKC",
+          "name": "Oklahoma City Thunder",
+          "shortName": "Thunder",
+          "teamId": 1610612760
+        },
+        "isHome": true,
+        "isNeutral": null,
+        "teamScore": 92,
+        "opponentScore": 118,
+        "result": "L",
+        "overtimePeriods": 0
+      },
+      "form": [
+        {
+          "gameId": "0022500363",
+          "date": "2026-01-01",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612760",
+            "abbr": "OKC",
+            "name": "Oklahoma City Thunder",
+            "shortName": "Thunder",
+            "teamId": 1610612760
+          },
+          "isHome": true,
+          "isNeutral": null,
+          "teamScore": 92,
+          "opponentScore": 118,
+          "result": "L",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500347",
+          "date": "2025-12-29",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612744",
+            "abbr": "GSW",
+            "name": "Golden State Warriors",
+            "shortName": "Warriors",
+            "teamId": 1610612744
+          },
+          "isHome": true,
+          "isNeutral": null,
+          "teamScore": 111,
+          "opponentScore": 95,
+          "result": "W",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500331",
+          "date": "2025-12-26",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612738",
+            "abbr": "BOS",
+            "name": "Boston Celtics",
+            "shortName": "Celtics",
+            "teamId": 1610612738
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 108,
+          "opponentScore": 107,
+          "result": "W",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500317",
+          "date": "2025-12-23",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612765",
+            "abbr": "DET",
+            "name": "Detroit Pistons",
+            "shortName": "Pistons",
+            "teamId": 1610612765
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 116,
+          "opponentScore": 124,
+          "result": "L",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500303",
+          "date": "2025-12-21",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612758",
+            "abbr": "SAC",
+            "name": "Sacramento Kings",
+            "shortName": "Kings",
+            "teamId": 1610612758
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 103,
+          "opponentScore": 111,
+          "result": "L",
+          "overtimePeriods": 0
+        }
+      ],
+      "lastN": {
+        "window": 5,
+        "games": 5,
+        "pointsPerGame": 106.0,
+        "pointsAllowedPerGame": 111.0
+      },
+      "last10": {
+        "window": 10,
+        "games": 10,
+        "pointsPerGame": 111.1,
+        "pointsAllowedPerGame": 117.9
+      },
+      "venueSplits": {
+        "home": {
+          "games": 2,
+          "pointsPerGame": 101.5,
+          "pointsAllowedPerGame": 106.5
+        },
+        "away": {
+          "games": 23,
+          "pointsPerGame": 114.65217391304348,
+          "pointsAllowedPerGame": 120.0
+        },
+        "neutral": null
+      },
+      "adjustedPointsAgainst": {
+        "value": 6.117028985507246,
+        "games": 25
+      },
+      "adjustedPointsFor": {
+        "value": 1.2206521739130438,
+        "games": 25
+      },
+      "availability": {
+        "out": 0,
+        "doubtful": 0,
+        "questionable": 0,
+        "probable": 0,
+        "keyAbsences": [],
+        "freshnessState": "disabled",
+        "asOf": null
+      },
+      "defenseSummary": {
+        "pointsAllowedPerGame": 118.92,
+        "buckets": [
+          {
+            "position": "G",
+            "pointsAllowedPerGame": 51.34,
+            "deltaPerGame": 4.874646739130441,
+            "band": null
+          },
+          {
+            "position": "F",
+            "pointsAllowedPerGame": 45.44,
+            "deltaPerGame": 1.2130978260869512,
+            "band": null
+          },
+          {
+            "position": "C",
+            "pointsAllowedPerGame": 22.14,
+            "deltaPerGame": -0.0658423913043471,
+            "band": null
+          },
+          {
+            "position": "unknown",
+            "pointsAllowedPerGame": 0.0,
+            "deltaPerGame": 0.0,
+            "band": null
+          }
+        ],
+        "withheld": null
+      }
+    },
+    {
+      "side": "away",
+      "team": {
+        "league": "nba",
+        "id": "1610612743",
+        "abbr": "DEN",
+        "name": "Denver Nuggets",
+        "shortName": "Nuggets",
+        "teamId": 1610612743
+      },
+      "record": {
+        "wins": 11,
+        "losses": 14
+      },
+      "games": 25,
+      "pointsPerGame": 108.96,
+      "pointsAllowedPerGame": 110.48,
+      "differentialPerGame": -1.5200000000000102,
+      "pointsPerRegulation": 108.96,
+      "pointsAllowedPerRegulation": 110.48,
+      "latestGame": {
+        "gameId": "0022500365",
+        "date": "2026-01-02",
+        "opponent": {
+          "league": "nba",
+          "id": "1610612765",
+          "abbr": "DET",
+          "name": "Detroit Pistons",
+          "shortName": "Pistons",
+          "teamId": 1610612765
+        },
+        "isHome": false,
+        "isNeutral": null,
+        "teamScore": 106,
+        "opponentScore": 108,
+        "result": "L",
+        "overtimePeriods": 0
+      },
+      "form": [
+        {
+          "gameId": "0022500365",
+          "date": "2026-01-02",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612765",
+            "abbr": "DET",
+            "name": "Detroit Pistons",
+            "shortName": "Pistons",
+            "teamId": 1610612765
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 106,
+          "opponentScore": 108,
+          "result": "L",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500351",
+          "date": "2025-12-30",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612758",
+            "abbr": "SAC",
+            "name": "Sacramento Kings",
+            "shortName": "Kings",
+            "teamId": 1610612758
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 107,
+          "opponentScore": 92,
+          "result": "W",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500337",
+          "date": "2025-12-27",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612761",
+            "abbr": "TOR",
+            "name": "Toronto Raptors",
+            "shortName": "Raptors",
+            "teamId": 1610612761
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 115,
+          "opponentScore": 116,
+          "result": "L",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500323",
+          "date": "2025-12-25",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612756",
+            "abbr": "PHX",
+            "name": "Phoenix Suns",
+            "shortName": "Suns",
+            "teamId": 1610612756
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 110,
+          "opponentScore": 123,
+          "result": "L",
+          "overtimePeriods": 0
+        },
+        {
+          "gameId": "0022500309",
+          "date": "2025-12-22",
+          "opponent": {
+            "league": "nba",
+            "id": "1610612747",
+            "abbr": "LAL",
+            "name": "Los Angeles Lakers",
+            "shortName": "Lakers",
+            "teamId": 1610612747
+          },
+          "isHome": false,
+          "isNeutral": null,
+          "teamScore": 99,
+          "opponentScore": 110,
+          "result": "L",
+          "overtimePeriods": 0
+        }
+      ],
+      "lastN": {
+        "window": 5,
+        "games": 5,
+        "pointsPerGame": 107.4,
+        "pointsAllowedPerGame": 109.8
+      },
+      "last10": {
+        "window": 10,
+        "games": 10,
+        "pointsPerGame": 108.9,
+        "pointsAllowedPerGame": 110.9
+      },
+      "venueSplits": {
+        "home": {
+          "games": 0,
+          "pointsPerGame": null,
+          "pointsAllowedPerGame": null
+        },
+        "away": {
+          "games": 25,
+          "pointsPerGame": 108.96,
+          "pointsAllowedPerGame": 110.48
+        },
+        "neutral": null
+      },
+      "adjustedPointsAgainst": {
+        "value": -3.065869565217393,
+        "games": 25
+      },
+      "adjustedPointsFor": {
+        "value": -4.1921739130434785,
+        "games": 25
+      },
+      "availability": {
+        "out": 0,
+        "doubtful": 0,
+        "questionable": 0,
+        "probable": 0,
+        "keyAbsences": [],
+        "freshnessState": "disabled",
+        "asOf": null
+      },
+      "defenseSummary": {
+        "pointsAllowedPerGame": 110.48,
+        "buckets": [
+          {
+            "position": "G",
+            "pointsAllowedPerGame": 43.16,
+            "deltaPerGame": -3.305353260869566,
+            "band": null
+          },
+          {
+            "position": "F",
+            "pointsAllowedPerGame": 44.34,
+            "deltaPerGame": 0.11309782608695684,
+            "band": null
+          },
+          {
+            "position": "C",
+            "pointsAllowedPerGame": 22.98,
+            "deltaPerGame": 0.7741576086956528,
+            "band": null
+          },
+          {
+            "position": "unknown",
+            "pointsAllowedPerGame": 0.0,
+            "deltaPerGame": 0.0,
+            "band": null
+          }
+        ],
+        "withheld": null
+      }
+    }
+  ],
+  "leagueAverage": {
+    "pointsPerGame": 112.89809782608695,
+    "teams": 30
+  },
+  "projection": {
+    "league": "nba",
+    "game": {
+      "league": "nba",
+      "gameId": "0022500379",
+      "date": "2026-01-05",
+      "tipoffUtc": null,
+      "venue": null,
+      "isNeutral": null,
+      "round": null,
+      "phase": null,
+      "status": "scheduled",
+      "home": {
+        "league": "nba",
+        "id": "1610612750",
+        "abbr": "MIN",
+        "name": "Minnesota Timberwolves",
+        "shortName": "Timberwolves",
+        "teamId": 1610612750
+      },
+      "away": {
+        "league": "nba",
+        "id": "1610612743",
+        "abbr": "DEN",
+        "name": "Denver Nuggets",
+        "shortName": "Nuggets",
+        "teamId": 1610612743
+      },
+      "homePts": null,
+      "awayPts": null,
+      "overtimePeriods": null
+    },
+    "freshness": {
+      "league": "nba",
+      "syncVersion": 4861,
+      "dataThrough": "2026-01-02",
+      "generatedAt": "2026-01-03T07:12:44Z",
+      "isDemo": true,
+      "sources": [
+        {
+          "key": "nba.stats",
+          "label": "NBA statistics",
+          "state": "ok",
+          "reason": "Demo league: every game here is invented.",
+          "lastSuccessAt": "2026-01-03T07:12:44Z"
+        },
+        {
+          "key": "nba.rosters",
+          "label": "Team rosters (listed positions)",
+          "state": "ok",
+          "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+          "lastSuccessAt": null
+        },
+        {
+          "key": "nba.injuryReport",
+          "label": "NBA official injury report",
+          "state": "disabled",
+          "reason": "Demo league: real injury statuses are not shown next to invented games",
+          "lastSuccessAt": null
+        }
+      ]
+    },
+    "home": {
+      "team": {
+        "league": "nba",
+        "id": "1610612750",
+        "abbr": "MIN",
+        "name": "Minnesota Timberwolves",
+        "shortName": "Timberwolves",
+        "teamId": 1610612750
+      },
+      "projectedPoints": 112.29846139286494,
+      "range80": null,
+      "fullStrengthPoints": 112.29846139286494,
+      "availabilityEffect": 0.0,
+      "attackIndex": 1.015101283290073,
+      "attackIndexAfterAvailability": 1.015101283290073,
+      "defenceIndex": 1.0366058249698555,
+      "capBinding": false,
+      "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
+      "keyAbsences": []
+    },
+    "away": {
+      "team": {
+        "league": "nba",
+        "id": "1610612743",
+        "abbr": "DEN",
+        "name": "Denver Nuggets",
+        "shortName": "Nuggets",
+        "teamId": 1610612743
+      },
+      "projectedPoints": 112.31145105737897,
+      "range80": null,
+      "fullStrengthPoints": 112.31145105737897,
+      "availabilityEffect": 0.0,
+      "attackIndex": 0.9690582610661361,
+      "attackIndexAfterAvailability": 0.9690582610661361,
+      "defenceIndex": 0.9716158169682044,
+      "capBinding": false,
+      "unassignedPoints": 0.0,
+      "replacementPoints": 0.0,
+      "keyAbsences": []
+    },
+    "margin": -0.012989664514037713,
+    "marginRange80": null,
+    "projectedWinner": null,
+    "isTossUp": true,
+    "summary": "Toss-up",
+    "combinedPoints": 224.6099124502439,
+    "combinedAvailabilityEffect": 0.0,
+    "homeAdvantagePoints": 2.0452342487883683,
+    "venueAssumed": true,
+    "intervalBasis": null,
+    "model": {
+      "key": "hardwood",
+      "version": "nba-1",
+      "kind": "latest",
+      "computedAt": "2026-01-03T07:12:44Z",
+      "inputsCutoff": "2026-01-03T07:12:44Z",
+      "computedAfterTipoff": false,
+      "capPolicy": "consistent",
+      "constants": [
+        {
+          "key": "priorRegression",
+          "value": 0.3,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "priorWeightGames",
+          "value": 10.0,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "leagueLevelWeight",
+          "value": 150.0,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "homeAdvantagePoints",
+          "value": 2.0452342487883683,
+          "provenance": "derived",
+          "isDefault": false
+        },
+        {
+          "key": "teamSd",
+          "value": null,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "marginSd",
+          "value": null,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "replacementShare",
+          "value": 0.52,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "absorbShare",
+          "value": 0.6,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "boostCap",
+          "value": 1.35,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "capPolicyConsistent",
+          "value": 1.0,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "playerPriorGames",
+          "value": 10,
+          "provenance": "default",
+          "isDefault": true
+        },
+        {
+          "key": "leagueAveragePoints",
+          "value": 112.82281855686152,
+          "provenance": "derived",
+          "isDefault": false
+        }
+      ]
+    },
+    "assumptions": {
+      "assumedAvailable": {
+        "home": 10,
+        "away": 10,
+        "basis": "noReportPublished",
+        "homeBasis": "noReportPublished",
+        "awayBasis": "noReportPublished"
+      },
+      "staleEntriesIgnored": 0
+    },
+    "result": null,
+    "availability": "estimated",
+    "notes": [
+      "Defence indices are not changed by absences: absences move the projected scores only.",
+      "Players with no status in force are assumed to play; see assumptions.assumedAvailable.",
+      "Absences are listed by season averages, not by the engine's own player projections.",
+      "No spread has been fitted yet, so no range is shown."
+    ]
+  },
+  "availability": "full",
+  "notes": [
+    "The NBA store does not record neutral-site games, so every venue is an assumption."
+  ]
+}

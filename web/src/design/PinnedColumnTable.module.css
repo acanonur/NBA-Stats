@@ -1,0 +1,83 @@
+/*
+ * A dense table with a non-scrolling identity column beside an `overflow-x: auto` body —
+ * WEB_DESIGN.md §7.4 item 16, for `game_log` and `fantasy_draft_board`.
+ *
+ * `--col-w`/`--col-n` (set inline by `PinnedColumnTable.tsx`, one width shared by every
+ * scrolling column and the column count) are what let `.rule`'s width be computed explicitly
+ * as `calc(var(--col-w) * var(--col-n))` rather than `100%`. That distinction is the whole
+ * point: a `width: 100%` rule drawn *inside* an `overflow-x: auto` container resolves against
+ * the container's own (clipped, viewport-sized) box, so it visibly stops short of a table that
+ * is actually wider than the tile — a full-bleed `<hr>` that "collapses to the viewport width,
+ * not the content width". Sizing it from the same two custom properties the grid's columns
+ * themselves are built from keeps the rule exactly as wide as the scrollable content, however
+ * far a reader has scrolled.
+ */
+
+.root {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.pinnedColumn {
+  flex: none;
+  box-sizing: border-box;
+  border-right: 1px solid var(--hw-separator);
+  background-color: var(--hw-surface);
+  z-index: 1;
+}
+
+.scrollArea {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--col-n), var(--col-w));
+  width: calc(var(--col-w) * var(--col-n));
+}
+
+.headerCell {
+  box-sizing: border-box;
+  padding: var(--hw-space-xs) var(--hw-space-sm);
+  border-bottom: 1px solid var(--hw-separator);
+}
+
+.cell {
+  box-sizing: border-box;
+  padding: var(--hw-space-xs) var(--hw-space-sm);
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.alignTrailing {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.rule {
+  height: 1px;
+  background-color: var(--hw-separator);
+  width: calc(var(--col-w) * var(--col-n));
+}
+
+.pinnedRule {
+  height: 1px;
+  background-color: var(--hw-separator);
+}
+
+.pinnedCell {
+  box-sizing: border-box;
+  padding: var(--hw-space-xs) var(--hw-space-sm);
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.selectionPill {
+  border-radius: var(--hw-radius-pill);
+  background-color: color-mix(in sRGB, var(--hw-selection) 14%, transparent);
+}

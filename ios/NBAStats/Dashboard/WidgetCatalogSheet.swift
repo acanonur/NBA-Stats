@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - Grouping
 
-/// How the thirteen widget kinds are grouped in the "Add Widget" sheet.
+/// How the twenty widget kinds are grouped in the "Add Widget" sheet.
 ///
 /// The grouping is about what a widget is *for* rather than what it renders, so the reader looking
 /// for "something about last night" finds the scoreboard and the movers together.
@@ -58,10 +58,21 @@ public enum WidgetCatalogGroup: String, CaseIterable, Identifiable, Sendable {
             // The board is about tonight's slate, not about one player, so it belongs beside
             // the scoreboard rather than in the player section with the single projection.
             return .today
+        case .fantasyDraftBoard, .fantasyTrade:
+            // Ranked across the whole league, so the league group rather than the player one.
+            return .league
         case .fourFactors, .teamEfficiency:
             return .teams
         case .leaderboard:
             return .league
+        case .teamMatchup, .defenseByPosition:
+            // A matchup is two teams and a defence breakdown is one team's (or all of them): both
+            // are about teams, whichever league the tile is pointed at.
+            return .teams
+        case .availabilityReport, .slateProjections:
+            // Who is out and what the next slate is projected to score are about the games coming
+            // up, so they sit beside the scoreboard.
+            return .today
         }
     }
 }
@@ -103,7 +114,13 @@ struct WidgetThumbnail: View {
         case .teamEfficiency: return .columns
         case .nextGameProjection: return .headline
         case .projectionBoard: return .rows
+        case .fantasyDraftBoard: return .rows
+        case .fantasyTrade: return .split
         case .careerArc:      return .line
+        case .teamMatchup:    return .split
+        case .defenseByPosition: return .columns
+        case .availabilityReport: return .rows
+        case .slateProjections: return .rows
         }
     }
 
@@ -226,15 +243,17 @@ public struct WidgetCatalogSheet: View {
                     section(for: group)
                 }
             }
-            .listStyle(.insetGrouped)
+            .hardwoodGroupedListStyle()
             .navigationTitle("Add Widget")
-            .navigationBarTitleDisplayMode(.inline)
+            .hardwoodInlineTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
             }
         }
+        // A macOS sheet sizes itself to its content's ideal size, and a List has none.
+        .hardwoodSheetFrame(minWidth: 560, minHeight: 560)
     }
 
     @ViewBuilder private func section(for group: WidgetCatalogGroup) -> some View {

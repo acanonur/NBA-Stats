@@ -1,0 +1,26 @@
+{
+  "league": "nba",
+  "items": [
+    {
+      "statusId": 6,
+      "playerName": "Okafor-Lindqvist, Tobias",
+      "team": {
+        "league": "nba",
+        "id": "1610612766",
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "shortName": "Hornets",
+        "teamId": 1610612766
+      },
+      "source": {
+        "kind": "leagueReport",
+        "label": "NBA official injury report",
+        "url": "https://example.org/injury-report/Injury-Report_2026-01-03_10_30AM.pdf",
+        "publishedAt": "2026-01-03T15:30:00Z",
+        "asOf": null,
+        "fetchedAt": null,
+        "snapshotId": null
+      }
+    }
+  ]
+}

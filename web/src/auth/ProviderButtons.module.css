@@ -1,0 +1,28 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-control);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  padding: var(--hw-space-sm) var(--hw-space-md);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.button:hover {
+  background: var(--hw-surface-raised);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}

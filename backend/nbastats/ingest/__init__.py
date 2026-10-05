@@ -17,6 +17,8 @@ Module map
 ``daily``      poll → ingest one game → bump ``sync_version`` → re-aggregate
 ``backfill``   bulk-file loaders and the id crosswalk
 ``aggregate``  everything derived: season rows, team seasons, league distributions
+``rosters``    weekly roster listings and the positions they give (``player_position_season``)
+``schedule_detail``  tip-off times and arenas read from the same scoreboard poll
 ``runner``     the scheduler entry point and CLI
 
 Invariants every module here upholds

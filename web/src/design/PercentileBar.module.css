@@ -1,0 +1,69 @@
+/*
+ * `ios/NBAStats/DesignSystem/PercentileBar.swift`'s `PercentileBar`, ported. A plain div/CSS
+ * geometry rather than SVG — a rounded track, three hairline quartile ticks, a translucent fill
+ * and a solid 3px marker are all ordinary box layout, and nothing here interpolates a series or
+ * needs a coordinate system, which is the actual reason WEB_DESIGN.md §7.4's "hand-written SVG,
+ * no chart library" rule exists (a `null`-swallowing chart library is the danger; a static bar is
+ * not a chart).
+ */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+}
+
+.track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 16px;
+}
+
+.trackFill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 8px;
+  border-radius: var(--hw-radius-pill);
+  background-color: var(--hw-track);
+  width: 100%;
+}
+
+.quartileTick {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  height: 8px;
+  background-color: var(--hw-separator);
+}
+
+.fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 8px;
+  border-radius: var(--hw-radius-pill);
+  background-color: color-mix(in sRGB, var(--hw-marker-color, var(--hw-selection)) 45%, transparent);
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 16px;
+  border-radius: 1.5px;
+  background-color: var(--hw-marker-color, var(--hw-selection));
+  box-sizing: border-box;
+  border: 1px solid var(--hw-surface);
+}
+
+.label {
+  min-width: 34px;
+  text-align: right;
+  flex: none;
+}

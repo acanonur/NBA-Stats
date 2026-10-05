@@ -1,0 +1,8 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--hw-space-sm);
+  margin-bottom: var(--hw-space-sm);
+}

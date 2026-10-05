@@ -1,0 +1,28 @@
+{
+  "resource": "commonteamroster",
+  "parameters": {
+    "TeamID": 1610612748,
+    "LeagueID": "00",
+    "Season": "2025-26"
+  },
+  "resultSets": [{ "name": "CommonTeamRoster", "headers": ["TeamID", "SEASON", "LeagueID", "PLAYER", "NICKNAME", "PLAYER_SLUG", "NUM", "HEIGHT", "WEIGHT", "BIRTH_DATE", "AGE", "EXP", "SCHOOL", "PLAYER_ID", "HOW_ACQUIRED"],
+      "rowSet": [
+        [1610612748, "2025", "00", "Isaiah Mercer", "Isaiah", "isaiah-mercer", "10", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000301, "Draft"],
+        [1610612748, "2025", "00", "Luka Brenner", "Luka", "luka-brenner", "11", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000302, "Draft"],
+        [1610612748, "2025", "00", "Amir Duval", "Amir", "amir-duval", "12", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000303, "Draft"],
+        [1610612748, "2025", "00", "Jesse Nakamura", "Jesse", "jesse-nakamura", "13", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000304, "Draft"],
+        [1610612748, "2025", "00", "Bruno Castell", "Bruno", "bruno-castell", "14", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000305, "Draft"],
+        [1610612748, "2025", "00", "Kai Lindqvist", "Kai", "kai-lindqvist", "15", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000306, "Draft"],
+        [1610612748, "2025", "00", "Omar Feld", "Omar", "omar-feld", "16", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000307, "Draft"],
+        [1610612748, "2025", "00", "Trey Boone", "Trey", "trey-boone", "17", "6-5", "200", "JAN 01, 1999", 26.0, "4", "Riverbend", 1000308, "Draft"]
+      ]
+    },
+    {
+      "name": "Coaches",
+      "headers": ["TEAM_ID", "SEASON", "COACH_ID", "FIRST_NAME", "LAST_NAME", "COACH_NAME", "IS_ASSISTANT", "COACH_TYPE", "SORT_SEQUENCE", "SUB_SORT_SEQUENCE"],
+      "rowSet": [
+        [1610612748, "2025", 9000748, "Corbin", "Easley", "Corbin Easley", 0, "Head Coach", 1, 0]
+      ]
+    }
+  ]
+}

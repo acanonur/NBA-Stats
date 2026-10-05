@@ -14,10 +14,31 @@ tile**:
 ``knownSyncVersion`` is the cheap path. The service's sync version increments once per
 finalized game (§8), so a client whose version already matches the server's is holding
 payloads that cannot have changed: those widgets come back ``"unchanged"`` with a ``null``
-payload and the client keeps what it has.
+payload and the client keeps what it has. Two groups of kinds are never answered that way, because
+their data moves without a finalized game: the clock-dependent ones (a live scoreboard) and the four
+league kinds, whose freshness is carried in their own ``payload.freshness`` (see
+``_CLOCK_DEPENDENT_KINDS`` and ``_FOREIGN_CURSOR_KINDS`` below).
 
 ``resolvedContext`` echoes the subjects that were actually used, so a client that sent no
 favourite learns who the dashboard ended up being about and can offer "pin this player".
+
+The one exception to "one bad tile degrades one tile" is identity, not data
+--------------------------------------------------------------------------------
+Hardwood Web signs in over a session, and a signed-in user's own stored
+``favoritePlayerId`` / ``favoriteTeamId`` (``accounts.models.User``) fill in for a request's
+``context.favoritePlayerId`` / ``context.favoriteTeamId`` whenever the client left them
+``null`` — a client-sent value always wins, so an iOS request (which always sends its own
+favourites) is byte-identical to today's, and every existing widget-layer test is untouched.
+That substitution happens once, at the single :meth:`~nbastats.widgets.base.ResolveContext.
+from_request` call site below, by reading ``request.state.user`` (populated by
+``deps.require_api_key_or_session``, which every router carrying this route already depends
+on) — nowhere inside :mod:`nbastats.widgets` needs to know a user exists at all.
+
+A **401** on this route (no key, no session, and the service requires one) is a real
+request-level failure, never a per-widget ``status: "error"``: the "one bad tile" rule governs
+*data* a resolver could not produce, not *who is asking*, and the correct client action for an
+expired session is to route to sign-in, not to retry twenty-four grey tiles. See
+``contracts/CONTRACT.md`` §3 for the same note written for API consumers.
 """
 from __future__ import annotations
 
@@ -62,6 +83,13 @@ def resolve_dashboard(
 
     request_id = errors.request_id_of(request)
     ctx = ResolveContext.from_request(session, body.context, request_id=request_id)
+
+    user = getattr(request.state, "user", None)
+    if user is not None:
+        if ctx.favorite_player_id is None:
+            ctx.favorite_player_id = user.favorite_player_id
+        if ctx.favorite_team_id is None:
+            ctx.favorite_team_id = user.favorite_team_id
 
     results = [
         resolve_one(widget, ctx, known_sync_version=body.known_sync_version)
@@ -179,6 +207,7 @@ def resolve_one(
         known_sync_version is not None
         and known_sync_version == ctx.sync_version
         and kind not in _CLOCK_DEPENDENT_KINDS
+        and kind not in _FOREIGN_CURSOR_KINDS
     ):
         # Nothing has been ingested since the client's copy was built, so nothing this
         # widget could show has moved. §3: the client keeps what it has.
@@ -241,6 +270,21 @@ def resolve_one(
 #: the wall clock. Answering ``unchanged`` for these would freeze a live tile until the final
 #: buzzer, so they are always resolved.
 _CLOCK_DEPENDENT_KINDS = frozenset({"scoreboard", "daily_movers"})
+
+#: Kinds whose freshness is not the NBA's ``syncVersion``, so "the NBA has ingested nothing since
+#: the client's copy was built" says nothing about whether they changed.
+#:
+#: These are the four league widgets. Their payloads carry their own cursor in ``payload.freshness``
+#: (a EuroLeague tile moves with the EuroLeague's own ``/v1/el/sync`` version, which this resolve
+#: never reads), and even an NBA-configured one moves without a finalized game: a status arrives
+#: with the injury report, a projection re-prices when one does, a game flips to "result pending"
+#: three hours after tip-off and a ``next`` slate rolls over at midnight Eastern. Answering
+#: ``unchanged`` for any of them would freeze a tile until the next final buzzer, so, like the
+#: clock-dependent kinds, they are always resolved. The set is by kind, not by the tile's league,
+#: because the NBA-configured case needs it just as much as the EuroLeague's.
+_FOREIGN_CURSOR_KINDS = frozenset(
+    {"team_matchup", "defense_by_position", "availability_report", "slate_projections"}
+)
 
 
 def _error(

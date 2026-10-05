@@ -7,16 +7,26 @@ App Store release), and presets for the nine starter dashboards.
 ``/v1/health`` is the one route that never requires an API key and never touches the request
 session dependency: it opens its own session inside a ``try`` so that a database that is down
 answers ``503`` with a readable body instead of a stack trace.
+
+``authReady`` / ``authWarnings`` (added for Hardwood Web, WEB_DESIGN.md §4.5) follow that same
+"answer with a body even when degraded" rule and, just like the rest of this route, read no
+database row: ``authReady`` is ``routes_auth`` having actually mounted (``app.py`` records that
+on ``application.state`` once, at startup — see ``_include_optional_routers``), and
+``authWarnings`` is ``nbastats.accounts.config.startup_warnings``, which is itself pure
+environment inspection. A stats-only deployment with no accounts feature installed at all
+answers ``authReady: false`` with an empty ``authWarnings`` — a true statement, not a degraded
+one, so it is not what flips ``status`` to ``"degraded"`` or the HTTP status to ``503``.
 """
 from __future__ import annotations
 
 import logging
 from typing import Any
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Request, Response
 from sqlalchemy import func, select
 
 from .. import API_VERSION, SCHEMA_VERSION, catalog
+from ..accounts.config import get_auth_settings, startup_warnings
 from ..config import get_settings
 from ..db import get_sessionmaker
 from ..models import Game, SyncState, Team
@@ -88,7 +98,7 @@ def _has_synthetic_data(session: Any) -> bool:
     summary="Liveness and data freshness",
     responses={503: {"description": "The database is not ready."}},
 )
-def health(response: Response) -> HealthResponse:
+def health(request: Request, response: Response) -> HealthResponse:
     """Liveness plus the freshness cursor. Never requires an API key.
 
     ``200`` when the store answers, ``503`` with the same body when it does not — a load
@@ -115,6 +125,9 @@ def health(response: Response) -> HealthResponse:
 
     if not ready:
         response.status_code = 503
+
+    auth_settings = get_auth_settings()
+    mounted = getattr(request.app.state, "mounted_route_modules", frozenset())
     return HealthResponse(
         status="ok" if ready else "degraded",
         version=API_VERSION,
@@ -122,6 +135,8 @@ def health(response: Response) -> HealthResponse:
         data_through=data_through,
         database_ready=ready,
         seeded_demo_data=demo,
+        auth_ready="routes_auth" in mounted,
+        auth_warnings=startup_warnings(auth_settings),
     )
 
 

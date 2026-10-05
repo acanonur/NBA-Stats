@@ -305,10 +305,7 @@ public struct TrendChartWidget: View {
         .chartXAxis { HardwoodChartAxis.dates(desiredCount: size == .large ? 5 : 3) }
         .chartOverlay { proxy in
             GeometryReader { geometry in
-                Rectangle()
-                    .fill(Color.clear)
-                    .contentShape(Rectangle())
-                    .gesture(inspectGesture(proxy: proxy, geometry: geometry))
+                inspectSurface(proxy: proxy, geometry: geometry)
             }
         }
         .hardwoodChartStyle()
@@ -316,19 +313,51 @@ public struct TrendChartWidget: View {
         .accessibilityLabel(accessibilityText)
     }
 
+    /// The transparent layer over the plot that turns a touch or a pointer into an inspected date.
+    ///
+    /// iOS: a drag, as before. macOS: the same drag (a click-and-drag still works) plus a hover,
+    /// because a mouse user never "drags" to read a chart; moving the pointer along it is the
+    /// natural gesture. Leaving the plot hands the readout back to the latest game.
+    @ViewBuilder private func inspectSurface(proxy: ChartProxy, geometry: GeometryProxy) -> some View {
+        #if os(macOS)
+        Rectangle()
+            .fill(Color.clear)
+            .contentShape(Rectangle())
+            .gesture(inspectGesture(proxy: proxy, geometry: geometry))
+            .onContinuousHover { phase in
+                if case .active(let location) = phase {
+                    inspect(atX: location.x, proxy: proxy, geometry: geometry)
+                } else {
+                    selectedDate = nil
+                }
+            }
+        #else
+        Rectangle()
+            .fill(Color.clear)
+            .contentShape(Rectangle())
+            .gesture(inspectGesture(proxy: proxy, geometry: geometry))
+        #endif
+    }
+
     private func inspectGesture(proxy: ChartProxy, geometry: GeometryProxy) -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { drag in
-                guard let plotFrame = proxy.plotFrame else { return }
-                let origin = geometry[plotFrame].origin
-                let position = drag.location.x - origin.x
-                guard let date = proxy.value(atX: position, as: Date.self) else { return }
-                selectedDate = date
+                inspect(atX: drag.location.x, proxy: proxy, geometry: geometry)
             }
             .onEnded { _ in
                 // The selection is deliberately kept after the finger lifts: the reader is
                 // usually reading the number they just scrubbed to.
             }
+    }
+
+    /// Points the readout at the game nearest to `x`, a horizontal position in the overlay's own
+    /// coordinates.
+    private func inspect(atX x: CGFloat, proxy: ChartProxy, geometry: GeometryProxy) {
+        guard let plotFrame = proxy.plotFrame else { return }
+        let origin = geometry[plotFrame].origin
+        let position = x - origin.x
+        guard let date = proxy.value(atX: position, as: Date.self) else { return }
+        selectedDate = date
     }
 
     // MARK: Model building

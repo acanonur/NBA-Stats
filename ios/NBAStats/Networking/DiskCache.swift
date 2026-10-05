@@ -12,8 +12,15 @@ extension WidgetKind {
             return 60
         case .statTile, .playerSnapshot, .gameLog, .trendChart, .shotProfile, .comparison:
             return 300
-        case .leaderboard, .teamEfficiency, .fourFactors, .nextGameProjection, .projectionBoard:
+        case .leaderboard, .teamEfficiency, .fourFactors, .nextGameProjection, .projectionBoard,
+             .fantasyDraftBoard, .fantasyTrade:
             return 600
+        case .teamMatchup, .defenseByPosition, .slateProjections:
+            // The league tiles' own `minRefreshSeconds` (`contracts/widgets.json`).
+            return 600
+        case .availabilityReport:
+            // An injury report moves faster than a table of averages: five minutes.
+            return 300
         case .careerArc:
             return 3600
         }

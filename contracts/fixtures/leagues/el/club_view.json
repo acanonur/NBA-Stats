@@ -1,0 +1,1238 @@
+{
+  "league": "euroleague",
+  "team": {
+    "league": "euroleague",
+    "id": "ZZA",
+    "abbr": "ZZA",
+    "name": "Alderwick Herons",
+    "shortName": "Alderwick",
+    "clubCode": "ZZA",
+    "tvCode": null
+  },
+  "season": "2026-27",
+  "seasonCode": "E2026",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.manual",
+        "label": "Entered by hand",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-10-12T09:00:00Z"
+      }
+    ]
+  },
+  "coach": "Zeline Radcliff",
+  "record": {
+    "wins": 3,
+    "losses": 1
+  },
+  "scoring": {
+    "record": {
+      "wins": 3,
+      "losses": 1
+    },
+    "games": 4,
+    "pointsPerGame": 88.25,
+    "pointsAllowedPerGame": 83.25,
+    "differentialPerGame": 5.0,
+    "pointsPerRegulation": 88.25,
+    "pointsAllowedPerRegulation": 83.25,
+    "latestGame": {
+      "gameId": "E2026-0031",
+      "date": "2026-10-08",
+      "opponent": {
+        "league": "euroleague",
+        "id": "ZZQ",
+        "abbr": "ZZQ",
+        "name": "Quillon Ravens",
+        "shortName": "Quillon",
+        "clubCode": "ZZQ",
+        "tvCode": null
+      },
+      "isHome": false,
+      "isNeutral": false,
+      "teamScore": 74,
+      "opponentScore": 80,
+      "result": "L",
+      "overtimePeriods": 0
+    },
+    "form": [
+      {
+        "gameId": "E2026-0031",
+        "date": "2026-10-08",
+        "opponent": {
+          "league": "euroleague",
+          "id": "ZZQ",
+          "abbr": "ZZQ",
+          "name": "Quillon Ravens",
+          "shortName": "Quillon",
+          "clubCode": "ZZQ",
+          "tvCode": null
+        },
+        "isHome": false,
+        "isNeutral": false,
+        "teamScore": 74,
+        "opponentScore": 80,
+        "result": "L",
+        "overtimePeriods": 0
+      },
+      {
+        "gameId": "E2026-0021",
+        "date": "2026-10-01",
+        "opponent": {
+          "league": "euroleague",
+          "id": "ZZR",
+          "abbr": "ZZR",
+          "name": "Redmarsh Pikes",
+          "shortName": "Redmarsh",
+          "clubCode": "ZZR",
+          "tvCode": null
+        },
+        "isHome": true,
+        "isNeutral": true,
+        "teamScore": 96,
+        "opponentScore": 82,
+        "result": "W",
+        "overtimePeriods": 0
+      },
+      {
+        "gameId": "E2026-0011",
+        "date": "2026-09-29",
+        "opponent": {
+          "league": "euroleague",
+          "id": "ZZS",
+          "abbr": "ZZS",
+          "name": "Silverlake Orcas",
+          "shortName": "Silverlake",
+          "clubCode": "ZZS",
+          "tvCode": null
+        },
+        "isHome": false,
+        "isNeutral": false,
+        "teamScore": 89,
+        "opponentScore": 78,
+        "result": "W",
+        "overtimePeriods": 0
+      },
+      {
+        "gameId": "E2026-0001",
+        "date": "2026-09-24",
+        "opponent": {
+          "league": "euroleague",
+          "id": "ZZT",
+          "abbr": "ZZT",
+          "name": "Thornfield Tigers",
+          "shortName": "Thornfield",
+          "clubCode": "ZZT",
+          "tvCode": null
+        },
+        "isHome": true,
+        "isNeutral": null,
+        "teamScore": 94,
+        "opponentScore": 93,
+        "result": "W",
+        "overtimePeriods": 0
+      }
+    ],
+    "lastN": {
+      "window": 5,
+      "games": 4,
+      "pointsPerGame": 88.25,
+      "pointsAllowedPerGame": 83.25
+    },
+    "last10": {
+      "window": 10,
+      "games": 4,
+      "pointsPerGame": 88.25,
+      "pointsAllowedPerGame": 83.25
+    },
+    "venueSplits": {
+      "home": {
+        "games": 1,
+        "pointsPerGame": 94.0,
+        "pointsAllowedPerGame": 93.0
+      },
+      "away": {
+        "games": 2,
+        "pointsPerGame": 81.5,
+        "pointsAllowedPerGame": 79.0
+      },
+      "neutral": {
+        "games": 1,
+        "pointsPerGame": 96.0,
+        "pointsAllowedPerGame": 82.0
+      }
+    },
+    "adjustedPointsAgainst": {
+      "value": null,
+      "games": 4
+    },
+    "adjustedPointsFor": {
+      "value": null,
+      "games": 4
+    }
+  },
+  "rating": {
+    "pfPrior": 85.76,
+    "paPrior": 86.22,
+    "priorIsEstimate": false,
+    "attackAdj": 0.31928273301479604,
+    "defenceAdj": -0.44454949090444074,
+    "projectedPointsFor": 85.7023327330148,
+    "projectedPointsAgainst": 85.26050050909556,
+    "attackIndex": 1.0141867820032875,
+    "defenceIndex": 1.008958214856137,
+    "asOfRound": 4,
+    "source": "roundUpdate",
+    "updateWeight": 0.07692307692307693,
+    "updateBasis": "reconstructed",
+    "extrapolated": true
+  },
+  "squad": [
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-9",
+        "name": "Aldous Oldacre",
+        "position": "F",
+        "positionRaw": "Forward",
+        "jersey": "75",
+        "headshotUrl": null,
+        "personCode": "demo-9"
+      },
+      "positionWorkbook5": "PF",
+      "age": 28,
+      "role": "Rotation",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 9.879999999999999,
+      "per40": {
+        "pts": 10.625302956858942,
+        "reb": 8.06592341250606,
+        "ast": 2.2394571013087736,
+        "fg3m": 0.6786233640329616,
+        "stl": 0.8822103732428501,
+        "blk": 0.42656325739214734,
+        "tov": 2.1812893843916625
+      },
+      "perGame": {
+        "min": 9.879999999999999,
+        "pts": 2.6244498303441586,
+        "reb": 1.9922830828889964,
+        "ast": 0.553145904023267,
+        "fg3m": 0.1676199709161415,
+        "stl": 0.21790596219098396,
+        "blk": 0.10536112457586037,
+        "tov": 0.5387784779447407,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 3,
+        "min": 12.944444444444445,
+        "pts": 2.3333333333333335,
+        "reb": 3.0,
+        "ast": 0.6666666666666666,
+        "pir": 3.6666666666666665,
+        "fg2Pct": 0.5,
+        "fg3Pct": 0.3333333333333333,
+        "ftPct": 0.6666666666666666
+      },
+      "status": "doubtful",
+      "chanceOfPlaying": 0.25,
+      "inForce": false,
+      "isStale": true,
+      "availabilitySource": {
+        "kind": "clubStatement",
+        "label": "Alderwick statement",
+        "url": "https://clubs.example.org/zza/statement-20",
+        "publishedAt": "2026-10-08T00:00:00Z",
+        "asOf": "2026-10-12T09:00:00Z",
+        "fetchedAt": "2026-10-12T09:00:00Z",
+        "snapshotId": null
+      }
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-4",
+        "name": "Cadrik Abernethy",
+        "position": "F",
+        "positionRaw": "Forward",
+        "jersey": "23",
+        "headshotUrl": null,
+        "personCode": "demo-4"
+      },
+      "positionWorkbook5": "PF",
+      "age": 19,
+      "role": "Starter",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 22.25777777777778,
+      "per40": {
+        "pts": 20.59103059103059,
+        "reb": 8.589248589248589,
+        "ast": 2.1294921294921294,
+        "fg3m": 0.8642708642708643,
+        "stl": 0.9711909711909713,
+        "blk": 0.3564003564003564,
+        "tov": 1.6661716661716661
+      },
+      "perGame": {
+        "min": 22.25777777777778,
+        "pts": 11.457764577764578,
+        "reb": 4.779439659439659,
+        "ast": 1.184944064944065,
+        "fg3m": 0.48091872091872095,
+        "stl": 0.5404138204138205,
+        "blk": 0.1983169983169983,
+        "tov": 0.9271319671319672,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 23.358333333333334,
+        "pts": 10.0,
+        "reb": 5.75,
+        "ast": 1.25,
+        "pir": 11.75,
+        "fg2Pct": 0.5263157894736842,
+        "fg3Pct": 0.36363636363636365,
+        "ftPct": 0.8
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-12",
+        "name": "Dacian Garnet",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "44",
+        "headshotUrl": null,
+        "personCode": "demo-12"
+      },
+      "positionWorkbook5": "C",
+      "age": 29,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 2.666666666666667,
+      "per40": {
+        "pts": 5.03,
+        "reb": 6.71,
+        "ast": 1.26,
+        "fg3m": 0.0,
+        "stl": 0.67,
+        "blk": 0.42,
+        "tov": 1.47
+      },
+      "perGame": {
+        "min": 2.666666666666667,
+        "pts": 0.33533333333333337,
+        "reb": 0.44733333333333336,
+        "ast": 0.084,
+        "fg3m": 0.0,
+        "stl": 0.044666666666666674,
+        "blk": 0.028000000000000004,
+        "tov": 0.098,
+        "pir": null
+      },
+      "seasonAverages": null,
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-3",
+        "name": "Faolan Bexley-Ford",
+        "position": "F",
+        "positionRaw": "Forward",
+        "jersey": "50",
+        "headshotUrl": null,
+        "personCode": "demo-3"
+      },
+      "positionWorkbook5": "SF",
+      "age": 36,
+      "role": "Starter",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 23.904444444444444,
+      "per40": {
+        "pts": 16.140635964102376,
+        "reb": 5.078849207814751,
+        "ast": 3.4036266942423463,
+        "fg3m": 1.9056764043283967,
+        "stl": 1.3295416774384166,
+        "blk": 0.1506813901096872,
+        "tov": 2.1184030727185434
+      },
+      "perGame": {
+        "min": 23.904444444444444,
+        "pts": 9.64582339254718,
+        "reb": 3.0351767182479596,
+        "ast": 2.034045130553607,
+        "fg3m": 1.1388533934089202,
+        "stl": 0.7945488791225026,
+        "blk": 0.09004887296721695,
+        "tov": 1.2659812140685207,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 24.3875,
+        "pts": 12.5,
+        "reb": 5.25,
+        "ast": 2.25,
+        "pir": 15.25,
+        "fg2Pct": 0.5,
+        "fg3Pct": 0.2222222222222222,
+        "ftPct": 0.75
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-11",
+        "name": "Fenwick Jorvik",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "60",
+        "headshotUrl": null,
+        "personCode": "demo-11"
+      },
+      "positionWorkbook5": "PF",
+      "age": 19,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 4.0,
+      "per40": {
+        "pts": 8.11,
+        "reb": 7.92,
+        "ast": 2.13,
+        "fg3m": 0.6,
+        "stl": 0.87,
+        "blk": 0.41,
+        "tov": 2.21
+      },
+      "perGame": {
+        "min": 4.0,
+        "pts": 0.8109999999999999,
+        "reb": 0.792,
+        "ast": 0.213,
+        "fg3m": 0.06,
+        "stl": 0.087,
+        "blk": 0.040999999999999995,
+        "tov": 0.221,
+        "pir": null
+      },
+      "seasonAverages": null,
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-8",
+        "name": "Hadric Carrowmore",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "6",
+        "headshotUrl": null,
+        "personCode": "demo-8"
+      },
+      "positionWorkbook5": "C",
+      "age": 28,
+      "role": "Rotation",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 13.768888888888888,
+      "per40": {
+        "pts": 10.434379347658062,
+        "reb": 9.265728860720358,
+        "ast": 1.7900757458648942,
+        "fg3m": 0.0,
+        "stl": 0.6307002627917762,
+        "blk": 0.4730251970938321,
+        "tov": 2.3373009738754056
+      },
+      "perGame": {
+        "min": 13.768888888888888,
+        "pts": 3.5917452465605195,
+        "reb": 3.189469778945741,
+        "ast": 0.6161838511877158,
+        "fg3m": 0.0,
+        "stl": 0.2171010460143247,
+        "blk": 0.16282578451074353,
+        "tov": 0.8045509352295562,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 14.029166666666667,
+        "pts": 4.5,
+        "reb": 3.0,
+        "ast": 0.5,
+        "pir": 5.0,
+        "fg2Pct": 0.5333333333333333,
+        "fg3Pct": null,
+        "ftPct": 1.0
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-18",
+        "name": "Isidor Fairbourne",
+        "position": "G",
+        "positionRaw": "Guard",
+        "jersey": "51",
+        "headshotUrl": null,
+        "personCode": "demo-18"
+      },
+      "positionWorkbook5": "SG",
+      "age": 21,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 1.202222222222222,
+      "per40": {
+        "pts": 5.346823936803376,
+        "reb": 4.129423222594957,
+        "ast": 1.938101937019803,
+        "fg3m": 0.525917108538037,
+        "stl": 0.944702954225733,
+        "blk": 0.12660967427767555,
+        "tov": 2.103668434152148
+      },
+      "perGame": {
+        "min": 1.202222222222222,
+        "pts": 0.16070176387836813,
+        "reb": 0.12411210907910397,
+        "ast": 0.058250730440428514,
+        "fg3m": 0.01580673087328211,
+        "stl": 0.028393572124228973,
+        "blk": 0.00380532409912347,
+        "tov": 0.06322692349312845,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 1,
+        "min": 4.016666666666667,
+        "pts": 0.0,
+        "reb": 0.0,
+        "ast": 0.0,
+        "pir": 1.0,
+        "fg2Pct": null,
+        "fg3Pct": null,
+        "ftPct": null
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-16",
+        "name": "Joran Radcliff",
+        "position": "G",
+        "positionRaw": "Guard",
+        "jersey": "18",
+        "headshotUrl": null,
+        "personCode": "demo-16"
+      },
+      "positionWorkbook5": "SG",
+      "age": 35,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 0.6666666666666667,
+      "per40": {
+        "pts": 7.33,
+        "reb": 2.39,
+        "ast": 3.04,
+        "fg3m": 1.48,
+        "stl": 1.14,
+        "blk": 0.21,
+        "tov": 1.6
+      },
+      "perGame": {
+        "min": 0.6666666666666667,
+        "pts": 0.12216666666666669,
+        "reb": 0.03983333333333334,
+        "ast": 0.05066666666666667,
+        "fg3m": 0.02466666666666667,
+        "stl": 0.019,
+        "blk": 0.0035000000000000005,
+        "tov": 0.026666666666666672,
+        "pir": null
+      },
+      "seasonAverages": null,
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-15",
+        "name": "Lorcan Ironsby",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "32",
+        "headshotUrl": null,
+        "personCode": "demo-15"
+      },
+      "positionWorkbook5": "C",
+      "age": 30,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 2.222222222222222,
+      "per40": {
+        "pts": 5.419672131147541,
+        "reb": 10.367213114754097,
+        "ast": 1.2786885245901638,
+        "fg3m": 0.0,
+        "stl": 0.6983606557377049,
+        "blk": 1.160655737704918,
+        "tov": 1.9180327868852458
+      },
+      "perGame": {
+        "min": 2.222222222222222,
+        "pts": 0.30109289617486334,
+        "reb": 0.5759562841530054,
+        "ast": 0.0710382513661202,
+        "fg3m": 0.0,
+        "stl": 0.038797814207650265,
+        "blk": 0.06448087431693988,
+        "tov": 0.10655737704918031,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 3,
+        "min": 3.4555555555555557,
+        "pts": 0.0,
+        "reb": 0.0,
+        "ast": 0.0,
+        "pir": -0.3333333333333333,
+        "fg2Pct": null,
+        "fg3Pct": null,
+        "ftPct": null
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-10",
+        "name": "Nikolai Quartermane",
+        "position": "G",
+        "positionRaw": "Guard",
+        "jersey": "29",
+        "headshotUrl": null,
+        "personCode": "demo-10"
+      },
+      "positionWorkbook5": "SG",
+      "age": 31,
+      "role": "Rotation",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 9.668888888888889,
+      "per40": {
+        "pts": 15.771347135901193,
+        "reb": 2.099679347610942,
+        "ast": 4.512885475634378,
+        "fg3m": 2.23269070899806,
+        "stl": 1.7006452634495863,
+        "blk": 0.10450892680416453,
+        "tov": 2.2896955781639683
+      },
+      "perGame": {
+        "min": 9.668888888888889,
+        "pts": 3.8122850771281156,
+        "reb": 0.5075391578586227,
+        "ast": 1.0908647058047323,
+        "fg3m": 0.5396909597139199,
+        "stl": 0.41108375229273053,
+        "blk": 0.025262130029162215,
+        "tov": 0.5534703033661903,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 10.508333333333333,
+        "pts": 3.25,
+        "reb": 1.0,
+        "ast": 0.25,
+        "pir": 2.75,
+        "fg2Pct": null,
+        "fg3Pct": 0.36363636363636365,
+        "ftPct": 1.0
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-17",
+        "name": "Oswin Calloway",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "91",
+        "headshotUrl": null,
+        "personCode": "demo-17"
+      },
+      "positionWorkbook5": "C",
+      "age": 19,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 0.6666666666666667,
+      "per40": {
+        "pts": 5.59,
+        "reb": 14.19,
+        "ast": 1.29,
+        "fg3m": 0.0,
+        "stl": 0.74,
+        "blk": 0.87,
+        "tov": 1.35
+      },
+      "perGame": {
+        "min": 0.6666666666666667,
+        "pts": 0.09316666666666668,
+        "reb": 0.23650000000000002,
+        "ast": 0.021500000000000002,
+        "fg3m": 0.0,
+        "stl": 0.012333333333333335,
+        "blk": 0.014500000000000002,
+        "tov": 0.022500000000000003,
+        "pir": null
+      },
+      "seasonAverages": null,
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-6",
+        "name": "Quillan Isherwood",
+        "position": "F",
+        "positionRaw": "Forward",
+        "jersey": "87",
+        "headshotUrl": null,
+        "personCode": "demo-6"
+      },
+      "positionWorkbook5": "PF",
+      "age": 32,
+      "role": "Rotation",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 17.077777777777776,
+      "per40": {
+        "pts": 21.084369619284484,
+        "reb": 9.945284101779224,
+        "ast": 1.1387028888463746,
+        "fg3m": 1.2948153816720873,
+        "stl": 0.642816146929405,
+        "blk": 0.3122249856514253,
+        "tov": 2.0753778458006504
+      },
+      "perGame": {
+        "min": 17.077777777777776,
+        "pts": 9.001854473566734,
+        "reb": 4.246083795676296,
+        "ast": 0.48616287226579935,
+        "fg3m": 0.5528142337861105,
+        "stl": 0.2744467827306932,
+        "blk": 0.1333027230406224,
+        "tov": 0.8860710413876666,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 18.075,
+        "pts": 6.25,
+        "reb": 3.0,
+        "ast": 0.5,
+        "pir": 4.5,
+        "fg2Pct": 0.4666666666666667,
+        "fg3Pct": 0.2222222222222222,
+        "ftPct": 0.7142857142857143
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-5",
+        "name": "Rafe Kelderan",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "49",
+        "headshotUrl": null,
+        "personCode": "demo-5"
+      },
+      "positionWorkbook5": "C",
+      "age": 19,
+      "role": "Starter",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 19.01111111111111,
+      "per40": {
+        "pts": 17.21049607354913,
+        "reb": 14.323692779161082,
+        "ast": 1.939858264700249,
+        "fg3m": 0.0,
+        "stl": 0.6067803102853859,
+        "blk": 1.4525952882589543,
+        "tov": 1.8938900593755987
+      },
+      "perGame": {
+        "min": 19.01111111111111,
+        "pts": 8.179766328289599,
+        "reb": 6.80773287365128,
+        "ast": 0.9219715252505905,
+        "fg3m": 0.0,
+        "stl": 0.2883891974717487,
+        "blk": 0.6903862606141863,
+        "tov": 0.9001238587754582,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 20.620833333333334,
+        "pts": 11.75,
+        "reb": 5.0,
+        "ast": 1.0,
+        "pir": 9.25,
+        "fg2Pct": 0.45,
+        "fg3Pct": null,
+        "ftPct": 0.7333333333333333
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-7",
+        "name": "Rosk Corwen",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "24",
+        "headshotUrl": null,
+        "personCode": "demo-7"
+      },
+      "positionWorkbook5": "C",
+      "age": 27,
+      "role": "Rotation",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 15.666666666666666,
+      "per40": {
+        "pts": 11.784156142365097,
+        "reb": 13.318025258323766,
+        "ast": 1.1389207807118253,
+        "fg3m": 0.0,
+        "stl": 0.4500574052812859,
+        "blk": 1.3501722158438576,
+        "tov": 1.8277841561423651
+      },
+      "perGame": {
+        "min": 15.666666666666666,
+        "pts": 4.615461155759663,
+        "reb": 5.216226559510142,
+        "ast": 0.4460773057787982,
+        "fg3m": 0.0,
+        "stl": 0.1762724837351703,
+        "blk": 0.5288174512055109,
+        "tov": 0.7158821278224263,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 17.920833333333334,
+        "pts": 3.75,
+        "reb": 6.0,
+        "ast": 0.75,
+        "pir": 7.75,
+        "fg2Pct": 0.4666666666666667,
+        "fg3Pct": null,
+        "ftPct": 1.0
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-1",
+        "name": "Rurik Jessop",
+        "position": "G",
+        "positionRaw": "Guard",
+        "jersey": "62",
+        "headshotUrl": null,
+        "personCode": "demo-1"
+      },
+      "positionWorkbook5": "PG",
+      "age": 26,
+      "role": "Star",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 27.431111111111115,
+      "per40": {
+        "pts": 25.614930378362615,
+        "reb": 3.7967485601807973,
+        "ast": 6.543704891740176,
+        "fg3m": 3.149376685864256,
+        "stl": 1.2510024057738571,
+        "blk": 0.03499307428738062,
+        "tov": 2.7382080629875336
+      },
+      "perGame": {
+        "min": 27.431111111111115,
+        "pts": 17.56615003280601,
+        "reb": 2.603725790381765,
+        "ast": 4.487527399091152,
+        "fg3m": 2.159772545017132,
+        "stl": 0.8579096498262496,
+        "blk": 0.023997472722412577,
+        "tov": 1.8778022405287842,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 29.291666666666668,
+        "pts": 17.75,
+        "reb": 3.75,
+        "ast": 6.75,
+        "pir": 17.0,
+        "fg2Pct": 0.48936170212765956,
+        "fg3Pct": 0.26666666666666666,
+        "ftPct": 0.8125
+      },
+      "status": "out",
+      "chanceOfPlaying": 0.0,
+      "inForce": false,
+      "isStale": true,
+      "availabilitySource": {
+        "kind": "pressArticle",
+        "label": "example.org news",
+        "url": "https://news.example.org/injuries/0",
+        "publishedAt": "2026-10-02T09:00:00Z",
+        "asOf": "2026-10-12T09:00:00Z",
+        "fetchedAt": "2026-10-12T09:00:00Z",
+        "snapshotId": null
+      }
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-13",
+        "name": "Stellan Stillwater",
+        "position": "C",
+        "positionRaw": "Center",
+        "jersey": "1",
+        "headshotUrl": null,
+        "personCode": "demo-13"
+      },
+      "positionWorkbook5": "PF",
+      "age": 19,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 2.0,
+      "per40": {
+        "pts": 5.36,
+        "reb": 8.23,
+        "ast": 2.57,
+        "fg3m": 0.18,
+        "stl": 0.8,
+        "blk": 0.59,
+        "tov": 1.16
+      },
+      "perGame": {
+        "min": 2.0,
+        "pts": 0.268,
+        "reb": 0.41150000000000003,
+        "ast": 0.1285,
+        "fg3m": 0.009,
+        "stl": 0.04,
+        "blk": 0.0295,
+        "tov": 0.057999999999999996,
+        "pir": null
+      },
+      "seasonAverages": null,
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-2",
+        "name": "Tamsin Jarrow",
+        "position": "G",
+        "positionRaw": "Guard",
+        "jersey": "88",
+        "headshotUrl": null,
+        "personCode": "demo-2"
+      },
+      "positionWorkbook5": "SG",
+      "age": 36,
+      "role": "Starter",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 25.94,
+      "per40": {
+        "pts": 21.7344589409056,
+        "reb": 2.876877535357965,
+        "ast": 2.3593904177173557,
+        "fg3m": 1.8857581405547637,
+        "stl": 1.6401710338778643,
+        "blk": 0.11402258524284617,
+        "tov": 2.157658151518474
+      },
+      "perGame": {
+        "min": 25.94,
+        "pts": 14.094796623177283,
+        "reb": 1.8656550816796404,
+        "ast": 1.5300646858897051,
+        "fg3m": 1.2229141541497643,
+        "stl": 1.063650915469795,
+        "blk": 0.07394364652998574,
+        "tov": 1.3992413112597304,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 4,
+        "min": 25.241666666666667,
+        "pts": 15.75,
+        "reb": 2.25,
+        "ast": 3.0,
+        "pir": 13.75,
+        "fg2Pct": 0.5294117647058824,
+        "fg3Pct": 0.3333333333333333,
+        "ftPct": 0.75
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    },
+    {
+      "player": {
+        "league": "euroleague",
+        "id": "demo-14",
+        "name": "Yaric Kingsmere",
+        "position": "F",
+        "positionRaw": "Forward",
+        "jersey": "84",
+        "headshotUrl": null,
+        "personCode": "demo-14"
+      },
+      "positionWorkbook5": "PF",
+      "age": 36,
+      "role": "Bench",
+      "basis": "syntheticDemo",
+      "basisNote": null,
+      "isEstimate": false,
+      "projectedMinutes": 1.968888888888889,
+      "per40": {
+        "pts": 6.166515688050729,
+        "reb": 10.040352466441572,
+        "ast": 0.9981059046364161,
+        "fg3m": 0.3261138104257597,
+        "stl": 0.830107881083752,
+        "blk": 0.642345384171951,
+        "tov": 1.8973894424771474
+      },
+      "perGame": {
+        "min": 1.968888888888889,
+        "pts": 0.3035296055340525,
+        "reb": 0.4942084602926241,
+        "ast": 0.04912899063932581,
+        "fg3m": 0.016052046446512393,
+        "stl": 0.04085975459112246,
+        "blk": 0.031617667243130476,
+        "tov": 0.09339372477970848,
+        "pir": null
+      },
+      "seasonAverages": {
+        "games": 3,
+        "min": 4.3500000000000005,
+        "pts": 1.3333333333333333,
+        "reb": 0.3333333333333333,
+        "ast": 0.0,
+        "pir": 1.0,
+        "fg2Pct": null,
+        "fg3Pct": 0.3333333333333333,
+        "ftPct": 1.0
+      },
+      "status": null,
+      "chanceOfPlaying": null,
+      "inForce": null,
+      "isStale": null,
+      "availabilitySource": null
+    }
+  ],
+  "absences": [],
+  "nextGame": {
+    "league": "euroleague",
+    "gameId": "E2026-R05-01",
+    "date": "2026-10-15",
+    "tipoffUtc": "2026-10-15T17:30:00Z",
+    "venue": "Alderwick Hall",
+    "isNeutral": false,
+    "round": 5,
+    "phase": "RS",
+    "status": "scheduled",
+    "home": {
+      "league": "euroleague",
+      "id": "ZZA",
+      "abbr": "ZZA",
+      "name": "Alderwick Herons",
+      "shortName": "Alderwick",
+      "clubCode": "ZZA",
+      "tvCode": null
+    },
+    "away": {
+      "league": "euroleague",
+      "id": "ZZP",
+      "abbr": "ZZP",
+      "name": "Pinecrest Panthers",
+      "shortName": "Pinecrest",
+      "clubCode": "ZZP",
+      "tvCode": null
+    },
+    "homePts": null,
+    "awayPts": null,
+    "overtimePeriods": null
+  },
+  "defenseSummary": {
+    "pointsAllowedPerGame": 83.25,
+    "buckets": [
+      {
+        "position": "G",
+        "pointsAllowedPerGame": 33.75,
+        "deltaPerGame": -5.875,
+        "band": null
+      },
+      {
+        "position": "F",
+        "pointsAllowedPerGame": 35.25,
+        "deltaPerGame": 6.212499999999999,
+        "band": null
+      },
+      {
+        "position": "C",
+        "pointsAllowedPerGame": 14.25,
+        "deltaPerGame": -1.7875000000000014,
+        "band": null
+      },
+      {
+        "position": "unknown",
+        "pointsAllowedPerGame": 0.0,
+        "deltaPerGame": 0.0,
+        "band": null
+      }
+    ],
+    "withheld": {
+      "reason": "minimumGames",
+      "message": "Only 4 games, too few to judge a defence"
+    }
+  },
+  "notes": [
+    "EuroLeague games only: friendlies, domestic leagues and national-team games are not tracked."
+  ]
+}

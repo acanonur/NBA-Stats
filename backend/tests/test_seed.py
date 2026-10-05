@@ -147,7 +147,7 @@ def test_every_seeded_row_is_stamped_synthetic_demo(seeded_db: Session) -> None:
     """No seeded number can be mistaken for an observation."""
     assert DATA_SOURCE == "synthetic-demo"
     stamped = [table.name for table in Base.metadata.sorted_tables if "data_source" in table.c]
-    assert len(stamped) == 6, stamped
+    assert len(stamped) == 7, stamped
     for name in stamped:
         sources = seeded_db.execute(
             text(f"SELECT DISTINCT data_source FROM {name}")  # noqa: S608 - table names are ours

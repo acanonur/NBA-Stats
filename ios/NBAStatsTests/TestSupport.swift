@@ -168,6 +168,9 @@ enum StubWidgetOutcome: Sendable {
     case failure(code: String, message: String, recoverable: Bool)
     /// A result whose `availability` is `unavailable`: the era rule, not an error.
     case unavailable(reason: String)
+    /// `unavailable` WITH a payload: how the four league kinds say "nothing yet" (no games this
+    /// season, no report published). Not the era rule; the widget draws its own empty state.
+    case unavailableWithPayload(WidgetPayload, notes: [String])
     /// A success the server sent no payload with, which the client treats as a failure.
     case okWithNoPayload
 }
@@ -376,6 +379,15 @@ actor StubAPIClient: APIClientProtocol {
                                  generatedAt: generatedAt,
                                  availability: .unavailable,
                                  notes: [reason])
+        case .unavailableWithPayload(let payload, let notes):
+            return ResolveResult(widgetId: widget.id,
+                                 kindRaw: widget.kind.rawValue,
+                                 status: .ok,
+                                 payload: payload,
+                                 generatedAt: generatedAt,
+                                 ttlSeconds: widget.kind.defaultCacheTTLSeconds,
+                                 availability: .unavailable,
+                                 notes: notes)
         case .okWithNoPayload:
             return ResolveResult(widgetId: widget.id,
                                  kindRaw: widget.kind.rawValue,

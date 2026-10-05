@@ -99,6 +99,10 @@
       {
         "key": "impact",
         "name": "Impact"
+      },
+      {
+        "key": "scoring",
+        "name": "Scoring"
       }
     ],
     "formats": [
@@ -1414,6 +1418,25 @@
         "glossary": "Opponent FTA / FGA."
       },
       {
+        "key": "opp_pts",
+        "name": "Points Allowed",
+        "shortName": "OPP PTS",
+        "category": "scoring",
+        "format": "decimal1",
+        "higherIsBetter": false,
+        "scope": [
+          "team"
+        ],
+        "availability": {
+          "seasonFrom": "1946-47",
+          "perGameFrom": "1946-47",
+          "seasonLevelOnly": false,
+          "estimatedBefore": null
+        },
+        "domain": null,
+        "glossary": "Points the team's opponents scored per game."
+      },
+      {
         "key": "wins",
         "name": "Wins",
         "shortName": "W",
@@ -1473,7 +1496,663 @@
         },
         "glossary": "Wins / (Wins + Losses)."
       }
-    ]
+    ],
+    "leagueMetrics": {
+      "euroleague": [
+        {
+          "key": "min",
+          "name": "Minutes",
+          "shortName": "MIN",
+          "category": "volume",
+          "format": "minutes",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Minutes played, from whole seconds on the box score.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals"
+          ]
+        },
+        {
+          "key": "pts",
+          "name": "Points",
+          "shortName": "PTS",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Points scored.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "reb",
+          "name": "Rebounds",
+          "shortName": "REB",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Total rebounds: offensive plus defensive.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "oreb",
+          "name": "Offensive Rebounds",
+          "shortName": "OREB",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Offensive rebounds.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "dreb",
+          "name": "Defensive Rebounds",
+          "shortName": "DREB",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Defensive rebounds.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "ast",
+          "name": "Assists",
+          "shortName": "AST",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Assists.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "stl",
+          "name": "Steals",
+          "shortName": "STL",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Steals.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "blk",
+          "name": "Blocks",
+          "shortName": "BLK",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Shots blocked.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "tov",
+          "name": "Turnovers",
+          "shortName": "TOV",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": false,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Turnovers.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "pf",
+          "name": "Personal Fouls",
+          "shortName": "PF",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": false,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Personal fouls committed.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fgm2",
+          "name": "Two Pointers Made",
+          "shortName": "2PM",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Two-point field goals made.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fga2",
+          "name": "Two Pointers Attempted",
+          "shortName": "2PA",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Two-point field goals attempted.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fg2_pct",
+          "name": "Two Point %",
+          "shortName": "2P%",
+          "category": "shooting",
+          "format": "percent1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": {
+            "min": 0.3,
+            "max": 0.7
+          },
+          "glossary": "2PM / 2PA. No attempts is a dash, not 0%.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fg3m",
+          "name": "Three Pointers Made",
+          "shortName": "3PM",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Three-point field goals made.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fg3a",
+          "name": "Three Pointers Attempted",
+          "shortName": "3PA",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Three-point field goals attempted.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fg3_pct",
+          "name": "Three Point %",
+          "shortName": "3P%",
+          "category": "shooting",
+          "format": "percent1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": {
+            "min": 0.15,
+            "max": 0.5
+          },
+          "glossary": "3PM / 3PA. No attempts is a dash, not 0%.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "ftm",
+          "name": "Free Throws Made",
+          "shortName": "FTM",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Free throws made.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fta",
+          "name": "Free Throws Attempted",
+          "shortName": "FTA",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Free throws attempted.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "ft_pct",
+          "name": "Free Throw %",
+          "shortName": "FT%",
+          "category": "shooting",
+          "format": "percent1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": {
+            "min": 0.4,
+            "max": 1.0
+          },
+          "glossary": "FTM / FTA. No attempts is a dash, not 0%.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "blk_against",
+          "name": "Blocks against",
+          "shortName": "BLKA",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": false,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Shots of the player's own that were blocked. Not recorded for games imported from a workbook; shown as a dash there, never 0.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "fouls_drawn",
+          "name": "Fouls drawn",
+          "shortName": "FD",
+          "category": "volume",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Fouls committed against the player. Not recorded for games imported from a workbook; shown as a dash there, never 0.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "plus_minus",
+          "name": "Plus/Minus",
+          "shortName": "+/-",
+          "category": "impact",
+          "format": "plusMinus1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Team point differential while the player is on the floor. Not recorded for games imported from a workbook; shown as a dash there, never 0.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        },
+        {
+          "key": "pir",
+          "name": "Performance Index Rating",
+          "shortName": "PIR",
+          "category": "impact",
+          "format": "decimal1",
+          "higherIsBetter": true,
+          "scope": [
+            "player",
+            "team"
+          ],
+          "availability": {
+            "seasonFrom": "2026-27",
+            "perGameFrom": "2026-27",
+            "seasonLevelOnly": false,
+            "estimatedBefore": null
+          },
+          "domain": null,
+          "glossary": "Performance Index Rating as published by the EuroLeague; not recomputed by Hardwood.",
+          "leagues": [
+            "euroleague"
+          ],
+          "perModes": [
+            "PerGame",
+            "Totals",
+            "Per40"
+          ]
+        }
+      ]
+    }
   },
   "widgets": {
     "schemaVersion": 1,
@@ -1522,7 +2201,8 @@
       "int",
       "double",
       "bool",
-      "date"
+      "date",
+      "club"
     ],
     "widgets": [
       {
@@ -2496,7 +3176,7 @@
       {
         "kind": "projection_board",
         "name": "Tonight's Projections",
-        "summary": "Tonight's projected lines for several players, each as a range with the season average marked.",
+        "summary": "Tonight's projected ranges for several players, each with the season average marked.",
         "icon": "chart.dots.scatter",
         "sizes": [
           "large"
@@ -2544,7 +3224,7 @@
           {
             "key": "metrics",
             "type": "metricList",
-            "label": "Lines",
+            "label": "Stats",
             "required": true,
             "default": [
               "pts",
@@ -2584,6 +3264,233 @@
               "none"
             ],
             "help": "The tick on the band. A projection is only meaningful against something."
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "fantasy_draft_board",
+        "name": "Draft Board",
+        "summary": "Nine-category fantasy value for every player, ranked, with what each pick adds.",
+        "icon": "checklist",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "availableFrom": "1979-80",
+        "config": [
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest"
+          },
+          {
+            "key": "scoring",
+            "type": "enum",
+            "label": "Scoring",
+            "required": true,
+            "default": "categories",
+            "options": [
+              "categories",
+              "espn_points",
+              "yahoo_points"
+            ],
+            "help": "Categories ranks on the nine z-scores; the other two use that site's default points."
+          },
+          {
+            "key": "puntCategories",
+            "type": "enumList",
+            "label": "Punt",
+            "required": false,
+            "default": [],
+            "options": [
+              "pts",
+              "fg3m",
+              "reb",
+              "ast",
+              "stl",
+              "blk",
+              "tov",
+              "fg_pct",
+              "ft_pct"
+            ],
+            "help": "A punted category is weighted 0. The per-category numbers do not change, so a punt build and a balanced build stay comparable."
+          },
+          {
+            "key": "teams",
+            "type": "int",
+            "label": "Teams in League",
+            "required": false,
+            "default": 12,
+            "min": 2,
+            "max": 30
+          },
+          {
+            "key": "rosterSpots",
+            "type": "int",
+            "label": "Roster Spots",
+            "required": false,
+            "default": 13,
+            "min": 1,
+            "max": 25
+          },
+          {
+            "key": "poolSize",
+            "type": "int",
+            "label": "Players in the Pool",
+            "required": false,
+            "default": 150,
+            "min": 20,
+            "max": 500,
+            "help": "Who the z-scores are measured against. Teams x roster spots is the usual choice."
+          },
+          {
+            "key": "draftedPlayerIds",
+            "type": "playerList",
+            "label": "Already Drafted",
+            "required": false,
+            "default": [],
+            "maxItems": 200
+          },
+          {
+            "key": "myPlayerIds",
+            "type": "playerList",
+            "label": "My Roster",
+            "required": false,
+            "default": [],
+            "maxItems": 25,
+            "help": "Sets the categories the board weighs your remaining need against."
+          },
+          {
+            "key": "limit",
+            "type": "int",
+            "label": "Rows",
+            "required": false,
+            "default": 30,
+            "min": 5,
+            "max": 100
+          },
+          {
+            "key": "seasonType",
+            "type": "enum",
+            "label": "Season Type",
+            "required": true,
+            "default": "Regular Season",
+            "options": [
+              "Regular Season",
+              "Playoffs",
+              "Play In",
+              "All Star",
+              "Pre Season"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "fantasy_trade",
+        "name": "Trade Analyzer",
+        "summary": "What a trade gains and costs, category by category, with the roster spots it moves.",
+        "icon": "arrow.left.arrow.right",
+        "sizes": [
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "availableFrom": "1979-80",
+        "config": [
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest"
+          },
+          {
+            "key": "givePlayerIds",
+            "type": "playerList",
+            "label": "You Give",
+            "required": false,
+            "default": [],
+            "maxItems": 4
+          },
+          {
+            "key": "getPlayerIds",
+            "type": "playerList",
+            "label": "You Get",
+            "required": false,
+            "default": [],
+            "maxItems": 4
+          },
+          {
+            "key": "puntCategories",
+            "type": "enumList",
+            "label": "Punt",
+            "required": false,
+            "default": [],
+            "options": [
+              "pts",
+              "fg3m",
+              "reb",
+              "ast",
+              "stl",
+              "blk",
+              "tov",
+              "fg_pct",
+              "ft_pct"
+            ]
+          },
+          {
+            "key": "poolSize",
+            "type": "int",
+            "label": "Players in the Pool",
+            "required": false,
+            "default": 150,
+            "min": 20,
+            "max": 500
+          },
+          {
+            "key": "fairBand",
+            "type": "double",
+            "label": "Fair Within",
+            "required": false,
+            "default": 0.75,
+            "min": 0.0,
+            "max": 10.0,
+            "help": "Net z-sum per game inside this band reads as fair. Set it against your league's own spread, which the widget reports."
+          },
+          {
+            "key": "clearBand",
+            "type": "double",
+            "label": "Clear Win Beyond",
+            "required": false,
+            "default": 2.0,
+            "min": 0.0,
+            "max": 20.0
+          },
+          {
+            "key": "showSensitivity",
+            "type": "bool",
+            "label": "Show Scenario Range",
+            "required": false,
+            "default": true,
+            "help": "Recomputes the trade under four named what-ifs. A range, never a probability."
           },
           {
             "key": "seasonType",
@@ -2656,6 +3563,267 @@
               "season",
               "age"
             ]
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "team_matchup",
+        "name": "Matchup",
+        "summary": "Two teams side by side going into a game: points scored and allowed, recent form, home and away splits, who is missing, and the projected score.",
+        "icon": "rectangle.split.2x1",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "config": [
+          {
+            "key": "league",
+            "type": "enum",
+            "label": "League",
+            "required": true,
+            "default": "nba",
+            "options": [
+              "nba",
+              "euroleague"
+            ],
+            "help": "Which league this tile reads. The two leagues are separate stores and are never mixed in one tile."
+          },
+          {
+            "key": "team",
+            "type": "team",
+            "label": "Team",
+            "required": false,
+            "default": "$favorite_team",
+            "help": "Used when League is NBA. Leave on your favorite team, or pick one."
+          },
+          {
+            "key": "club",
+            "type": "club",
+            "label": "Club",
+            "required": false,
+            "default": null,
+            "help": "A EuroLeague club code such as PAN. Used when League is EuroLeague; the NBA team field is used when it is NBA."
+          },
+          {
+            "key": "opponent",
+            "type": "team",
+            "label": "Opponent",
+            "required": false,
+            "default": null,
+            "help": "NBA only. Leave empty to use the team's next scheduled opponent."
+          },
+          {
+            "key": "opponentClub",
+            "type": "club",
+            "label": "Opponent Club",
+            "required": false,
+            "default": null,
+            "help": "EuroLeague only. Leave empty to use the club's next scheduled opponent."
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "window",
+            "type": "int",
+            "label": "Recent Games",
+            "required": false,
+            "default": 5,
+            "min": 3,
+            "max": 15,
+            "help": "How many of each side's last games to show as form."
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "defense_by_position",
+        "name": "Defence by Position",
+        "summary": "Points each defence allows to opposing guards, forwards and centers, against the league. Withheld where the sample is too small to judge; no rankings.",
+        "icon": "shield.lefthalf.filled",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "config": [
+          {
+            "key": "league",
+            "type": "enum",
+            "label": "League",
+            "required": true,
+            "default": "nba",
+            "options": [
+              "nba",
+              "euroleague"
+            ],
+            "help": "Which league this tile reads. The two leagues are separate stores and are never mixed in one tile."
+          },
+          {
+            "key": "team",
+            "type": "team",
+            "label": "Team",
+            "required": false,
+            "default": null,
+            "help": "NBA only. Leave empty for the whole league's table."
+          },
+          {
+            "key": "club",
+            "type": "club",
+            "label": "Club",
+            "required": false,
+            "default": null,
+            "help": "EuroLeague only. Leave empty for the whole league's table."
+          },
+          {
+            "key": "season",
+            "type": "season",
+            "label": "Season",
+            "required": true,
+            "default": "latest",
+            "help": "A season string such as 2025-26, or 'latest' for the current season."
+          },
+          {
+            "key": "window",
+            "type": "int",
+            "label": "Recent Games",
+            "required": false,
+            "default": 0,
+            "min": 0,
+            "max": 82,
+            "help": "0 uses the whole season; otherwise the team's last N games."
+          },
+          {
+            "key": "basis",
+            "type": "enum",
+            "label": "Basis",
+            "required": false,
+            "default": "perGame",
+            "options": [
+              "perGame",
+              "perMinute"
+            ],
+            "help": "Per game, or per 48 (NBA) or 40 (EuroLeague) minutes the opposing position played."
+          },
+          {
+            "key": "scheme",
+            "type": "enum",
+            "label": "Positions",
+            "required": false,
+            "default": "gfc",
+            "options": [
+              "gfc",
+              "workbook5"
+            ],
+            "help": "Guard, forward and center. The five-position workbook scheme is EuroLeague only and is an estimate."
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "availability_report",
+        "name": "Availability Report",
+        "summary": "Who is out, doubtful or questionable for the next games, each status with its source and how old it is.",
+        "icon": "cross.case",
+        "sizes": [
+          "medium",
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 300,
+        "config": [
+          {
+            "key": "league",
+            "type": "enum",
+            "label": "League",
+            "required": true,
+            "default": "nba",
+            "options": [
+              "nba",
+              "euroleague"
+            ],
+            "help": "Which league this tile reads. The two leagues are separate stores and are never mixed in one tile."
+          },
+          {
+            "key": "team",
+            "type": "team",
+            "label": "Team",
+            "required": false,
+            "default": null,
+            "help": "NBA only. Leave empty for the whole slate."
+          },
+          {
+            "key": "club",
+            "type": "club",
+            "label": "Club",
+            "required": false,
+            "default": null,
+            "help": "EuroLeague only. Leave empty for every club."
+          },
+          {
+            "key": "includeNews",
+            "type": "bool",
+            "label": "Include Headlines",
+            "required": false,
+            "default": false,
+            "help": "Adds headline links (title, source and date only) when a news feed is switched on."
+          }
+        ],
+        "availableFrom": null
+      },
+      {
+        "kind": "slate_projections",
+        "name": "Slate Projections",
+        "summary": "Projected scores for the next slate or round: margin, winner and combined points, with the model's assumptions stated.",
+        "icon": "calendar.badge.clock",
+        "sizes": [
+          "large"
+        ],
+        "defaultSize": "large",
+        "minRefreshSeconds": 600,
+        "config": [
+          {
+            "key": "league",
+            "type": "enum",
+            "label": "League",
+            "required": true,
+            "default": "nba",
+            "options": [
+              "nba",
+              "euroleague"
+            ],
+            "help": "Which league this tile reads. The two leagues are separate stores and are never mixed in one tile."
+          },
+          {
+            "key": "date",
+            "type": "date",
+            "label": "Date",
+            "required": true,
+            "default": "next",
+            "tokens": [
+              "latest",
+              "next"
+            ],
+            "help": "NBA only. An ISO date, 'next' for the next slate, or 'latest' for the most recent completed one."
+          },
+          {
+            "key": "round",
+            "type": "int",
+            "label": "Round",
+            "required": false,
+            "default": 0,
+            "min": 0,
+            "max": 40,
+            "help": "EuroLeague only. A round number, or 0 for the next round."
           }
         ],
         "availableFrom": null

@@ -1,0 +1,65 @@
+/* Shared chrome for every config field editor. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  margin-bottom: var(--hw-space-md);
+}
+
+.control {
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-control);
+  background: var(--hw-surface);
+  color: var(--hw-text-primary);
+  padding: var(--hw-space-xxs) var(--hw-space-sm);
+  font-size: 14px;
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 1px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hw-space-xxs);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hw-space-xxs);
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-pill);
+  padding: 2px var(--hw-space-xs);
+  background: var(--hw-surface-raised);
+}
+
+.chipRemove {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--hw-text-tertiary);
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.optionList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-xs);
+}

@@ -1,0 +1,17 @@
+/*
+ * The two value-level treatments `availability.ts`'s `valueTreatmentClassName` hands out —
+ * `Text.availabilityStyled(_:)` in `ios/NBAStats/DesignSystem/AvailabilityBadge.swift`, ported.
+ * `"full"` and `"partial"` need no treatment on the value itself (the marker beside it already
+ * carries `"partial"`'s caret), so there is no class for either.
+ */
+
+.unavailableValue {
+  color: var(--hw-text-tertiary);
+}
+
+.estimatedValue {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: var(--hw-warning);
+  text-underline-offset: 2px;
+}

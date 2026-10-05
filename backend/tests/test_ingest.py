@@ -40,7 +40,7 @@ from pathlib import Path
 from typing import Any, Iterator
 
 import pytest
-from sqlalchemy import Engine, select
+from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session
 
 from nbastats import catalog
@@ -1644,3 +1644,148 @@ def test_season_totals_reconcile_with_the_game_rows(
     assert team_row.gp == 1 and team_row.wins == 1 and team_row.losses == 0
     assert team_row.pts == pytest.approx(side.pts)
     assert team_row.opp_pts == pytest.approx(side.opp_pts)
+
+
+# --------------------------------------------------------------------------- #
+# The bulk path's franchises, commits and aggregate cost
+#
+# Four defects that only showed up at backfill scale. The correction window is
+# the only date-range ingest the CLI has, so `--nightly --days 250` is what a
+# season backfill actually runs — and at 250 days each of these turns from a
+# curiosity into a broken run.
+# --------------------------------------------------------------------------- #
+
+
+def test_the_bulk_path_writes_the_franchises_it_references(
+    db: Session, client: StatsClient
+) -> None:
+    """``ingest_day`` used to leave every team id dangling.
+
+    ``ensure_team`` is called from ``ingest_game`` — the per-game path — because a box score
+    names both sides. ``ingest_day`` reads the league game log instead, writes ``team_game``
+    rows keyed by ``team_id``, and had nowhere to learn a franchise from. SQLite does not
+    enforce foreign keys by default, so a database walked entirely with ``--once`` looked
+    fine locally and violated a constraint the moment it met Postgres.
+    """
+    daily.ingest_day(db, date(2026, 1, 2), client=client)
+
+    assert db.execute(select(func.count()).select_from(Team)).scalar_one() == 30
+
+    dangling = db.execute(
+        select(func.count())
+        .select_from(TeamGame)
+        .where(~TeamGame.team_id.in_(select(Team.team_id)))
+    ).scalar_one()
+    assert dangling == 0, "a team_game row points at a franchise that does not exist"
+
+
+def test_the_franchises_carry_the_two_facts_no_endpoint_returns(
+    db: Session, client: StatsClient
+) -> None:
+    """Conference and division come from the identity map, not from the game log.
+
+    No endpoint on the bulk path returns them, which is the reason the franchises are read
+    from ``data/nba_identities.json`` rather than synthesised out of whatever the league game
+    log happened to carry.
+    """
+    daily.ingest_day(db, date(2026, 1, 2), client=client)
+
+    denver = db.execute(select(Team).where(Team.abbr == "DEN")).scalar_one()
+    assert (denver.conference, denver.division) == ("West", "Northwest")
+    assert denver.name == "Denver Nuggets" and denver.city == "Denver"
+    assert denver.year_founded == 1976
+
+    for team in db.execute(select(Team)).scalars():
+        assert team.conference in {"East", "West"}, team.abbr
+        assert team.division, team.abbr
+
+
+def test_ensuring_franchises_is_idempotent_and_cheap(db: Session) -> None:
+    """It writes once and then does nothing, so a 250-day walk pays for it on day one."""
+    assert daily.ensure_franchises(db) == 30
+    db.flush()
+    assert daily.ensure_franchises(db) == 0
+    assert db.execute(select(func.count()).select_from(Team)).scalar_one() == 30
+
+
+def test_an_interrupted_window_keeps_the_days_it_finished(
+    db: Session, client: StatsClient
+) -> None:
+    """The correction window commits per day, so Ctrl-C costs one day and not the walk.
+
+    This is the difference between a resumable season backfill and half an hour of work
+    thrown away on the 250th day. The window used to pass ``commit=False`` to every
+    ``ingest_day`` and commit once at the very end.
+    """
+    real = daily.ingest_day
+    attempted: list[date] = []
+
+    def exploding(session: Session, game_date: date, **kwargs: Any) -> Any:
+        attempted.append(game_date)
+        if len(attempted) == 3:
+            raise KeyboardInterrupt("simulated Ctrl-C")
+        return real(session, game_date, **kwargs)
+
+    daily.ingest_day = exploding  # type: ignore[assignment]
+    try:
+        with pytest.raises(KeyboardInterrupt):
+            daily.run_correction_window(db, 5, client=client, end_date=date(2026, 1, 6))
+    finally:
+        daily.ingest_day = real  # type: ignore[assignment]
+
+    assert attempted[0] == date(2026, 1, 2), "the walk starts at the far end of the window"
+    # 2026-01-02 is the recorded slate, and it was day one — so its rows must have survived
+    # a crash two days later.
+    assert db.execute(select(func.count()).select_from(Game)).scalar_one() == 2
+    assert db.execute(select(func.count()).select_from(PlayerGameBasic)).scalar_one() > 0
+
+
+def test_resuming_an_interrupted_window_does_not_duplicate(
+    db: Session, client: StatsClient
+) -> None:
+    """Every write on the path is an upsert, so the obvious recovery is the right one."""
+    daily.run_correction_window(db, 5, client=client, end_date=date(2026, 1, 6))
+    first = (
+        db.execute(select(func.count()).select_from(Game)).scalar_one(),
+        db.execute(select(func.count()).select_from(PlayerGameBasic)).scalar_one(),
+    )
+    daily.run_correction_window(db, 5, client=client, end_date=date(2026, 1, 6))
+    second = (
+        db.execute(select(func.count()).select_from(Game)).scalar_one(),
+        db.execute(select(func.count()).select_from(PlayerGameBasic)).scalar_one(),
+    )
+    assert first == second and first[0] > 0
+
+
+def test_the_window_recomputes_aggregates_once_not_once_per_day(
+    db: Session, client: StatsClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Recomputing a season costs the whole season, so doing it per day is quadratic.
+
+    Nothing reads the aggregates until the walk finishes, so once at the end is both cheaper
+    and identical in result.
+    """
+    calls: list[Any] = []
+    real = aggregate.recompute_seasons
+
+    def counted(session: Session, scopes: Any, **kwargs: Any) -> Any:
+        calls.append(list(scopes))
+        return real(session, scopes, **kwargs)
+
+    monkeypatch.setattr(aggregate, "recompute_seasons", counted)
+    daily.run_correction_window(db, 10, client=client, end_date=date(2026, 1, 2))
+
+    assert len(calls) == 1, f"recomputed {len(calls)} times for a 10-day window"
+    assert calls[0] == [("2025-26", "Regular Season")]
+
+
+def test_a_window_over_dates_with_no_games_recomputes_nothing(
+    db: Session, client: StatsClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The offseason case: no slate, no scopes, nothing to aggregate."""
+    calls: list[Any] = []
+    monkeypatch.setattr(
+        aggregate, "recompute_seasons", lambda s, scopes, **kw: calls.append(list(scopes))
+    )
+    daily.run_correction_window(db, 3, client=client, end_date=date(2026, 9, 17))
+    assert calls == []

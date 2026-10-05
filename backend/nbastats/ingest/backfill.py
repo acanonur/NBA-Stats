@@ -708,8 +708,12 @@ def _load_kaggle_player_box(
                 "player_name": _pluck(row, resolved, "player_name"),
                 "minutes": normalize.parse_minutes(_pluck(row, resolved, "minutes")),
             }
-            started = _pluck(row, resolved, "started")
-            line["started"] = bool(str(started).strip()) if started is not None else False
+            if "started" in resolved:
+                # The release has a starter column: a blank (or null) cell is a bench line.
+                started = _pluck(row, resolved, "started")
+                line["started"] = bool(str(started).strip()) if started is not None else False
+            # With no starter column the key is left out, which means "not recorded": the writer
+            # keeps any flag a V3 box score already stored instead of writing False over it.
             for column in (
                 "fgm", "fga", "fg3m", "fg3a", "ftm", "fta", "oreb", "dreb", "reb",
                 "ast", "stl", "blk", "tov", "pf", "pts",
@@ -1074,8 +1078,12 @@ def load_parquet_dir(
                 "player_name": _pluck(row, resolved, "player_name"),
                 "minutes": normalize.parse_minutes(_pluck(row, resolved, "minutes")),
             }
-            started = _pluck(row, resolved, "started")
-            line["started"] = bool(normalize.parse_bool(started)) if started is not None else False
+            if "started" in resolved:
+                started = _pluck(row, resolved, "started")
+                line["started"] = (
+                    bool(normalize.parse_bool(started)) if started is not None else False
+                )
+            # No starter column: the key is left out ("not recorded"), so a stored flag survives.
             for column in (
                 "fgm", "fga", "fg3m", "fg3a", "ftm", "fta", "oreb", "dreb", "reb",
                 "ast", "stl", "blk", "tov", "pf", "pts",

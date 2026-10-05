@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Hardwood API, as a launchd user agent. This is a TEMPLATE: install.sh replaces every
+  double-underscore placeholder with a real absolute path and writes the result to ~/Library/LaunchAgents.
+  Do not load this file directly.
+
+  Bound to 127.0.0.1 and nothing else, on purpose: Hardwood is a private, single-person
+  deployment (docs/LEGAL.md section 2b). KeepAlive restarts it if it ever exits.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.hardwood.api</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__PYTHON__</string>
+    <string>-m</string>
+    <string>uvicorn</string>
+    <string>nbastats.api.app:app</string>
+    <string>--host</string>
+    <string>127.0.0.1</string>
+    <string>--port</string>
+    <string>__PORT__</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__BACKEND_DIR__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HARDWOOD_DATA_DIR</key>
+    <string>__DATA_DIR__</string>
+    <key>HARDWOOD_ENV_FILE</key>
+    <string>__ENV_FILE__</string>
+    <key>HARDWOOD_LOG_DIR</key>
+    <string>__LOG_DIR__</string>
+    <key>DATABASE_URL</key>
+    <string>__DB_URL__</string>
+    <key>HARDWOOD_EL_DATABASE_URL</key>
+    <string>__EL_DB_URL__</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+    <key>PYTHONUTF8</key>
+    <string>1</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>15</integer>
+
+  <key>StandardOutPath</key>
+  <string>__LOG_DIR__/api.log</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_DIR__/api.log</string>
+</dict>
+</plist>

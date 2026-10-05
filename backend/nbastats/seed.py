@@ -16,6 +16,9 @@ What it builds
 * per-game box scores in which **every team total is the sum of its players' lines and the
   team's points equal the final score** — that identity is asserted in the tests
 * season aggregates, team seasons, league distribution rows and shot zones
+* one listed position per roster spot per season (``player_position_season``), written last
+  and without a single random draw, so adding it moved no other number (see
+  :meth:`LeagueGenerator.write_player_positions`)
 
 The honesty boundary
 --------------------
@@ -60,6 +63,7 @@ import argparse
 import math
 import random
 import statistics
+import sys
 import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
@@ -70,7 +74,7 @@ from sqlalchemy import delete, insert
 from sqlalchemy.orm import Session
 
 from . import catalog, identities
-from .db import create_db_engine, init_db, utcnow
+from .db import NbaStoreError, create_db_engine, init_db, refuse_foreign_store, utcnow
 from .models import (
     SHOT_ZONES,
     Base,
@@ -81,6 +85,7 @@ from .models import (
     Player,
     PlayerGameAdvanced,
     PlayerGameBasic,
+    PlayerPositionSeason,
     PlayerSeason,
     PLAYER_GAME_ADVANCED_METRIC_COLUMNS,
     PLAYER_GAME_METRIC_COLUMNS,
@@ -97,6 +102,7 @@ from .models import (
     TEAM_SEASON_RATE_COLUMNS,
     TEAM_SEASON_TOTALS_COLUMNS,
 )
+from .shared import positions as shared_positions
 
 __all__ = [
     "SEED",
@@ -141,21 +147,9 @@ HOME_EDGE = 2.6  # points per game, split between the two sides
 
 # --------------------------------------------------------------------------- static data
 
-#: Conference and division, the two franchise facts ``data/nba_identities.json`` does not
-#: carry. Everything else about a team — id, abbreviation, city, nickname, founding year,
-#: display name — comes from that file and is reconciled with this map by abbreviation.
-TEAM_ALIGNMENT: dict[str, tuple[str, str]] = {
-    "ATL": ("East", "Southeast"), "BOS": ("East", "Atlantic"), "BKN": ("East", "Atlantic"),
-    "CHA": ("East", "Southeast"), "CHI": ("East", "Central"), "CLE": ("East", "Central"),
-    "DET": ("East", "Central"), "IND": ("East", "Central"), "MIA": ("East", "Southeast"),
-    "MIL": ("East", "Central"), "NYK": ("East", "Atlantic"), "ORL": ("East", "Southeast"),
-    "PHI": ("East", "Atlantic"), "TOR": ("East", "Atlantic"), "WAS": ("East", "Southeast"),
-    "DAL": ("West", "Southwest"), "DEN": ("West", "Northwest"), "GSW": ("West", "Pacific"),
-    "HOU": ("West", "Southwest"), "LAC": ("West", "Pacific"), "LAL": ("West", "Pacific"),
-    "MEM": ("West", "Southwest"), "MIN": ("West", "Northwest"), "NOP": ("West", "Southwest"),
-    "OKC": ("West", "Northwest"), "PHX": ("West", "Pacific"), "POR": ("West", "Northwest"),
-    "SAC": ("West", "Pacific"), "SAS": ("West", "Southwest"), "UTA": ("West", "Northwest"),
-}
+#: Re-exported from :mod:`nbastats.identities`, which is where this belongs: the live ingest
+#: path needs the same map, and it must not have to import the demo generator to get it.
+TEAM_ALIGNMENT: dict[str, tuple[str, str]] = identities.TEAM_ALIGNMENT
 
 # (team_id, abbr, city, nickname, conference, division, year_founded, name)
 #
@@ -359,6 +353,19 @@ ARCHETYPES: tuple[Archetype, ...] = (
 )
 
 ARCHETYPE_WEIGHTS = (0.20, 0.26, 0.20, 0.18, 0.16)
+
+
+def listed_position(archetype: Archetype) -> str:
+    """The position label a roster listing would carry for a player of ``archetype``.
+
+    ``Archetype.positions`` is ``(primary,)`` or ``(primary, hybrid)``. ``players.position``
+    has always been ``positions[0]``. The *listed* position that defence by position uses is the
+    last element: a one-element tuple is a pure position (weight one), and a two-element tuple
+    ends in the hybrid label (``G-F`` or ``F-C``), which splits the player's points in halves.
+    Deterministic and free of randomness by construction: it is a function of the archetype.
+    """
+    return archetype.positions[-1]
+
 
 #: League-average shot diet, used for team-level shot profiles.
 TEAM_BLEND_ARCHETYPE = Archetype(
@@ -984,6 +991,48 @@ class LeagueGenerator:
                     "method": DATA_SOURCE,
                 },
             )
+
+    def write_player_positions(self, rosters: dict[str, dict[int, list[RosterSpot]]]) -> None:
+        """One ``player_position_season`` row per rostered player per season, with no RNG.
+
+        This is the position basis defence by position reads, so the demo league needs it for
+        the same reason a live store does. The label is a pure function of the player's
+        archetype (:func:`listed_position`); the weights come from the shared normaliser, so the
+        demo and the live roster ingest cannot disagree about what ``G-F`` means. Rows are
+        stamped ``source='seedArchetype'`` and ``data_source='synthetic-demo'`` like every other
+        seeded row.
+
+        It runs after every other piece of generation and draws nothing from ``self.rng``: the
+        stream every existing number was drawn from is therefore untouched, and the 34 committed
+        fixtures stay byte-identical. A player rostered twice in one season (he cannot be, in this
+        league, but the key allows it) keeps the first listing.
+        """
+        fetched_at = utcnow()
+        seen: set[tuple[int, str]] = set()
+        for season in self.seasons:
+            for team_id, roster in rosters[season].items():
+                for spot in roster:
+                    key = (spot.player.player_id, season)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    label = listed_position(spot.player.archetype)
+                    weights = shared_positions.normalise_nba_position(label)
+                    self.writer.add(
+                        PlayerPositionSeason,
+                        {
+                            "player_id": spot.player.player_id,
+                            "season": season,
+                            "team_id": team_id,
+                            "position_raw": label,
+                            "g_weight": weights.get("G", 0.0) if weights else None,
+                            "f_weight": weights.get("F", 0.0) if weights else None,
+                            "c_weight": weights.get("C", 0.0) if weights else None,
+                            "source": "seedArchetype",
+                            "fetched_at": fetched_at,
+                            "data_source": DATA_SOURCE,
+                        },
+                    )
 
     # ------------------------------------------------------------------ season build
 
@@ -1892,6 +1941,9 @@ class LeagueGenerator:
             self.build_season(season, rosters[season])
         self.write_player_seasons()
         self.writer.flush()
+        # Last, and draw-free: see write_player_positions.
+        self.write_player_positions(rosters)
+        self.writer.flush()
 
         data_through = self.last_final_date
         self.session.add(
@@ -1938,6 +1990,7 @@ class LeagueGenerator:
             "team_season_rows": counts.get("team_season", 0),
             "league_season_rows": counts.get("league_season", 0),
             "shot_zone_rows": counts.get("shot_zone_season", 0),
+            "player_position_rows": counts.get("player_position_season", 0),
             "data_through": data_through,
             "sync_version": self.final_games,
             # The exposure behind the names: how many players carry a real NBA identity,
@@ -2410,6 +2463,7 @@ def seed_database(
     league rather than doubling it.
     """
     started = time.perf_counter()
+    refuse_foreign_store(session.get_bind())  # never put the demo league in the EuroLeague's file
     _clear(session)
     generator = LeagueGenerator(
         session=session,
@@ -2443,7 +2497,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     engine = create_db_engine(args.database_url)
-    init_db(engine)
+    try:
+        init_db(engine)
+    except NbaStoreError as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
     seasons = args.seasons.split(",") if args.seasons else None
     as_of = date.fromisoformat(args.as_of) if args.as_of else None
 

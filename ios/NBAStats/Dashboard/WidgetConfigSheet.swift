@@ -51,9 +51,14 @@ public struct WidgetConfigSheet: View {
         return spec.sizes.contains(size) ? spec.sizes : [size] + spec.sizes
     }
 
+    /// Problems with the fields the reader can see. A field hidden by the league choice is not
+    /// held against them: they could not see it, so a message about it would block Save with
+    /// nothing on screen to explain why.
     private var issues: [String: String] {
         guard let spec = spec else { return [:] }
-        return ConfigValidator.issues(for: spec, config: draft)
+        let all = ConfigValidator.issues(for: spec, config: draft)
+        let shown = Set(visibleFields.map { $0.key })
+        return all.filter { shown.contains($0.key) }
     }
 
     private var isValid: Bool { issues.isEmpty }
@@ -63,11 +68,22 @@ public struct WidgetConfigSheet: View {
         guard let spec = spec else { return false }
         return spec.config.contains { field in
             switch field.type {
-            case .team, .teamList, .subject, .subjectList:
+            case .team, .teamList, .subject, .subjectList, .club:
                 return true
             default:
                 return false
             }
+        }
+    }
+
+    /// The fields to draw for the draft as it stands now. A league widget's `league` setting hides
+    /// the fields that belong to the other league (an NBA tile has no club to choose), so the sheet
+    /// only asks for what the tile will use. Hidden fields keep their stored values and are still
+    /// validated and saved; they are just not shown.
+    private var visibleFields: [WidgetSpec.ConfigField] {
+        guard let spec = spec else { return [] }
+        return spec.config.filter { field in
+            LeagueConfigVisibility.isVisible(field, config: draft)
         }
     }
 
@@ -80,8 +96,9 @@ public struct WidgetConfigSheet: View {
                 configurationSection
                 aboutSection
             }
+            .formStyle(.grouped)
             .navigationTitle(spec?.name ?? widget.kind.fallbackName)
-            .navigationBarTitleDisplayMode(.inline)
+            .hardwoodInlineTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -98,6 +115,8 @@ public struct WidgetConfigSheet: View {
                 }
             }
         }
+        // A macOS sheet sizes itself to its content's ideal size, and a Form has none.
+        .hardwoodSheetFrame(minWidth: 540, minHeight: 560)
     }
 
     // MARK: Sections
@@ -105,7 +124,7 @@ public struct WidgetConfigSheet: View {
     private var appearanceSection: some View {
         Section {
             TextField("Title", text: $title, prompt: Text(defaultTitle))
-                .textInputAutocapitalization(.words)
+                .hardwoodCapitalizeWords()
             Picker("Size", selection: $size) {
                 ForEach(availableSizes, id: \.self) { option in
                     Text(option.displayName).tag(option)
@@ -122,7 +141,7 @@ public struct WidgetConfigSheet: View {
     @ViewBuilder private var configurationSection: some View {
         if let spec = spec, !spec.config.isEmpty {
             Section {
-                ForEach(spec.config) { field in
+                ForEach(visibleFields) { field in
                     fieldRow(field)
                 }
             } header: {

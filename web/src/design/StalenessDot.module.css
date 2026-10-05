@@ -1,0 +1,22 @@
+.row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+}
+
+.fresh {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--hw-radius-pill);
+  background-color: var(--hw-positive);
+  flex: none;
+}
+
+.stale {
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--hw-radius-pill);
+  border: 1.5px solid var(--hw-warning);
+  flex: none;
+}

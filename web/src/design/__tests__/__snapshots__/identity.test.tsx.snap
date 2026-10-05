@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PlayerAvatar > renders at each fixed size and matches its snapshot 1`] = `"<span class="_wrapper_48819a" style="width: 24px; height: 24px;" aria-label="LeBron James"><div class="_circle_6c8e58" style="width: 24px; height: 24px; background-color: color-mix(in sRGB, var(--hw-mono-1) 16%, transparent);"><span class="_initials_6c8e58" style="color: var(--hw-mono-1); opacity: 1; font-size: 9.600000000000001px;">LJ</span></div></span>"`;
+
+exports[`TeamBadge > renders the bare abbreviation and matches its snapshot 1`] = `"<span class="_badge_6e14e9 _medium_6e14e9" style="color: var(--hw-mono-6); background-color: color-mix(in sRGB, var(--hw-mono-6) 16%, transparent);" aria-label="Los Angeles Lakers"><span aria-hidden="true" style="color: inherit;" class="_text_735e26 _statLabel_735e26">LAL</span></span>"`;

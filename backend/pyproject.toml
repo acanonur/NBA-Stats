@@ -25,6 +25,15 @@ dependencies = [
 live = ["nba_api>=1.4.1"]
 test = ["pytest>=8.0", "pytest-asyncio>=0.23"]
 serve = ["uvicorn>=0.27"]
+# Hardwood Web's accounts feature: server-side sessions + verified Google/Apple sign-in.
+# PyJWT verifies OIDC id-token signatures (see WEB_DESIGN.md §0.1-G/§0.1's judge table);
+# pinned >=2.4, not >=2.8, so the 2.7.0 already installed here satisfies it. Everything else
+# accounts needs (scrypt, smtplib, urllib) is already in the 3.11 stdlib.
+web = ["pyjwt[crypto]>=2.4"]
+# The NBA injury report is a PDF. pypdf reads it, imported lazily by nba_intel/report_pdf.py, so
+# nothing else (and no test that does not parse a PDF) needs it. install.sh installs this extra on
+# the Mac; without it the injury source reports "notConfigured" with this very hint.
+injuries = ["pypdf>=4"]
 
 [project.scripts]
 hardwood-seed = "nbastats.seed:main"
@@ -33,7 +42,14 @@ hardwood-seed = "nbastats.seed:main"
 include = ["nbastats*"]
 
 [tool.setuptools.package-data]
-nbastats = ["schema.sql"]
+nbastats = [
+    "schema.sql",
+    "accounts/schema.sql",
+    "nba_intel/schema.sql",
+    "nba_intel/data/*.json",
+    "euroleague/schema.sql",
+    "euroleague/data/*.json",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

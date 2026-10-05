@@ -1,0 +1,76 @@
+/*
+ * `daily_movers`'s own layout. WEB_DESIGN.md §7.7: "the delta is the dominant number, bold and
+ * coloured with an arrow; the raw value is secondary" — the row below puts the delta chip last
+ * (reading order right-to-left is fine here; it is the largest, most saturated thing in the row
+ * regardless of position) and keeps the raw value one notch quieter beside it.
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  padding: var(--hw-space-xxs) 0;
+}
+
+.row + .row {
+  border-top: var(--hw-space-hairline) solid var(--hw-separator);
+  padding-top: var(--hw-space-sm);
+}
+
+.rank {
+  flex: 0 0 auto;
+  min-width: 18px;
+  text-align: right;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.identityText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.valueBlock {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.deltaBlock {
+  flex: 0 0 auto;
+}

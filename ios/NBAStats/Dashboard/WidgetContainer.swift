@@ -52,6 +52,9 @@ public struct WidgetContainer: View {
     @Environment(\.displayScale) private var displayScale
     @Environment(\.isBroadsheet) private var isBroadsheet
 
+    /// macOS only: whether the pointer is over this tile. Never written on iOS.
+    @State private var isHovering = false
+
     public init(widget: DashboardWidget,
                 state: WidgetState,
                 catalog: Catalog,
@@ -128,6 +131,10 @@ public struct WidgetContainer: View {
             // Outside edit mode a tap belongs to the widget's own content.
             if isEditing { onConfigure() }
         }
+        // macOS: the same actions as the overflow menu, under a right-click, and an outline that
+        // shows which tile the pointer is on. Both are no-ops on iOS.
+        .hardwoodContextMenu { menuItems }
+        .hardwoodHover(isHovering: $isHovering)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(accessibilitySummary)
     }
@@ -197,10 +204,18 @@ public struct WidgetContainer: View {
 
     private var border: some View {
         shape.strokeBorder(
-            isDropTarget ? accent.color : Palette.separator,
+            borderColor,
             style: StrokeStyle(lineWidth: isDropTarget ? 2 : 1 / max(displayScale, 1),
                                dash: isEditing && !isDropTarget ? [4, 3] : [])
         )
+    }
+
+    /// The accent while a drag is aimed at this tile, a softer accent while the pointer rests on
+    /// it (macOS), the ordinary hairline otherwise.
+    private var borderColor: Color {
+        if isDropTarget { return accent.color }
+        if isHovering { return accent.color.opacity(0.55) }
+        return Palette.separator
     }
 
     private var header: some View {
@@ -226,39 +241,54 @@ public struct WidgetContainer: View {
         }
     }
 
-    private var overflowMenu: some View {
+    /// The tile's actions. One list, shown by the overflow button on both platforms and by the
+    /// right-click menu on macOS, so the two can never disagree.
+    @ViewBuilder private var menuItems: some View {
+        Button {
+            onConfigure()
+        } label: {
+            Label(configureTitle, systemImage: "slider.horizontal.3")
+        }
         Menu {
-            Button {
-                onConfigure()
-            } label: {
-                Label("Configure", systemImage: "slider.horizontal.3")
-            }
-            Menu {
-                ForEach(sizes, id: \.self) { option in
-                    Button {
-                        onResize(option)
-                    } label: {
-                        if option == widget.size {
-                            Label(option.displayName, systemImage: "checkmark")
-                        } else {
-                            Text(option.displayName)
-                        }
+            ForEach(sizes, id: \.self) { option in
+                Button {
+                    onResize(option)
+                } label: {
+                    if option == widget.size {
+                        Label(option.displayName, systemImage: "checkmark")
+                    } else {
+                        Text(option.displayName)
                     }
                 }
-            } label: {
-                Label("Resize", systemImage: "arrow.up.left.and.arrow.down.right")
             }
-            Button {
-                onDuplicate()
-            } label: {
-                Label("Duplicate", systemImage: "plus.square.on.square")
-            }
-            Divider()
-            Button(role: .destructive) {
-                onRemove()
-            } label: {
-                Label("Remove", systemImage: "trash")
-            }
+        } label: {
+            Label("Resize", systemImage: "arrow.up.left.and.arrow.down.right")
+        }
+        Button {
+            onDuplicate()
+        } label: {
+            Label("Duplicate", systemImage: "plus.square.on.square")
+        }
+        Divider()
+        Button(role: .destructive) {
+            onRemove()
+        } label: {
+            Label("Remove", systemImage: "trash")
+        }
+    }
+
+    /// A menu item that opens a sheet takes an ellipsis on the Mac, by the platform's convention.
+    private var configureTitle: String {
+        #if os(macOS)
+        return "Configure…"
+        #else
+        return "Configure"
+        #endif
+    }
+
+    private var overflowMenu: some View {
+        Menu {
+            menuItems
         } label: {
             Image(systemName: "ellipsis.circle")
                 .imageScale(.medium)
@@ -266,6 +296,7 @@ public struct WidgetContainer: View {
                 .frame(width: 28, height: 28)
                 .contentShape(Rectangle())
         }
+        .hardwoodIconMenuStyle()
         .accessibilityLabel("\(title) options")
     }
 

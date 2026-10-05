@@ -79,13 +79,15 @@ public struct PresetGallery: View {
             }
             .hardwoodBackground()
             .navigationTitle("Presets")
-            .navigationBarTitleDisplayMode(.inline)
+            .hardwoodInlineTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
                 }
             }
         }
+        // A macOS sheet sizes itself to its content's ideal size, and a ScrollView has none.
+        .hardwoodSheetFrame(minWidth: 600, minHeight: 600)
     }
 
     private func card(for preset: DashboardLayout) -> some View {

@@ -16,11 +16,52 @@ courtesy brake for a single-instance deployment, not a distributed quota. Tune i
 ``HARDWOOD_RATE_LIMIT`` (requests per window, ``0`` disables) and
 ``HARDWOOD_RATE_WINDOW_SECONDS``; both are read here rather than in ``config.py`` because
 they are an HTTP-layer concern.
+
+Identity, added for Hardwood Web without touching a byte of the above
+--------------------------------------------------------------------------
+``require_api_key`` stays exactly as it was — existing tests import it, and the five original
+routers plus the widget layer keep working with zero API-key configuration exactly as they do
+today. What is new is layered *beside* it: :func:`current_session`, :func:`require_user`,
+:func:`require_fresh_user` and :func:`require_write` are re-exported from
+``nbastats.accounts`` (WP1's package) rather than implemented here — this module is the one
+place that imports them, so every route file reaches identity through ``nbastats.api.deps``
+and never has to know which WP1 module actually owns a session row.
+
+That import is wrapped in a ``try/except ImportError`` on purpose. ``nbastats.accounts``
+ships its real session/password/OIDC machinery on its own schedule; until it lands (or on a
+deployment that never installs the ``[web]`` extra at all), every name below still exists and
+behaves exactly like "there is no session" — which is precisely today's behaviour, since today
+there is no session mechanism at all. :func:`require_api_key_or_session` is what makes that
+concrete: it calls :func:`current_session` first so ``request.state.user`` is populated
+whenever a live session exists, then falls back to the *same* key check
+:func:`require_api_key` already performs. A deployment with no ``HARDWOOD_API_KEY`` and no
+accounts feature therefore behaves byte-for-byte as it did before this module grew a session
+concept at all.
+
+Writes from the native Mac app, and why the key alone is never enough for a browser
+-------------------------------------------------------------------------------------
+Every state-changing route outside accounts (a typed injury status, a pasted headline link, a model
+setting, a retraction) is guarded by :func:`require_key_or_session_write`, which accepts exactly
+two kinds of caller:
+
+* **The native app**: ``X-API-Key`` equal to ``HARDWOOD_API_KEY``, compared in constant time, on a
+  request that carries **no** ``Origin`` header (and no ``Sec-Fetch-Site``). ``URLSession`` sends
+  neither; every browser sends at least one on a ``fetch``/XHR that changes state.
+* **The web app**: a live session plus its CSRF token plus a same-origin ``Origin``
+  (:func:`nbastats.accounts.csrf.require_write`, unchanged).
+
+There is no third path. In particular **a keyless server never accepts a write**, and
+``X-Hardwood-Client`` (which an earlier draft treated as a credential for a loopback caller) is
+not consulted anywhere: it is a header name a browser page may send cross-origin, because the
+service answers any CORS preflight (``api/app.py`` allows every header), so it proves nothing. A
+request that carries an ``Origin`` is held to the browser path even when it also carries the
+right key, so a web page that somehow learned the key still cannot write.
 """
 from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
 import hmac
 import json
 import os
@@ -35,6 +76,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .. import catalog
+from ..accounts.models import User
 from ..config import get_settings
 from ..db import get_session
 from ..models import SEASON_TYPES, Game
@@ -45,14 +87,27 @@ __all__ = [
     "API_KEY_EXEMPT_PATHS",
     "DEFAULT_RATE_LIMIT",
     "DEFAULT_RATE_WINDOW_SECONDS",
+    "DEFAULT_AUTH_RATE_LIMIT",
+    "DEFAULT_AUTH_RATE_WINDOW_SECONDS",
+    "FRESH_SESSION_SECONDS",
     "CAREER_TOKENS",
     "SessionDep",
     "RateLimiter",
     "get_db",
     "require_api_key",
+    "api_key_matches",
+    "request_is_from_a_browser",
+    "require_key_or_session_write",
     "enforce_rate_limit",
     "get_rate_limiter",
     "reset_rate_limiter",
+    "current_session",
+    "require_api_key_or_session",
+    "require_user",
+    "require_fresh_user",
+    "require_write",
+    "get_auth_limiter",
+    "reset_auth_limiter",
     "loaded_seasons",
     "current_season",
     "resolve_season",
@@ -68,8 +123,9 @@ __all__ = [
 API_KEY_HEADER = "X-API-Key"
 
 #: Paths that never require a key, whatever ``HARDWOOD_API_KEY`` says. Health has to answer
-#: an unauthenticated load balancer.
-API_KEY_EXEMPT_PATHS = frozenset({"/v1/health", "/v1/health/"})
+#: an unauthenticated load balancer. ``/v1/el/health`` is the EuroLeague's equivalent: its state
+#: (off, misconfigured, ready, and why) is the payload, and it carries no statistic.
+API_KEY_EXEMPT_PATHS = frozenset({"/v1/health", "/v1/health/", "/v1/el/health", "/v1/el/health/"})
 
 DEFAULT_RATE_LIMIT = 600
 DEFAULT_RATE_WINDOW_SECONDS = 60
@@ -92,6 +148,39 @@ SessionDep = Annotated[Session, Depends(get_db)]
 # --------------------------------------------------------------------------- auth
 
 
+def api_key_matches(supplied: str | None, expected: str | None) -> bool:
+    """True when ``supplied`` is the configured key. Constant time; never raises.
+
+    ``hmac.compare_digest`` is given **bytes**. Given two ``str`` it raises ``TypeError`` as soon
+    as either holds a non-ASCII character, and Starlette decodes header bytes as Latin-1, so a
+    client sending a key header with a byte above 0x7F turned a plain "wrong key" into a 500 on
+    every gate that compared strings. Encoding both sides first makes any byte string a wrong
+    key, which is what it is.
+
+    A missing or empty key never matches, whatever ``expected`` is, and an unset ``expected``
+    matches nothing: a server with no configured key has no key to present.
+    """
+    if not supplied or not expected:
+        return False
+    return hmac.compare_digest(supplied.encode("utf-8"), expected.encode("utf-8"))
+
+
+def request_is_from_a_browser(request: Request) -> bool:
+    """True when the request carries a header only a web page's request carries.
+
+    ``Origin`` is added by the browser itself to every cross-origin request and to every
+    same-origin one that is not a plain ``GET``/``HEAD``, and page script cannot set, remove or
+    forge it (it is a forbidden header name). ``Sec-Fetch-Site`` is the same kind of header (a
+    ``Sec-`` name, also forbidden to script) and rides along on every request a modern browser
+    makes. A native client (``URLSession``, ``curl``) sends neither.
+
+    Presence is what counts, not truthiness: an empty ``Origin:`` still came from something that
+    sends the header, so it is held to the browser path too.
+    """
+    headers = request.headers
+    return "origin" in headers or "sec-fetch-site" in headers
+
+
 def require_api_key(request: Request) -> None:
     """Enforce ``X-API-Key`` when the service is configured with one.
 
@@ -102,10 +191,144 @@ def require_api_key(request: Request) -> None:
         return
     if request.url.path in API_KEY_EXEMPT_PATHS:
         return
-    supplied = request.headers.get(API_KEY_HEADER)
-    expected = settings.api_key or ""
-    if not supplied or not hmac.compare_digest(supplied, expected):
+    if not api_key_matches(request.headers.get(API_KEY_HEADER), settings.api_key):
         raise errors.unauthorized()
+
+
+# --------------------------------------------------------------------------- identity
+
+#: How long after ``authenticated_at`` a session counts as "fresh" for a sensitive action
+#: (linking or unlinking a provider, changing a password or email, deleting the account).
+#: ``WEB_DESIGN.md`` §2.13 fixes this at ten minutes.
+FRESH_SESSION_SECONDS = 600
+
+try:  # pragma: no cover - exercised by whichever branch this checkout actually has
+    from ..accounts import current_session as _accounts_current_session
+    from ..accounts import require_fresh_user as _accounts_require_fresh_user
+    from ..accounts import require_user as _accounts_require_user
+    from ..accounts import require_write as _accounts_require_write
+
+    current_session = _accounts_current_session
+    require_user = _accounts_require_user
+    require_fresh_user = _accounts_require_fresh_user
+    require_write = _accounts_require_write
+except ImportError:  # nbastats.accounts has not landed its session machinery yet.
+
+    def current_session(request: Request) -> None:
+        """No accounts feature is installed: there is never a session to find.
+
+        Still stashes ``request.state.user = None`` / ``request.state.auth_session = None`` so
+        every downstream read of ``request.state.user`` (``routes_dashboard.py``'s favourites
+        substitution, in particular) can use ``getattr(request.state, "user", None)`` without
+        caring which branch of this ``try`` ran.
+        """
+        request.state.user = None
+        request.state.auth_session = None
+        return None
+
+    def require_user(request: Request) -> "User":
+        """401 always: there is no session mechanism to have signed anyone in with."""
+        current_session(request)
+        raise errors.unauthorized("Sign in to use this feature.")
+
+    def require_fresh_user(request: Request) -> "User":
+        return require_user(request)
+
+    def require_write(request: Request) -> None:
+        raise errors.unauthorized("Sign in to use this feature.")
+
+
+def require_api_key_or_session(request: Request) -> None:
+    """The guard for the five original routers plus ``routes_dashboard`` / ``routes_leaders``
+    / ``routes_fantasy``: an ``X-API-Key`` **or** a live browser session, either is enough.
+
+    Order matters, and it is the whole point of this function rather than a second copy of
+    :func:`require_api_key` with one more ``or``: identity is resolved *before* the early
+    return that a keyless deployment takes on every request. ``HARDWOOD_API_KEY`` is unset on
+    a normal laptop, so a guard that checked the key first and returned immediately when none
+    is configured would never populate ``request.state.user`` — and "pin my player" (which
+    reads that state from inside a resolver) would silently do nothing in the default
+    configuration, the one nearly everyone runs.
+    """
+    current_session(request)  # always, so request.state.user is set whenever it can be
+    settings = get_settings()
+    if not settings.requires_api_key:
+        return
+    if request.url.path in API_KEY_EXEMPT_PATHS:
+        return
+    if api_key_matches(request.headers.get(API_KEY_HEADER), settings.api_key):
+        return
+    if getattr(request.state, "auth_session", None) is not None:
+        return
+    raise errors.unauthorized()
+
+
+def require_key_or_session_write(request: Request) -> None:
+    """The one gate for a state-changing league route: the native app's key, or the browser's
+    session. Anything else is ``401``/``403`` and nothing is written.
+
+    * ``X-API-Key`` equal to ``HARDWOOD_API_KEY`` **and** no browser marker
+      (:func:`request_is_from_a_browser`): the native app. Authorised.
+    * Otherwise the request must satisfy the browser path, exactly as every account route does
+      (:func:`require_write`): a live session, a same-origin ``Origin`` (or ``Sec-Fetch-Site``)
+      and the CSRF synchroniser token. A key sent along with an ``Origin`` is simply ignored here,
+      so the answer for a web page that learned the key is the same ``401`` as for a stranger, and
+      for a signed-in browser it is whatever the CSRF check says.
+
+    Two non-paths, on purpose. With **no key configured** the first branch can never be taken
+    (:func:`api_key_matches` has nothing to match), so a keyless server refuses every write that
+    has no session, loopback or not. And ``X-Hardwood-Client`` is never read: see the module
+    docstring.
+    """
+    settings = get_settings()
+    if settings.requires_api_key:
+        if api_key_matches(request.headers.get(API_KEY_HEADER), settings.api_key):
+            if not request_is_from_a_browser(request):
+                return
+    require_write(request)
+
+
+# --------------------------------------------------------------------------- auth rate limit
+
+
+_auth_limiter: "RateLimiter | None" = None
+_auth_limiter_lock = threading.Lock()
+
+#: The most common bucket in ``WEB_DESIGN.md`` §4.8's table (``login:ip:<prefix>``). Auth
+#: routes that need a different cadence (``signup:ip`` at 5/hour, ``export:user`` at 5/hour) key
+#: their own bucket string but currently share this window; see that module's own docstring
+#: once it exists for the exact per-bucket accounting.
+DEFAULT_AUTH_RATE_LIMIT = 30
+DEFAULT_AUTH_RATE_WINDOW_SECONDS = 900
+
+
+def get_auth_limiter() -> "RateLimiter":
+    """A **second**, independent :class:`RateLimiter` for auth-sensitive endpoints
+    (``/v1/auth/*``, ``/v1/me/export``), so a burst of anonymous login attempts cannot spend the
+    budget every other ``/v1`` route shares via :func:`get_rate_limiter`."""
+    global _auth_limiter
+    if _auth_limiter is None:
+        with _auth_limiter_lock:
+            if _auth_limiter is None:
+                _auth_limiter = RateLimiter(
+                    limit=int(
+                        os.environ.get("HARDWOOD_AUTH_RATE_LIMIT", DEFAULT_AUTH_RATE_LIMIT)
+                    ),
+                    window=int(
+                        os.environ.get(
+                            "HARDWOOD_AUTH_RATE_WINDOW_SECONDS", DEFAULT_AUTH_RATE_WINDOW_SECONDS
+                        )
+                    ),
+                )
+    return _auth_limiter
+
+
+def reset_auth_limiter() -> None:
+    """Drop the auth limiter so the next call rebuilds it from the environment — mirrors
+    :func:`reset_rate_limiter`; tests that exercise auth rate limiting must call this too."""
+    global _auth_limiter
+    with _auth_limiter_lock:
+        _auth_limiter = None
 
 
 # --------------------------------------------------------------------------- rate limit
@@ -182,21 +405,46 @@ def reset_rate_limiter() -> None:
         _limiter = None
 
 
+def _rate_limit_bucket(request: Request) -> str:
+    """Which bucket this request spends from.
+
+    The ``X-API-Key`` header is used **only after it has been checked against the configured
+    key**. Keying on the raw header turned the limiter off for anyone who bothered to vary it:
+    with ``HARDWOOD_API_KEY`` unset — the default, and the shape every web deployment runs —
+    nothing ever compared the header to anything, so ``X-API-Key: bucket-1``, ``bucket-2``, …
+    bought a fresh allowance per request and the one global brake in front of the single
+    worker was gone.
+
+    A validated key still gets its own bucket (a trusted integration should not share a
+    /24's budget with a browser), a signed-in caller is keyed on their session so one account
+    cannot spend a whole network's allowance, and everyone else falls back to the client
+    address.
+    """
+    settings = get_settings()
+    supplied = request.headers.get(API_KEY_HEADER)
+    if settings.requires_api_key and api_key_matches(supplied, settings.api_key):
+        return f"key:{hashlib.sha256((supplied or '').encode('utf-8')).hexdigest()[:32]}"
+
+    auth_session = getattr(request.state, "auth_session", None)
+    session_id = getattr(auth_session, "session_id", None)
+    if session_id:
+        return f"session:{session_id}"
+
+    return f"addr:{request.client.host if request.client else 'anonymous'}"
+
+
 def enforce_rate_limit(request: Request) -> None:
     """Dependency: 429 with ``Retry-After`` once a caller exceeds the window.
 
-    Callers are keyed by API key when one is presented and by client address otherwise, so
-    one noisy client cannot spend another's budget.
+    See :func:`_rate_limit_bucket` for how a caller is identified — in particular, why an
+    unvalidated ``X-API-Key`` header is never the bucket key.
     """
     if request.url.path in API_KEY_EXEMPT_PATHS:
         return
     limiter = get_rate_limiter()
     if not limiter.enabled:
         return
-    key = request.headers.get(API_KEY_HEADER) or (
-        request.client.host if request.client else "anonymous"
-    )
-    retry_after = limiter.check(key)
+    retry_after = limiter.check(_rate_limit_bucket(request))
     if retry_after:
         raise errors.rate_limited(retry_after)
 

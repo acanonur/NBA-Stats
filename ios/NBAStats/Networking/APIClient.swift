@@ -81,12 +81,18 @@ public actor APIClient: APIClientProtocol {
         return encoder
     }
 
-    /// `Hardwood/1.0 (12; iOS 17.4)` — enough for a server log to tell builds apart.
+    /// `Hardwood/1.0 (12; iOS 17.4)` or `Hardwood/1.0 (12; macOS 14.5)` — enough for a server log
+    /// to tell builds apart. The second word is the OS name of the platform this build runs on.
     public static func makeUserAgent(bundle: Bundle = .main) -> String {
         let version = (bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String) ?? "1.0"
         let build = (bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String) ?? "1"
         let system = ProcessInfo.processInfo.operatingSystemVersion
-        return "Hardwood/\(version) (\(build); iOS \(system.majorVersion).\(system.minorVersion))"
+        #if os(macOS)
+        let platform = "macOS"
+        #else
+        let platform = "iOS"
+        #endif
+        return "Hardwood/\(version) (\(build); \(platform) \(system.majorVersion).\(system.minorVersion))"
     }
 
     // MARK: - Routes

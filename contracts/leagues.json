@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "leagues": [
+    {
+      "key": "nba",
+      "name": "NBA",
+      "apiPrefix": "/v1",
+      "scheduleTz": "America/New_York",
+      "regulationMinutes": 48,
+      "overtimeMinutes": 5,
+      "teamRegulationSeconds": 14400,
+      "perModes": [
+        "PerGame",
+        "Totals",
+        "Per36",
+        "Per100"
+      ],
+      "positionBuckets": [
+        "G",
+        "F",
+        "C"
+      ],
+      "workbookPositionBuckets": [],
+      "defense": {
+        "minGames": 10,
+        "provisionalBelowGames": 25,
+        "unknownCeiling": 0.05,
+        "leagueSampleShare": 0.8,
+        "reliabilityGate": 0.2,
+        "familywiseAlpha": 0.05
+      },
+      "matchup": {
+        "adjustedMinGames": 5,
+        "adjustedMinOtherGames": 2,
+        "formWindowDefault": 5,
+        "formWindowMin": 3,
+        "formWindowMax": 15
+      },
+      "homeAdvantagePoints": 2.5,
+      "homeAdvantageBasis": "default",
+      "homeAdvantageFitMinGames": 300,
+      "tracksNeutralSites": false,
+      "statusChance": {
+        "out": 0.0,
+        "doubtful": 0.25,
+        "questionable": 0.5,
+        "probable": 0.85,
+        "available": 1.0
+      },
+      "statusChanceBasis": "default",
+      "staleAfter": {
+        "inWindowMinutes": 60,
+        "outsideWindowMinutes": 1440,
+        "maxAgeDays": null,
+        "staleWhenTeamHasPlayed": false
+      },
+      "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+    },
+    {
+      "key": "euroleague",
+      "name": "EuroLeague",
+      "apiPrefix": "/v1/el",
+      "scheduleTz": "Europe/Berlin",
+      "regulationMinutes": 40,
+      "overtimeMinutes": 5,
+      "teamRegulationSeconds": 12000,
+      "perModes": [
+        "PerGame",
+        "Totals",
+        "Per40"
+      ],
+      "positionBuckets": [
+        "G",
+        "F",
+        "C"
+      ],
+      "workbookPositionBuckets": [
+        "PG",
+        "SG",
+        "SF",
+        "PF",
+        "C"
+      ],
+      "defense": {
+        "minGames": 6,
+        "provisionalBelowGames": 12,
+        "unknownCeiling": 0.05,
+        "leagueSampleShare": 0.8,
+        "reliabilityGate": 0.2,
+        "familywiseAlpha": 0.05
+      },
+      "matchup": {
+        "adjustedMinGames": 5,
+        "adjustedMinOtherGames": 2,
+        "formWindowDefault": 5,
+        "formWindowMin": 3,
+        "formWindowMax": 15
+      },
+      "homeAdvantagePoints": 3.5,
+      "homeAdvantageBasis": "workbook",
+      "homeAdvantageFitMinGames": null,
+      "tracksNeutralSites": true,
+      "statusChance": {
+        "out": 0.0,
+        "doubtful": 0.25,
+        "questionable": 0.5,
+        "probable": 0.85,
+        "available": 1.0
+      },
+      "statusChanceBasis": "workbook",
+      "staleAfter": {
+        "inWindowMinutes": null,
+        "outsideWindowMinutes": null,
+        "maxAgeDays": 7,
+        "staleWhenTeamHasPlayed": true
+      },
+      "attribution": "EuroLeague statistics from the EuroLeague's data service. Availability researched from the linked sources."
+    }
+  ],
+  "availability": {
+    "statuses": [
+      {
+        "key": "out",
+        "label": "Out"
+      },
+      {
+        "key": "doubtful",
+        "label": "Doubtful"
+      },
+      {
+        "key": "questionable",
+        "label": "Questionable"
+      },
+      {
+        "key": "probable",
+        "label": "Probable"
+      },
+      {
+        "key": "available",
+        "label": "Available"
+      }
+    ],
+    "reasonCategories": [
+      "injury",
+      "illness",
+      "rest",
+      "coachDecision",
+      "personal",
+      "suspension",
+      "gLeague",
+      "notWithTeam",
+      "notRegistered",
+      "other"
+    ],
+    "sourceKinds": [
+      "leagueReport",
+      "clubStatement",
+      "pressArticle",
+      "boxScoreInference",
+      "workbookImport",
+      "manual"
+    ],
+    "teamReportStates": [
+      "submitted",
+      "notYetSubmitted",
+      "noReport"
+    ],
+    "assumedAvailableBases": [
+      "notOnSubmittedReport",
+      "teamReportPending",
+      "noReportPublished",
+      "noEntry"
+    ],
+    "statusChance": {
+      "out": 0.0,
+      "doubtful": 0.25,
+      "questionable": 0.5,
+      "probable": 0.85,
+      "available": 1.0
+    },
+    "inForce": {
+      "maxAgeDays": 14,
+      "longTermStaleDays": 7,
+      "longTermPattern": "long[- ]term|indefinite|season|surgery"
+    },
+    "staleAfter": {
+      "nba": {
+        "inWindowMinutes": 60,
+        "outsideWindowMinutes": 1440,
+        "maxAgeDays": null,
+        "staleWhenTeamHasPlayed": false
+      },
+      "euroleague": {
+        "inWindowMinutes": null,
+        "outsideWindowMinutes": null,
+        "maxAgeDays": 7,
+        "staleWhenTeamHasPlayed": true
+      }
+    }
+  },
+  "positions": {
+    "unknownBucket": "unknown",
+    "schemes": {
+      "gfc": [
+        "G",
+        "F",
+        "C"
+      ],
+      "workbook5": [
+        "PG",
+        "SG",
+        "SF",
+        "PF",
+        "C"
+      ]
+    },
+    "labels": {
+      "G": "Guards",
+      "F": "Forwards",
+      "C": "Centers",
+      "PG": "Point guards",
+      "SG": "Shooting guards",
+      "SF": "Small forwards",
+      "PF": "Power forwards",
+      "unknown": "Position unknown"
+    },
+    "bases": [
+      "listed",
+      "workbookListing",
+      "unknown"
+    ],
+    "workbookToGfc": {
+      "PG": "G",
+      "SG": "G",
+      "SF": "F",
+      "PF": "F",
+      "C": "C"
+    },
+    "registrationCodes": {
+      "1": "G",
+      "2": "F",
+      "3": "C"
+    }
+  },
+  "forbiddenPayloadKeyWords": [
+    "line",
+    "lines",
+    "odds",
+    "moneyline",
+    "spread",
+    "over",
+    "under",
+    "lean",
+    "edge",
+    "pick",
+    "picks",
+    "push",
+    "implied",
+    "cover",
+    "vig",
+    "juice",
+    "stake",
+    "wager",
+    "bookmaker",
+    "market",
+    "parlay",
+    "handicap",
+    "ats",
+    "probability"
+  ],
+  "allowedParameters": [
+    "asOfRound",
+    "awayTeamId",
+    "clubCode",
+    "gameId",
+    "homeTeamId",
+    "overrideId",
+    "personCode",
+    "playerId",
+    "playerIds",
+    "statusId",
+    "teamId",
+    "teamIds",
+    "basis",
+    "cursor",
+    "date",
+    "includeNews",
+    "limit",
+    "minGames",
+    "perClub",
+    "perMode",
+    "phase",
+    "round",
+    "scheme",
+    "season",
+    "seasonType",
+    "sort",
+    "statuses",
+    "window",
+    "expectedReturnText",
+    "note",
+    "playerName",
+    "reasonCategory",
+    "reasonText",
+    "sourceLabel",
+    "sourcePublishedAt",
+    "sourceUrl",
+    "status",
+    "link",
+    "publishedAt",
+    "sourceName",
+    "title",
+    "key",
+    "settings",
+    "value"
+  ]
+}

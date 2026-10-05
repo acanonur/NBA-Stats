@@ -1357,7 +1357,15 @@ public enum WidgetPayload: Hashable, Sendable {
     case teamEfficiency(TeamEfficiencyPayload)
     case nextGameProjection(NextGameProjectionPayload)
     case projectionBoard(ProjectionBoardPayload)
+    case fantasyDraftBoard(FantasyDraftBoardPayload)
+    case fantasyTrade(FantasyTradePayload)
     case careerArc(CareerArcPayload)
+    // The four league widgets. Their payloads are the league route objects themselves
+    // (`Core/LeaguePayloads.swift`), so a tile and the screen it summarises decode the same type.
+    case teamMatchup(LeagueMatchup)
+    case defenseByPosition(LeagueDefenseDocument)
+    case availabilityReport(LeagueAvailabilityReport)
+    case slateProjections(LeagueSlateProjections)
 
     public var kind: WidgetKind {
         switch self {
@@ -1374,7 +1382,13 @@ public enum WidgetPayload: Hashable, Sendable {
         case .teamEfficiency: return .teamEfficiency
         case .nextGameProjection: return .nextGameProjection
         case .projectionBoard: return .projectionBoard
+        case .fantasyDraftBoard: return .fantasyDraftBoard
+        case .fantasyTrade: return .fantasyTrade
         case .careerArc: return .careerArc
+        case .teamMatchup: return .teamMatchup
+        case .defenseByPosition: return .defenseByPosition
+        case .availabilityReport: return .availabilityReport
+        case .slateProjections: return .slateProjections
         }
     }
 
@@ -1409,8 +1423,20 @@ public enum WidgetPayload: Hashable, Sendable {
             return .nextGameProjection(try container.decode(NextGameProjectionPayload.self, forKey: payloadKey))
         case .projectionBoard:
             return .projectionBoard(try container.decode(ProjectionBoardPayload.self, forKey: payloadKey))
+        case .fantasyDraftBoard:
+            return .fantasyDraftBoard(try container.decode(FantasyDraftBoardPayload.self, forKey: payloadKey))
+        case .fantasyTrade:
+            return .fantasyTrade(try container.decode(FantasyTradePayload.self, forKey: payloadKey))
         case .careerArc:
             return .careerArc(try container.decode(CareerArcPayload.self, forKey: payloadKey))
+        case .teamMatchup:
+            return .teamMatchup(try container.decode(LeagueMatchup.self, forKey: payloadKey))
+        case .defenseByPosition:
+            return .defenseByPosition(try container.decode(LeagueDefenseDocument.self, forKey: payloadKey))
+        case .availabilityReport:
+            return .availabilityReport(try container.decode(LeagueAvailabilityReport.self, forKey: payloadKey))
+        case .slateProjections:
+            return .slateProjections(try container.decode(LeagueSlateProjections.self, forKey: payloadKey))
         }
     }
 
@@ -1443,8 +1469,20 @@ public enum WidgetPayload: Hashable, Sendable {
             return .nextGameProjection(try decoder.decode(NextGameProjectionPayload.self, from: data))
         case .projectionBoard:
             return .projectionBoard(try decoder.decode(ProjectionBoardPayload.self, from: data))
+        case .fantasyDraftBoard:
+            return .fantasyDraftBoard(try decoder.decode(FantasyDraftBoardPayload.self, from: data))
+        case .fantasyTrade:
+            return .fantasyTrade(try decoder.decode(FantasyTradePayload.self, from: data))
         case .careerArc:
             return .careerArc(try decoder.decode(CareerArcPayload.self, from: data))
+        case .teamMatchup:
+            return .teamMatchup(try decoder.decode(LeagueMatchup.self, from: data))
+        case .defenseByPosition:
+            return .defenseByPosition(try decoder.decode(LeagueDefenseDocument.self, from: data))
+        case .availabilityReport:
+            return .availabilityReport(try decoder.decode(LeagueAvailabilityReport.self, from: data))
+        case .slateProjections:
+            return .slateProjections(try decoder.decode(LeagueSlateProjections.self, from: data))
         }
     }
 
@@ -1464,7 +1502,13 @@ public enum WidgetPayload: Hashable, Sendable {
         case .teamEfficiency: return .teamEfficiency(.preview)
         case .nextGameProjection: return .nextGameProjection(.preview)
         case .projectionBoard: return .projectionBoard(.preview)
+        case .fantasyDraftBoard: return .fantasyDraftBoard(.preview)
+        case .fantasyTrade: return .fantasyTrade(.preview)
         case .careerArc: return .careerArc(.preview)
+        case .teamMatchup: return .teamMatchup(.preview)
+        case .defenseByPosition: return .defenseByPosition(.preview)
+        case .availabilityReport: return .availabilityReport(.preview)
+        case .slateProjections: return .slateProjections(.preview)
         }
     }
 }
@@ -1488,7 +1532,13 @@ extension WidgetPayload: Encodable {
         case .teamEfficiency(let payload): try container.encode(payload)
         case .nextGameProjection(let payload): try container.encode(payload)
         case .projectionBoard(let payload): try container.encode(payload)
+        case .fantasyDraftBoard(let payload): try container.encode(payload)
+        case .fantasyTrade(let payload): try container.encode(payload)
         case .careerArc(let payload): try container.encode(payload)
+        case .teamMatchup(let payload): try container.encode(payload)
+        case .defenseByPosition(let payload): try container.encode(payload)
+        case .availabilityReport(let payload): try container.encode(payload)
+        case .slateProjections(let payload): try container.encode(payload)
         }
     }
 }

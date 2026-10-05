@@ -143,7 +143,7 @@ struct PlayerDetailScreenContent: View {
         }
         .hardwoodBackground()
         .navigationTitle(displayName)
-        .navigationBarTitleDisplayMode(.inline)
+        .hardwoodInlineTitle()
         .toolbar { toolbarContent }
         .task(id: playerID) {
             await load()
@@ -327,7 +327,7 @@ struct PlayerDetailScreenContent: View {
         if let confirmation = confirmation {
             DashboardBanner(icon: "checkmark.circle.fill",
                             title: confirmation,
-                            message: "Open the Dashboard tab to arrange it.",
+                            message: "Open \(PlatformCopy.dashboardPlace) to arrange it.",
                             tint: Palette.positive,
                             onDismiss: { self.confirmation = nil })
         }
@@ -471,7 +471,7 @@ struct PlayerDetailScreenContent: View {
     }
 
     private func seasonsTable(_ detail: PlayerDetailResponse) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal, showsIndicators: PlatformMetrics.showsHorizontalIndicators) {
             Grid(alignment: .trailing, horizontalSpacing: Spacing.md, verticalSpacing: Spacing.sm) {
                 headerRow
                 ForEach(seasonRows) { row in
@@ -635,7 +635,7 @@ struct PlayerDetailScreenContent: View {
     // MARK: Toolbar
 
     @ToolbarContentBuilder private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .primaryAction) {
             Button {
                 guard let player = player else { return }
                 environment.toggleFavorite(player: player)

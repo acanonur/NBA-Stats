@@ -20,6 +20,8 @@ python3 -m pip install -e ".[test,serve]"     # add ".[live]" for the nba_api in
 | `test` | pytest, pytest-asyncio | the test suite |
 | `serve` | uvicorn | running the API |
 | `live` | nba_api | the live ingest path **only** |
+| `web` | PyJWT | Hardwood Web's accounts and sign-in ([`docs/WEB.md`](../docs/WEB.md)) |
+| `injuries` | pypdf | reading the NBA's injury report PDFs; imported lazily, and without it the injury job reports `unreadable` rather than failing |
 
 `nba_api` is an *optional* import behind a `try/except`, resolved at call time. Everything
 else — the seeded league, the whole API, the entire test suite — runs without it, and a live
@@ -77,6 +79,23 @@ still keys on `team_id`, so a traded player is representable), and because the d
 list samples five seasons across three disjoint eras, most careers touch only one or two of
 them — pass `--seasons` with consecutive seasons if you want a dense `career_arc`.
 
+### Running it on a Mac, always on
+
+On a Mac, do not start the pieces by hand. One script installs the server, the NBA ingest loop, the
+nightly correction pass and the background worker as launch agents that start when you log in:
+
+```bash
+backend/scripts/macos/install.sh          # safe to run again; --help lists the options
+backend/scripts/macos/uninstall.sh        # stop and remove them; your data is kept
+```
+
+It needs Python 3.11 or newer (the one that ships with macOS is too old, and the installer says
+how to get one), refuses a checkout inside Documents, Desktop, Downloads or iCloud Drive (macOS
+hides those from background programs), and puts everything under
+`~/Library/Application Support/Hardwood`. `scripts/macos/hardwood.env.example` is the settings
+file it copies there. The whole story, written for someone who has never used a command line, is in
+[`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c.
+
 ### Tests
 
 ```bash
@@ -92,6 +111,7 @@ python3 -m pytest -q
 | `tests/test_api_core.py` | the HTTP surface, key names, the error envelope |
 | `tests/test_widgets.py` | widget payloads and the dashboard resolve |
 | `tests/test_ingest.py` | normalize / client / daily / aggregate / backfill |
+| `tests/test_worker_jobs.py` | the worker's timetable, catch-up after sleep, switches and refusals, job state; the launchd files and the macOS installer |
 
 `tests/conftest.py` builds one small deterministic database for the whole session and exposes
 it as `seeded_engine`, `seeded_db` (a `Session`) and `seed_summary`, plus `empty_engine` for
@@ -134,7 +154,12 @@ Stats arrive **as each game finishes**, not overnight (`CONTRACT.md` §8):
    type covers an entire slate in three requests, however many games it holds.
 4. The nightly `scripts/ingest_daily.sh` re-pulls the last `CORRECTION_WINDOW_DAYS` days,
    because the league revises box scores after the fact. Every write is an upsert, so a
-   correction overwrites yesterday instead of duplicating it.
+   correction overwrites yesterday instead of duplicating it. It uses the bulk path, which has
+   **no starter column**: it never records who started and cannot restore starters that were lost.
+5. `python3 -m nbastats.ingest.runner --refetch-games --days N --date D` runs step 2 (the per-game
+   box score, the only source that knows the starting five) again over the stored games of the
+   last `N` days ending `D`. It is the repair for a database the old ingest bug flattened and for
+   a season loaded by a bulk walk (RUNBOOK §2b, "Restoring who started").
 
 ```bash
 ./scripts/ingest_daily.sh --days 3
@@ -172,6 +197,44 @@ Basketball-Reference itself — their terms forbid it and their rate limit is en
 hour-long blocks; these loaders read the redistributed compilations. See
 [`docs/LEGAL.md`](../docs/LEGAL.md).
 
+## The worker
+
+`python -m nbastats.worker` is the one scheduler for every background job the EuroLeague, injury,
+headline and projection work adds, for both leagues. It owns the clock and nothing else; the jobs
+live in the packages that own the data, and are reached by string name so that one that is not
+installed is recorded as `notInstalled` instead of stopping the others.
+
+```bash
+python3 -m nbastats.worker --list         # every job, whether it will run, why not, when it last ran
+                                          # (on a Mac install, run these through hardwood-python)
+python3 -m nbastats.worker --once         # run whatever is due, then exit
+python3 -m nbastats.worker --run nba.news # run one job now (switches and refusals still apply)
+python3 -m nbastats.worker                # run until stopped (what launchd runs)
+```
+
+| Job | When |
+| --- | --- |
+| `projections.lock`, `projections.refresh`, `projections.calibrate` (both leagues) | every 5 minutes, every 30 minutes, daily 05:00 |
+| `nba.rosters` | Mondays 05:30, and on start if more than 7 days stale |
+| `nba.news`, `el.news` | hourly |
+| `nba.injuries`, `el.round`, `el.box`, `el.rosters`, `el.structure`, `el.ratings` | called often (every 10 to 60 minutes); each decides for itself whether anything is due |
+| `el.workbook` | every minute: imports an `.xlsx` dropped in `inbox/` |
+
+Daily and weekly jobs are due when the newest slot at or before *now* has not been attempted, so a
+laptop that slept through 05:00 runs the job once on waking and never replays what it missed. The
+worker re-reads the settings file every 30 seconds, so the switches (`HARDWOOD_EL_LIVE`,
+`HARDWOOD_EL_ENABLED`, `HARDWOOD_NBA_INJURIES`, `HARDWOOD_NEWS`) are kill switches that bite within
+the half minute. It refuses the jobs that fetch EuroLeague data, injury reports or headlines when
+`HARDWOOD_PUBLIC_BASE_URL` is not a loopback address, and it refuses the injury and roster jobs
+against a store that holds the demo league.
+
+**What a job must provide.** A `"package.module:callable"` that accepts any of `now` (aware UTC),
+`league`, `shutdown` (truthy while stopping), `force` and `data_dir` and returns nothing, a bool, a
+dict or an object with `status` and `error`. A module may export `JOBS = {job id: callable}`, which
+wins over the default name. The worker records `last_started_at`, `last_success_at` and
+`last_error` in the league's job-state table and never writes `cursor_json`, which is the job's.
+The module docstring in `nbastats/worker.py` is the full contract.
+
 ## Configuration
 
 Every variable, read once by `nbastats.config.Settings.from_env()`:
@@ -179,7 +242,7 @@ Every variable, read once by `nbastats.config.Settings.from_env()`:
 | Variable | Default | Notes |
 | --- | --- | --- |
 | `DATABASE_URL` | `sqlite:///./hardwood.db` | A Postgres URL works with no code change |
-| `HARDWOOD_API_KEY` | unset | When set, `/v1` requires `X-API-Key` (except `/v1/health`) |
+| `HARDWOOD_API_KEY` | unset (set by the Mac installer) | When set, `/v1` requires `X-API-Key` (except `/v1/health`) or a signed-in session. It is also the native app's credential for league writes, accepted only on a request with no `Origin` header; with no key no write is accepted without a session (RUNBOOK §1c, "The API key") |
 | `HARDWOOD_DEMO_MODE` | `false` | Seeds an empty store on startup and advertises it in `/v1/health` |
 | `HARDWOOD_CONTRACTS_DIR` | repo `contracts/` | Where `metrics.json` et al. live |
 | `NBA_API_PROXY` | unset | Residential pass-through proxy for the live ingest path |
@@ -187,6 +250,16 @@ Every variable, read once by `nbastats.config.Settings.from_env()`:
 | `CURRENT_SEASON` | `2025-26` | The season `"latest"` resolves to. The default matches the demo data; a live deployment sets it, or uses `config.current_season_string()`, which rolls over on 1 July |
 | `LOG_LEVEL` | `INFO` | |
 | `CORRECTION_WINDOW_DAYS` | `3` | Days of past games re-pulled nightly for stat corrections |
+| `HARDWOOD_DATA_DIR` | `~/Library/Application Support/Hardwood` on a Mac | The data folder: both databases, raw payloads, inbox, recordings, settings file |
+| `HARDWOOD_ENV_FILE` | `backend/.env`; `<data dir>/hardwood.env` under the Mac install | The settings file the API, the worker and the NBA programs read |
+| `HARDWOOD_LOG_DIR` | unset | When set, the worker logs to a rotated `worker.log` there |
+| `HARDWOOD_EL_DATABASE_URL` | `hardwood_el.db` beside the NBA file | The EuroLeague store; a separate file, and the NBA file is refused |
+| `HARDWOOD_EL_ENABLED` | `on` | The EuroLeague feature as a whole |
+| `HARDWOOD_EL_LIVE` | `on` | EuroLeague live ingest from the data service |
+| `HARDWOOD_NBA_INJURIES` | `on` | The NBA injury report job; refused on a store holding the demo league |
+| `HARDWOOD_NEWS` | `on` | Headlines for both leagues; each feed's `robots.txt` is checked first |
+| `HARDWOOD_WORKBOOK_PATH` | unset | A EuroLeague workbook to import, as well as anything in the inbox |
+| `HARDWOOD_WORKER_TICK_SECONDS` | `30` | How often the worker checks what is due (5 to 300) |
 
 Plus one that belongs to the ingest client rather than to `Settings`:
 
@@ -217,7 +290,14 @@ Plus one that belongs to the ingest client rather than to `Settings`:
 | `ingest/aggregate.py` | Everything derived: season rows, team seasons, league distributions, shot zones |
 | **`nbastats/api/`** | `app.py` (application factory), `deps.py`, `errors.py`, `schemas.py`, `serializers.py`, and the `routes_*` modules |
 | **`nbastats/widgets/`** | One module per widget kind, plus `base.py` and `queries.py` |
-| **`scripts/`** | `ingest_daily.sh`, `backfill.sh`, `serve_dev.sh` |
+| **Leagues** | |
+| `nbastats/shared/` | The pure, stdlib-only core both leagues use: team-score model, injury layer, team form, defence-by-position, availability vocabulary, positions, the forbidden-vocabulary guard list, the late-bound league lookup |
+| `nbastats/intel/` | Shared fetch plumbing: the polite HTTP client, feeds, `robots.txt`, recordings |
+| `nbastats/nba_intel/` | NBA injury report and parser, NBA headlines, model settings, job state, on its own `MetaData` |
+| `nbastats/nba_matchup/` | NBA matchup, defence by position and team projections |
+| `nbastats/euroleague/` | The sealed EuroLeague package: its own store, workbook importer, demo league, live ingest, rating model, read side and routes |
+| `nbastats/worker.py` | The one scheduler for every job above; see [The worker](#the-worker) |
+| **`scripts/`** | `ingest_daily.sh`, `backfill.sh`, `serve_dev.sh`, and `macos/` (`install.sh`, `uninstall.sh`, the four launchd plist templates, `hardwood.env.example`) |
 
 `app.py` includes `routes_dashboard` and `routes_leaders` **if present**: a service that can
 serve players, teams, games and sync is useful on its own, and an absent widget layer degrades

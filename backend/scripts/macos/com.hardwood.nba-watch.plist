@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  The existing NBA ingest loop (the ingest runner's watch mode), as a launchd user agent.
+  TEMPLATE: install.sh fills in every double-underscore placeholder.
+
+  It polls the scoreboard during the game window and writes each game the moment it goes
+  final. It needs a residential connection, which a Mac at home is (runner.py docstring).
+
+  The program is the runner's own main(), started from a one-line script so that hardwood.env
+  is read first: the runner never read an env file itself, and a setting changed there would
+  otherwise be honoured by the API and the worker but not by this process. A real value in this
+  plist's EnvironmentVariables still wins over the file.
+
+  ThrottleInterval 60 means a persistent failure (for example nba_api not installed) retries
+  once a minute, not in a tight loop.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.hardwood.nba-watch</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__PYTHON__</string>
+    <string>-c</string>
+    <string>import sys; from nbastats.accounts.config import load_env_file; from nbastats.config import reset_settings_cache; load_env_file(); reset_settings_cache(); from nbastats.ingest.runner import main; sys.exit(main(["--watch"]))</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__BACKEND_DIR__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HARDWOOD_DATA_DIR</key>
+    <string>__DATA_DIR__</string>
+    <key>HARDWOOD_ENV_FILE</key>
+    <string>__ENV_FILE__</string>
+    <key>HARDWOOD_LOG_DIR</key>
+    <string>__LOG_DIR__</string>
+    <key>DATABASE_URL</key>
+    <string>__DB_URL__</string>
+    <key>HARDWOOD_EL_DATABASE_URL</key>
+    <string>__EL_DB_URL__</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+    <key>PYTHONUTF8</key>
+    <string>1</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>60</integer>
+  <key>ExitTimeOut</key>
+  <integer>30</integer>
+  <key>ProcessType</key>
+  <string>Background</string>
+
+  <key>StandardOutPath</key>
+  <string>__LOG_DIR__/nba-watch.log</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_DIR__/nba-watch.log</string>
+</dict>
+</plist>

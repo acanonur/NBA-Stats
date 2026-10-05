@@ -200,13 +200,15 @@ private struct LenientEntry<T: Decodable>: Decodable {
 public enum ConfigFieldType: String, Codable, Hashable, Sendable, CaseIterable {
     case season, `enum`, enumList, metric, metricList, player, playerList
     case team, teamList, subject, subjectList, int, double, bool, date
+    /// A EuroLeague club code (three capital letters), used by the league widgets.
+    case club
 
     /// True for the field types whose editor picks more than one value.
     public var isMultiValue: Bool {
         switch self {
         case .enumList, .metricList, .playerList, .teamList, .subjectList:
             return true
-        case .season, .`enum`, .metric, .player, .team, .subject, .int, .double, .bool, .date:
+        case .season, .`enum`, .metric, .player, .team, .subject, .int, .double, .bool, .date, .club:
             return false
         }
     }

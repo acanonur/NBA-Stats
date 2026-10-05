@@ -103,8 +103,9 @@ struct SettingsScreenContent: View {
                 eraSection
                 aboutSection
             }
+            .formStyle(.grouped)
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
+            .hardwoodInlineTitle()
             .task {
                 await loadSettingsState()
             }
@@ -134,16 +135,15 @@ struct SettingsScreenContent: View {
         Section {
             LabeledContent("Server") {
                 TextField("http://localhost:8000/v1", text: $baseURLText)
-                    .textContentType(.URL)
-                    .keyboardType(.URL)
-                    .textInputAutocapitalization(.never)
+                    .hardwoodURLField()
+                    .hardwoodNeverCapitalize()
                     .autocorrectionDisabled()
                     .multilineTextAlignment(.trailing)
                     .onSubmit(applyServerSettings)
             }
             LabeledContent("API key") {
                 SecureField("Optional", text: $apiKeyText)
-                    .textContentType(.password)
+                    .hardwoodSecretField()
                     .multilineTextAlignment(.trailing)
                     .onSubmit(applyServerSettings)
             }
@@ -198,7 +198,7 @@ struct SettingsScreenContent: View {
         } header: {
             Text("Favourites")
         } footer: {
-            Text("Presets point their widgets at $favorite_player and $favorite_team. Star a player from the Search tab; pick a team here.")
+            Text("Presets point their widgets at $favorite_player and $favorite_team. Star a player from \(PlatformCopy.searchPlace); pick a team here.")
         }
     }
 
@@ -244,9 +244,11 @@ struct SettingsScreenContent: View {
         }
     }
 
+    /// What happens between visits differs by platform: iOS decides when a background refresh
+    /// runs, while on the Mac the app polls while it is open and the launchd server keeps
+    /// collecting when it is closed. The sentences live in `PlatformCopy`.
     private var refreshFooter: String {
-        let minutes = Int(BackgroundRefresh.defaultRefreshInterval / 60)
-        return "Hardwood asks iOS for a background refresh about every \(minutes) minutes and again overnight, after the league publishes its stat corrections. iOS decides whether those ever run, so every screen also refreshes when you open it and when you pull down."
+        PlatformCopy.settingsRefreshFooter
     }
 
     private var checkNowButton: some View {

@@ -1,0 +1,45 @@
+{
+ "data": [
+  {
+   "seasonCode": "E2031",
+   "phaseTypeCode": "RS",
+   "round": 1,
+   "index": 1,
+   "name": "Round 1",
+   "minGameStartDate": "2031-10-02T00:00:00",
+   "maxGameStartDate": "2031-10-03T23:59:59",
+   "datesFormmated": "Oct 2-3, 2031"
+  },
+  {
+   "seasonCode": "E2031",
+   "phaseTypeCode": "RS",
+   "round": 2,
+   "index": 2,
+   "name": "Round 2",
+   "minGameStartDate": "2031-10-09T00:00:00",
+   "maxGameStartDate": "2031-10-10T23:59:59",
+   "datesFormmated": "Oct 9-10, 2031"
+  },
+  {
+   "seasonCode": "E2031",
+   "phaseTypeCode": "RS",
+   "round": 3,
+   "index": 3,
+   "name": "Round 3",
+   "minGameStartDate": "2031-10-16T00:00:00",
+   "maxGameStartDate": "2031-10-17T23:59:59",
+   "datesFormmated": "Oct 16-17, 2031"
+  },
+  {
+   "seasonCode": "E2031",
+   "phaseTypeCode": "PO",
+   "round": 4,
+   "index": 4,
+   "name": "Playoffs 1",
+   "minGameStartDate": "2032-04-21T00:00:00",
+   "maxGameStartDate": "2032-04-22T23:59:59",
+   "datesFormmated": "Apr 21-22, 2032"
+  }
+ ],
+ "total": 4
+}

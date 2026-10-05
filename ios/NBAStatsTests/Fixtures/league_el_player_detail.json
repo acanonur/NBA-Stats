@@ -1,0 +1,178 @@
+{
+  "league": "euroleague",
+  "season": "2026-27",
+  "seasonCode": "E2026",
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.manual",
+        "label": "Entered by hand",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-10-12T09:00:00Z"
+      }
+    ]
+  },
+  "player": {
+    "league": "euroleague",
+    "id": "demo-1",
+    "name": "Rurik Jessop",
+    "position": "G",
+    "positionRaw": "Guard",
+    "jersey": "62",
+    "headshotUrl": null,
+    "personCode": "demo-1"
+  },
+  "club": {
+    "league": "euroleague",
+    "id": "ZZA",
+    "abbr": "ZZA",
+    "name": "Alderwick Herons",
+    "shortName": "Alderwick",
+    "clubCode": "ZZA",
+    "tvCode": null
+  },
+  "registration": {
+    "dorsal": "62",
+    "positionCode": 1,
+    "positionName": "Guard",
+    "positionWorkbook5": "PG",
+    "role": "Star",
+    "age": 26,
+    "active": true
+  },
+  "birthDate": null,
+  "heightCm": null,
+  "weightKg": null,
+  "countryCode": null,
+  "seasonAverages": {
+    "games": 4,
+    "values": {
+      "min": 29.291666666666668,
+      "pts": 17.75,
+      "reb": 3.75,
+      "oreb": 0.75,
+      "dreb": 3.0,
+      "ast": 6.75,
+      "stl": 1.0,
+      "blk": 0.25,
+      "tov": 4.25,
+      "pf": 2.0,
+      "fgm2": 5.75,
+      "fga2": 11.75,
+      "fg3m": 1.0,
+      "fg3a": 3.75,
+      "ftm": 3.25,
+      "fta": 4.0,
+      "blk_against": 0.5,
+      "fouls_drawn": 2.5,
+      "plus_minus": 5.5,
+      "pir": 17.0,
+      "fg2_pct": 0.48936170212765956,
+      "fg3_pct": 0.26666666666666666,
+      "ft_pct": 0.8125
+    },
+    "gamesWithStat": {
+      "min": 4,
+      "pts": 4,
+      "reb": 4,
+      "oreb": 4,
+      "dreb": 4,
+      "ast": 4,
+      "stl": 4,
+      "blk": 4,
+      "tov": 4,
+      "pf": 4,
+      "fgm2": 4,
+      "fga2": 4,
+      "fg3m": 4,
+      "fg3a": 4,
+      "ftm": 4,
+      "fta": 4,
+      "blk_against": 2,
+      "fouls_drawn": 2,
+      "plus_minus": 2,
+      "pir": 4,
+      "fg2_pct": 4,
+      "fg3_pct": 4,
+      "ft_pct": 4
+    }
+  },
+  "seasonPer40": {
+    "min": null,
+    "pts": 24.238975817923187,
+    "reb": 5.120910384068279,
+    "oreb": 1.0241820768136558,
+    "dreb": 4.096728307254623,
+    "ast": 9.217638691322902,
+    "stl": 1.3655761024182078,
+    "blk": 0.34139402560455195,
+    "tov": 5.803698435277383,
+    "pf": 2.7311522048364156,
+    "fgm2": 7.852062588904695,
+    "fga2": 16.045519203413942,
+    "fg3m": 1.3655761024182078,
+    "fg3a": 5.120910384068279,
+    "ftm": 4.438122332859176,
+    "fta": 5.462304409672831,
+    "blk_against": 0.6988934187536401,
+    "fouls_drawn": 3.4944670937682,
+    "plus_minus": 7.687827606290041,
+    "pir": 23.21479374110953,
+    "fg2_pct": 0.48936170212765956,
+    "fg3_pct": 0.26666666666666666,
+    "ft_pct": 0.8125
+  },
+  "rate": {
+    "basis": "syntheticDemo",
+    "basisNote": null,
+    "asOfRound": 4,
+    "projectedMinutes": 27.431111111111115,
+    "per40": {
+      "pts": 25.614930378362615,
+      "reb": 3.7967485601807973,
+      "ast": 6.543704891740176,
+      "fg3m": 3.149376685864256,
+      "stl": 1.2510024057738571,
+      "blk": 0.03499307428738062,
+      "tov": 2.7382080629875336
+    }
+  },
+  "availability": {
+    "status": "out",
+    "chanceOfPlaying": 0.0,
+    "inForce": false,
+    "isStale": true,
+    "source": {
+      "kind": "pressArticle",
+      "label": "example.org news",
+      "url": "https://news.example.org/injuries/0",
+      "publishedAt": "2026-10-02T09:00:00Z",
+      "asOf": "2026-10-12T09:00:00Z",
+      "fetchedAt": "2026-10-12T09:00:00Z",
+      "snapshotId": null
+    }
+  },
+  "notes": [
+    "EuroLeague games only. A stat a game did not record is left out of that stat's average."
+  ]
+}

@@ -56,9 +56,9 @@ final class PayloadDecodingTests: XCTestCase {
             decoded[kind] = payload
         }
         let missing = missingWidgetFixtures()
-        // The tripwire survives the skip below: a *fourteenth* kind added with neither a fixture
+        // The tripwire survives the skip below: a *twenty-first* kind added with neither a fixture
         // nor a test still fails here rather than quietly widening the skip.
-        XCTAssertEqual(decoded.count + missing.count, 14, "A widget kind was added without a fixture or a test")
+        XCTAssertEqual(decoded.count + missing.count, 20, "A widget kind was added without a fixture or a test")
         XCTAssertEqual(decoded.count + missing.count, WidgetKind.allCases.count)
         try skipIfFixturesAreMissing(missing)
     }
@@ -275,7 +275,7 @@ final class PayloadDecodingTests: XCTestCase {
     func testMetaFixtureCarriesBothCatalogs() throws {
         try requireFixtures()
         let response = try decoder.decode(MetaResponse.self, from: try fixture("meta"))
-        XCTAssertEqual(response.metrics?.metrics.count, 61)
+        XCTAssertEqual(response.metrics?.metrics.count, 62)   // 61 + opp_pts (points allowed)
         XCTAssertFalse(response.teams.isEmpty)
         XCTAssertFalse(response.seasons.isEmpty)
         XCTAssertEqual(response.coverage?.advancedFrom, "1996-97")

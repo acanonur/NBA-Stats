@@ -1,7 +1,11 @@
 import Foundation
 import SwiftUI
 
-/// The fourteen widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
+/// The twenty widget kinds (`contracts/widgets.json`, `contracts/CONTRACT.md` §4).
+///
+/// The last four (`teamMatchup`, `defenseByPosition`, `availabilityReport`, `slateProjections`) are
+/// the league widgets. Each reads the NBA or the EuroLeague according to its own `league` setting
+/// and carries the same payload its `/v1` or `/v1/el` route returns.
 public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case statTile          = "stat_tile"
     case playerSnapshot    = "player_snapshot"
@@ -16,7 +20,13 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
     case teamEfficiency    = "team_efficiency"
     case nextGameProjection = "next_game_projection"
     case projectionBoard   = "projection_board"
+    case fantasyDraftBoard = "fantasy_draft_board"
+    case fantasyTrade      = "fantasy_trade"
     case careerArc         = "career_arc"
+    case teamMatchup       = "team_matchup"
+    case defenseByPosition = "defense_by_position"
+    case availabilityReport = "availability_report"
+    case slateProjections  = "slate_projections"
 
     /// The catalog holds the real name; this is what the UI falls back to when the bundled
     /// catalog could not be read.
@@ -35,7 +45,13 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .teamEfficiency: return "Team Efficiency"
         case .nextGameProjection: return "Next Game"
         case .projectionBoard: return "Tonight's Projections"
+        case .fantasyDraftBoard: return "Draft Board"
+        case .fantasyTrade: return "Trade Analyzer"
         case .careerArc: return "Career Arc"
+        case .teamMatchup: return "Matchup"
+        case .defenseByPosition: return "Defence by Position"
+        case .availabilityReport: return "Availability Report"
+        case .slateProjections: return "Slate Projections"
         }
     }
 
@@ -55,7 +71,13 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
         case .teamEfficiency: return "chart.bar.xaxis"
         case .nextGameProjection: return "function"
         case .projectionBoard: return "chart.dots.scatter"
+        case .fantasyDraftBoard: return "checklist"
+        case .fantasyTrade: return "arrow.left.arrow.right"
         case .careerArc: return "waveform.path.ecg"
+        case .teamMatchup: return "rectangle.split.2x1"
+        case .defenseByPosition: return "shield.lefthalf.filled"
+        case .availabilityReport: return "cross.case"
+        case .slateProjections: return "calendar.badge.clock"
         }
     }
 }
@@ -64,10 +86,13 @@ public enum WidgetKind: String, Codable, Hashable, Sendable, CaseIterable {
 public enum WidgetSize: String, Codable, Hashable, Sendable, CaseIterable {
     case small, medium, large
 
-    /// Columns spanned in a 2-column (compact) or 4-column (regular) grid. An unknown size class
-    /// is treated as compact, which is the safe direction: a widget is never wider than the grid.
-    public func columnSpan(horizontalSizeClass: UserInterfaceSizeClass?) -> Int {
-        let isRegular = horizontalSizeClass == .regular
+    /// Columns spanned in a 2-column (compact) or 4-column (regular) grid.
+    ///
+    /// Takes a plain `Bool` rather than `UserInterfaceSizeClass?` because that type does not exist
+    /// on macOS, where the grid is driven by the window's width instead of a size class. The grid
+    /// clamps a span to its own column count, so a `.large` tile that asks for 4 in a 2-column
+    /// grid simply gets 2: a widget is never wider than the grid.
+    public func columnSpan(isRegular: Bool) -> Int {
         switch self {
         case .small:
             return 1
@@ -77,6 +102,14 @@ public enum WidgetSize: String, Codable, Hashable, Sendable, CaseIterable {
             return isRegular ? 4 : 2
         }
     }
+
+    #if os(iOS)
+    /// The iOS spelling: an unknown size class is treated as compact, which is the safe
+    /// direction. Kept so every iOS call site (and its tests) reads as it always did.
+    public func columnSpan(horizontalSizeClass: UserInterfaceSizeClass?) -> Int {
+        columnSpan(isRegular: horizontalSizeClass == .regular)
+    }
+    #endif
 
     /// The height the grid reserves before the content measures itself.
     public var estimatedHeight: CGFloat {

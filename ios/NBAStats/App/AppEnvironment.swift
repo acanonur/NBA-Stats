@@ -124,6 +124,12 @@ public final class AppEnvironment: ObservableObject {
     public let sync: SyncService
     public let store: DashboardStore
 
+    /// League routes (the NBA's `/v1/...` and the EuroLeague's `/v1/el/...`): matchups, defence by
+    /// position, projections, availability, news, sources and the EuroLeague's workbook sheets.
+    /// Internal on purpose: its types are internal, and only the league screens need it. It follows
+    /// the same demo-mode switch and server settings as `client`, through the forwards below.
+    let league: LeagueClient
+
     // MARK: Preferences
 
     @Published public var favoritePlayerID: PlayerID? {
@@ -198,6 +204,8 @@ public final class AppEnvironment: ObservableObject {
         self.store = DashboardStore(persistence: persistence, catalog: catalog, defaults: defaults)
         self.dashboard = DashboardService(client: client, cache: cache, catalog: catalog)
         self.sync = SyncService(client: client, defaults: defaults, cache: cache)
+        self.league = LeagueClient(configuration: APIConfiguration.resolved(defaults: defaults),
+                                   isDemoMode: isDemoMode)
 
         self.favoritePlayerID = defaults.object(forKey: DefaultsKey.favoritePlayerID) as? PlayerID
         self.favoriteTeamID = defaults.object(forKey: DefaultsKey.favoriteTeamID) as? TeamID
@@ -392,8 +400,10 @@ public final class AppEnvironment: ObservableObject {
         APIConfiguration.setAPIKeyOverride(apiKey, defaults: defaults)
         let updated = APIConfiguration.resolved(defaults: defaults)
         let router = self.router
+        let league = self.league
         Task {
             await router.updateConfiguration(updated)
+            await league.updateConfiguration(updated)
         }
         return accepted
     }
@@ -408,7 +418,9 @@ public final class AppEnvironment: ObservableObject {
     public func applyServerSettingsAndWait(baseURL: String?, apiKey: String?) async -> Bool {
         let accepted = APIConfiguration.setBaseURLOverride(baseURL, defaults: defaults)
         APIConfiguration.setAPIKeyOverride(apiKey, defaults: defaults)
-        await router.updateConfiguration(APIConfiguration.resolved(defaults: defaults))
+        let updated = APIConfiguration.resolved(defaults: defaults)
+        await router.updateConfiguration(updated)
+        await league.updateConfiguration(updated)
         return accepted
     }
 
@@ -457,8 +469,10 @@ public final class AppEnvironment: ObservableObject {
     /// Switching between the live server and the fixtures invalidates everything on screen.
     private func applyDataSourceChange(_ enabled: Bool) {
         let router = self.router
+        let league = self.league
         Task { [weak self] in
             await router.setDemoMode(enabled)
+            await league.setDemoMode(enabled)
             guard let self = self else { return }
             await self.cache.removeAll()
             self.dashboard.reset()

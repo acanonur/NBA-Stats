@@ -172,9 +172,9 @@ public enum APIError: Error, Hashable, Sendable {
     public var recoveryHint: String? {
         switch self {
         case .offline:
-            return "Reconnect and pull down to refresh."
+            return PlatformCopy.offlineRecoveryHint
         case .timeout:
-            return "Pull down to try again."
+            return PlatformCopy.timeoutRecoveryHint
         case .server(let code, _, _, _):
             switch Code(rawValue: code) {
             case .some(.unauthorized):

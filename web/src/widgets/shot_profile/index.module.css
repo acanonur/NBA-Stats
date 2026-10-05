@@ -1,0 +1,85 @@
+/*
+ * `shot_profile`'s own layout. `WidgetContainer` already draws the tile surface, the widget's
+ * configured title and the staleness dot (`design/TileSurface.tsx`, `dashboard/WidgetContainer.tsx`)
+ * — everything here is the content *inside* that body: the subject header, the rate chips, the
+ * two grouped-bar charts (or the era placeholder), the legend and the footnote.
+ */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+}
+
+.subjectRow {
+  display: flex;
+  align-items: center;
+  gap: var(--hw-space-xs);
+  min-width: 0;
+}
+
+.subjectName {
+  min-width: 0;
+}
+
+.rateRow {
+  display: flex;
+  gap: var(--hw-space-md);
+}
+
+.rateChip {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hw-space-xs);
+}
+
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+  width: 100%;
+  min-width: 0;
+}
+
+.chartBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  min-width: 0;
+}
+
+.legend {
+  display: flex;
+  gap: var(--hw-space-md);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hw-space-xxs);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--hw-radius-pill);
+  flex: 0 0 auto;
+}
+
+.unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--hw-space-xs);
+  padding: var(--hw-space-sm) 0;
+}
+
+.unavailableText {
+  max-width: 42ch;
+}

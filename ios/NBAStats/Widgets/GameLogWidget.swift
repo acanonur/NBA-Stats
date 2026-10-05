@@ -132,7 +132,7 @@ public struct GameLogWidget: View {
                 }
             }
             .frame(width: pinnedWidth, alignment: .leading)
-            ScrollView(.horizontal, showsIndicators: false) {
+            ScrollView(.horizontal, showsIndicators: PlatformMetrics.showsHorizontalIndicators) {
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(spacing: 0) {
                         ForEach(columns) { column in

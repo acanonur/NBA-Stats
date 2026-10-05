@@ -1,0 +1,117 @@
+{
+  "cases": [
+    {
+      "expected": "82",
+      "format": "integer",
+      "value": 82
+    },
+    {
+      "expected": "0",
+      "format": "integer",
+      "value": 0
+    },
+    {
+      "expected": "—",
+      "format": "integer",
+      "value": null
+    },
+    {
+      "expected": "27.8",
+      "format": "decimal1",
+      "value": 27.8
+    },
+    {
+      "expected": "0.0",
+      "format": "decimal1",
+      "value": 0.0
+    },
+    {
+      "expected": "—",
+      "format": "decimal1",
+      "value": null
+    },
+    {
+      "expected": "61.55",
+      "format": "decimal2",
+      "value": 61.55
+    },
+    {
+      "expected": "—",
+      "format": "decimal2",
+      "value": null
+    },
+    {
+      "expected": "61.5%",
+      "format": "percent1",
+      "value": 0.615
+    },
+    {
+      "expected": "0.0%",
+      "format": "percent1",
+      "value": 0.0
+    },
+    {
+      "expected": "—",
+      "format": "percent1",
+      "value": null
+    },
+    {
+      "expected": "61.55%",
+      "format": "percent2",
+      "value": 0.6155
+    },
+    {
+      "expected": "—",
+      "format": "percent2",
+      "value": null
+    },
+    {
+      "expected": "118.5",
+      "format": "rating1",
+      "value": 118.5
+    },
+    {
+      "expected": "—",
+      "format": "rating1",
+      "value": null
+    },
+    {
+      "expected": "+7.8",
+      "format": "plusMinus1",
+      "value": 7.8
+    },
+    {
+      "expected": "-7.8",
+      "format": "plusMinus1",
+      "value": -7.8
+    },
+    {
+      "expected": "0.0",
+      "format": "plusMinus1",
+      "value": 0.0
+    },
+    {
+      "expected": "0.0",
+      "format": "plusMinus1",
+      "value": -0.0
+    },
+    {
+      "expected": "—",
+      "format": "plusMinus1",
+      "value": null
+    },
+    {
+      "expected": "36.2",
+      "format": "minutes",
+      "value": 36.2
+    },
+    {
+      "expected": "—",
+      "format": "minutes",
+      "value": null
+    }
+  ],
+  "emDash": "—",
+  "schemaVersion": 1,
+  "source": "backend/nbastats/catalog.py::format_value (values chosen to match ios/NBAStats/Core/Formatting.swift's eight MetricFormat branches)"
+}

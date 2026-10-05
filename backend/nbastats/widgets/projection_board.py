@@ -1,12 +1,12 @@
-"""``projection_board`` — tonight's projected lines, each as a range.
+"""``projection_board`` — tonight's projected ranges, several players at a time.
 
 Built from the ``Hardwood Predictions`` handoff, artboard 2b. See
 :doc:`docs/BROADSHEET.md` for the design decisions, including the one that shaped this module
-most: **the design drew each projection against a sportsbook line, and this does not.** No odds,
-price, edge or implied probability appears anywhere here. NBA.com's terms forbid using their
-statistics in connection with gambling, and the source monograph explicitly declines to claim
-anything about market efficiency. The band's reference mark is the player's own season average
-instead, which needs no third party and is the comparison the rest of the app already makes.
+most: **the handoff drew each projection against a market quote, and this does not.** No price
+and no implied probability appears anywhere here. NBA.com's terms forbid using their statistics
+in connection with gambling, and the source monograph explicitly declines to claim anything
+about market efficiency. The band's reference mark is the player's own season average instead,
+which needs no third party and is the comparison the rest of the app already makes.
 
 Every number on the board comes from :mod:`nbastats.widgets.next_game_projection`, by calling
 its resolver rather than reimplementing the projection path. That is deliberate: a board and a

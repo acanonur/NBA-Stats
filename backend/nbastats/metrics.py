@@ -1940,6 +1940,19 @@ def _m_opp_ftr(ctx: _Ctx) -> Optional[float]:
     return computed if computed is not None else ctx.v("opp_ftr")
 
 
+def _m_opp_pts(ctx: _Ctx) -> Optional[float]:
+    """Points allowed: what the opponents scored, from their row or the row's own ``opp_pts``.
+
+    In the aggregate's totals vocabulary this is the opponents' season points, which
+    ``per_mode_convert`` turns into a per-game figure like every other team per-game column. It
+    has to be a computer and not a plain column read: ``ingest.aggregate`` resolves every key in
+    ``TEAM_SEASON_PER_GAME_COLUMNS`` through :func:`compute_metric`, and the subject row it hands
+    over is the team's *own* totals, so reading ``opp_pts`` off that row would write NULL over the
+    correct value.
+    """
+    return ctx.o("pts")
+
+
 def _m_win_pct(ctx: _Ctx) -> Optional[float]:
     values = _all(ctx.v("wins"), ctx.v("losses"))
     if values is None:
@@ -2037,6 +2050,7 @@ _METRIC_COMPUTERS: dict[str, Callable[[_Ctx], Optional[float]]] = {
     "opp_tov_pct": _m_opp_tov_pct,
     "opp_oreb_pct": _m_opp_oreb_pct,
     "opp_ftr": _m_opp_ftr,
+    "opp_pts": _m_opp_pts,
     "win_pct": _m_win_pct,
 }
 

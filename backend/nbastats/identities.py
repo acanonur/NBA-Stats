@@ -42,6 +42,8 @@ __all__ = [
     "identities_path",
     "index",
     "teams",
+    "TEAM_ALIGNMENT",
+    "team_alignment",
     "team",
     "players",
     "active_players",
@@ -128,9 +130,47 @@ class PlayerIdentity:
         return fold_name(self.last_name)
 
 
+#: Conference and division — the two franchise facts ``data/nba_identities.json`` does not
+#: carry, because nba_api's static team table does not carry them either. Everything else
+#: about a franchise comes from the file and is reconciled with this map by abbreviation.
+#:
+#: This lives here rather than in :mod:`nbastats.seed` because it is a fact about the league,
+#: not about the demo generator: the live ingest path needs it too, and an ingest importing
+#: from the seeder to learn which conference Denver plays in would have the dependency
+#: backwards.
+TEAM_ALIGNMENT: dict[str, tuple[str, str]] = {
+    "ATL": ("East", "Southeast"), "BOS": ("East", "Atlantic"), "BKN": ("East", "Atlantic"),
+    "CHA": ("East", "Southeast"), "CHI": ("East", "Central"), "CLE": ("East", "Central"),
+    "DET": ("East", "Central"), "IND": ("East", "Central"), "MIA": ("East", "Southeast"),
+    "MIL": ("East", "Central"), "NYK": ("East", "Atlantic"), "ORL": ("East", "Southeast"),
+    "PHI": ("East", "Atlantic"), "TOR": ("East", "Atlantic"), "WAS": ("East", "Southeast"),
+    "DAL": ("West", "Southwest"), "DEN": ("West", "Northwest"), "GSW": ("West", "Pacific"),
+    "HOU": ("West", "Southwest"), "LAC": ("West", "Pacific"), "LAL": ("West", "Pacific"),
+    "MEM": ("West", "Southwest"), "MIN": ("West", "Northwest"), "NOP": ("West", "Southwest"),
+    "OKC": ("West", "Northwest"), "PHX": ("West", "Pacific"), "POR": ("West", "Northwest"),
+    "SAC": ("West", "Pacific"), "SAS": ("West", "Southwest"), "UTA": ("West", "Northwest"),
+}
+
+
+def team_alignment(abbr: str | None) -> tuple[str | None, str | None]:
+    """``(conference, division)`` for a franchise, or ``(None, None)`` for an unknown one.
+
+    Never guesses. A relocated or defunct abbreviation the map does not hold comes back empty
+    rather than being assigned a plausible conference, which is the same rule the rest of the
+    project applies to facts it does not have.
+    """
+    if not abbr:
+        return None, None
+    found = TEAM_ALIGNMENT.get(abbr.strip().upper())
+    return found if found is not None else (None, None)
+
+
 @dataclass(frozen=True, slots=True)
 class TeamIdentity:
-    """One of the 30 franchises. Conference and division are *not* in the file."""
+    """One of the 30 franchises. Conference and division are *not* in the file.
+
+    :data:`TEAM_ALIGNMENT` above supplies those two, keyed by :attr:`abbr`.
+    """
 
     team_id: int
     abbr: str

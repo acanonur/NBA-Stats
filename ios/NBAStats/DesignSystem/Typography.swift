@@ -34,7 +34,28 @@ public enum HardwoodTextStyle: String, CaseIterable, Sendable {
         }
     }
 
+    /// The Dynamic Type text style each Hardwood style is built on.
+    ///
+    /// macOS has no Dynamic Type, and its text styles are fixed point sizes that do not line up
+    /// with iOS's: footnote, caption and caption2 are all 10 pt there, so the iOS mapping would
+    /// flatten the table, label and caption styles into one size. The macOS branch therefore
+    /// picks, per style, the macOS text style whose point size is closest to the iOS size the
+    /// widgets were tuned for (the iOS size is in each trailing comment). Only this switch is
+    /// platform-specific; `weight`, `tracking`, `isNumeric` and `defaultColor` are shared, and
+    /// contracts/tools/gen_theme.py reads those, not this.
     private var textStyle: Font.TextStyle {
+        #if os(macOS)
+        switch self {
+        case .displayValue: return .largeTitle   // 26 pt (iOS title 28)
+        case .statValue:    return .title        // 22 pt (iOS title3 20)
+        case .statLabel:    return .callout      // 12 pt (iOS caption 12)
+        case .tableHeader:  return .subheadline  // 11 pt (iOS caption2 11)
+        case .tableCell:    return .body         // 13 pt (iOS footnote 13)
+        case .caption:      return .callout      // 12 pt (iOS caption 12)
+        case .sectionTitle: return .title2       // 17 pt (iOS headline 17)
+        case .widgetTitle:  return .title3       // 15 pt (iOS subheadline 15)
+        }
+        #else
         switch self {
         case .displayValue: return .title
         case .statValue:    return .title3
@@ -45,6 +66,7 @@ public enum HardwoodTextStyle: String, CaseIterable, Sendable {
         case .sectionTitle: return .headline
         case .widgetTitle:  return .subheadline
         }
+        #endif
     }
 
     private var weight: Font.Weight {

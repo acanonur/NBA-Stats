@@ -28,6 +28,18 @@ struct WidgetFlowLayout: Layout {
 
     var columns: Int
     var spacing: CGFloat
+    /// macOS only: switch to `regularColumns` once the proposed width reaches `regularMinWidth`.
+    /// macOS has no size class, so a resizable window is the only signal there is. Zero means
+    /// off, which keeps the iOS behaviour byte-for-byte.
+    var regularColumns: Int = 0
+    var regularMinWidth: CGFloat = 0
+
+    /// The column count for a given width: `columns` normally, `regularColumns` once the layout
+    /// is wide enough and the switch is on. Always at least one.
+    private func resolvedColumns(for width: CGFloat) -> Int {
+        if regularColumns > 0 && width >= regularMinWidth { return max(regularColumns, 1) }
+        return max(columns, 1)
+    }
 
     private struct Item {
         let index: Int
@@ -72,7 +84,7 @@ struct WidgetFlowLayout: Layout {
     }
 
     private func layoutRows(subviews: Subviews, width: CGFloat) -> [Row] {
-        let columnCount = max(columns, 1)
+        let columnCount = resolvedColumns(for: width)
         let totalSpacing = spacing * CGFloat(columnCount - 1)
         let columnWidth = max((width - totalSpacing) / CGFloat(columnCount), 1)
 
@@ -153,7 +165,9 @@ public struct DashboardGrid: View {
 
     @ObservedObject private var store: DashboardStore
 
+    #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.isBroadsheet) private var isBroadsheet
 
@@ -179,12 +193,45 @@ public struct DashboardGrid: View {
 
     private var gridSpace: CoordinateSpace { .named(DashboardGrid.gridSpaceName) }
 
+    /// True when tiles may take the wide span (a `.large` tile asks for four columns). On iOS that
+    /// is the regular size class. macOS has no size class: it always asks for the wide span, and
+    /// `WidgetFlowLayout` clamps the request to however many columns the window is wide enough
+    /// for, so a `.large` tile asks 4 and gets 2 in a narrow window.
+    private var isRegularWidth: Bool {
+        #if os(iOS)
+        return horizontalSizeClass == .regular
+        #else
+        return true
+        #endif
+    }
+
+    /// Whether the catalog's regular column count applies as the BASE count. iOS: the regular
+    /// size class. macOS: never, because the base is the narrow fallback and the layout widens
+    /// itself by window width (`macRegularColumns`).
+    private var usesRegularColumnCount: Bool {
+        #if os(iOS)
+        return horizontalSizeClass == .regular
+        #else
+        return false
+        #endif
+    }
+
+    /// macOS: the column count once the window is at least `regularMinWidth` wide. iOS: zero,
+    /// which switches the width-driven behaviour off.
+    private var macRegularColumns: Int {
+        #if os(macOS)
+        return isBroadsheet ? 1 : max(catalog.gridColumns.regular, 1)
+        #else
+        return 0
+        #endif
+    }
+
     private var columnCount: Int {
         // A broadsheet is one column of type at any width. Two columns of ruled, serif sections
         // is not a narrower broadsheet, it is a different thing — see docs/BROADSHEET.md §3.
         guard !isBroadsheet else { return 1 }
         let columns = catalog.gridColumns
-        let count = horizontalSizeClass == .regular ? columns.regular : columns.compact
+        let count = usesRegularColumnCount ? columns.regular : columns.compact
         return max(count, 1)
     }
 
@@ -201,12 +248,15 @@ public struct DashboardGrid: View {
     // MARK: Body
 
     public var body: some View {
-        WidgetFlowLayout(columns: columnCount, spacing: sectionSpacing) {
+        WidgetFlowLayout(columns: columnCount,
+                         spacing: sectionSpacing,
+                         regularColumns: macRegularColumns,
+                         regularMinWidth: 760) {
             ForEach(layout.widgets) { widget in
                 tile(for: widget)
                     .widgetColumnSpan(isBroadsheet
                                       ? 1
-                                      : widget.size.columnSpan(horizontalSizeClass: horizontalSizeClass))
+                                      : widget.size.columnSpan(isRegular: isRegularWidth))
             }
         }
         .coordinateSpace(.named(DashboardGrid.gridSpaceName))

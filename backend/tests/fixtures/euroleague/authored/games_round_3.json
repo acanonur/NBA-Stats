@@ -1,0 +1,227 @@
+{
+ "data": [
+  {
+   "id": "f5fa0a20-736f-501b-9f26-592a574bc7b1",
+   "identifier": "E2031_5",
+   "gameCode": 5,
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   },
+   "group": {
+    "id": "e111f53c-fe80-536a-a9b8-2bb83fe0412d",
+    "order": 1,
+    "name": "Group Regular Season",
+    "rawName": "Regular Season"
+   },
+   "phaseType": {
+    "code": "RS",
+    "alias": "REGULAR SEASON",
+    "name": "Regular Season",
+    "isGroupPhase": true
+   },
+   "round": 3,
+   "roundAlias": "Round 3",
+   "roundName": "Round 3",
+   "played": false,
+   "date": "2031-10-16T19:30:00",
+   "confirmedDate": true,
+   "confirmedHour": true,
+   "localTimeZone": 2,
+   "localDate": "2031-10-16T19:30:00",
+   "utcDate": "2031-10-16T17:30:00Z",
+   "local": {
+    "club": {
+     "code": "ZZA",
+     "name": "Zenith Harbour BC",
+     "abbreviatedName": "Harbour",
+     "editorialName": "Harbour",
+     "tvCode": "ZHB",
+     "isVirtual": false,
+     "images": {
+      "crest": "https://example.org/crest/ZZA.png"
+     }
+    },
+    "score": null,
+    "standingsScore": null,
+    "partials": {
+     "partials1": null,
+     "partials2": null,
+     "partials3": null,
+     "partials4": null,
+     "extraPeriods": {}
+    }
+   },
+   "road": {
+    "club": {
+     "code": "ZZC",
+     "name": "Copperfield Stags",
+     "abbreviatedName": "Copperfield",
+     "editorialName": "Copperfield",
+     "tvCode": "CPF",
+     "isVirtual": false,
+     "images": {
+      "crest": "https://example.org/crest/ZZC.png"
+     }
+    },
+    "score": null,
+    "standingsScore": null,
+    "partials": {
+     "partials1": null,
+     "partials2": null,
+     "partials3": null,
+     "partials4": null,
+     "extraPeriods": {}
+    }
+   },
+   "audience": null,
+   "audienceConfirmed": false,
+   "socialFeed": "",
+   "operationsCode": null,
+   "referee1": {
+    "code": "RF01",
+    "name": "REFEREE, INVENTED",
+    "alias": "REFEREE, I.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "images": {},
+    "active": true
+   },
+   "referee2": null,
+   "referee3": null,
+   "referee4": null,
+   "venue": {
+    "name": "Harbour Dome",
+    "code": "ZHD",
+    "capacity": 9000,
+    "address": "1 Invented Street",
+    "images": {
+     "medium": null
+    },
+    "active": true,
+    "notes": ""
+   },
+   "isNeutralVenue": false,
+   "gameStatus": "Confirmed",
+   "winner": null
+  },
+  {
+   "id": "cd758657-ed41-577f-8aa6-c8b80a7b7469",
+   "identifier": "E2031_6",
+   "gameCode": 6,
+   "season": {
+    "name": "EuroLeague 2031-32",
+    "code": "E2031",
+    "alias": "2031-32",
+    "competitionCode": "E",
+    "year": 2031,
+    "startDate": "2031-07-01T00:00:00"
+   },
+   "group": {
+    "id": "e111f53c-fe80-536a-a9b8-2bb83fe0412d",
+    "order": 1,
+    "name": "Group Regular Season",
+    "rawName": "Regular Season"
+   },
+   "phaseType": {
+    "code": "RS",
+    "alias": "REGULAR SEASON",
+    "name": "Regular Season",
+    "isGroupPhase": true
+   },
+   "round": 3,
+   "roundAlias": "Round 3",
+   "roundName": "Round 3",
+   "played": false,
+   "date": "2031-10-17T20:00:00",
+   "confirmedDate": true,
+   "confirmedHour": true,
+   "localTimeZone": 2,
+   "localDate": "2031-10-17T20:00:00",
+   "utcDate": "2031-10-17T18:00:00Z",
+   "local": {
+    "club": {
+     "code": "ZZB",
+     "name": "Brightmoor Falcons",
+     "abbreviatedName": "Brightmoor",
+     "editorialName": "Brightmoor",
+     "tvCode": "BMF",
+     "isVirtual": false,
+     "images": {
+      "crest": "https://example.org/crest/ZZB.png"
+     }
+    },
+    "score": null,
+    "standingsScore": null,
+    "partials": {
+     "partials1": null,
+     "partials2": null,
+     "partials3": null,
+     "partials4": null,
+     "extraPeriods": {}
+    }
+   },
+   "road": {
+    "club": {
+     "code": "ZZD",
+     "name": "Dunmere Wolves",
+     "abbreviatedName": "Dunmere",
+     "editorialName": "Dunmere",
+     "tvCode": "DMW",
+     "isVirtual": false,
+     "images": {
+      "crest": "https://example.org/crest/ZZD.png"
+     }
+    },
+    "score": null,
+    "standingsScore": null,
+    "partials": {
+     "partials1": null,
+     "partials2": null,
+     "partials3": null,
+     "partials4": null,
+     "extraPeriods": {}
+    }
+   },
+   "audience": null,
+   "audienceConfirmed": false,
+   "socialFeed": "",
+   "operationsCode": null,
+   "referee1": {
+    "code": "RF01",
+    "name": "REFEREE, INVENTED",
+    "alias": "REFEREE, I.",
+    "country": {
+     "code": "UTO",
+     "name": "Utopia"
+    },
+    "images": {},
+    "active": true
+   },
+   "referee2": null,
+   "referee3": null,
+   "referee4": null,
+   "venue": {
+    "name": "Falcon Hall",
+    "code": "BMA",
+    "capacity": 9000,
+    "address": "1 Invented Street",
+    "images": {
+     "medium": null
+    },
+    "active": true,
+    "notes": ""
+   },
+   "isNeutralVenue": false,
+   "gameStatus": "Confirmed",
+   "winner": null
+  }
+ ],
+ "total": 2
+}

@@ -1,0 +1,152 @@
+{
+  "league": "nba",
+  "season": "2025-26",
+  "seasonType": "Regular Season",
+  "scheme": "gfc",
+  "basis": "perGame",
+  "regulationMinutes": 48,
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 4861,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T07:12:44Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.stats",
+        "label": "NBA statistics",
+        "state": "ok",
+        "reason": "Demo league: every game here is invented.",
+        "lastSuccessAt": "2026-01-03T07:12:44Z"
+      },
+      {
+        "key": "nba.rosters",
+        "label": "Team rosters (listed positions)",
+        "state": "ok",
+        "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+        "lastSuccessAt": null
+      }
+    ]
+  },
+  "team": {
+    "league": "nba",
+    "id": "1610612743",
+    "abbr": "DEN",
+    "name": "Denver Nuggets",
+    "shortName": "Nuggets",
+    "teamId": 1610612743
+  },
+  "window": {
+    "kind": "season",
+    "games": 25,
+    "requested": null
+  },
+  "pointsAllowedPerGame": 110.48,
+  "leaguePointsAllowedPerGame": 112.89809782608695,
+  "buckets": [
+    {
+      "position": "G",
+      "label": "Guards",
+      "pointsAllowedPerGame": 43.16,
+      "leagueAverage": 46.46535326086956,
+      "deltaPerGame": -3.305353260869566,
+      "opponentMinutesPerGame": 99.4,
+      "pointsPerRegulationMinutes": 20.84185110663984,
+      "leagueRate": 22.255366312471402,
+      "share": 0.390658942795076,
+      "leagueShare": 0.4115689648947565,
+      "rawIndex": 0.9288641314677544,
+      "index": 1.0,
+      "standardError": 0.0801142080566833,
+      "band": null
+    },
+    {
+      "position": "F",
+      "label": "Forwards",
+      "pointsAllowedPerGame": 44.34,
+      "leagueAverage": 44.22690217391305,
+      "deltaPerGame": 0.11309782608695684,
+      "opponentMinutesPerGame": 93.67,
+      "pointsPerRegulationMinutes": 22.721468986868793,
+      "leagueRate": 22.76111325578516,
+      "share": 0.40133960897900073,
+      "leagueShare": 0.39174178330304604,
+      "rawIndex": 1.002557217904212,
+      "index": 1.0,
+      "standardError": 0.046538637833321524,
+      "band": null
+    },
+    {
+      "position": "C",
+      "label": "Centers",
+      "pointsAllowedPerGame": 22.98,
+      "leagueAverage": 22.205842391304348,
+      "deltaPerGame": 0.7741576086956528,
+      "opponentMinutesPerGame": 46.93,
+      "pointsPerRegulationMinutes": 23.503942041338163,
+      "leagueRate": 22.914292807956596,
+      "share": 0.20800144822592326,
+      "leagueShare": 0.19668925180219754,
+      "rawIndex": 1.0348627894881757,
+      "index": 1.0,
+      "standardError": 0.10366180788018008,
+      "band": null
+    },
+    {
+      "position": "unknown",
+      "label": "Position unknown",
+      "pointsAllowedPerGame": 0.0,
+      "leagueAverage": 0.0,
+      "deltaPerGame": 0.0,
+      "opponentMinutesPerGame": 0.0,
+      "pointsPerRegulationMinutes": null,
+      "leagueRate": null,
+      "share": 0.0,
+      "leagueShare": 0.0,
+      "rawIndex": null,
+      "index": null,
+      "standardError": null,
+      "band": null
+    }
+  ],
+  "provisional": false,
+  "withheld": null,
+  "coverage": {
+    "listed": 1.0,
+    "workbookListing": 0.0,
+    "unknown": 0.0
+  },
+  "reconciliation": {
+    "sumOfBuckets": 110.48,
+    "pointsAllowedPerGame": 110.48,
+    "unreconciledGames": 0,
+    "identity": "sum(deltaPerGame) = pointsAllowedPerGame - leaguePointsAllowedPerGame"
+  },
+  "method": {
+    "minimumGames": 10,
+    "provisionalBelowGames": 25,
+    "coverageCeiling": 0.05,
+    "shrinkage": "empiricalBayes",
+    "leagueReliability": {
+      "G": 0.0,
+      "F": 0.0,
+      "C": 0.0
+    },
+    "leagueSignal": "none detected",
+    "bandRule": "A position shows better or worse only when the table is not provisional, the league's reliability at that position is at least 0.2, and the shrunk index differs from 1 by more than z posterior standard deviations (z = 3.261, a Bonferroni family of 90 cells).",
+    "positionSource": "Each player's listed position for the season, from the demo league's own labels.",
+    "taxonomy": "Guard, Forward and Center, as each roster lists a player for the season.",
+    "limitations": [
+      "Positions are the ones a roster lists for the season, not who guarded whom on the night.",
+      "No adjustment is made for the strength of the opponents a team has faced; the per-minute basis controls for how opponents distributed their minutes, and nothing more.",
+      "The injury layer never changes defence: absences move projected scores, not these figures.",
+      "Points from players with no listed position are shown as their own bucket and are never reassigned."
+    ]
+  },
+  "methodMessage": "No team's points allowed at this position differ from the league by more than chance this season",
+  "availability": "full",
+  "caveat": "Counts points scored by opposing players listed at each position. It does not measure who guarded whom.",
+  "notes": [
+    "Regular Season games of 2025-26 only."
+  ]
+}

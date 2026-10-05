@@ -1,0 +1,446 @@
+{
+  "league": "nba",
+  "asOf": null,
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 4861,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T07:12:44Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "nba.injuryReport",
+        "label": "NBA official injury report",
+        "state": "disabled",
+        "reason": "Demo league: real injury statuses are not shown next to invented games",
+        "lastSuccessAt": null
+      }
+    ]
+  },
+  "state": "disabled",
+  "message": "Demo league: real injury statuses are not shown next to invented games",
+  "teams": [
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612761",
+        "abbr": "TOR",
+        "name": "Toronto Raptors",
+        "shortName": "Raptors",
+        "teamId": 1610612761
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500369",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612761",
+          "abbr": "TOR",
+          "name": "Toronto Raptors",
+          "shortName": "Raptors",
+          "teamId": 1610612761
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612749",
+          "abbr": "MIL",
+          "name": "Milwaukee Bucks",
+          "shortName": "Bucks",
+          "teamId": 1610612749
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612749",
+        "abbr": "MIL",
+        "name": "Milwaukee Bucks",
+        "shortName": "Bucks",
+        "teamId": 1610612749
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500369",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612761",
+          "abbr": "TOR",
+          "name": "Toronto Raptors",
+          "shortName": "Raptors",
+          "teamId": 1610612761
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612749",
+          "abbr": "MIL",
+          "name": "Milwaukee Bucks",
+          "shortName": "Bucks",
+          "teamId": 1610612749
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612754",
+        "abbr": "IND",
+        "name": "Indiana Pacers",
+        "shortName": "Pacers",
+        "teamId": 1610612754
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500370",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612754",
+          "abbr": "IND",
+          "name": "Indiana Pacers",
+          "shortName": "Pacers",
+          "teamId": 1610612754
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612766",
+          "abbr": "CHA",
+          "name": "Charlotte Hornets",
+          "shortName": "Hornets",
+          "teamId": 1610612766
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612766",
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "shortName": "Hornets",
+        "teamId": 1610612766
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500370",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612754",
+          "abbr": "IND",
+          "name": "Indiana Pacers",
+          "shortName": "Pacers",
+          "teamId": 1610612754
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612766",
+          "abbr": "CHA",
+          "name": "Charlotte Hornets",
+          "shortName": "Hornets",
+          "teamId": 1610612766
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612756",
+        "abbr": "PHX",
+        "name": "Phoenix Suns",
+        "shortName": "Suns",
+        "teamId": 1610612756
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500371",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612756",
+          "abbr": "PHX",
+          "name": "Phoenix Suns",
+          "shortName": "Suns",
+          "teamId": 1610612756
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612757",
+          "abbr": "POR",
+          "name": "Portland Trail Blazers",
+          "shortName": "Trail Blazers",
+          "teamId": 1610612757
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612757",
+        "abbr": "POR",
+        "name": "Portland Trail Blazers",
+        "shortName": "Trail Blazers",
+        "teamId": 1610612757
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500371",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612756",
+          "abbr": "PHX",
+          "name": "Phoenix Suns",
+          "shortName": "Suns",
+          "teamId": 1610612756
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612757",
+          "abbr": "POR",
+          "name": "Portland Trail Blazers",
+          "shortName": "Trail Blazers",
+          "teamId": 1610612757
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612764",
+        "abbr": "WAS",
+        "name": "Washington Wizards",
+        "shortName": "Wizards",
+        "teamId": 1610612764
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500372",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612740",
+        "abbr": "NOP",
+        "name": "New Orleans Pelicans",
+        "shortName": "Pelicans",
+        "teamId": 1610612740
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500372",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612764",
+          "abbr": "WAS",
+          "name": "Washington Wizards",
+          "shortName": "Wizards",
+          "teamId": 1610612764
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612740",
+          "abbr": "NOP",
+          "name": "New Orleans Pelicans",
+          "shortName": "Pelicans",
+          "teamId": 1610612740
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612747",
+        "abbr": "LAL",
+        "name": "Los Angeles Lakers",
+        "shortName": "Lakers",
+        "teamId": 1610612747
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500373",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612747",
+          "abbr": "LAL",
+          "name": "Los Angeles Lakers",
+          "shortName": "Lakers",
+          "teamId": 1610612747
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612746",
+          "abbr": "LAC",
+          "name": "Los Angeles Clippers",
+          "shortName": "Clippers",
+          "teamId": 1610612746
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    },
+    {
+      "team": {
+        "league": "nba",
+        "id": "1610612746",
+        "abbr": "LAC",
+        "name": "Los Angeles Clippers",
+        "shortName": "Clippers",
+        "teamId": 1610612746
+      },
+      "reportState": "noReport",
+      "game": {
+        "league": "nba",
+        "gameId": "0022500373",
+        "date": "2026-01-03",
+        "tipoffUtc": null,
+        "venue": null,
+        "isNeutral": null,
+        "round": null,
+        "phase": null,
+        "status": "scheduled",
+        "home": {
+          "league": "nba",
+          "id": "1610612747",
+          "abbr": "LAL",
+          "name": "Los Angeles Lakers",
+          "shortName": "Lakers",
+          "teamId": 1610612747
+        },
+        "away": {
+          "league": "nba",
+          "id": "1610612746",
+          "abbr": "LAC",
+          "name": "Los Angeles Clippers",
+          "shortName": "Clippers",
+          "teamId": 1610612746
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "entries": []
+    }
+  ],
+  "news": null,
+  "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+}

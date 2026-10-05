@@ -1,0 +1,28 @@
+{
+  "league": "euroleague",
+  "items": [
+    {
+      "kind": "status",
+      "statusId": 30,
+      "playerName": "Unlisted Example Player",
+      "team": {
+        "league": "euroleague",
+        "id": "ZZP",
+        "abbr": "ZZP",
+        "name": "Pinecrest Panthers",
+        "shortName": "Pinecrest",
+        "clubCode": "ZZP",
+        "tvCode": null
+      },
+      "source": {
+        "kind": "clubStatement",
+        "label": "Pinecrest statement",
+        "url": "https://clubs.example.org/zzp/statement-29",
+        "publishedAt": "2026-10-03T02:00:00Z",
+        "asOf": "2026-10-12T09:00:00Z",
+        "fetchedAt": "2026-10-12T09:00:00Z",
+        "snapshotId": null
+      }
+    }
+  ]
+}

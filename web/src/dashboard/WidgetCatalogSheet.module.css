@@ -1,0 +1,68 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 50;
+}
+
+@media (width >= 834px) {
+  .backdrop {
+    align-items: center;
+  }
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--hw-text-primary);
+  opacity: 0.45;
+}
+
+.sheet {
+  /* box-shadow is set inline in WidgetCatalogSheet.tsx — see ConfigSheet.module.css's own
+     comment for why. */
+  position: relative;
+  background: var(--hw-surface-raised);
+  border-radius: var(--hw-radius-sheet) var(--hw-radius-sheet) 0 0;
+  padding: var(--hw-space-lg);
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@media (width >= 834px) {
+  .sheet {
+    border-radius: var(--hw-radius-sheet);
+  }
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--hw-space-sm);
+  margin-top: var(--hw-space-md);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-control);
+  background: var(--hw-surface);
+  padding: var(--hw-space-sm);
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--hw-surface-raised);
+}
+
+.item:focus-visible {
+  outline: 2px solid var(--hw-selection);
+  outline-offset: 2px;
+}

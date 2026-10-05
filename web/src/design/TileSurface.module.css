@@ -1,0 +1,12 @@
+/*
+ * The chrome every widget-size placeholder (`StateViews.tsx`'s `LoadingTile`, `ErrorTile`,
+ * `EmptyTile`, `UnavailableTile`, `PendingTile`) draws on, so a tile in any of those states
+ * occupies exactly the space its real content would. Reuses `Card.module.css`'s surface/border/
+ * radius rules rather than restating them — this is not a second card recipe, just a sizing
+ * wrapper around the same one.
+ */
+
+.tile {
+  box-sizing: border-box;
+  width: 100%;
+}

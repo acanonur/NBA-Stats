@@ -1,4 +1,29 @@
-"""Generate contracts/metrics.json - the shared metric catalog."""
+"""Generate contracts/metrics.json - the shared metric catalog.
+
+Two lists live in the document, and the difference between them is deliberate:
+
+``metrics`` is the NBA catalog. Every key in it must resolve against NBA rows
+(``test_every_catalog_metric_resolves_against_a_full_row``) and carries NBA-era availability
+(``seasonFrom`` 1946-47 and so on). ``opp_pts`` ("Points Allowed", team scope) joined it when the
+team-matchup features needed points allowed to be sortable in a leaderboard and showable in a
+``stat_tile``; the column has always existed on ``team_game`` and ``team_season`` and has always
+been populated, it only lacked a key.
+
+``leagueMetrics.euroleague`` is the EuroLeague's stat vocabulary, kept apart on purpose. PIR (the
+EuroLeague's Performance Index Rating) is the reason: put in ``metrics`` it would be a permanently
+null NBA metric that claimed NBA-era availability, and it would fail the "resolves against an NBA
+row" tests for the right reason. A new top-level key costs the clients nothing: the iOS decoder
+(``MetricCatalogDocument``) reads only the keys it names, and the web embeds the whole document
+verbatim, so ``leagueMetrics`` reaches ``contracts.ts`` with no generator change. Entries have the
+shape of a ``metrics`` entry plus ``leagues`` and ``perModes``.
+
+Keys shared with the NBA (``pts``, ``reb``, ``fg3m`` ...) are stated again here rather than
+pointed at, so a client formats a EuroLeague stat from one place; ``_check_shared_keys`` proves the
+restatement still agrees with the NBA entry on name, short name, format, direction and category,
+so the two leagues cannot drift into formatting the same stat two ways. The store's column names
+differ from these keys in three places (``fgm3`` is ``fg3m``, ``fga3`` is ``fg3a``, ``pir_official``
+is ``pir``); the keys here are the wire names.
+"""
 import json, collections
 
 # key, short, name, category, fmt, higherBetter, availableFrom, scope, formula/def
@@ -74,6 +99,7 @@ M = [
     ("opp_tov_pct","Opp TOV%","Opponent Turnover %","defense", "percent1", True,  "1996-97", "t",  "Opponent turnovers per 100 possessions."),
     ("opp_oreb_pct","Opp OREB%","Opponent OREB %", "defense",  "percent1", False, "1996-97", "t",  "Opponent offensive rebound percentage."),
     ("opp_ftr",  "Opp FTr","Opponent Free Throw Rate","defense","percent1",False, "1996-97", "t",  "Opponent FTA / FGA."),
+    ("opp_pts",  "OPP PTS","Points Allowed",     "scoring",  "decimal1", False, "1946-47", "t",  "Points the team's opponents scored per game."),
     ("wins",     "W",    "Wins",                   "volume",   "integer",  True,  "1946-47", "t",  "Team wins."),
     ("losses",   "L",    "Losses",                 "volume",   "integer",  False, "1946-47", "t",  "Team losses."),
     ("win_pct",  "W%",   "Win Percentage",         "efficiency","percent1",True,  "1946-47", "t",  "Wins / (Wins + Losses)."),
@@ -125,10 +151,99 @@ assert len(keys) == len(set(keys)), "duplicate metric key"
 cats = collections.OrderedDict([
     ("volume", "Volume"), ("shooting", "Shooting"), ("efficiency", "Efficiency"),
     ("usage", "Usage"), ("playmaking", "Playmaking"), ("rebounding", "Rebounding"),
-    ("defense", "Defense"), ("impact", "Impact"),
+    ("defense", "Defense"), ("impact", "Impact"), ("scoring", "Scoring"),
 ])
 for m in metrics:
     assert m["category"] in cats, m["category"]
+
+# --------------------------------------------------------------------------- EuroLeague
+
+# key, short, name, category, fmt, higherBetter, glossary. Scope is player and team for all of
+# them (a team row carries the same columns as a player line) and availability is the same for
+# all of them, so neither is repeated per row.
+#
+# Availability says "2026-27": the first EuroLeague season Hardwood's store is built to hold (the
+# user's workbook). It is a statement about Hardwood's data, not about when the EuroLeague began
+# publishing a stat, which nothing here could verify; a deliberate backfill of earlier seasons
+# would move this one constant. Three stats are not in every game: the workbook's box scores carry
+# no fouls drawn, blocks against or plus/minus, so those games hold a null (a dash), never a 0, and
+# the averages divide by the games that do carry the stat. Each glossary says so.
+EL_FIRST_SEASON = "2026-27"
+EL_PER_MODES = ["PerGame", "Totals", "Per40"]
+EL_NOT_IN_WORKBOOK = " Not recorded for games imported from a workbook; shown as a dash there, never 0."
+EL_M = [
+    ("min",         "MIN",   "Minutes",                 "volume",   "minutes",   True,  "Minutes played, from whole seconds on the box score."),
+    ("pts",         "PTS",   "Points",                  "volume",   "decimal1",  True,  "Points scored."),
+    ("reb",         "REB",   "Rebounds",                "volume",   "decimal1",  True,  "Total rebounds: offensive plus defensive."),
+    ("oreb",        "OREB",  "Offensive Rebounds",      "volume",   "decimal1",  True,  "Offensive rebounds."),
+    ("dreb",        "DREB",  "Defensive Rebounds",      "volume",   "decimal1",  True,  "Defensive rebounds."),
+    ("ast",         "AST",   "Assists",                 "volume",   "decimal1",  True,  "Assists."),
+    ("stl",         "STL",   "Steals",                  "volume",   "decimal1",  True,  "Steals."),
+    ("blk",         "BLK",   "Blocks",                  "volume",   "decimal1",  True,  "Shots blocked."),
+    ("tov",         "TOV",   "Turnovers",               "volume",   "decimal1",  False, "Turnovers."),
+    ("pf",          "PF",    "Personal Fouls",          "volume",   "decimal1",  False, "Personal fouls committed."),
+    ("fgm2",        "2PM",   "Two Pointers Made",       "volume",   "decimal1",  True,  "Two-point field goals made."),
+    ("fga2",        "2PA",   "Two Pointers Attempted",  "volume",   "decimal1",  True,  "Two-point field goals attempted."),
+    ("fg2_pct",     "2P%",   "Two Point %",             "shooting", "percent1",  True,  "2PM / 2PA. No attempts is a dash, not 0%."),
+    ("fg3m",        "3PM",   "Three Pointers Made",     "volume",   "decimal1",  True,  "Three-point field goals made."),
+    ("fg3a",        "3PA",   "Three Pointers Attempted","volume",   "decimal1",  True,  "Three-point field goals attempted."),
+    ("fg3_pct",     "3P%",   "Three Point %",           "shooting", "percent1",  True,  "3PM / 3PA. No attempts is a dash, not 0%."),
+    ("ftm",         "FTM",   "Free Throws Made",        "volume",   "decimal1",  True,  "Free throws made."),
+    ("fta",         "FTA",   "Free Throws Attempted",   "volume",   "decimal1",  True,  "Free throws attempted."),
+    ("ft_pct",      "FT%",   "Free Throw %",            "shooting", "percent1",  True,  "FTM / FTA. No attempts is a dash, not 0%."),
+    ("blk_against", "BLKA",  "Blocks against",          "volume",   "decimal1",  False, "Shots of the player's own that were blocked." + EL_NOT_IN_WORKBOOK),
+    ("fouls_drawn", "FD",    "Fouls drawn",             "volume",   "decimal1",  True,  "Fouls committed against the player." + EL_NOT_IN_WORKBOOK),
+    ("plus_minus",  "+/-",   "Plus/Minus",              "impact",   "plusMinus1",True,  "Team point differential while the player is on the floor." + EL_NOT_IN_WORKBOOK),
+    ("pir",         "PIR",   "Performance Index Rating","impact",   "decimal1",  True,  "Performance Index Rating as published by the EuroLeague; not recomputed by Hardwood."),
+]
+# Stats a per-40 rate is not a statistic for: minutes per forty minutes is always forty.
+EL_NO_PER40 = {"min"}
+EL_DOMAINS = {"fg2_pct": (0.30, 0.70), "fg3_pct": DOMAINS["fg3_pct"], "ft_pct": DOMAINS["ft_pct"]}
+
+league_metrics_euroleague = []
+for key, short, name, cat, fmt, hib, gloss in EL_M:
+    league_metrics_euroleague.append({
+        "key": key,
+        "name": name,
+        "shortName": short,
+        "category": cat,
+        "format": fmt,
+        "higherIsBetter": hib,
+        "scope": ["player", "team"],
+        "availability": {
+            "seasonFrom": EL_FIRST_SEASON,
+            "perGameFrom": EL_FIRST_SEASON,
+            "seasonLevelOnly": False,
+            "estimatedBefore": None,
+        },
+        "domain": ({"min": EL_DOMAINS[key][0], "max": EL_DOMAINS[key][1]} if key in EL_DOMAINS else None),
+        "glossary": gloss,
+        "leagues": ["euroleague"],
+        "perModes": [m for m in EL_PER_MODES if not (m == "Per40" and key in EL_NO_PER40)],
+    })
+
+
+def _check_shared_keys():
+    """A key in both lists must be formatted the same way in both."""
+    nba = {m["key"]: m for m in metrics}
+    for entry in league_metrics_euroleague:
+        twin = nba.get(entry["key"])
+        if twin is None:
+            continue
+        for field in ("name", "shortName", "format", "higherIsBetter", "category"):
+            assert entry[field] == twin[field], (
+                f"leagueMetrics.euroleague.{entry['key']}.{field} = {entry[field]!r} but "
+                f"metrics.{entry['key']}.{field} = {twin[field]!r}"
+            )
+
+
+_check_shared_keys()
+el_keys = [m["key"] for m in league_metrics_euroleague]
+assert len(el_keys) == len(set(el_keys)), "duplicate EuroLeague metric key"
+for m in league_metrics_euroleague:
+    assert m["category"] in cats, m["category"]
+    assert m["format"] in {"integer", "decimal1", "decimal2", "percent1", "percent2", "rating1",
+                           "plusMinus1", "minutes"}, m["format"]
 
 doc = {
     "schemaVersion": 1,
@@ -155,5 +270,6 @@ doc = {
         {"season": "2016-17", "label": "Hustle stats", "detail": "Box outs added around 2019-20."},
     ],
     "metrics": metrics,
+    "leagueMetrics": {"euroleague": league_metrics_euroleague},
 }
 print(json.dumps(doc, indent=2))

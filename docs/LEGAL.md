@@ -9,7 +9,11 @@ research, written so that nobody has to rediscover them later.
 
 | You want to… | Verdict |
 | --- | --- |
-| Run Hardwood privately for yourself, on your own machine, with data from stats.nba.com | **Fine.** This is the configuration in this repository. |
+| Run Hardwood privately for yourself, on your own machine, with data from stats.nba.com | **Fine.** This is the *default* configuration — and, since the web release, a configuration you can leave. See §2b. |
+| Run the web app for yourself or your household, invite-only, on a machine or LAN you control | **Fine**, on the same footing. Keep `HARDWOOD_SIGNUP_MODE=invite`. |
+| Put the web app on a public DNS name, free, no ads, accounts and all | **Unresolved, and the licensing conversation comes first.** This is the step that ends the private/non-commercial predicate §2 rests on. See §2b. |
+| Run the EuroLeague, NBA injury report and headline features privately, on your own machine | **Works, and is polite, but its footing is unverified.** The same private, personal, non-commercial posture as §2 is applied; nobody here has been able to read the EuroLeague's terms, the injury report's host or the feeds' terms. See §2d and §2e. |
+| Show those features to anyone else, or publish them | **Stop and ask first.** Sharing changes everything for the EuroLeague data service, the injury report and every headline feed, each of which becomes its own licensing conversation. See §2d and §2e. |
 | Share the repository, its code, its schema and its formulas | **Fine.** Code and formulas are yours; the data is not redistributed. |
 | Put Hardwood on the App Store, free, with scraped NBA.com data | **Offside.** NBA.com's terms restrict statistics to private, non-commercial purposes. |
 | Add ads, a subscription, or an IAP | **Offside** on scraped data. License a feed first. |
@@ -48,19 +52,316 @@ The operative restrictions on NBA statistics:
 
 ### How this repository complies
 
-* Default deployment is private and single-user; the API binds to localhost and ships with no
-  hosting configuration.
+* **The default deployment is private.** The API binds to loopback, `HARDWOOD_PUBLIC_BASE_URL`
+  defaults to `http://127.0.0.1:8000`, web sign-up defaults to `invite`, and nothing here ships
+  a hosting configuration. Since the web release this is a property of how you have deployed
+  Hardwood rather than of what has been written, and it can be left by editing two environment
+  variables — which is what §2b is about. Every bullet below depends on it.
 * `/v1/meta` returns, and the iOS Settings screen displays,
   *"Stats via NBA.com. Not endorsed by or affiliated with the NBA."*
 * No sponsorship, advertising, payment or betting surface exists anywhere in the codebase.
 * No live play-by-play depiction: Hardwood ingests a game **after it is final**, which is a
   design choice with a legal dimension as well as an engineering one.
 * No logos, no player photography, no team marks. `headshotUrl` is nullable and unpopulated.
+* The fantasy toolkit analyses a manager's own roster decisions; it does not operate a game.
+  See §2a below, which is the one line in this document that needed drawing rather than quoting.
+
+## 2a. The fantasy line, and where this repository sits relative to it
+
+The terms exclude using NBA statistics "for a fantasy game". That phrase has to be read against
+what it is plainly aimed at — **operating** one: hosting leagues, scoring contests, taking
+entries, running the thing people play. `backend/nbastats/fantasy.py` and its two widgets do none
+of that. They value players against each other and tell one person what a draft pick or a trade
+would do to their own roster, in a league run by ESPN or Yahoo or a group chat.
+
+That is analysis of statistics for a private, non-commercial purpose, which is the use the same
+paragraph permits. The distinction is real, but it is a distinction, not an exemption, and three
+things follow that are worth writing down rather than discovering later:
+
+1. **Publishing is the trigger, and this feature raises the stakes of it.** Everything in §2
+   above depends on the deployment staying private. A fantasy toolkit is the part
+   of this app most likely to make someone want to share it, and it is also the part whose
+   compliance argument is thinnest. Publishing the API, shipping the app, or putting the board in
+   front of anyone who is not the person who built it needs the licensing conversation first —
+   not a re-reading of this section.
+2. **It must never become a contest.** No entries, no scoring of leagues, no head-to-head results,
+   no money, no prizes, no odds. `tests/test_fantasy.py` greps the module for the market
+   vocabulary, and that test is the mechanism, not the intention.
+3. **The cleanest footing is a manager's own numbers.** `SeasonLine` is a plain value object so a
+   spreadsheet's projections can be valued instead of NBA.com-derived season lines. Fed that way
+   the feature does not rest on NBA statistics at all, which makes the question moot for the case
+   it is most useful in.
 
 ### What would break compliance
 
-Publishing the API, putting the app in a store, monetizing in any form, adding odds or fantasy
-scoring as a product feature, or redistributing the ingested database.
+Leaving the private configuration — a site people you did not invite can reach or sign up for —
+putting the app in a store, monetizing in any form, adding contest scoring or any
+gambling-adjacent feature, or redistributing the ingested database. A store submission is one
+shape of publishing, not the definition of it; §2b draws the line where it actually falls.
+
+## 2b. The web surface, and what "private" now has to mean
+
+Hardwood Web is a browser client with user accounts, served by the same process at `/` with the
+API unchanged at `/v1`. That does not by itself break anything in §2. A web app on
+`127.0.0.1` that only you sign into is the same private, non-commercial use a native app on
+your own phone is, and an invite-only site for a household is not obviously different from one
+person with two devices.
+
+What accounts changed is where the predicate lives. Before the web release, "private and
+single-user" was a property of what had been *written*: there was no sign-in, no multi-user
+anything, and no way to deploy one without writing it. Now it is a property of how you have
+*deployed* it, and it can be left by editing two environment variables. The sentence this
+document's compliance argument used to rest on is no longer a fact about the repository, so it
+has stopped being allowed to do that work.
+
+**The line, as precisely as it can be drawn here: §2 holds while the deployment is private —
+you, or a household, on a machine or a network you control, with accounts you personally
+issued. It stops holding the moment the site is reachable by people you did not invite.** A
+public DNS name is the clearest way to cross it and the one to assume you have crossed if you
+are unsure, but the test is who can reach the thing, not what the URL looks like.
+
+What this repository carries as code rather than as intention:
+
+* `HARDWOOD_SIGNUP_MODE` defaults to `invite`. `open` on a non-loopback base URL is a **startup
+  refusal** unless a backstop invite code is also set, so an open public sign-up cannot happen
+  by forgetting a setting.
+* `HARDWOOD_PUBLIC_BASE_URL` defaults to `http://127.0.0.1:8000`, and the server refuses to
+  start on a non-loopback `http` URL unless you explicitly accept cleartext session cookies.
+  Leaving loopback is a decision you have to make out loud.
+* The NBA attribution string is in the **footer of every page**, not a settings row. A surface
+  more people can see raises what "prominent" has to mean, and a footer is the honest reading.
+* **No request the browser can make reaches stats.nba.com.** Every user-facing read is served
+  from Hardwood's own store; only the scheduled ingest worker talks upstream. That is now an
+  architectural rule enforced by where the network client is imported, not inherited discipline.
+* `/fantasy` carries the no-contest notice, and the fantasy tools stay what §2a describes:
+  analysis of one manager's own roster, never the operation of a game.
+
+What none of that resolves, and cannot: whether a free, ad-free, account-gated site counts as
+"private, non-commercial", and how far "database product" reaches when what you are running is
+a queryable store of NBA statistics behind a login. Those need a lawyer, not a repository. The
+controls above exist so the question can still be asked later, rather than being answered
+wrongly by accident in the meantime.
+
+## 2c. Personal data Hardwood collects from its own users
+
+Everything above this line concerns obligations to the people the *data* came from. Accounts
+created a second, unrelated set: obligations to the people who sign in. The repository had none
+of these before the web release, and neither this document nor
+[DATA_SOURCES.md](DATA_SOURCES.md) addressed them.
+
+### What is stored
+
+| Data | Where | Why it exists |
+| --- | --- | --- |
+| Email address, and a normalised lookup copy | `users.email`, `users.email_lookup` | Sign-in identity, password reset, email-change confirmation |
+| scrypt password hash | `users.password_hash` | Never the password itself |
+| Display name; given and family name | `users` | Shown in the UI. The name fields are populated only when a provider sends them |
+| Favourite player and team, theme, selected dashboard | `users` | Product preferences |
+| Provider subject identifier, and the email at the time of linking | `user_identities` | The stable id Google or Apple uses for you — the thing that makes "sign in with Google" the same account next time |
+| Saved dashboards | `user_dashboards.document_json` | The thing an account exists to keep |
+| One row per signed-in browser | `auth_sessions` | A hash of the session secret, timestamps, the sign-in method, a **truncated IP prefix** and a **user-agent string** (first 255 characters) — so you can see and revoke your own sessions, and so rate limiting has something to key on |
+| Single-use tokens | `auth_tokens` | Password reset and email verification: hashed, expiring |
+| In-flight sign-ins | `oauth_transactions` | A ten-minute record of an OAuth round trip, deleted when consumed or expired |
+
+The IP prefix is truncated to `/24` (IPv4) or `/48` (IPv6) *before* it is written. It is honest
+minimisation and deliberately not pseudonymisation: a salted hash of a 32-bit address space is
+reversible by brute force in seconds, so storing one and calling it anonymous would be a claim
+that does not survive scrutiny. A truncated prefix cannot be reversed to the original address
+at all.
+
+There is no analytics, no advertising identifier, and no third-party script of any kind on the
+site — the Content-Security-Policy is `script-src 'self'` with no exceptions, which is a
+mechanism rather than a promise. The only outbound requests are to Google or Apple, during a
+sign-in you started.
+
+### How long it is kept
+
+* Sessions expire after 30 days idle and 90 days absolute; expired rows are deleted, both
+  opportunistically on use and by `admin.py purge`.
+* OAuth transactions live ten minutes and are deleted on first use.
+* Reset and verification tokens are deleted once they expire.
+* Account data is kept until the account is deleted. `DELETE /v1/me` disables it and revokes
+  every session immediately; the rows are erased permanently thirty days later. That erasure
+  runs by itself — the server sweeps once at startup and every twenty-four hours after — so a
+  deletion completes without anyone remembering to do anything. `admin.py purge` forces a pass
+  early, and a cron entry ([WEB.md](WEB.md) §11) is worth adding anyway if the process stays
+  up for months at a time, because the in-process job is a task in a single worker rather than
+  a real scheduler.
+
+### Access and erasure
+
+* `GET /v1/me/export` returns the account record and every saved dashboard as JSON.
+* `DELETE /v1/me` deletes the account, behind a typed confirmation and a re-authentication
+  requirement.
+* The operator equivalents, for someone who asks by email, are `admin.py export-user` and
+  `admin.py delete-user`.
+
+These are in the first release rather than on a roadmap, because the alternative is answering a
+real request by hand against a SQLite file, and that is how a promise quietly becomes a lie.
+
+### Where this needs a lawyer, and not this file
+
+If the only account is yours, this section is housekeeping. The moment somebody else signs in,
+you are handling another person's personal data, and which rules apply depends on where you are
+and where they are. That is not a question this repository can answer, and naming statutes here
+would be pretending to an authority this document does not have.
+
+What can be said without guessing: you should be able to state what you collect, why, and for
+how long — that is the table above; you should be able to produce a copy of it and delete it on
+request — those are the endpoints above; and `/legal/privacy` is a page that has to stay true
+as the schema changes, which means it is maintenance, not decoration. Any deployment beyond
+your own household should get real advice **before** its first outside sign-up, not after.
+
+## 2d. EuroLeague data
+
+### What Hardwood takes, and from where
+
+| Source | What is taken | How |
+| --- | --- | --- |
+| The EuroLeague's data service | Fixtures, results, box scores, registered squads and their listed positions | A short fixed list of URL templates in `euroleague/ingest/endpoints.py`; any other URL is refused by the client. Fetched by the scheduled worker (and by the `probe` command when you run it by hand), never by a browser. |
+| Your own workbook (`HARDWOOD_WORKBOOK_PATH`, or a `.xlsx` dropped in `$HARDWOOD_DATA_DIR/inbox/`) | Results and box scores, squads, club ratings, the dated and sourced injury rows, the published round projections | Read from the cells' cached values by a stdlib reader, idempotent by file hash. The box scores in it came from the EuroLeague's data service, so it is the same data by another road. |
+
+Not taken, on purpose: the workbook's *Latest Games* and *Game Logs* sheets (RealGM and proballers
+rows, whose terms nobody here has read, mixed with friendlies and domestic games that are not
+EuroLeague statistics), its *Season Stats* (derived), and every betting column and setting in it
+(`Model line`, `Your line`, `P(over)`, `Lean`, `Result v line`, `Home win %`, `TotalSD`,
+`PSDBase`, `PSDSlope`, `EdgeP`), which the importer never reads and a test proves leaves no trace
+in the store. The workbook's `est.` per-40 lines have no recorded source; they are imported, and
+shown as the estimates they are ("your estimate; source not recorded"). `HARDWOOD_EL_INCLUDE_ESTIMATES=0`
+imports only minutes and identity for them. Club names and codes are facts and are stored as
+such; there are no crests, logos or photographs, and "EuroLeague" and every club name belong to
+their owners, with whom Hardwood is unaffiliated.
+
+### What is not known
+
+**The EuroLeague's terms of use, and the data service's terms if they are separate, have not been
+read.** As of 2026-10-04 every EuroLeague host was unreachable from the environment this code was
+written in (egress to every sports host is denied there), so nobody here has seen the pages. That
+is a limitation of where the code was written. It is not a finding about what the terms say, and
+it must not be read as one.
+
+One second-hand summary of a search result suggested that consent may be needed even for a
+private "database of comprehensive, regularly updated statistics". It is unverified, it is exactly
+the kind of sentence §2's "database product" clause also contains, and it is recorded here
+because it is the specific worry: Hardwood, run live, *is* a regularly updated local store of one
+competition's statistics. Whether private, personal use of that is within the terms is an open
+question.
+
+### The posture applied, and what it is not
+
+The same posture as §2 is applied to this data: **private, personal and non-commercial; never
+redistributed; never used for gambling or for operating a fantasy game; attributed.** That is a
+decision to treat the EuroLeague like NBA.com data, made by the person who owns this deployment.
+It is not an assertion that the EuroLeague's terms allow it. There is no terms-review setting and
+no gate in the code: on the owner's Mac the EuroLeague is **on by default**, and each part has a
+switch to turn it off:
+
+* `HARDWOOD_EL_ENABLED=0` skips the EuroLeague entirely: no store, no routes.
+* `HARDWOOD_EL_LIVE=0` stops all fetching. The workbook import and the store still work.
+
+Where the code behaves, rather than where it intends to:
+
+* **Polite.** One shared client for every sports host: a User-Agent that names Hardwood and says
+  "private single-user analytics; personal, non-commercial use", at least one second between
+  requests, at most two in flight, conditional requests, exponential backoff, a circuit breaker
+  that stops all requests for six hours after a 401, 403, a Cloudflare 1015 or three 429s in a
+  row. The schedule is budgeted at about 90 requests in an ordinary week.
+* **Private.** The worker, the only process that fetches, refuses to run these jobs when
+  `HARDWOOD_PUBLIC_BASE_URL` is not a loopback address.
+* **Not redistributed.** Raw payloads are kept on disk under `$HARDWOOD_DATA_DIR/el-raw/` for
+  diagnosis, are never served by any route, and never enter git (see *Repository hygiene* below).
+  The EuroLeague's tables are in a database file of their own.
+* **Attributed.** *"EuroLeague statistics from the EuroLeague's data service. Availability
+  researched from the linked sources."* travels in every EuroLeague payload (`/v1/el/meta`,
+  `/v1/el/sources`).
+* **Honest about demo data.** A synthetic EuroLeague (invented clubs and players) exists for
+  offline use and for the tests. A store is either real or synthetic and refuses to be both, and
+  every payload says `isDemo` so a client can show it.
+
+### What changes everything
+
+Everything in this section rests on the deployment staying private, exactly as §2 and §2b do.
+**The moment Hardwood, its API, its database or its screens are shared, published, put in a store
+or shown to anyone who is not the person running it, the EuroLeague data becomes its own
+licensing conversation, and it has to happen first.** The answer may differ from the NBA's.
+Until the terms have been read by a person, the honest summary is: this works, it is polite, it
+is private, and its legal footing is unverified.
+
+## 2e. Injuries and headlines
+
+### The sources
+
+| Source | What is taken | Footing |
+| --- | --- | --- |
+| The NBA's official injury report (the PDFs on NBA.com's static host) | Per team and player: status, reason, the report's own words, and whether a team has submitted | NBA.com content, so §2 applies as it does to the stats. Fetched by the scheduled worker (and by the probe script when you run it by hand), never by a browser. |
+| Your workbook's *Injury Report* sheet | The dated, sourced rows: each with its own link, its status and the workbook's own "In model" column | Imported as sourced and dated entries, shown with their age, never as live data. |
+| Entries you type or paste | A status, a source label, an optional link and date, a short reason of your own | Yours. A headline is never turned into a status automatically: a person always confirms it. |
+| Headline feeds (two candidates ship configured: `eurohoops.net/feed` and `talkbasket.net/feed`) | **Title, link, published date and source name. Nothing else.** | Public RSS or Atom, fetched at most hourly, response capped at 2 MB. |
+
+### What is stored, and what never is
+
+* **Injury report.** The report's fields (team, player as printed, status, reason). A
+  `NOT YET SUBMITTED` team is stored as exactly that. An unrecognised layout produces
+  `unreadable` and no rows: the parser fails closed and never guesses. `/v1/sources` says the
+  parser is *"not yet confirmed against a real report"* until it has parsed one successfully on
+  your Mac.
+* **EuroLeague availability** has no machine-readable official source (the data service has no
+  injury endpoint), so every status is human-curated: a link, a label, a date and a status. No
+  article text is copied; the free-text reason is short (200 characters) and is yours or the
+  league report's, never a quotation. The roster flags that say who is dressed are never
+  presented as injury data.
+* **Headlines.** No description, no body, no excerpt: the table has no column for one, and
+  article pages are never fetched. Feed items are kept 30 days; a link you pasted is kept.
+* **Betting-operator links are withheld.** A status or headline whose source is a host owned by a
+  betting operator (the list starts with `mozzartsport.com` and `mozzartbet.com`) keeps its label
+  and date but no link. The match is on the URL's host only, never on text, so a club whose name
+  contains such a word is unaffected: "Partizan Mozzart Bet" is a club name, stored as data.
+
+### What is on by default, and what stops it
+
+On the owner's Mac, with a switch each: the NBA injury report (`HARDWOOD_NBA_INJURIES`, default
+on, and refused with a message when the NBA store holds the synthetic demo league, judged by the
+store's own rows) and headlines (`HARDWOOD_NEWS`, default on). `robots.txt` is read
+**automatically** with the standard library's parser before a feed is fetched, cached for 24
+hours; a feed that disallows the fetch is disabled, and the reason is shown in `/v1/sources`.
+The two feeds and the NBA report URL have never been fetched from the environment this code was
+written in, and **their terms have not been read** for the same reason as §2d.
+
+### Not used, and why
+
+* **ESPN's unofficial API.** Disney's terms forbid automated access whatever the commerciality.
+* **Basketball-Reference** (§3), and scraping **BasketNews** (a paywalled subscription product).
+* **RotoWire, CBS, NBC and balldontlie**: excluded on terms or unknown provenance.
+* **The NBA's odds endpoint.** The NBA client has no method that can reach it, and a test proves
+  none can be added by accident.
+* Article bodies, from anyone.
+
+### Not linked to the fantasy toolkit
+
+The injury report is **not** an input to the fantasy toolkit, and a test asserts that
+`fantasy.py` and the `fantasy_*` widgets import nothing from the injury modules. §2a's argument
+is the thinnest one in this document; feeding it a second NBA.com source would widen it for no
+purpose the injuries feature needs.
+
+### What changes everything
+
+As in §2d: all of this is a private, personal tool's footing. A shared, published or
+store-distributed Hardwood needs a separate answer for the injury report, for each headline
+feed's terms, and for the EuroLeague data service, **before** it is shown to anyone else, and none
+of those answers is in this repository.
+
+### Repository hygiene
+
+Applies to §2d and §2e together. The repository is public, and nothing real is committed to it:
+
+* Recorded payloads, injury-report PDFs and workbook extracts live only under `HARDWOOD_DATA_DIR`
+  on the machine that made them, or in the git-ignored `backend/tests/local/` (and any
+  `recordings/` or `el-raw/` directory). `.gitignore` carries those entries, and the workbook
+  itself (`*.xlsx`) is ignored too.
+* Committed fixtures are authored look-alikes: **invented clubs, invented people, invented
+  numbers.** The synthetic EuroLeague uses codes `ZZA` to `ZZT` for exactly that reason.
+* Tests that need the real workbook or real PDFs (`tests/local/`) skip when they are absent, so a
+  fresh clone is green and the real files are never needed to be in the tree.
 
 ---
 

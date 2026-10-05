@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Hardwood worker, as a launchd user agent. TEMPLATE: install.sh fills in every double-underscore placeholder.
+
+  One long-running process with its own scheduler for every background job the EuroLeague,
+  injury, headline and projection work adds (see backend/nbastats/worker.py). KeepAlive
+  restarts it if it exits. It re-reads hardwood.env every 30 seconds, so a switch in that
+  file takes effect without a restart.
+
+  ExitTimeOut gives a job in flight half a minute to finish when the agent is stopped.
+  ProcessType Background keeps it on the efficiency cores and out of the way of the app.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.hardwood.worker</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__PYTHON__</string>
+    <string>-m</string>
+    <string>nbastats.worker</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__BACKEND_DIR__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HARDWOOD_DATA_DIR</key>
+    <string>__DATA_DIR__</string>
+    <key>HARDWOOD_ENV_FILE</key>
+    <string>__ENV_FILE__</string>
+    <key>HARDWOOD_LOG_DIR</key>
+    <string>__LOG_DIR__</string>
+    <key>DATABASE_URL</key>
+    <string>__DB_URL__</string>
+    <key>HARDWOOD_EL_DATABASE_URL</key>
+    <string>__EL_DB_URL__</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+    <key>PYTHONUTF8</key>
+    <string>1</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+  <key>ExitTimeOut</key>
+  <integer>30</integer>
+  <key>ProcessType</key>
+  <string>Background</string>
+
+  <key>StandardOutPath</key>
+  <string>__LOG_DIR__/worker.stderr.log</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_DIR__/worker.stderr.log</string>
+</dict>
+</plist>

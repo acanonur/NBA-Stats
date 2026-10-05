@@ -1,4 +1,17 @@
-"""Generate contracts/widgets.json - the shared widget catalog + config field schema."""
+"""Generate contracts/widgets.json - the shared widget catalog + config field schema.
+
+Twenty kinds. The first sixteen are the NBA player and team tiles the shipped iOS app draws. The
+last four (``team_matchup``, ``defense_by_position``, ``availability_report`` and
+``slate_projections``) are the league tiles: thin resolvers over the same builders the
+``/v1`` and ``/v1/el`` routes call, so a tile's payload is exactly the route's payload. Each of the
+four carries a ``league`` config field (``nba`` or ``euroleague``). The league lives in the widget's
+own config, not in the layout document, on purpose: the layout migrators rebuild a layout from a
+fixed key list and would drop a layout-level ``league``, while a declared config key survives a
+save (``catalog.validate_widget_config`` keeps declared keys and drops the rest).
+
+The four kinds also introduce one config field type, ``club``: a EuroLeague club code (three
+capital letters) that the service checks against the EuroLeague store when that league is mounted.
+"""
 import json
 
 def f(key, type_, label, **kw):
@@ -13,6 +26,12 @@ SEASON_TYPE= f("seasonType", "enum", "Season Type", default="Regular Season", re
                options=["Regular Season", "Playoffs", "Play In", "All Star", "Pre Season"])
 PER_MODE   = f("perMode", "enum", "Per Mode", default="PerGame",
                options=["PerGame", "Totals", "Per36", "Per100"])
+LEAGUE     = f("league", "enum", "League", default="nba", required=True,
+               options=["nba", "euroleague"],
+               help="Which league this tile reads. The two leagues are separate stores and are "
+                    "never mixed in one tile.")
+CLUB_NOTE  = ("A EuroLeague club code such as PAN. Used when League is EuroLeague; "
+              "the NBA team field is used when it is NBA.")
 
 W = [
  {
@@ -231,7 +250,7 @@ W = [
  {
   "kind": "projection_board",
   "name": "Tonight's Projections",
-  "summary": "Tonight's projected lines for several players, each as a range with the season average marked.",
+  "summary": "Tonight's projected ranges for several players, each with the season average marked.",
   "icon": "chart.dots.scatter",
   "sizes": ["large"],
   "defaultSize": "large",
@@ -245,13 +264,72 @@ W = [
     f("playerIds", "playerList", "Players", default=[], maxItems=12,
       help="Used when Players is set to a specific list; otherwise the scope decides."),
     f("teamId", "team", "Team", default=None),
-    f("metrics", "metricList", "Lines", required=True, metricScope="player",
+    f("metrics", "metricList", "Stats", required=True, metricScope="player",
       default=["pts", "reb", "ast"], maxItems=6),
     f("limit", "int", "Rows", default=6, min=3, max=20),
     f("minMinutes", "double", "Minimum Projected Minutes", default=20.0, min=0.0, max=48.0),
     f("reference", "enum", "Reference Mark", default="season_average",
       options=["season_average", "career_average", "none"],
       help="The tick on the band. A projection is only meaningful against something."),
+    SEASON_TYPE,
+  ],
+ },
+ {
+  "kind": "fantasy_draft_board",
+  "name": "Draft Board",
+  "summary": "Nine-category fantasy value for every player, ranked, with what each pick adds.",
+  "icon": "checklist",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  # 3PM is the binding era boundary of a nine-category board: turnovers begin in 1977-78 and
+  # steals and blocks in 1973-74, but a category league without threes is a different game.
+  "availableFrom": "1979-80",
+  "config": [
+    f("season", "season", "Season", default="latest", required=True),
+    f("scoring", "enum", "Scoring", default="categories", required=True,
+      options=["categories", "espn_points", "yahoo_points"],
+      help="Categories ranks on the nine z-scores; the other two use that site's default points."),
+    f("puntCategories", "enumList", "Punt", default=[],
+      options=["pts", "fg3m", "reb", "ast", "stl", "blk", "tov", "fg_pct", "ft_pct"],
+      help="A punted category is weighted 0. The per-category numbers do not change, so a "
+           "punt build and a balanced build stay comparable."),
+    f("teams", "int", "Teams in League", default=12, min=2, max=30),
+    f("rosterSpots", "int", "Roster Spots", default=13, min=1, max=25),
+    f("poolSize", "int", "Players in the Pool", default=150, min=20, max=500,
+      help="Who the z-scores are measured against. Teams x roster spots is the usual choice."),
+    f("draftedPlayerIds", "playerList", "Already Drafted", default=[], maxItems=200),
+    f("myPlayerIds", "playerList", "My Roster", default=[], maxItems=25,
+      help="Sets the categories the board weighs your remaining need against."),
+    f("limit", "int", "Rows", default=30, min=5, max=100),
+    SEASON_TYPE,
+  ],
+ },
+ {
+  "kind": "fantasy_trade",
+  "name": "Trade Analyzer",
+  "summary": "What a trade gains and costs, category by category, with the roster spots it moves.",
+  "icon": "arrow.left.arrow.right",
+  "sizes": ["large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "availableFrom": "1979-80",
+  "config": [
+    f("season", "season", "Season", default="latest", required=True),
+    # No minItems: the widget ships empty and the reader fills both sides in. The resolver
+    # says "add at least one player to each side" rather than the catalog rejecting the
+    # preset that introduces it.
+    f("givePlayerIds", "playerList", "You Give", default=[], maxItems=4),
+    f("getPlayerIds", "playerList", "You Get", default=[], maxItems=4),
+    f("puntCategories", "enumList", "Punt", default=[],
+      options=["pts", "fg3m", "reb", "ast", "stl", "blk", "tov", "fg_pct", "ft_pct"]),
+    f("poolSize", "int", "Players in the Pool", default=150, min=20, max=500),
+    f("fairBand", "double", "Fair Within", default=0.75, min=0.0, max=10.0,
+      help="Net z-sum per game inside this band reads as fair. Set it against your league's "
+           "own spread, which the widget reports."),
+    f("clearBand", "double", "Clear Win Beyond", default=2.0, min=0.0, max=20.0),
+    f("showSensitivity", "bool", "Show Scenario Range", default=True,
+      help="Recomputes the trade under four named what-ifs. A range, never a probability."),
     SEASON_TYPE,
   ],
  },
@@ -270,6 +348,87 @@ W = [
       options=["Regular Season", "Playoffs"]),
     f("includePlayoffs", "bool", "Overlay Playoffs", default=True),
     f("xAxis", "enum", "X Axis", default="season", options=["season", "age"]),
+  ],
+ },
+ {
+  "kind": "team_matchup",
+  "name": "Matchup",
+  "summary": "Two teams side by side going into a game: points scored and allowed, recent form, home and away splits, who is missing, and the projected score.",
+  "icon": "rectangle.split.2x1",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    LEAGUE,
+    f("team", "team", "Team", default="$favorite_team",
+      help="Used when League is NBA. Leave on your favorite team, or pick one."),
+    f("club", "club", "Club", default=None, help=CLUB_NOTE),
+    f("opponent", "team", "Opponent", default=None,
+      help="NBA only. Leave empty to use the team's next scheduled opponent."),
+    f("opponentClub", "club", "Opponent Club", default=None,
+      help="EuroLeague only. Leave empty to use the club's next scheduled opponent."),
+    SEASON,
+    f("window", "int", "Recent Games", default=5, min=3, max=15,
+      help="How many of each side's last games to show as form."),
+  ],
+ },
+ {
+  "kind": "defense_by_position",
+  "name": "Defence by Position",
+  "summary": "Points each defence allows to opposing guards, forwards and centers, against the league. Withheld where the sample is too small to judge; no rankings.",
+  "icon": "shield.lefthalf.filled",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    LEAGUE,
+    f("team", "team", "Team", default=None,
+      help="NBA only. Leave empty for the whole league's table."),
+    f("club", "club", "Club", default=None,
+      help="EuroLeague only. Leave empty for the whole league's table."),
+    SEASON,
+    f("window", "int", "Recent Games", default=0, min=0, max=82,
+      help="0 uses the whole season; otherwise the team's last N games."),
+    f("basis", "enum", "Basis", default="perGame", options=["perGame", "perMinute"],
+      help="Per game, or per 48 (NBA) or 40 (EuroLeague) minutes the opposing position played."),
+    f("scheme", "enum", "Positions", default="gfc", options=["gfc", "workbook5"],
+      help="Guard, forward and center. The five-position workbook scheme is EuroLeague only "
+           "and is an estimate."),
+  ],
+ },
+ {
+  "kind": "availability_report",
+  "name": "Availability Report",
+  "summary": "Who is out, doubtful or questionable for the next games, each status with its source and how old it is.",
+  "icon": "cross.case",
+  "sizes": ["medium", "large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 300,
+  "config": [
+    LEAGUE,
+    f("team", "team", "Team", default=None,
+      help="NBA only. Leave empty for the whole slate."),
+    f("club", "club", "Club", default=None,
+      help="EuroLeague only. Leave empty for every club."),
+    f("includeNews", "bool", "Include Headlines", default=False,
+      help="Adds headline links (title, source and date only) when a news feed is switched on."),
+  ],
+ },
+ {
+  "kind": "slate_projections",
+  "name": "Slate Projections",
+  "summary": "Projected scores for the next slate or round: margin, winner and combined points, with the model's assumptions stated.",
+  "icon": "calendar.badge.clock",
+  "sizes": ["large"],
+  "defaultSize": "large",
+  "minRefreshSeconds": 600,
+  "config": [
+    LEAGUE,
+    f("date", "date", "Date", default="next", required=True, tokens=["latest", "next"],
+      help="NBA only. An ISO date, 'next' for the next slate, or 'latest' for the most recent "
+           "completed one."),
+    f("round", "int", "Round", default=0, min=0, max=40,
+      help="EuroLeague only. A round number, or 0 for the next round."),
   ],
  },
 ]
@@ -293,7 +452,7 @@ doc = {
     "gridColumns": {"compact": 2, "regular": 4},
     "configFieldTypes": [
         "season", "enum", "enumList", "metric", "metricList", "player", "playerList",
-        "team", "teamList", "subject", "subjectList", "int", "double", "bool", "date",
+        "team", "teamList", "subject", "subjectList", "int", "double", "bool", "date", "club",
     ],
     "widgets": W,
 }

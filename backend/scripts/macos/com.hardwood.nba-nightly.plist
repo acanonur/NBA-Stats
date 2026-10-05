@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  The nightly NBA correction pass (the ingest runner's nightly mode), as a launchd user agent.
+  TEMPLATE: install.sh fills in every double-underscore placeholder.
+
+  The league revises box scores after the fact, so this re-pulls the last few days at 06:10
+  local time. It is a calendar job, not a KeepAlive one: if the Mac is asleep at 06:10,
+  launchd runs it once when the Mac wakes (missed calendar firings are coalesced into one),
+  and it never runs in a loop. The program is the runner's own main(), started from a
+  one-line script so that hardwood.env is read first (see com.hardwood.nba-watch.plist).
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.hardwood.nba-nightly</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__PYTHON__</string>
+    <string>-c</string>
+    <string>import sys; from nbastats.accounts.config import load_env_file; from nbastats.config import reset_settings_cache; load_env_file(); reset_settings_cache(); from nbastats.ingest.runner import main; sys.exit(main(["--nightly"]))</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__BACKEND_DIR__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HARDWOOD_DATA_DIR</key>
+    <string>__DATA_DIR__</string>
+    <key>HARDWOOD_ENV_FILE</key>
+    <string>__ENV_FILE__</string>
+    <key>HARDWOOD_LOG_DIR</key>
+    <string>__LOG_DIR__</string>
+    <key>DATABASE_URL</key>
+    <string>__DB_URL__</string>
+    <key>HARDWOOD_EL_DATABASE_URL</key>
+    <string>__EL_DB_URL__</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+    <key>PYTHONUTF8</key>
+    <string>1</string>
+  </dict>
+
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>6</integer>
+    <key>Minute</key>
+    <integer>10</integer>
+  </dict>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>ProcessType</key>
+  <string>Background</string>
+
+  <key>StandardOutPath</key>
+  <string>__LOG_DIR__/nba-nightly.log</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_DIR__/nba-nightly.log</string>
+</dict>
+</plist>

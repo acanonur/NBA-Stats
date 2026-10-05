@@ -1,0 +1,105 @@
+/*
+ * `ios/NBAStats/DesignSystem/AvailabilityBadge.swift`'s `AvailabilityExplainer`, ported as a
+ * plain modal dialog: the header, the plain-English explanation, an optional "what is missing
+ * here" note box, the league's record-keeping timeline (read from `ERA_BOUNDARIES`, never
+ * hand-written — WEB_DESIGN.md §0.1-F), and the pre-1997 disclaimer footer.
+ */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background-color: color-mix(in sRGB, var(--hw-text-primary) 40%, transparent);
+  padding: var(--hw-space-lg);
+}
+
+@media (width >= 640px) {
+  .backdrop {
+    align-items: center;
+  }
+}
+
+.dialog {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px;
+  max-height: min(80vh, 640px);
+  overflow-y: auto;
+  background-color: var(--hw-background);
+  border: 1px solid var(--hw-separator);
+  border-radius: var(--hw-radius-sheet);
+  padding: var(--hw-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-lg);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hw-space-sm);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xxs);
+  min-width: 0;
+}
+
+.closeButton {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--hw-selection);
+  font: inherit;
+  font-weight: var(--hw-font-widget-title-weight);
+}
+
+.paragraph {
+  margin: 0;
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-xs);
+  background-color: color-mix(in sRGB, var(--hw-warning) 10%, transparent);
+  border-radius: var(--hw-radius-control);
+  padding: var(--hw-space-md);
+}
+
+.note {
+  display: flex;
+  gap: var(--hw-space-sm);
+  align-items: baseline;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hw-space-sm);
+}
+
+.timelineRow {
+  display: flex;
+  gap: var(--hw-space-md);
+  align-items: baseline;
+}
+
+.timelineSeason {
+  min-width: 68px;
+  flex: none;
+}
+
+.timelineBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}

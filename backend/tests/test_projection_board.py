@@ -398,4 +398,10 @@ def test_the_board_carries_no_market_translation(ctx: ResolveContext) -> None:
     )
     for word in ("sportsbook", "kelly", "vigorish", "implied_prob", "expected_value"):
         assert f"def {word}" not in source, word
-    assert "no odds" in source, "the module must say why the line is missing"
+    # The module has to say, in prose, why there is no market comparison — the cheapest way
+    # for one to come back is somebody who never knew it was deliberate. The sentence no
+    # longer uses the vocabulary itself (the house rule bans it everywhere, including in a
+    # comment explaining its absence), so this asserts the replacement wording.
+    assert "no market translation" in source or "market quote" in source, (
+        "the module must say why there is no market comparison"
+    )

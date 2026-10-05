@@ -230,9 +230,9 @@ def test_season_column_resolution() -> None:
 
 
 def test_catalogs_load_with_the_expected_shape() -> None:
-    assert len(catalog.all_metrics()) == 61
-    assert len(catalog.all_widgets()) == 14
-    assert len(catalog.presets()) == 11
+    assert len(catalog.all_metrics()) == 62
+    assert len(catalog.all_widgets()) == 20
+    assert len(catalog.presets()) == 12
     assert catalog.metrics_document()["schemaVersion"] == 1
     assert catalog.subject_tokens() >= {"$favorite_player", "$favorite_team"}
 
@@ -245,7 +245,8 @@ def test_catalogs_load_with_the_expected_shape() -> None:
         ("gp", 41.0, "41"),
         ("plus_minus", 7.24, "+7.2"),     # plusMinus1 is signed
         ("plus_minus", -3.15, "-3.2"),
-        ("plus_minus", -0.02, "+0.0"),    # never "-0.0"
+        ("plus_minus", -0.02, "0.0"),     # never "-0.0", and never "+0.0" either:
+        ("plus_minus", 0.0, "0.0"),       # zero is neither direction, so it carries no sign
         ("off_rtg", 118.24, "118.2"),
         ("ws48", 0.1964, "0.20"),
         ("min", 34.55, "34.6"),

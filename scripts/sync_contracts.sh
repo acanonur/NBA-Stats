@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# Copy the canonical contracts (and golden fixtures) into the iOS app bundle.
+# Copy the canonical contracts (and golden fixtures) into the iOS app bundle, and regenerate
+# everything the web app reads from those same contracts.
 #
 # The app bundles its own copies so it can format metrics, build config UIs and run in demo
 # mode with no network. scripts/check_contracts.py fails CI if these copies ever drift from
-# contracts/, so run this after editing anything under contracts/.
+# contracts/, so run this after editing anything under contracts/ OR under
+# ios/NBAStats/DesignSystem/*.swift (the web's design tokens are scraped from there — see
+# contracts/tools/gen_theme.py).
 #
 # WHY presets.json IS NOT COPIED INTO THE APP'S Fixtures/
 # Xcode 16 file-system synchronized groups flatten resource subdirectories into the bundle
@@ -13,24 +16,69 @@
 # response from the Contracts copy via bundledDocument(). The test target keeps its own copy,
 # where there is no such collision.
 #
+# WHY THE THREE PARITY CASE FILES ARE EXCLUDED THE SAME WAY
+# contracts/tools/gen_parity_cases.py (run below) writes layout_migration_cases.json,
+# monogram_cases.json and format_cases.json straight into contracts/fixtures/, so the loop
+# further down picks them up like any other fixture. They are genuinely fixtures the Swift
+# parity tests need (ios/NBAStatsTests/Fixtures/), not catalogs, so — unlike presets.json —
+# there is no *content* collision; they are excluded from the shipping app bundle simply
+# because a production build has no test to run them against and no reason to carry the bytes.
+#
 # If you add a fixture whose name matches a catalog, add it to APP_BUNDLE_EXCLUDE below.
 # check_contracts.py check (g) fails on any collision, so you will hear about it before Xcode
 # does.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# Fixtures that must not be copied into the app bundle, because a catalog already owns that
-# basename in Resources/Contracts/.
-APP_BUNDLE_EXCLUDE=("presets.json")
+# Fixtures that must not be copied into the app bundle: presets.json because a catalog already
+# owns that basename in Resources/Contracts/ (see above), the three parity case files because a
+# shipping build has nothing to run them against.
+APP_BUNDLE_EXCLUDE=("presets.json" "layout_migration_cases.json" "monogram_cases.json" "format_cases.json")
 
 mkdir -p "$root/ios/NBAStats/Resources/Contracts" "$root/ios/NBAStatsTests/Fixtures"
 cp "$root/contracts/metrics.json" "$root/contracts/widgets.json" "$root/contracts/presets.json" \
    "$root/ios/NBAStats/Resources/Contracts/"
 
+# The web's design tokens, typed contracts and cross-language parity fixtures — all generated
+# FROM the catalogs and Swift design system just synced above, never hand-edited (WEB_DESIGN.md
+# §8). Order matters: gen_web_tokens.py reads contracts/theme.json, so gen_theme.py runs first;
+# gen_parity_cases.py reads contracts/widgets.json (already current) and contracts/fixtures/
+# teams.json, not theme.json, so its position relative to the other two does not matter, but it
+# runs last here simply to keep the fixture-copy loop below acting on a fully up to date
+# contracts/fixtures/.
+python3 "$root/contracts/tools/gen_theme.py" > "$root/contracts/theme.json"
+python3 "$root/contracts/tools/gen_web_tokens.py"
+python3 "$root/contracts/tools/gen_web_contracts.py"
+python3 "$root/contracts/tools/gen_parity_cases.py"
+
+app_fixtures="$root/ios/NBAStats/Resources/Fixtures"
+test_fixtures="$root/ios/NBAStatsTests/Fixtures"
+
+# The league payload fixtures (contracts/fixtures/leagues/{nba,el}/*.json: one recorded response of
+# every NBA and EuroLeague route, built from the invented demo leagues) go to BOTH bundles under
+# a `league_<nba|el>_` prefix. The prefix is what keeps them unique: Xcode 16 flattens resource
+# subdirectories into the bundle root, so `leagues/nba/news.json` and `leagues/el/news.json`
+# would otherwise both become `news.json`, and `leagues/el/meta.json` would collide with the flat
+# `meta.json`. check_contracts.py check (g) proves the names stay unique. The app bundle carries
+# them for demo mode (LeagueClient reads `league_el_meta.json` and so on); the test bundle for the
+# decoding tests. They are copied before the flat loop, and the old copies are removed first so a
+# fixture deleted from contracts/ does not live on in the app.
+league_copied=0
+mkdir -p "$app_fixtures" "$test_fixtures"
+rm -f "$app_fixtures"/league_*.json "$test_fixtures"/league_*.json
+for league_dir in nba el; do
+  src="$root/contracts/fixtures/leagues/$league_dir"
+  [ -d "$src" ] || continue
+  for source in "$src"/*.json; do
+    [ -e "$source" ] || continue
+    name="league_${league_dir}_$(basename "$source")"
+    cp "$source" "$app_fixtures/$name"
+    cp "$source" "$test_fixtures/$name"
+    league_copied=$((league_copied + 1))
+  done
+done
+
 if compgen -G "$root/contracts/fixtures/*.json" > /dev/null; then
-  app_fixtures="$root/ios/NBAStats/Resources/Fixtures"
-  test_fixtures="$root/ios/NBAStatsTests/Fixtures"
-  mkdir -p "$app_fixtures"
 
   # The test bundle takes everything; it has no catalog copies to collide with.
   cp "$root"/contracts/fixtures/*.json "$test_fixtures/"
@@ -52,7 +100,7 @@ if compgen -G "$root/contracts/fixtures/*.json" > /dev/null; then
     copied=$((copied + 1))
   done
 
-  echo "synced 3 catalogs, ${copied} app fixtures (${skipped} excluded), $(ls "$test_fixtures"/*.json | wc -l | tr -d ' ') test fixtures"
+  echo "synced 3 catalogs, ${copied} app fixtures (${skipped} excluded), $(ls "$test_fixtures"/*.json | wc -l | tr -d ' ') test fixtures, ${league_copied} league fixtures (in each), web tokens/contracts/registry regenerated"
 else
-  echo "synced 3 catalogs (no fixtures generated yet)"
+  echo "synced 3 catalogs (no fixtures generated yet), ${league_copied} league fixtures, web tokens/contracts/registry regenerated"
 fi

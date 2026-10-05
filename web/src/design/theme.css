@@ -1,0 +1,122 @@
+/*
+ * Hardwood Web's base stylesheet — page reset, and the widget grid every dashboard is laid out
+ * on. Imported once, after `generated/tokens.css`, from `main.tsx`.
+ *
+ * WHY THIS FILE, AND WHY IT IS THE ONLY HAND-WRITTEN FILE ALLOWED A RAW VALUE:
+ * every other stylesheet in `web/src` is linted by a `declaration-property-value-disallowed-list`
+ * rule that bans a literal hex/rgb/hsl color or an un-tokenised `box-shadow` outright (§7.9) —
+ * the whole point of §8's generated tokens is that an off-token value should not be as easy to
+ * reach for as an on-token one. Two things in this file cannot be expressed as a `var()` no
+ * matter how the tokens are generated, and both are handled here, once, rather than becoming an
+ * exception every widget's stylesheet has to remember:
+ *   1. `@media` query conditions cannot reference a CSS custom property — `834px` below is
+ *      `contracts/theme.json#/grid/regularBreakpointPx`, copied by hand. If `gen_theme.py`'s
+ *      hand-authored breakpoint ever changes, this literal has to change with it; nothing
+ *      enforces that today, which is a known gap (see this package's final report).
+ *   2. the tile-span arithmetic is a `calc()` over a per-tile custom property
+ *      (`--span-c`/`--span-r`, set inline by whichever component renders a tile from
+ *      `generated/tokens.ts`'s `SIZE_SPANS` — WP4's `WidgetContainer`) mixed with unitless
+ *      numbers; that expression is not a color or a shadow, so the lint rule does not touch it,
+ *      but it is exactly the kind of "raw-looking" declaration that belongs somewhere reviewers
+ *      already expect to find raw declarations.
+ *
+ * WHY FLEX, NOT GRID (§7.5):
+ * `WidgetFlowLayout` (WP4) walks widgets in document order and closes a row when the next span
+ * would overflow it; it never rearranges to fill a gap. `flex-wrap: wrap` with an explicit
+ * per-tile `width` is exactly that: greedy, order-preserving row packing. CSS Grid's
+ * `grid-auto-flow: dense` fills gaps by reordering content, which is a different (and, for a
+ * dashboard the reader arranged by hand, wrong) layout for the same widget list. `flex: 0 0 auto`
+ * is not `flex: 1` on purpose — the design review's own note is that a stray `flex-grow` produces
+ * a layout that looks fine until someone diffs a screenshot against the iPad.
+ *
+ * Exactly two breakpoints, because `contracts/widgets.json#/gridColumns` — and, upstream of it,
+ * iOS's `UserInterfaceSizeClass` — only ever distinguishes compact from regular. There is no
+ * third tier to add here without a third column count somewhere in the catalog first.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--hw-background);
+  color: var(--hw-text-primary);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* The widget grid. `--hw-cols` and `--hw-grid-gap` are set here, not in `generated/tokens.css`,
+   because they change with the breakpoint and the presentation — a token file holds constants,
+   not state that flips under a media query. */
+.hw-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hw-grid-gap);
+
+  --hw-cols: 2;
+  --hw-grid-gap: var(--hw-space-md);
+}
+
+.hw-grid > .hw-tile {
+  /* Set inline per tile by the component that renders it, from `SIZE_SPANS` in
+     `generated/tokens.ts`: --span-c (compact) and --span-r (regular). */
+  --span: var(--span-c);
+
+  flex: 0 0 auto;
+  min-width: 0;
+  width: calc(
+    (100% - (var(--hw-cols) - 1) * var(--hw-grid-gap)) * var(--span) / var(--hw-cols) +
+      (var(--span) - 1) * var(--hw-grid-gap)
+  );
+}
+
+/* contracts/theme.json#/grid/regularBreakpointPx — see the file banner: a media query cannot
+   read a custom property, so this number is copied by hand from gen_theme.py's one
+   hand-authored breakpoint (iPad-portrait width; iOS's `.regular` size class has no pixel
+   equivalent of its own). */
+@media (width >= 834px) {
+  .hw-grid {
+    --hw-cols: 4;
+  }
+
+  .hw-grid > .hw-tile {
+    --span: var(--span-r);
+  }
+}
+
+/* Broadsheet replaces the flowing multi-column grid with a single editorial column (§7.7) — one
+   column always, and a larger gap in place of card-to-card spacing, because there is no card. */
+[data-presentation="broadsheet"] .hw-grid {
+  --hw-cols: 1;
+  --hw-grid-gap: var(--hw-space-xl);
+}
+
+/* Respect a reduced-motion preference at the one place this file has an animation-adjacent
+   concern: nothing above animates, but every widget-level transition this file's `.hw-grid`
+   reflows (drag reorder, resize) should stop moving under this query, so state it once here
+   too rather than trust every future stylesheet to repeat it. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

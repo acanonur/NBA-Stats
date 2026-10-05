@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/stylelintrc.json",
+  "extends": "stylelint-config-standard",
+  "ignoreFiles": [
+    "dist/**",
+    "src/generated/tokens.css"
+  ],
+  "rules": {
+    "declaration-property-value-disallowed-list": {
+      "/.*/": [
+        "/#[0-9a-fA-F]{3,8}\\b/",
+        "/rgba?\\(/",
+        "/hsla?\\(/",
+        "/hwb\\(/",
+        "/lab\\(/",
+        "/lch\\(/",
+        "/oklab\\(/",
+        "/oklch\\(/",
+        "/color\\(/",
+        "/(?<![\\w-])(?:white|black|red|green|blue|orange|yellow|purple|gray|grey|silver|maroon|olive|lime|aqua|teal|navy|fuchsia|magenta|cyan|pink|brown|gold|coral|crimson|indigo|violet|turquoise|tomato)(?![\\w-])/"
+      ],
+      "box-shadow": [
+        "/^(?!var\\(--hw-shadow-[a-z-]+\\)$|none$).+/"
+      ]
+    },
+    "selector-class-pattern": null,
+    "keyframes-name-pattern": null,
+    "import-notation": "string",
+    "value-keyword-case": [
+      "lower",
+      {
+        "camelCaseSvgKeywords": true
+      }
+    ]
+  }
+}

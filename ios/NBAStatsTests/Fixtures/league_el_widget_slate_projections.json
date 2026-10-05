@@ -1,0 +1,2774 @@
+{
+  "league": "euroleague",
+  "date": null,
+  "round": 5,
+  "freshness": {
+    "league": "euroleague",
+    "syncVersion": 1,
+    "dataThrough": "2026-10-09",
+    "generatedAt": "2026-10-12T09:00:00Z",
+    "isDemo": true,
+    "sources": [
+      {
+        "key": "el.workbook",
+        "label": "Your workbook",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.dataService",
+        "label": "EuroLeague data service",
+        "state": "disabled",
+        "reason": "Demo league: this source is not used for invented games.",
+        "lastSuccessAt": null
+      },
+      {
+        "key": "el.manual",
+        "label": "Entered by hand",
+        "state": "ok",
+        "reason": null,
+        "lastSuccessAt": "2026-10-12T09:00:00Z"
+      }
+    ]
+  },
+  "model": {
+    "key": "hardwood",
+    "version": "el-1",
+    "kind": "latest",
+    "computedAt": "2026-10-12T09:00:00Z",
+    "inputsCutoff": "2026-10-12T09:00:00Z",
+    "computedAfterTipoff": null,
+    "capPolicy": "consistent",
+    "constants": [
+      {
+        "key": "priorRegression",
+        "value": 0.3,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "homeAdvantagePoints",
+        "value": 3.5,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "teamSd",
+        "value": 9.5,
+        "provenance": "workbookUnvalidated",
+        "isDefault": true
+      },
+      {
+        "key": "marginSd",
+        "value": 11.5,
+        "provenance": "workbookUnvalidated",
+        "isDefault": true
+      },
+      {
+        "key": "replacementPer40",
+        "value": 9.0,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "absorbShare",
+        "value": 0.6,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "boostCap",
+        "value": 1.35,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "rotationShare",
+        "value": 0.5,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "capPolicyConsistent",
+        "value": 1.0,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "squadReconcile",
+        "value": 1.0,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "overtimeScaling",
+        "value": 1.0,
+        "provenance": "default",
+        "isDefault": true
+      },
+      {
+        "key": "leagueAveragePoints",
+        "value": 84.5035,
+        "provenance": "derived",
+        "isDefault": false
+      }
+    ]
+  },
+  "games": [
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-01",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T17:30:00Z",
+        "venue": "Alderwick Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZA",
+          "abbr": "ZZA",
+          "name": "Alderwick Herons",
+          "shortName": "Alderwick",
+          "clubCode": "ZZA",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZP",
+          "abbr": "ZZP",
+          "name": "Pinecrest Panthers",
+          "shortName": "Pinecrest",
+          "clubCode": "ZZP",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZA",
+          "abbr": "ZZA",
+          "name": "Alderwick Herons",
+          "shortName": "Alderwick",
+          "clubCode": "ZZA",
+          "tvCode": null
+        },
+        "projectedPoints": 90.18267769629064,
+        "range80": {
+          "low": 78.00747769629064,
+          "high": 102.35787769629064
+        },
+        "fullStrengthPoints": 90.18267769629064,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0141867820032875,
+        "attackIndexAfterAvailability": 1.0141867820032875,
+        "defenceIndex": 1.008958214856137,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZP",
+          "abbr": "ZZP",
+          "name": "Pinecrest Panthers",
+          "shortName": "Pinecrest",
+          "clubCode": "ZZP",
+          "tvCode": null
+        },
+        "projectedPoints": 81.44336410969385,
+        "range80": {
+          "low": 69.26816410969384,
+          "high": 93.61856410969385
+        },
+        "fullStrengthPoints": 81.44336410969385,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9757550520222292,
+        "attackIndexAfterAvailability": 0.9757550520222292,
+        "defenceIndex": 1.0318584672809499,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-253",
+              "name": "Perrin Aldenmoor",
+              "position": "C",
+              "positionRaw": "Center",
+              "jersey": "79",
+              "headshotUrl": null,
+              "personCode": "demo-253"
+            },
+            "status": "out",
+            "chanceOfPlaying": 0.0,
+            "expectedPointsLost": 0.5616594917832853,
+            "expectedMinutesLost": 4.0,
+            "inForce": true,
+            "isStale": false,
+            "source": {
+              "kind": "clubStatement",
+              "label": "Pinecrest statement",
+              "url": "https://clubs.example.org/zzp/statement-15",
+              "publishedAt": "2026-10-05T15:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "margin": 8.739313586596793,
+      "marginRange80": {
+        "low": -5.999086413403207,
+        "high": 23.477713586596792
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZA",
+        "abbr": "ZZA",
+        "name": "Alderwick Herons",
+        "shortName": "Alderwick",
+        "clubCode": "ZZA",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZA by 8.7",
+      "combinedPoints": 171.62604180598447,
+      "combinedAvailabilityEffect": 0.0,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 18,
+          "away": 17,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 3
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-02",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T18:45:00Z",
+        "venue": "Oakhaven Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZO",
+          "abbr": "ZZO",
+          "name": "Oakhaven Elks",
+          "shortName": "Oakhaven",
+          "clubCode": "ZZO",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZQ",
+          "abbr": "ZZQ",
+          "name": "Quillon Ravens",
+          "shortName": "Quillon",
+          "clubCode": "ZZQ",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZO",
+          "abbr": "ZZO",
+          "name": "Oakhaven Elks",
+          "shortName": "Oakhaven",
+          "clubCode": "ZZO",
+          "tvCode": null
+        },
+        "projectedPoints": 84.08714092541132,
+        "range80": {
+          "low": 71.91194092541132,
+          "high": 96.26234092541132
+        },
+        "fullStrengthPoints": 84.08714092541132,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0123567782861402,
+        "attackIndexAfterAvailability": 1.0123567782861402,
+        "defenceIndex": 1.0515165859388653,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZQ",
+          "abbr": "ZZQ",
+          "name": "Quillon Ravens",
+          "shortName": "Quillon",
+          "clubCode": "ZZQ",
+          "tvCode": null
+        },
+        "projectedPoints": 84.6417162310158,
+        "range80": {
+          "low": 72.4665162310158,
+          "high": 96.81691623101581
+        },
+        "fullStrengthPoints": 84.66889074816189,
+        "availabilityEffect": -0.027174517146079324,
+        "attackIndex": 0.9725632681045303,
+        "attackIndexAfterAvailability": 0.9722574444937903,
+        "defenceIndex": 0.9624706400553843,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-272",
+              "name": "Ugo Cranwell",
+              "position": "G",
+              "positionRaw": "Guard",
+              "jersey": "36",
+              "headshotUrl": null,
+              "personCode": "demo-272"
+            },
+            "status": "out",
+            "chanceOfPlaying": 0.0,
+            "expectedPointsLost": 0.765386556662042,
+            "expectedMinutesLost": 3.1145717463848723,
+            "inForce": true,
+            "isStale": true,
+            "source": {
+              "kind": "clubStatement",
+              "label": "Quillon statement",
+              "url": "https://clubs.example.org/zzq/statement-16",
+              "publishedAt": "2026-10-07T00:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "margin": -0.5545753056044873,
+      "marginRange80": {
+        "low": -15.292975305604488,
+        "high": 14.183824694395513
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZQ",
+        "abbr": "ZZQ",
+        "name": "Quillon Ravens",
+        "shortName": "Quillon",
+        "clubCode": "ZZQ",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZQ by 0.6",
+      "combinedPoints": 168.72885715642713,
+      "combinedAvailabilityEffect": -0.027174517146079324,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 17,
+          "away": 16,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 1
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-03",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T19:30:00Z",
+        "venue": "Redmarsh Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZR",
+          "abbr": "ZZR",
+          "name": "Redmarsh Pikes",
+          "shortName": "Redmarsh",
+          "clubCode": "ZZR",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZN",
+          "abbr": "ZZN",
+          "name": "Northwick Bison",
+          "shortName": "Northwick",
+          "clubCode": "ZZN",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZR",
+          "abbr": "ZZR",
+          "name": "Redmarsh Pikes",
+          "shortName": "Redmarsh",
+          "clubCode": "ZZR",
+          "tvCode": null
+        },
+        "projectedPoints": 90.76702608402843,
+        "range80": {
+          "low": 78.59182608402843,
+          "high": 102.94222608402843
+        },
+        "fullStrengthPoints": 90.76702608402843,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0114584378889753,
+        "attackIndexAfterAvailability": 1.0114584378889753,
+        "defenceIndex": 1.0196261931885617,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZN",
+          "abbr": "ZZN",
+          "name": "Northwick Bison",
+          "shortName": "Northwick",
+          "clubCode": "ZZN",
+          "tvCode": null
+        },
+        "projectedPoints": 81.51427216141828,
+        "range80": {
+          "low": 69.33907216141827,
+          "high": 93.68947216141828
+        },
+        "fullStrengthPoints": 81.51427216141828,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9663690436676635,
+        "attackIndexAfterAvailability": 0.9663690436676635,
+        "defenceIndex": 1.0414785799059243,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": 9.252753922610154,
+      "marginRange80": {
+        "low": -5.4856460773898466,
+        "high": 23.991153922610152
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZR",
+        "abbr": "ZZR",
+        "name": "Redmarsh Pikes",
+        "shortName": "Redmarsh",
+        "clubCode": "ZZR",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZR by 9.3",
+      "combinedPoints": 172.2812982454467,
+      "combinedAvailabilityEffect": 0.0,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 16,
+          "away": 15,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 2
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-04",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T20:45:00Z",
+        "venue": "Mistral Point Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZM",
+          "abbr": "ZZM",
+          "name": "Mistral Point Gulls",
+          "shortName": "Mistral Point",
+          "clubCode": "ZZM",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZS",
+          "abbr": "ZZS",
+          "name": "Silverlake Orcas",
+          "shortName": "Silverlake",
+          "clubCode": "ZZS",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZM",
+          "abbr": "ZZM",
+          "name": "Mistral Point Gulls",
+          "shortName": "Mistral Point",
+          "clubCode": "ZZM",
+          "tvCode": null
+        },
+        "projectedPoints": 86.09153362960889,
+        "range80": {
+          "low": 73.91633362960889,
+          "high": 98.2667336296089
+        },
+        "fullStrengthPoints": 86.09153362960889,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0020474180102668,
+        "attackIndexAfterAvailability": 1.0020474180102668,
+        "defenceIndex": 0.9790472366716884,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZS",
+          "abbr": "ZZS",
+          "name": "Silverlake Orcas",
+          "shortName": "Silverlake",
+          "clubCode": "ZZS",
+          "tvCode": null
+        },
+        "projectedPoints": 79.25635982149417,
+        "range80": {
+          "low": 67.08115982149417,
+          "high": 91.43155982149418
+        },
+        "fullStrengthPoints": 79.7805384418439,
+        "availabilityEffect": -0.5241786203497298,
+        "attackIndex": 0.9854667313939366,
+        "attackIndexAfterAvailability": 0.9791309386770629,
+        "defenceIndex": 0.9960439991864826,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-302",
+              "name": "Leopold Brakenridge",
+              "position": "G",
+              "positionRaw": "Guard",
+              "jersey": "62",
+              "headshotUrl": null,
+              "personCode": "demo-302"
+            },
+            "status": "out",
+            "chanceOfPlaying": 0.0,
+            "expectedPointsLost": 3.5824916496258754,
+            "expectedMinutesLost": 9.973333333333333,
+            "inForce": true,
+            "isStale": true,
+            "source": {
+              "kind": "manual",
+              "label": "Entered by hand",
+              "url": null,
+              "publishedAt": "2026-10-05T21:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "margin": 6.8351738081147175,
+      "marginRange80": {
+        "low": -7.903226191885283,
+        "high": 21.573573808114716
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZM",
+        "abbr": "ZZM",
+        "name": "Mistral Point Gulls",
+        "shortName": "Mistral Point",
+        "clubCode": "ZZM",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZM by 6.8",
+      "combinedPoints": 165.34789345110306,
+      "combinedAvailabilityEffect": -0.524178620349744,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 16,
+          "away": 17,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 1
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-05",
+        "date": "2026-10-15",
+        "tipoffUtc": "2026-10-15T21:30:00Z",
+        "venue": "Thornfield Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZT",
+          "abbr": "ZZT",
+          "name": "Thornfield Tigers",
+          "shortName": "Thornfield",
+          "clubCode": "ZZT",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZL",
+          "abbr": "ZZL",
+          "name": "Larkspur Rams",
+          "shortName": "Larkspur",
+          "clubCode": "ZZL",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZT",
+          "abbr": "ZZT",
+          "name": "Thornfield Tigers",
+          "shortName": "Thornfield",
+          "clubCode": "ZZT",
+          "tvCode": null
+        },
+        "projectedPoints": 83.19871460996328,
+        "range80": {
+          "low": 71.02351460996327,
+          "high": 95.37391460996328
+        },
+        "fullStrengthPoints": 83.3549373768963,
+        "availabilityEffect": -0.15622276693302695,
+        "attackIndex": 0.9542220457936248,
+        "attackIndexAfterAvailability": 0.9523953032820305,
+        "defenceIndex": 1.0096320872123963,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-322",
+              "name": "Perrin Marwood",
+              "position": "G",
+              "positionRaw": "Guard",
+              "jersey": "62",
+              "headshotUrl": null,
+              "personCode": "demo-322"
+            },
+            "status": "doubtful",
+            "chanceOfPlaying": 0.25,
+            "expectedPointsLost": 1.241296695503515,
+            "expectedMinutesLost": 3.8016949152542363,
+            "inForce": true,
+            "isStale": false,
+            "source": {
+              "kind": "pressArticle",
+              "label": "example.org news",
+              "url": "https://news.example.org/injuries/19",
+              "publishedAt": "2026-10-09T00:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZL",
+          "abbr": "ZZL",
+          "name": "Larkspur Rams",
+          "shortName": "Larkspur",
+          "clubCode": "ZZL",
+          "tvCode": null
+        },
+        "projectedPoints": 83.79350893228616,
+        "range80": {
+          "low": 71.61830893228615,
+          "high": 95.96870893228616
+        },
+        "fullStrengthPoints": 83.90973635085633,
+        "availabilityEffect": -0.11622741857017616,
+        "attackIndex": 1.0040119728008219,
+        "attackIndexAfterAvailability": 1.0026496790933765,
+        "defenceIndex": 1.0120274508041958,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-182",
+              "name": "Zeline Lavender",
+              "position": "G",
+              "positionRaw": "Guard",
+              "jersey": "55",
+              "headshotUrl": null,
+              "personCode": "demo-182"
+            },
+            "status": "probable",
+            "chanceOfPlaying": 0.85,
+            "expectedPointsLost": 0.8825464657677387,
+            "expectedMinutesLost": 2.643333333333334,
+            "inForce": true,
+            "isStale": false,
+            "source": {
+              "kind": "manual",
+              "label": "Entered by hand",
+              "url": null,
+              "publishedAt": "2026-10-11T01:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "margin": -0.5947943223228833,
+      "marginRange80": {
+        "low": -15.333194322322884,
+        "high": 14.143605677677117
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZL",
+        "abbr": "ZZL",
+        "name": "Larkspur Rams",
+        "shortName": "Larkspur",
+        "clubCode": "ZZL",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZL by 0.6",
+      "combinedPoints": 166.99222354224943,
+      "combinedAvailabilityEffect": -0.2724501855032031,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 13,
+          "away": 17,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 0
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-06",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T17:45:00Z",
+        "venue": "Kestrelburn Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZK",
+          "abbr": "ZZK",
+          "name": "Kestrelburn Owls",
+          "shortName": "Kestrelburn",
+          "clubCode": "ZZK",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZB",
+          "abbr": "ZZB",
+          "name": "Brindlemoor Stags",
+          "shortName": "Brindlemoor",
+          "clubCode": "ZZB",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZK",
+          "abbr": "ZZK",
+          "name": "Kestrelburn Owls",
+          "shortName": "Kestrelburn",
+          "clubCode": "ZZK",
+          "tvCode": null
+        },
+        "projectedPoints": 79.81631784563922,
+        "range80": {
+          "low": 67.64111784563922,
+          "high": 91.99151784563922
+        },
+        "fullStrengthPoints": 79.81631784563922,
+        "availabilityEffect": 0.0,
+        "attackIndex": 0.9498060221044211,
+        "attackIndexAfterAvailability": 0.9498060221044211,
+        "defenceIndex": 1.0388517161077613,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZB",
+          "abbr": "ZZB",
+          "name": "Brindlemoor Stags",
+          "shortName": "Brindlemoor",
+          "clubCode": "ZZB",
+          "tvCode": null
+        },
+        "projectedPoints": 85.26966367985824,
+        "range80": {
+          "low": 73.09446367985824,
+          "high": 97.44486367985824
+        },
+        "fullStrengthPoints": 86.77830951994345,
+        "availabilityEffect": -1.508645840085208,
+        "attackIndex": 1.0084489372774919,
+        "attackIndexAfterAvailability": 0.99126356118241,
+        "defenceIndex": 0.9726443750352458,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-22",
+              "name": "Sorrel Hartigan",
+              "position": "F",
+              "positionRaw": "Forward",
+              "jersey": "55",
+              "headshotUrl": null,
+              "personCode": "demo-22"
+            },
+            "status": "questionable",
+            "chanceOfPlaying": 0.5,
+            "expectedPointsLost": 6.241215434543001,
+            "expectedMinutesLost": 11.602908277404921,
+            "inForce": true,
+            "isStale": false,
+            "source": {
+              "kind": "pressArticle",
+              "label": "example.org news",
+              "url": "https://news.example.org/injuries/21",
+              "publishedAt": "2026-10-09T06:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "margin": -5.4533458342190215,
+      "marginRange80": {
+        "low": -20.19174583421902,
+        "high": 9.285054165780979
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZB",
+        "abbr": "ZZB",
+        "name": "Brindlemoor Stags",
+        "shortName": "Brindlemoor",
+        "clubCode": "ZZB",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZB by 5.5",
+      "combinedPoints": 165.08598152549746,
+      "combinedAvailabilityEffect": -1.5086458400851939,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 14,
+          "away": 15,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 2
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-07",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T18:30:00Z",
+        "venue": "Cindervale Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZC",
+          "abbr": "ZZC",
+          "name": "Cindervale Foxes",
+          "shortName": "Cindervale",
+          "clubCode": "ZZC",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZJ",
+          "abbr": "ZZJ",
+          "name": "Juniper Falls Badgers",
+          "shortName": "Juniper Falls",
+          "clubCode": "ZZJ",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZC",
+          "abbr": "ZZC",
+          "name": "Cindervale Foxes",
+          "shortName": "Cindervale",
+          "clubCode": "ZZC",
+          "tvCode": null
+        },
+        "projectedPoints": 87.32084157039398,
+        "range80": {
+          "low": 75.14564157039398,
+          "high": 99.49604157039398
+        },
+        "fullStrengthPoints": 87.32084157039401,
+        "availabilityEffect": -2.842170943040401e-14,
+        "attackIndex": 1.012145188654521,
+        "attackIndexAfterAvailability": 1.0121451886545207,
+        "defenceIndex": 0.983430786443974,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-43",
+              "name": "Quenby Netherfield",
+              "position": "G",
+              "positionRaw": "Guard",
+              "jersey": "21",
+              "headshotUrl": null,
+              "personCode": "demo-43"
+            },
+            "status": "questionable",
+            "chanceOfPlaying": 0.5,
+            "expectedPointsLost": 1.1945386527607755,
+            "expectedMinutesLost": 5.819893819493139,
+            "inForce": true,
+            "isStale": true,
+            "source": {
+              "kind": "pressArticle",
+              "label": "example.org news",
+              "url": "https://news.example.org/injuries/22",
+              "publishedAt": "2026-10-03T08:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZJ",
+          "abbr": "ZZJ",
+          "name": "Juniper Falls Badgers",
+          "shortName": "Juniper Falls",
+          "clubCode": "ZZJ",
+          "tvCode": null
+        },
+        "projectedPoints": 84.78165279242981,
+        "range80": {
+          "low": 72.6064527924298,
+          "high": 96.95685279242981
+        },
+        "fullStrengthPoints": 84.78165279242981,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.041253566792027,
+        "attackIndexAfterAvailability": 1.041253566792027,
+        "defenceIndex": 1.0004797230400864,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": 2.5391887779641706,
+      "marginRange80": {
+        "low": -12.19921122203583,
+        "high": 17.27758877796417
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZC",
+        "abbr": "ZZC",
+        "name": "Cindervale Foxes",
+        "shortName": "Cindervale",
+        "clubCode": "ZZC",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZC by 2.5",
+      "combinedPoints": 172.1024943628238,
+      "combinedAvailabilityEffect": -2.842170943040401e-14,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 14,
+          "away": 14,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 2
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-08",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T19:45:00Z",
+        "venue": "Ivorymead Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZI",
+          "abbr": "ZZI",
+          "name": "Ivorymead Hawks",
+          "shortName": "Ivorymead",
+          "clubCode": "ZZI",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZD",
+          "abbr": "ZZD",
+          "name": "Dunmarrow Wolves",
+          "shortName": "Dunmarrow",
+          "clubCode": "ZZD",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZI",
+          "abbr": "ZZI",
+          "name": "Ivorymead Hawks",
+          "shortName": "Ivorymead",
+          "clubCode": "ZZI",
+          "tvCode": null
+        },
+        "projectedPoints": 89.60995917169396,
+        "range80": {
+          "low": 77.43475917169395,
+          "high": 101.78515917169396
+        },
+        "fullStrengthPoints": 89.60995917169394,
+        "availabilityEffect": 1.4210854715202004e-14,
+        "attackIndex": 1.0223233691441866,
+        "attackIndexAfterAvailability": 1.0223233691441869,
+        "defenceIndex": 0.9627435703941033,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-141",
+              "name": "Yorrick Moorcroft",
+              "position": "C",
+              "positionRaw": "Center",
+              "jersey": "62",
+              "headshotUrl": null,
+              "personCode": "demo-141"
+            },
+            "status": "questionable",
+            "chanceOfPlaying": 0.5,
+            "expectedPointsLost": 0.466911572304278,
+            "expectedMinutesLost": 2.669227235747611,
+            "inForce": true,
+            "isStale": true,
+            "source": {
+              "kind": "pressArticle",
+              "label": "example.org news",
+              "url": "https://news.example.org/injuries/8",
+              "publishedAt": "2026-10-07T16:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZD",
+          "abbr": "ZZD",
+          "name": "Dunmarrow Wolves",
+          "shortName": "Dunmarrow",
+          "clubCode": "ZZD",
+          "tvCode": null
+        },
+        "projectedPoints": 79.65985761817313,
+        "range80": {
+          "low": 67.48465761817313,
+          "high": 91.83505761817314
+        },
+        "fullStrengthPoints": 79.99506264631025,
+        "availabilityEffect": -0.3352050281371106,
+        "attackIndex": 1.0047920887574315,
+        "attackIndexAfterAvailability": 1.000671823270069,
+        "defenceIndex": 1.0170165297002935,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-58",
+              "name": "Tavish Kirkwall",
+              "position": "G",
+              "positionRaw": "Guard",
+              "jersey": "1",
+              "headshotUrl": null,
+              "personCode": "demo-58"
+            },
+            "status": "questionable",
+            "chanceOfPlaying": 0.5,
+            "expectedPointsLost": 2.1703622643238587,
+            "expectedMinutesLost": 5.777422790202343,
+            "inForce": true,
+            "isStale": true,
+            "source": {
+              "kind": "clubStatement",
+              "label": "Dunmarrow statement",
+              "url": "https://clubs.example.org/zzd/statement-23",
+              "publishedAt": "2026-10-09T17:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "margin": 9.950101553520824,
+      "marginRange80": {
+        "low": -4.7882984464791765,
+        "high": 24.688501553520823
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZI",
+        "abbr": "ZZI",
+        "name": "Ivorymead Hawks",
+        "shortName": "Ivorymead",
+        "clubCode": "ZZI",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZI by 10.0",
+      "combinedPoints": 169.2698167898671,
+      "combinedAvailabilityEffect": -0.3352050281370964,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 17,
+          "away": 15,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 1
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-09",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T20:30:00Z",
+        "venue": "Eastmere Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZE",
+          "abbr": "ZZE",
+          "name": "Eastmere Falcons",
+          "shortName": "Eastmere",
+          "clubCode": "ZZE",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZH",
+          "abbr": "ZZH",
+          "name": "Harrowfield Bears",
+          "shortName": "Harrowfield",
+          "clubCode": "ZZH",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZE",
+          "abbr": "ZZE",
+          "name": "Eastmere Falcons",
+          "shortName": "Eastmere",
+          "clubCode": "ZZE",
+          "tvCode": null
+        },
+        "projectedPoints": 85.64072797363653,
+        "range80": {
+          "low": 73.46552797363653,
+          "high": 97.81592797363653
+        },
+        "fullStrengthPoints": 87.20453141563536,
+        "availabilityEffect": -1.5638034419988287,
+        "attackIndex": 1.0224422478258732,
+        "attackIndexAfterAvailability": 1.0037317279750493,
+        "defenceIndex": 0.9963504336563965,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-70",
+              "name": "Gideon Marwood",
+              "position": "C",
+              "positionRaw": "Center",
+              "jersey": "47",
+              "headshotUrl": null,
+              "personCode": "demo-70"
+            },
+            "status": "out",
+            "chanceOfPlaying": 0.0,
+            "expectedPointsLost": 8.647506798247107,
+            "expectedMinutesLost": 20.865536723163842,
+            "inForce": true,
+            "isStale": false,
+            "source": {
+              "kind": "manual",
+              "label": "Entered by hand",
+              "url": null,
+              "publishedAt": "2026-10-11T09:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZH",
+          "abbr": "ZZH",
+          "name": "Harrowfield Bears",
+          "shortName": "Harrowfield",
+          "clubCode": "ZZH",
+          "tvCode": null
+        },
+        "projectedPoints": 83.22637192340538,
+        "range80": {
+          "low": 71.05117192340538,
+          "high": 95.40157192340538
+        },
+        "fullStrengthPoints": 83.22637192340538,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0092793174828847,
+        "attackIndexAfterAvailability": 1.0092793174828847,
+        "defenceIndex": 0.9890576662364907,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "margin": 2.4143560502311487,
+      "marginRange80": {
+        "low": -12.324043949768852,
+        "high": 17.152756050231147
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZE",
+        "abbr": "ZZE",
+        "name": "Eastmere Falcons",
+        "shortName": "Eastmere",
+        "clubCode": "ZZE",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZE by 2.4",
+      "combinedPoints": 168.8670998970419,
+      "combinedAvailabilityEffect": -1.5638034419988571,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 13,
+          "away": 18,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 3
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    },
+    {
+      "league": "euroleague",
+      "game": {
+        "league": "euroleague",
+        "gameId": "E2026-R05-10",
+        "date": "2026-10-16",
+        "tipoffUtc": "2026-10-16T21:45:00Z",
+        "venue": "Glimmerton Hall",
+        "isNeutral": false,
+        "round": 5,
+        "phase": "RS",
+        "status": "scheduled",
+        "home": {
+          "league": "euroleague",
+          "id": "ZZG",
+          "abbr": "ZZG",
+          "name": "Glimmerton Lynx",
+          "shortName": "Glimmerton",
+          "clubCode": "ZZG",
+          "tvCode": null
+        },
+        "away": {
+          "league": "euroleague",
+          "id": "ZZF",
+          "abbr": "ZZF",
+          "name": "Fernhollow Otters",
+          "shortName": "Fernhollow",
+          "clubCode": "ZZF",
+          "tvCode": null
+        },
+        "homePts": null,
+        "awayPts": null,
+        "overtimePeriods": null
+      },
+      "freshness": {
+        "league": "euroleague",
+        "syncVersion": 1,
+        "dataThrough": "2026-10-09",
+        "generatedAt": "2026-10-12T09:00:00Z",
+        "isDemo": true,
+        "sources": [
+          {
+            "key": "el.workbook",
+            "label": "Your workbook",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.dataService",
+            "label": "EuroLeague data service",
+            "state": "disabled",
+            "reason": "Demo league: this source is not used for invented games.",
+            "lastSuccessAt": null
+          },
+          {
+            "key": "el.manual",
+            "label": "Entered by hand",
+            "state": "ok",
+            "reason": null,
+            "lastSuccessAt": "2026-10-12T09:00:00Z"
+          }
+        ]
+      },
+      "home": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZG",
+          "abbr": "ZZG",
+          "name": "Glimmerton Lynx",
+          "shortName": "Glimmerton",
+          "clubCode": "ZZG",
+          "tvCode": null
+        },
+        "projectedPoints": 88.13861444710494,
+        "range80": {
+          "low": 75.96341444710494,
+          "high": 100.31381444710495
+        },
+        "fullStrengthPoints": 88.13861444710494,
+        "availabilityEffect": 0.0,
+        "attackIndex": 1.0272202879170038,
+        "attackIndexAfterAvailability": 1.0272202879170038,
+        "defenceIndex": 1.015402937123859,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": []
+      },
+      "away": {
+        "team": {
+          "league": "euroleague",
+          "id": "ZZF",
+          "abbr": "ZZF",
+          "name": "Fernhollow Otters",
+          "shortName": "Fernhollow",
+          "clubCode": "ZZF",
+          "tvCode": null
+        },
+        "projectedPoints": 84.15716834300198,
+        "range80": {
+          "low": 71.98196834300198,
+          "high": 96.33236834300199
+        },
+        "fullStrengthPoints": 84.15716834300201,
+        "availabilityEffect": -2.842170943040401e-14,
+        "attackIndex": 1.001189512549502,
+        "attackIndexAfterAvailability": 1.0011895125495018,
+        "defenceIndex": 0.9952180021475763,
+        "capBinding": false,
+        "unassignedPoints": 0.0,
+        "replacementPoints": 0.0,
+        "keyAbsences": [
+          {
+            "player": {
+              "league": "euroleague",
+              "id": "demo-90",
+              "name": "Quenby Beaumont",
+              "position": "F",
+              "positionRaw": "Forward",
+              "jersey": "77",
+              "headshotUrl": null,
+              "personCode": "demo-90"
+            },
+            "status": "doubtful",
+            "chanceOfPlaying": 0.25,
+            "expectedPointsLost": 0.7208049106017598,
+            "expectedMinutesLost": 3.5,
+            "inForce": true,
+            "isStale": true,
+            "source": {
+              "kind": "pressArticle",
+              "label": "example.org news",
+              "url": "https://news.example.org/injuries/5",
+              "publishedAt": "2026-10-03T21:00:00Z",
+              "asOf": "2026-10-12T09:00:00Z",
+              "fetchedAt": "2026-10-12T09:00:00Z",
+              "snapshotId": null
+            }
+          }
+        ]
+      },
+      "margin": 3.9814461041029574,
+      "marginRange80": {
+        "low": -10.756953895897043,
+        "high": 18.719846104102956
+      },
+      "projectedWinner": {
+        "league": "euroleague",
+        "id": "ZZG",
+        "abbr": "ZZG",
+        "name": "Glimmerton Lynx",
+        "shortName": "Glimmerton",
+        "clubCode": "ZZG",
+        "tvCode": null
+      },
+      "isTossUp": false,
+      "summary": "ZZG by 4.0",
+      "combinedPoints": 172.29578279010693,
+      "combinedAvailabilityEffect": -2.842170943040401e-14,
+      "homeAdvantagePoints": 3.5,
+      "venueAssumed": false,
+      "intervalBasis": "assumed",
+      "model": {
+        "key": "hardwood",
+        "version": "el-1",
+        "kind": "latest",
+        "computedAt": "2026-10-12T09:00:00Z",
+        "inputsCutoff": "2026-10-12T09:00:00Z",
+        "computedAfterTipoff": false,
+        "capPolicy": "consistent",
+        "constants": [
+          {
+            "key": "priorRegression",
+            "value": 0.3,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "homeAdvantagePoints",
+            "value": 3.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "teamSd",
+            "value": 9.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "marginSd",
+            "value": 11.5,
+            "provenance": "workbookUnvalidated",
+            "isDefault": true
+          },
+          {
+            "key": "replacementPer40",
+            "value": 9.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "absorbShare",
+            "value": 0.6,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "boostCap",
+            "value": 1.35,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "rotationShare",
+            "value": 0.5,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "capPolicyConsistent",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "squadReconcile",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "overtimeScaling",
+            "value": 1.0,
+            "provenance": "default",
+            "isDefault": true
+          },
+          {
+            "key": "leagueAveragePoints",
+            "value": 84.5035,
+            "provenance": "derived",
+            "isDefault": false
+          }
+        ]
+      },
+      "assumptions": {
+        "assumedAvailable": {
+          "home": 15,
+          "away": 16,
+          "basis": "noEntry"
+        },
+        "staleEntriesIgnored": 2
+      },
+      "result": null,
+      "availability": "estimated",
+      "notes": [
+        "Defence indices are not changed by absences: absences move the projected scores only.",
+        "Players with no status in force are assumed to play; see assumptions.assumedAvailable."
+      ]
+    }
+  ],
+  "review": {
+    "byModel": [],
+    "reconstructed": {
+      "modelKey": "hardwood",
+      "games": 20,
+      "decidedGames": 18,
+      "winnersCalled": 13,
+      "tossUps": 2,
+      "meanAbsMarginMiss": 8.984091084571329,
+      "meanAbsScoreMiss": 6.706117775216993,
+      "meanAbsCombinedMiss": 10.840601456904844
+    }
+  },
+  "notes": [
+    "Projections are estimates. Players with no status in force are assumed to play."
+  ]
+}

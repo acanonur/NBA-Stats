@@ -1,0 +1,63 @@
+{
+  "league": "nba",
+  "freshness": {
+    "league": "nba",
+    "syncVersion": 1324,
+    "dataThrough": "2026-01-02",
+    "generatedAt": "2026-01-03T16:30:00Z",
+    "isDemo": true,
+    "sources": []
+  },
+  "sources": [
+    {
+      "key": "nba.stats",
+      "label": "NBA statistics",
+      "kind": "stats",
+      "enabled": true,
+      "state": "ok",
+      "reason": "Demo league: every game here is invented.",
+      "lastSuccessAt": "2026-01-03T16:30:00Z",
+      "lastError": null,
+      "robotsCheckedOn": null,
+      "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+    },
+    {
+      "key": "nba.rosters",
+      "label": "Team rosters (listed positions)",
+      "kind": "rosters",
+      "enabled": true,
+      "state": "ok",
+      "reason": "Demo league: listed positions are the demo's own labels, not a roster.",
+      "lastSuccessAt": null,
+      "lastError": null,
+      "robotsCheckedOn": null,
+      "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+    },
+    {
+      "key": "nba.injuryReport",
+      "label": "NBA official injury report",
+      "kind": "injuryReport",
+      "enabled": true,
+      "state": "ok",
+      "reason": "Not yet confirmed against a real report: the reader was built from the documented layout and has not read one on this machine.",
+      "lastSuccessAt": "2026-01-03T15:31:00Z",
+      "lastError": null,
+      "robotsCheckedOn": null,
+      "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+    },
+    {
+      "key": "nba.news.1",
+      "label": "Example Hoops Wire",
+      "kind": "news",
+      "enabled": true,
+      "state": "ok",
+      "reason": null,
+      "lastSuccessAt": "2026-01-03T15:00:00Z",
+      "lastError": null,
+      "robotsCheckedOn": "2026-01-03",
+      "attribution": "Headlines: Example Hoops Wire."
+    }
+  ],
+  "dayOneNotice": "Demo league: every game and player here is invented, shown so each screen works offline. Real injury statuses are not shown next to invented games. Headlines are a title, a link, a date and the outlet's name, from the feeds that are on.",
+  "attribution": "Stats via NBA.com. Injury status from the NBA's official injury report."
+}

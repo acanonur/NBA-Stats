@@ -10,9 +10,11 @@ import XCTest
 final class CatalogTests: XCTestCase {
 
     /// The counts the contract commits to (`contracts/CONTRACT.md`, the table in its header).
-    private let expectedMetricCount = 61
-    private let expectedWidgetCount = 14
-    private let expectedPresetCount = 11
+    /// Every kind in the catalog has a Swift widget: the sixteen the app began with and the four
+    /// league widgets the Mac phase added.
+    private let expectedMetricCount = 62
+    private let expectedWidgetCount = 20
+    private let expectedPresetCount = 12
 
     /// The field types whose value is a subject the reader has to choose; the catalog gives them
     /// no default on purpose.
@@ -427,13 +429,15 @@ final class CatalogTests: XCTestCase {
         let document = try JSONDecoder().decode(JSONValue.self, from: data)
         let rawKinds = (document["widgets"]?.arrayValue ?? []).compactMap { $0["kind"]?.stringValue }
 
-        XCTAssertEqual(rawKinds.count, expectedWidgetCount, "The widget catalog is not the size the contract says")
+        let builtKinds = Set(WidgetKind.allCases.map { $0.rawValue })
+        XCTAssertEqual(rawKinds.count, expectedWidgetCount,
+                       "The widget catalog is not the size the contract says")
         XCTAssertEqual(Set(rawKinds).count, rawKinds.count, "Two catalog entries share a kind")
-        XCTAssertEqual(Set(rawKinds), Set(WidgetKind.allCases.map { $0.rawValue }), """
+        XCTAssertEqual(Set(rawKinds), builtKinds, """
             The bundled catalog and WidgetKind disagree. In the catalog only: \
-            \(Set(rawKinds).subtracting(WidgetKind.allCases.map { $0.rawValue }).sorted()); \
+            \(Set(rawKinds).subtracting(builtKinds).sorted()); \
             in WidgetKind only: \
-            \(Set(WidgetKind.allCases.map { $0.rawValue }).subtracting(rawKinds).sorted()).
+            \(builtKinds.subtracting(rawKinds).sorted()).
             """)
 
         for kind in WidgetKind.allCases {

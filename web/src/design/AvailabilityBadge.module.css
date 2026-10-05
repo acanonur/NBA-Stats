@@ -1,0 +1,64 @@
+/*
+ * `ios/NBAStats/DesignSystem/AvailabilityBadge.swift`'s marker, ported. `"full"` renders no DOM
+ * at all (`AvailabilityBadge.tsx` returns `null` before any of these classes are ever reached) —
+ * this stylesheet only has to cover the three eras that *do* draw something.
+ */
+
+.trigger {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.marker {
+  display: inline-flex;
+}
+
+.capsule {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--hw-space-xs);
+  border-radius: var(--hw-radius-chip);
+}
+
+.capsuleEstimated {
+  color: var(--hw-warning);
+  background-color: color-mix(in sRGB, var(--hw-warning) 15%, transparent);
+  border: 1px solid color-mix(in sRGB, var(--hw-warning) 35%, transparent);
+}
+
+.capsulePartial {
+  color: var(--hw-warning);
+  background-color: color-mix(in sRGB, var(--hw-warning) 15%, transparent);
+}
+
+.capsuleUnavailable {
+  color: var(--hw-text-tertiary);
+  padding: 1px var(--hw-space-xs);
+  border-radius: var(--hw-radius-pill);
+  border: 1px dashed var(--hw-separator);
+}
+
+.dot {
+  box-sizing: border-box;
+  border-radius: var(--hw-radius-pill);
+  flex: none;
+}
+
+.dotEstimated {
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid var(--hw-warning);
+}
+
+.dotPartial {
+  width: 6px;
+  height: 6px;
+  border: 1.5px solid var(--hw-warning);
+}
