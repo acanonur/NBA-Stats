@@ -828,9 +828,12 @@ compiles. What they do catch, in seconds:
 * betting vocabulary in a string the app displays; a scene root missing an environment object;
   the Mac plist and project settings drifting.
 
-**What nothing here could check:** that any of it compiles, that any screen draws as intended, and
-anything about the live EuroLeague service (RUNBOOK §1c and [EUROLEAGUE.md](EUROLEAGUE.md) §8 say
-what is unconfirmed). `.github/workflows/ios.yml` builds the iOS destination only.
+**What CI checks now:** the Mac app compiles, links, signs and packs into `Hardwood.dmg`, and the
+unit tests pass on macOS (`.github/workflows/mac.yml`); the iOS destination builds and its tests pass
+on an iPhone simulator (`.github/workflows/ios.yml`). Both use the newest Xcode on GitHub's runners.
+
+**What nothing here could check:** that every screen draws as intended, and anything about the live
+EuroLeague service (RUNBOOK §1c and [EUROLEAGUE.md](EUROLEAGUE.md) §8 say what is unconfirmed).
 
 ---
 

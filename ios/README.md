@@ -471,9 +471,19 @@ python3 scripts/check_swift_portability.py
 python3 scripts/check_contracts.py
 ```
 
-`.github/workflows/ios.yml` builds and tests the iOS destination only. It does not build the Mac
-destination and does not run the portability script, so on a change to `ios/` the Mac build is
-checked only by you, in Xcode.
+Two workflows compile this code on every push that touches it, each with the newest Xcode on
+GitHub's macOS runner:
+
+* `.github/workflows/ios.yml` builds the iOS destination on an iPhone simulator and runs the unit
+  tests there.
+* `.github/workflows/mac.yml` runs `scripts/make_dmg.sh` -- a Release build of the Mac app, signed to
+  run locally, packed into `Hardwood.dmg` and attached to the run as a download -- then runs the
+  unit tests on macOS.
+
+Until October 2026 the iOS workflow could not fail: it piped xcodebuild into xcpretty without
+`pipefail`, so a step took xcpretty's exit status, and for a while it was building nothing at all
+because the runner had dropped the iOS platform its pinned Xcode needed. Both workflows now set
+`pipefail`, and neither runs the portability script, which stays a local check.
 
 ---
 
