@@ -1,12 +1,19 @@
-# Hardwood — iOS app
+# Hardwood — the iOS and Mac app
 
-An editable advanced-stats dashboard for NBA data. SwiftUI, iOS 17+, Swift Charts, **no
-third-party packages**.
+An editable advanced-stats dashboard for NBA data, and, on the Mac, a native workbench for the NBA
+and the EuroLeague: matchups, points allowed by opponent position, injuries and news with their
+sources. SwiftUI, iOS 17+ and macOS 14+, Swift Charts, **no third-party packages**.
 
 The app is a grid of widgets the reader arranges themselves: drag to reorder, resize, configure
 every widget from a schema the server ships, or start from one of twelve presets. Every number is
 era-honest — a stat the league did not record in a given season renders as an em dash with an
 explanation, never as a zero.
+
+**One target, two platforms.** `Hardwood` builds for iOS 17 and for macOS 14 from the same
+sources. **The Mac is the product** (a sidebar, native tables, an inspector, menus, a Settings
+window — [`docs/MAC.md`](../docs/MAC.md) is its manual); the iPhone and iPad build keeps its tab
+bar and must keep compiling. [*One target, two platforms*](#one-target-two-platforms) below is the
+rule for where platform-specific code may live.
 
 ---
 
@@ -16,31 +23,55 @@ explanation, never as a zero.
 open ios/NBAStats.xcodeproj
 ```
 
-* **Xcode 16 or newer is required.** The project uses *file-system synchronized groups*
+* **Xcode 16 or newer is required** (itself needing a recent macOS, Sonoma 14.5 or later at the
+  time of writing). The project uses *file-system synchronized groups*
   (`PBXFileSystemSynchronizedRootGroup`, project object version 77), so the `NBAStats/` and
   `NBAStatsTests/` folders are mirrored into the targets automatically. Adding a Swift file is
   just putting it in the right folder — there is nothing to add to the project file, and no merge
   conflicts in `project.pbxproj` when two people add files at once.
 * Two targets: **Hardwood** (the app, module name `Hardwood`) and **HardwoodTests** (unit tests,
-  hosted by the app).
-* Deployment target: **iOS 17.0**. Swift language mode 5.
+  hosted by the app). Both build for iOS, the iOS simulator and macOS. There is no Mac Catalyst and
+  no "Designed for iPad" build: SwiftUI targets the Mac directly.
+* Deployment targets: **iOS 17.0** and **macOS 14.0**. Swift language mode 5.
+* Two property lists, because the platforms need different keys: `Info.plist` (iOS) and
+  `Info-macOS.plist` (selected by `INFOPLIST_FILE[sdk=macosx*]`). Both live in `ios/`, outside the
+  synchronized `NBAStats/` folder: a plist inside that folder is copied into the bundle as a
+  resource while the build also produces it, and the build stops with "Multiple commands produce".
 
-Select the **Hardwood** scheme and an iPhone simulator, and press Run. Nothing else is needed —
-the app launches with no backend (see *Demo mode* below).
+**To run on an iPhone simulator,** select the **Hardwood** scheme and an iPhone simulator, and press
+Run. Nothing else is needed — the app launches with no backend (see *Demo mode* below).
+
+**To run on the Mac,** install the server once (`backend/scripts/macos/install.sh`; it runs under
+launchd, see [`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c), choose **My Mac** as the run
+destination, and press Run. The Mac build starts on live data at `http://127.0.0.1:8000/v1`. The
+whole story — first launch, demo or live, signing, what each screen shows, how to paste Xcode errors
+back — is in [`docs/MAC.md`](../docs/MAC.md).
 
 ---
 
 ## Running with a backend
 
-The app reads its base URL from `Info.plist`, and a value the reader sets in **Settings › Stats
-server › Server** overrides it. Out of the box it points at a local backend:
+The app reads its base URL from its property list, and a value the reader sets in **Settings ›
+Stats server › Server** overrides it. Out of the box it points at a local backend:
 
 ```xml
 <key>HardwoodAPIBaseURL</key>
-<string>http://localhost:8000/v1</string>
+<string>http://localhost:8000/v1</string>        <!-- Info.plist, iOS -->
+<string>http://127.0.0.1:8000/v1</string>        <!-- Info-macOS.plist, the Mac -->
 ```
 
-To run against the service in this repository:
+The Mac uses `127.0.0.1` because the installed server listens on IPv4 loopback only, and
+`localhost` may resolve to `::1` first.
+
+**On the Mac, use the installed server, not `serve_dev.sh`.** `backend/scripts/macos/install.sh`
+runs the API, the NBA watcher and a worker under launchd, with a private API key in
+`~/Library/Application Support/Hardwood/hardwood.env`
+([`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c). The Mac app reads that key from the file itself at
+launch (only when none is stored, and it never shows or rewrites it), so nothing needs copying by
+hand. With a key set, the server asks for it on every read except `/v1/health`, and a change made
+from the app (recording an injury status, pasting a headline link) is accepted only with it.
+
+To run against the demo service in this repository instead (any platform):
 
 ```bash
 # from the repository root
@@ -59,23 +90,36 @@ on another machine, put its URL in **Settings › Stats server › Server**
 (`http://192.168.1.20:8000/v1`, say) and press **Test Connection** — that saves what you typed and
 then calls `/v1/health` on the live server, whatever demo mode is set to.
 
-* `NSAllowsLocalNetworking` is already set, so a plain-HTTP LAN address works without further
-  App Transport Security changes.
+* `NSAllowsLocalNetworking` is already set in both plists, so a plain-HTTP LAN address works
+  without further App Transport Security changes.
 * If the server is started with `HARDWOOD_API_KEY` set, put the same key in **Settings › Stats
-  server › API key**; it is sent as `X-API-Key` on every request except `/v1/health`.
+  server › API key** (on the Mac, **Settings › Leagues › Read API key from hardwood.env** does it
+  for you); it is sent as `X-API-Key` on every request except `/v1/health`.
+* The app sends no `Origin` header and no custom "I am the Mac app" header. The server treats a
+  request that carries an `Origin` as a browser's (session, CSRF, same origin), and a header any web
+  page can also send is not a credential, so the key alone is what authorises a native change.
 * Leaving the Server field empty goes back to the address the build shipped with.
 * Both URL and key live in `UserDefaults` (`hardwood.api.baseURL`, `hardwood.api.apiKey`) and take
   effect immediately — no relaunch.
 
 ### Demo mode
 
-`HardwoodDemoModeDefault` is `true` in `Info.plist`, so a **fresh install serves the bundled
-golden fixtures** and every screen works with no server at all. The fixtures in
-`NBAStats/Resources/Fixtures/` are byte-identical copies of `contracts/fixtures/`, which is what
-the backend's own tests decode — so demo mode shows real shapes rather than invented ones.
+`HardwoodDemoModeDefault` is `true` in `Info.plist`, so a **fresh iOS install serves the bundled
+golden fixtures** and every screen works with no server at all. `Info-macOS.plist` sets it to
+`false`: the Mac app is meant to read the server on the same machine, and offers demo data from its
+server banner (and from the same Settings toggle) when that server is not answering. The fixtures
+in `NBAStats/Resources/Fixtures/` are byte-identical copies of `contracts/fixtures/`, which is what
+the backend's own tests decode — so demo mode shows real shapes rather than invented ones. The
+league screens read the same way: one recorded response of every NBA and EuroLeague route, copied
+in as `league_nba_<name>.json` and `league_el_<name>.json` (the prefix keeps the names unique,
+because Xcode flattens resource folders into the bundle root).
 
 Demo mode is the **Settings › Data source** toggle. Switching it clears the widget cache and
-re-resolves the dashboard, so the two data sources can never be mixed on screen.
+re-resolves the dashboard, so the two data sources can never be mixed on screen. It is read-only:
+a write to the server (an injury status, a headline link) is refused in demo mode with a sentence
+saying so. A league screen with no bundled fixture says "Demo data for this screen isn't bundled
+yet" rather than showing an error, and a EuroLeague dashboard tile never falls back to the NBA
+fixture of the same kind.
 
 ---
 
@@ -84,27 +128,46 @@ re-resolves the dashboard, so the two data sources can never be mixed on screen.
 ```
 ios/
 ├── NBAStats.xcodeproj          Xcode project (synchronized groups; nothing to hand-edit)
+├── project.yml                 An XcodeGen mirror of the project settings. The .xcodeproj is canonical.
+├── Info.plist                  The iOS property list (outside NBAStats/ on purpose, see above)
+├── Info-macOS.plist            The Mac property list: live data by default, 127.0.0.1
 ├── ARCHITECTURE.md             The binding type surface every module is written against
 ├── README.md                   This file
 ├── NBAStats/
-│   ├── App/                    HardwoodApp, AppEnvironment, RootView, background registration
+│   ├── App/                    HardwoodApp (the iOS WindowGroup, or the Mac's MacScenes),
+│   │                             AppEnvironment, RootView (iOS tabs), background registration
 │   ├── Core/                   Value types, JSONValue, the bundled catalog, layout documents,
-│   │                             layout migration, formatting.  Depends on nothing.
+│   │                             layout migration, formatting.  Depends on nothing.  Also the league
+│   │                             payloads: LeaguePayloads (every NBA and EuroLeague route's shape,
+│   │                             all-optional), LeagueFormatting (em dash for nil), LeaguePreviewData
 │   ├── DesignSystem/           Palette, typography, spacing, and the small shared views:
 │   │                             stat values, chips, sparkline, percentile bar, era badges,
-│   │                             loading / error / empty / unavailable tiles
+│   │                             loading / error / empty / unavailable tiles.  PlatformShims and
+│   │                             PlatformNavigation are where an iOS-versus-Mac difference is spelled
 │   ├── Networking/             APIClient (actor), DemoAPIClient (actor), Endpoints, DiskCache
-│   │                             (actor), DashboardService, SyncService, background refresh
+│   │                             (actor), DashboardService, SyncService, background refresh;
+│   │                             LeagueRoute and LeagueClient (actor) for the league routes
 │   ├── Dashboard/              The dashboard screen, the flowing grid, edit mode, the widget
 │   │                             catalog sheet, the schema-driven config sheet, preset gallery,
-│   │                             layout switcher, layout persistence
-│   ├── Widgets/                One view per widget kind, plus WidgetHost and the chart plumbing
+│   │                             layout switcher, layout persistence, the EuroLeague club picker
+│   ├── League/                 Views shared by the Mac screens and the four league widgets: chips,
+│   │                             banners, source line, matchup comparison, form chart, defence
+│   │                             bars, projection card, availability row.  Compiled for both platforms
+│   ├── Widgets/                One view per widget kind (twenty), plus WidgetHost and the chart
+│   │                             plumbing
 │   ├── Screens/                Search, player detail, settings, onboarding
-│   ├── Resources/
-│   │   ├── Contracts/          metrics.json, widgets.json, presets.json — copies of contracts/
-│   │   ├── Fixtures/           Golden payloads, which is what demo mode serves
-│   │   └── Assets.xcassets
-│   └── Info.plist
+│   ├── Mac/                    macOS only: every file is wrapped whole in #if os(macOS).
+│   │   ├── (root)              Scenes, the shared MacAppModel, bootstrap and the minute-by-minute
+│   │   │                         refresh, sidebar, commands (menus), the server banner, table chrome,
+│   │   │                         Copy Table, the Matchups & Defence dashboard
+│   │   ├── Screens/            One group of files per sidebar screen, and its tables
+│   │   ├── Settings/           The Settings window (General, Leagues, Model, About)
+│   │   └── Windows/            The read-only Box Score and Club windows
+│   └── Resources/
+│       ├── Contracts/          metrics.json, widgets.json, presets.json — copies of contracts/
+│       ├── Fixtures/           Golden payloads, which is what demo mode serves, including
+│       │                         league_nba_*.json and league_el_*.json for the league screens
+│       └── Assets.xcassets
 └── NBAStatsTests/
     ├── TestSupport.swift       Bundle lookup, temp directories, the stub API client
     ├── CatalogTests.swift      The bundled contracts decode and agree with each other
@@ -114,16 +177,23 @@ ios/
     ├── PayloadDecodingTests.swift  Every golden fixture, decoded into its payload type
     ├── ProjectionPayloadTests.swift The next-game projection: low ≤ mean ≤ high, every line
     │                                estimated, the correlated spread wider than the independent
+    ├── ProjectionBoardPayloadTests.swift, FantasyPayloadTests.swift   The board and the toolkit
     ├── PlayerAvatarTests.swift      Initials and the deterministic monogram colour
     ├── DashboardStoreTests.swift   Presets, undo, deleting the last dashboard
     ├── DashboardServiceTests.swift Mixed results, request splitting, stale-while-revalidate
     ├── SyncServiceTests.swift      Polling, cache invalidation
+    ├── LeaguePayloadDecodingTests.swift  Every league fixture decodes into its Swift type
+    ├── LeagueRouteTests.swift      The URL of every league route under both prefixes; what is on
+    │                                the wire (the key always, an Origin header never)
+    ├── LeagueFormattingTests.swift Nil is an em dash; a fraction is a percentage; a score needs both
+    ├── LeagueWidgetPayloadTests.swift  The four league widget fixtures decode as widget payloads
     └── Fixtures/               The golden payloads the tests decode
 ```
 
-Dependency direction is one way: `Core` → `DesignSystem` / `Networking` → `Dashboard` / `Widgets`
-→ `Screens` → `App`. `ARCHITECTURE.md` §2 is the binding list of type signatures; anything named
-there exists with exactly that shape.
+Dependency direction is one way: `Core` → `DesignSystem` / `Networking` → `League` →
+`Dashboard` / `Widgets` → `Screens` → `App` and `Mac` (which sit on top; `HardwoodApp` is the only
+file that names `MacScenes`). `ARCHITECTURE.md` §2 is the binding list of type signatures; anything
+named there exists with exactly that shape.
 
 ---
 
@@ -131,9 +201,14 @@ there exists with exactly that shape.
 
 ```bash
 xcodebuild test -scheme Hardwood -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild test -scheme Hardwood -destination 'platform=macOS'
 ```
 
-Or ⌘U in Xcode. The suite is pure unit tests — no network, no simulator UI automation — and
+Or ⌘U in Xcode, with the destination set to an iPhone simulator or to **My Mac**. The same suite
+runs on both: the test target builds for iOS, the iOS simulator and macOS. A test of iOS-only code
+is fenced (`#if os(iOS)`, as the grid's size-class assertions are, with the same assertions run
+against `columnSpan(isRegular:)` everywhere), and a test of Mac-only code is fenced
+`#if os(macOS)`. The suite is pure unit tests — no network, no simulator UI automation — and
 finishes in a few seconds.
 
 To run one case or one test:
@@ -170,26 +245,39 @@ the drift check:
 python3 scripts/check_contracts.py
 ```
 
-`CatalogTests` asserts the counts the contract commits to — **62 metrics, 20 widget kinds (16 this
-build renders plus the kinds listed in `NBAStats/Widgets/PENDING.txt`), 12 presets** — so a catalog
-change that the app has not been told about fails the iOS suite too.
+`sync_contracts.sh` also copies every recorded league response from
+`contracts/fixtures/leagues/{nba,el}/` into both bundles as `league_<nba|el>_<name>.json`, and it
+regenerates `contracts/theme.json` from `DesignSystem/Theme.swift`, `Typography.swift`,
+`BroadsheetTheme.swift` and `Core/DashboardLayout.swift`. **Run it after editing any of those
+four Swift files too**, or `check_contracts.py` check (i) fails: the web client's design tokens
+are scraped from them.
+
+`CatalogTests` asserts the counts the contract commits to — **62 metrics, 20 widget kinds (every
+one of them has a Swift widget), 12 presets** — so a catalog change that the app has not been told
+about fails the iOS suite too. The twenty are the sixteen the app began with plus the four league
+widgets: `team_matchup`, `defense_by_position`, `availability_report`, `slate_projections`.
 
 ---
 
 ## How the dashboard loads
 
-1. `DashboardStore` reads the layouts from `Application Support/Hardwood/Layouts.json`, running
-   each through `LayoutMigrator`: unknown widget kinds are dropped with a note the reader sees,
-   unknown configuration keys are stripped, missing keys take the catalog default, and a document
-   from a newer build is refused rather than corrupted.
+1. `DashboardStore` reads the layouts from `Layouts.json` in `Application Support/Hardwood/` on
+   iOS and in `Application Support/com.hardwood.nbastats/` on the Mac (the Mac's `Hardwood` folder
+   is the server's data folder, which `uninstall.sh --purge-data` deletes, so the dashboards must
+   not live there), running each through `LayoutMigrator`: unknown widget kinds are dropped with a
+   note the reader sees, unknown configuration keys are stripped, missing keys take the catalog
+   default, and a document from a newer build is refused rather than corrupted.
 2. `DashboardService` publishes whatever is in the disk cache immediately, marked stale.
 3. One `POST /v1/dashboard/resolve` carries the whole layout — split into as few requests as the
    contract's 24-widget cap allows — and each result replaces its tile independently.
 4. A failure never blanks a tile that already has numbers on it: it is marked stale instead.
    A widget that fails on its own renders an error inside its own tile with a retry button.
-5. `SyncService` polls `/v1/sync` on foreground, on pull-to-refresh and from a `BGAppRefreshTask`.
-   When the league's sync version moves it drops exactly the widget kinds the server names and
-   asks the dashboard to re-resolve.
+5. `SyncService` polls `/v1/sync` on foreground, on pull-to-refresh and, on iOS, from a
+   `BGAppRefreshTask`. When the league's sync version moves it drops exactly the widget kinds the
+   server names and asks the dashboard to re-resolve. macOS has no `BGTaskScheduler`: the
+   `BackgroundRefresh` calls compile to no-ops there, and the Mac app instead checks the server once
+   a minute while it is open (`MacAppModel`), and again when the Mac wakes and when the app comes to
+   the front. The launchd server keeps collecting while the app is closed.
 
 ---
 
@@ -337,6 +425,89 @@ are `accessibilityHidden` everywhere — the row's own label already reads the n
 
 ---
 
+## One target, two platforms
+
+`Hardwood` is one target that builds for iOS 17 and macOS 14, so a source file is compiled for
+both, and the rule for platform-specific code is mechanical so that a mistake is found on Linux
+rather than in Xcode.
+
+* **Mac files** are everything under `NBAStats/Mac/`. Each opens with `#if os(macOS)` as its first
+  non-comment line and ends with `#endif`, because the synchronized folder compiles every file for
+  both platforms and there is no per-folder exclusion. AppKit and the Mac-only SwiftUI (`Table`,
+  `.inspector`, `HSplitView`, `Window`, `Settings`, `openWindow`, `.navigationSubtitle`,
+  `.onDeleteCommand`, `NSWorkspace`, `NSPasteboard`) may appear only there, or inside an
+  `#if os(macOS)` region of a shared file.
+* **Shared new files** (`Core/League*`, `Networking/League*`, `League/`, `DesignSystem/Platform*`,
+  the four league widgets, `Dashboard/ClubFieldEditor.swift`) use only APIs that exist on both iOS
+  17 and macOS 14.
+* **Existing shared files** carry the platform difference at named seams and nowhere else:
+  `DesignSystem/PlatformShims.swift` and `PlatformNavigation.swift` (view modifiers that are the
+  iOS call on iOS and a Mac-appropriate one, or nothing, on the Mac: `hardwoodInlineTitle()`,
+  `hardwoodURLField()`, `hardwoodGroupedListStyle()`, `HardwoodPushLink`, `hardwoodSearchField`,
+  `hardwoodSheetFrame()`, and the `PlatformCopy` sentences); `Theme.swift` (`UIColor` or `NSColor`);
+  `Typography.swift` (the Mac maps text styles to the point sizes the iOS layout was tuned for,
+  because macOS has no Dynamic Type); `DashboardLayout.columnSpan(isRegular:)` and the grid's
+  width-driven columns (two below 760 points, four above); `BackgroundRefresh` (real on iOS,
+  no-ops on the Mac); and the macOS branch of `HardwoodApp`.
+* **Nothing above macOS 14.0 and iOS 17.0.** No `@Observable`, `Tab(...)`,
+  `.presentationSizing`, `.defaultLaunchBehavior` or any other macOS 15 API. Models are
+  `ObservableObject` with `@Published`.
+* **Mac tables**: at most ten columns, and every column sortable (`value:`); mixing sortable and
+  unsortable columns in one `Table` does not compile. No `if` or `switch` inside a table's column
+  builder (a different column set is a different `Table`).
+* **Scenes do not inherit environment objects.** Every scene root in `Mac/MacScenes.swift` is handed
+  the app environment, the catalog, the dashboard store and the Mac model itself; a view that reads
+  an `@EnvironmentObject` it was not given crashes the first time it draws.
+* **No non-Swift file under `NBAStats/` outside `Resources/`.** The folder is bundled whole.
+
+`scripts/check_swift_portability.py` enforces all of this, plus exhaustive `switch` coverage of
+`WidgetKind`, `ConfigFieldType` and `APIError.Code`, that every `*Widget.swift` file is the widget
+of a real `WidgetKind`, the league payload rules above, and the Mac plist and project settings. It
+is **not a compiler** and never says a file compiles: it prints `file:line: rule: message` and
+exits 1 on a finding. Run it, with `scripts/check_contracts.py`, before handing a change over:
+
+```bash
+python3 scripts/check_swift_portability.py
+python3 scripts/check_contracts.py
+```
+
+`.github/workflows/ios.yml` builds and tests the iOS destination only. It does not build the Mac
+destination and does not run the portability script, so on a change to `ios/` the Mac build is
+checked only by you, in Xcode.
+
+---
+
+## Known risks
+
+Nothing in the repository has been through a Swift compiler. The checks above catch the mechanical
+mistakes; these are what they cannot.
+
+* **Xcode 16 is a hard requirement.** `@MainActor` inference from SwiftUI's protocol conformances
+  needs the iOS 18 / macOS 15 SDK, so an older Xcode builds wrongly rather than slowly. The code
+  itself targets iOS 17 and macOS 14.
+* **The Mac app has never been built or run.** Expect compile errors on the first build, mostly
+  small (a missing label, an optional, a modifier whose availability was misremembered). The
+  expected route is `docs/MAC.md` §2 and §14: build in order, paste the text of the errors back.
+* **Mac behaviours that could not be checked without a Mac,** each isolated to one file:
+  toolbar merging when the dashboard and Player Search (which have their own navigation stacks) sit
+  in the split view's detail column (`Mac/MacDetailRouter.swift`); `.inspector` attached inside that
+  detail column; `InspectorCommands` toggling a per-screen inspector; `@ObservedObject` inside
+  `Commands` (`Mac/MacCommands.swift`); an `.alert` with a text field in the sidebar
+  (`Mac/MacSidebar.swift`). The fallback for each is written down in `docs/MAC.md` §13.
+* **Signing.** An empty development team relies on "Sign to Run Locally"; `docs/MAC.md` §3 is the
+  fallback if Xcode insists on a team.
+* **Scene environment objects.** A missing injection is a runtime crash, not a build error; lint
+  rule P11 and review are the guard.
+* **Silent iOS regressions** from edits to shared files: build **Any iOS Simulator Device** after
+  the Mac builds.
+* **Payload drift.** The league payloads were written against recorded fixtures of the real
+  backend, and all-optional decoding contains a surprise, but a live server can still send a shape
+  nobody recorded. A field that cannot decode costs that field, shown as an em dash.
+* **Xcode newer than 16** may report `Sendable` and main-actor annotation differences as warnings
+  (the project builds in Swift 5 mode, where they are warnings).
+
+---
+
 ## Conventions worth knowing before you edit
 
 * **Never render `0` for a stat that did not exist.** `MetricValue.value == nil` means an em dash
@@ -350,5 +521,16 @@ are `accessibilityHidden` everywhere — the row's own label already reads the n
 * **No force unwrapping of decoded data, no `try!`, no `fatalError`.** Every response type
   tolerates a missing field, and a single unreadable entry costs that entry rather than the
   document around it.
-* **Every view has a `#Preview`**, and the previews run from `DashboardPreviewData` or a payload's
-  own `preview` static, so they work with no server and no simulator data.
+* **Every widget and shared view has a `#Preview`**, and the previews run from
+  `DashboardPreviewData` or a payload's own `preview` static, so they work with no server and no
+  simulator data. The Mac's own screens (`Mac/`) have none: they need the app's environment objects
+  and a server or the bundled fixtures, so run them (My Mac, with demo data if no server is up).
+* **A league payload is all-optional.** Every property of every type in `Core/LeaguePayloads.swift`
+  is an `Optional`, so one odd or missing field costs that field and never the whole screen; they
+  use synthesized `Codable` only, take statistics as `Double?` (a JSON `6.0` into an `Int` throws),
+  and keep timestamps as `String?`. A payload type whose keys drift from the fixtures the backend
+  exports fails `scripts/check_swift_portability.py` (rule P14) before it reaches Xcode.
+* **The app computes no statistic.** It fetches, filters, sorts by a served value and formats. A
+  missing number is an em dash, never `0`; a percentage arrives as a fraction.
+* **No betting vocabulary in anything the app displays.** A lint (rule P9) reads the string
+  literals of `Mac/`, `League/` and the four league widgets.

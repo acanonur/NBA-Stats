@@ -154,7 +154,12 @@ Stats arrive **as each game finishes**, not overnight (`CONTRACT.md` §8):
    type covers an entire slate in three requests, however many games it holds.
 4. The nightly `scripts/ingest_daily.sh` re-pulls the last `CORRECTION_WINDOW_DAYS` days,
    because the league revises box scores after the fact. Every write is an upsert, so a
-   correction overwrites yesterday instead of duplicating it.
+   correction overwrites yesterday instead of duplicating it. It uses the bulk path, which has
+   **no starter column**: it never records who started and cannot restore starters that were lost.
+5. `python3 -m nbastats.ingest.runner --refetch-games --days N --date D` runs step 2 (the per-game
+   box score, the only source that knows the starting five) again over the stored games of the
+   last `N` days ending `D`. It is the repair for a database the old ingest bug flattened and for
+   a season loaded by a bulk walk (RUNBOOK §2b, "Restoring who started").
 
 ```bash
 ./scripts/ingest_daily.sh --days 3
@@ -237,7 +242,7 @@ Every variable, read once by `nbastats.config.Settings.from_env()`:
 | Variable | Default | Notes |
 | --- | --- | --- |
 | `DATABASE_URL` | `sqlite:///./hardwood.db` | A Postgres URL works with no code change |
-| `HARDWOOD_API_KEY` | unset | When set, `/v1` requires `X-API-Key` (except `/v1/health`) |
+| `HARDWOOD_API_KEY` | unset (set by the Mac installer) | When set, `/v1` requires `X-API-Key` (except `/v1/health`) or a signed-in session. It is also the native app's credential for league writes, accepted only on a request with no `Origin` header; with no key no write is accepted without a session (RUNBOOK §1c, "The API key") |
 | `HARDWOOD_DEMO_MODE` | `false` | Seeds an empty store on startup and advertises it in `/v1/health` |
 | `HARDWOOD_CONTRACTS_DIR` | repo `contracts/` | Where `metrics.json` et al. live |
 | `NBA_API_PROXY` | unset | Residential pass-through proxy for the live ingest path |

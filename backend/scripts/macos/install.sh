@@ -120,7 +120,7 @@ check_folder() {
     $BACKEND_DIR
 macOS does not let background programs read Documents, Desktop, Downloads or iCloud Drive.
 Move the whole Hardwood folder somewhere else in your home folder, for example:
-    mv \"$(cd "$BACKEND_DIR/.." && pwd -P)\" \"$HOME_DIR/Hardwood\"
+    mv \"$(cd "$BACKEND_DIR/.." && pwd -P)\" \"$HOME_DIR/$(basename "$(cd "$BACKEND_DIR/.." && pwd -P)")\"
 then run the installer again from there." ;;
   esac
   if [ ! -f "$BACKEND_DIR/pyproject.toml" ]; then

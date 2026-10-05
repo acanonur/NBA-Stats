@@ -196,7 +196,7 @@ web/src/
 ├── design/       ~25 primitives + hand-drawn SVG chart parts
 ├── generated/    tokens.ts · tokens.css · contracts.ts · registry.ts — never hand-edited
 ├── pages/        routed screens, including /legal/terms and /legal/privacy
-└── widgets/      one directory per widget kind, sixteen of them
+└── widgets/      one directory per widget kind the web draws: sixteen of the twenty
 ```
 
 ### Why the design system is generated
@@ -387,4 +387,7 @@ JSON to either.
 | `test_no_market_machinery.py` | No forbidden word in any new payload key, route parameter or settings key; no half-point rounding; no win-probability field |
 | `test_worker_jobs.py` | The worker's timetable, catch-up, switches, refusals and state; the launchd files and the installer |
 | `shared/test_stdlib_only.py` | The shared core imports nothing but the standard library |
+| `test_native_write_auth.py`, `test_install_api_key.py` | A league write is accepted from the native app's key (on a request with no `Origin`) or a browser session, and from nothing else: no keyless path, `X-Hardwood-Client` is not a credential, a key sent with an `Origin` is refused, a cross-origin page cannot write through the permissive CORS preflight; the installer makes the key once, never replaces or prints it, and leaves the file private |
+| `test_mac_server_contract.py`, `euroleague/test_mac_server_items.py`, `euroleague/test_el_widget_fixtures.py` | The server-side promises the Mac app was built on: write bodies, settings patch, news, source rows, availability counts, the fields the app must never compute (recent points, per-game line, combined miss, computed-after-tip-off, a game log's opponent and result), and EuroLeague tile fixtures equal to what the tile resolves |
+| `test_refetch_games.py` | `--refetch-games` restores starters from the per-game box score in a flattened or bulk-filled database, with a fake client, and is safe to interrupt and repeat |
 

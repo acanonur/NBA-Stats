@@ -29,7 +29,7 @@ design document. Where the two disagree, this file is the one that matches the c
 | Sign-in | Email + password always; Google when configured; Apple when configured **and** you have https |
 | Sign-up | `invite` by default — an account is not created by anyone who finds the port |
 | Storage | The same SQLite (or Postgres) database the stats live in, on its own set of tables |
-| Widgets | All sixteen kinds, the same dashboards as iOS, resolved through the same `/v1/dashboard/resolve` |
+| Widgets | Sixteen of the twenty kinds (the four league widgets are drawn by the native app only, for now), the same dashboards as iOS, resolved through the same `/v1/dashboard/resolve` |
 | Design system | Generated from `ios/NBAStats/DesignSystem/Theme.swift`; the two clients cannot drift apart by hand |
 
 Nothing the browser can ask for reaches stats.nba.com. Every read is served from Hardwood's
@@ -343,6 +343,7 @@ the thing you are accepting, not as a to-do list.
 | --- | --- | --- |
 | Session theft via XSS | `HttpOnly` cookie; CSP with no inline script; no token in `localStorage` | A CSP bypass is still game over. There is no second factor |
 | CSRF | Synchroniser token in a header + `Origin`/`Sec-Fetch-Site`; `SameSite=Lax` | — |
+| A web page using the native app's API key (league writes: a typed status, a pasted link, a model setting, a retraction) | The key authorises a write only on a request carrying **no** `Origin` and no `Sec-Fetch-Site` header; every browser request carries one and page script cannot remove it, so such a request must instead pass the session + CSRF + same-origin path above. `X-Hardwood-Client` is not a credential, and with no key configured there is no keyless write path. The CORS preflight is deliberately **not** the defence: the service answers any preflight, so a page can send any header to `127.0.0.1:8000` | The key also gates reads on a Mac install, so a page cannot read the store either. A process on the same Mac (not a browser) that can read `hardwood.env` has the key, as it would have the database |
 | Cookie injection from a sibling host | `__Host-` prefix, read exclusively on https | On plain http the prefix is meaningless. §9 |
 | Password brute force | scrypt N=2¹⁴; 30 logins/15 min per IP and 10 per account; after six failures a per-account backoff of 2ⁿ⁻⁵ s capped at 300 s, cleared by a correct password | The IP limiter is **in-process**: two workers double it and a restart clears it. Only the per-account backoff survives a restart |
 | Account enumeration | Signup, forgot-password and resend all answer `202` regardless of whether the address exists | Timing is not equalised |
