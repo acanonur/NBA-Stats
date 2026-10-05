@@ -232,6 +232,32 @@ public struct FantasyDraftRow: Codable, Hashable, Sendable, Identifiable {
         values = numbers
         team = abbreviation
     }
+
+    /// The mirror of `init(from:)`, and the reason it exists: without it Swift synthesises an
+    /// encoder from `CodingKeys`, which has no `team` key, so encoding silently dropped the team.
+    /// The disk cache encodes every payload, so a cached draft board came back with an empty Team
+    /// column. The team goes back into `values`, exactly where the decoder above looks for it.
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(rank, forKey: .rank)
+        try container.encode(round, forKey: .round)
+        try container.encode(pickInRound, forKey: .pickInRound)
+        try container.encodeIfPresent(player, forKey: .player)
+        try container.encodeIfPresent(baselineRank, forKey: .baselineRank)
+        try container.encodeIfPresent(totalZ, forKey: .totalZ)
+        try container.encodeIfPresent(valueOverReplacement, forKey: .valueOverReplacement)
+        try container.encodeIfPresent(suggestion, forKey: .suggestion)
+        try container.encodeIfPresent(espnPoints, forKey: .espnPoints)
+        try container.encodeIfPresent(yahooPoints, forKey: .yahooPoints)
+        var raw: [String: JSONValue] = values.mapValues { JSONValue.double($0) }
+        if let abbreviation = team {
+            raw["team"] = JSONValue.string(abbreviation)
+        }
+        try container.encode(raw, forKey: .values)
+        try container.encode(fills, forKey: .fills)
+        try container.encodeIfPresent(reason, forKey: .reason)
+        try container.encode(availability, forKey: .availability)
+    }
 }
 
 /// The draft board (`contracts/CONTRACT.md` §4, `fantasy_draft_board`).

@@ -261,11 +261,16 @@ final class FantasyPayloadTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(sweep.high ?? 0, sweep.base ?? 0)
         XCTAssertEqual(sweep.flips, (sweep.low ?? 0) < 0 && 0 < (sweep.high ?? 0))
 
-        // Nothing in the block may read as a probability.
+        // Nothing in the block may read as a probability. A percentage of a player's MINUTES is a
+        // role change ("loses 15% of his minutes"), not a chance of anything, so that one phrasing
+        // is removed before looking for a stray "%"; any other "%" -- "62%", "a 30% shot" -- still
+        // fails, as does every probability word.
         let text = ([sweep.lowScenario, sweep.highScenario].compactMap { $0 }
                     + sweep.scenarios.map { $0.label }).joined(separator: " ").lowercased()
+        let withoutMinuteShares = text.replacingOccurrences(
+            of: #"\d+% of his minutes"#, with: "", options: .regularExpression)
         for word in ["%", "probability", "confidence", "interval", "chance", "likelihood"] {
-            XCTAssertFalse(text.contains(word), "the sweep's wording says \(word)")
+            XCTAssertFalse(withoutMinuteShares.contains(word), "the sweep's wording says \(word)")
         }
     }
 

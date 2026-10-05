@@ -470,7 +470,22 @@ final class PayloadDecodingTests: XCTestCase {
         let response = try decoder.decode(DashboardResolveResponse.self, from: try fixture("dashboard_resolve"))
         let flagged = response.results.filter { ($0.availability ?? .full) != .full }
         XCTAssertFalse(flagged.isEmpty, "The fixture exercises no era caveats at all")
+        // A kind whose whole payload IS a projection is "estimated" by nature: the widget is titled
+        // as one, wears the "est." badge and carries its own method. It needs no server note, and
+        // must not get one: a note turns the result `partial`, and the clients explain `partial`
+        // as "some of the games behind these numbers are missing inputs", which would be false.
+        // The rule is for an estimate inside otherwise measured data -- a 1985-86 PER derived from
+        // box-score formulas -- and that must always say why.
+        let projectionKinds: Set<String> = [
+            WidgetKind.nextGameProjection.rawValue,
+            WidgetKind.projectionBoard.rawValue,
+            WidgetKind.slateProjections.rawValue,
+        ]
         for result in flagged {
+            if result.availability == .estimated && projectionKinds.contains(result.kindRaw) {
+                XCTAssertNotNil(result.payload, "\(result.widgetId) is a projection with no payload to explain it")
+                continue
+            }
             XCTAssertFalse(result.notes.isEmpty,
                            "\(result.widgetId) is flagged \(result.availability?.rawValue ?? "?") but explains nothing")
         }

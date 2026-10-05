@@ -15,8 +15,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+      # The newest Xcode on the runner, and an iPhone simulator that actually exists for it.
+      # Pinning Xcode 16.2 with "name=iPhone 16,OS=latest" stopped working when the image
+      # dropped 16.2's iOS 18.2 platform: xcodebuild matched an iOS 26.2 simulator that 16.2
+      # cannot build for, and failed before compiling anything. The newest Xcode is also what
+      # someone setting this up today most likely has. (The Mac app workflow keeps its own pin.)
+      - name: Select Xcode and an iPhone simulator
+        run: |
+          set -euo pipefail
+          XCODE="$(python3 - <<'EOF'
+          import glob, re
+          apps = [a for a in glob.glob("/Applications/Xcode_*.app") if "beta" not in a.lower()]
+          key = lambda a: [int(n) for n in re.findall(r"\d+", a.rsplit("/", 1)[-1])]
+          print(sorted(apps, key=key)[-1])
+          EOF
+          )"
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+          UDID="$(xcrun simctl list devices available --json | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          for runtime in sorted(devices, reverse=True):
+              if "iOS" not in runtime:
+                  continue
+              for device in devices[runtime]:
+                  if device["name"].startswith("iPhone"):
+                      print(device["udid"])
+                      sys.exit(0)
+          sys.exit("no available iPhone simulator for this Xcode")
+          ')"
+          echo "Using simulator $UDID"
+          echo "IOS_SIM=$UDID" >> "$GITHUB_ENV"
 
       # check_contracts.py supersedes the old three-file `diff -q`: its check (e) makes the
       # same byte-for-byte comparison, and its other checks catch what the diff never could —
@@ -38,18 +67,26 @@ jobs:
 
       - name: Build
         working-directory: ios
+        # pipefail is what makes a failure fail. GitHub runs these steps with plain `bash -e`, so
+        # without it the pipeline's status was xcpretty's -- which succeeds even when xcodebuild
+        # does not -- and this job reported success while the build and tests never ran.
         run: |
+          set -o pipefail
           xcodebuild build \
             -project NBAStats.xcodeproj \
             -scheme Hardwood \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || exit ${PIPESTATUS[0]}
+            -destination "id=$IOS_SIM" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
 
       - name: Test
         working-directory: ios
+        # pipefail is what makes a failure fail. GitHub runs these steps with plain `bash -e`, so
+        # without it the pipeline's status was xcpretty's -- which succeeds even when xcodebuild
+        # does not -- and this job reported success while the build and tests never ran.
         run: |
+          set -o pipefail
           xcodebuild test \
             -project NBAStats.xcodeproj \
             -scheme Hardwood \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || exit ${PIPESTATUS[0]}
+            -destination "id=$IOS_SIM" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
