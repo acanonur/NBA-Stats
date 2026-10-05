@@ -117,9 +117,25 @@ Hardwood for Mac
 More: docs/MAC.md in the project folder.
 README
 
+# hdiutil is known to trip over itself straight after creating an image: diskimages-helper or
+# Spotlight can still hold it, and the next hdiutil call fails with "Resource busy" although the
+# image is fine. A GitHub run with Xcode 26.3 built and signed the app, created the image, then
+# failed the verify below with nothing to say why, because its output was discarded. So both steps
+# get three tries a few seconds apart, and a failure that survives them prints hdiutil's reason.
+retry_hdiutil() {
+  local what="$1"; shift
+  local attempt output
+  for attempt in 1 2 3; do
+    if output="$(hdiutil "$@" 2>&1)"; then return 0; fi
+    [ "$attempt" -lt 3 ] && sleep 5
+  done
+  printf '%s\n' "$output" >&2
+  die "hdiutil could not $what $DMG (three tries)."
+}
+
 rm -f "$DMG"
-hdiutil create -volname "Hardwood" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
-hdiutil verify "$DMG" >/dev/null 2>&1 || die "hdiutil could not verify $DMG."
+retry_hdiutil create create -volname "Hardwood" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+retry_hdiutil verify verify "$DMG"
 
 say "done: $DMG ($(du -h "$DMG" | cut -f1 | tr -d ' '))"
 say "double-click it, drag Hardwood onto Applications, and read 'Read Me First' if the server is not installed yet."
