@@ -108,6 +108,23 @@ enum MacHardwoodEnv {
         return parseAPIKey(from: text)
     }
 
+    /// Stores the installer's key as the app's own when the app has none yet. Called from
+    /// `HardwoodApp.init`, before `AppEnvironment.live()`: the clients are built with the key that
+    /// is stored at that moment, and the first screen asks the server for data as soon as it is
+    /// drawn -- before the bootstrap task has run -- so a key adopted only by the bootstrap left
+    /// those first requests without one (the server log of the CI launch check showed them refused
+    /// with 401 on a first launch).
+    static func adoptInstallerKeyIfNeeded(defaults: UserDefaults = .standard) {
+        let stored = APIConfiguration.resolved(defaults: defaults).apiKey ?? ""
+        if !stored.isEmpty {
+            return
+        }
+        guard let key = readAPIKey() else {
+            return
+        }
+        APIConfiguration.setAPIKeyOverride(key, defaults: defaults)
+    }
+
     // MARK: Actions
 
     /// Puts the restart command on the pasteboard.
@@ -167,7 +184,9 @@ extension MacAppModel {
     }
 
     /// Uses the installer's key when the app has none of its own. A key that is already stored (typed
-    /// in Settings, or read before) is left alone.
+    /// in Settings, or read before) is left alone. `HardwoodApp.init` has normally adopted it already
+    /// (`MacHardwoodEnv.adoptInstallerKeyIfNeeded`); this second look also points the running clients
+    /// at it, for a settings file that appeared after the app started.
     func adoptKeyFromSettingsFileIfNeeded() async {
         let stored = environment.configuration.apiKey ?? ""
         if !stored.isEmpty {

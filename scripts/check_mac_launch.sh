@@ -61,6 +61,9 @@ esac
 
 BIN="$APP/Contents/MacOS/Hardwood"
 [ -x "$BIN" ] || die "no executable at $BIN"
+# Launch Services starts the app under its resolved path (/private/var/..., one slash), not the
+# path given to `open`, so the process is found by the part that is unique to this copy.
+PROCESS_PATTERN="$(basename "$(dirname "$APP")")/Hardwood[.]app/Contents/MacOS/Hardwood"
 
 # Prints the newest Hardwood crash report written after the marker file, waiting for ReportCrash,
 # which writes it a few seconds after the process is gone.
@@ -136,6 +139,9 @@ open_on() {
   defaults write "$DOMAIN" hardwood.mac.selection -string "screen:$screen"
   log="$WORK/$league-$screen.log"
   marker="$WORK/$league-$screen.marker"
+  # A copy left running by an earlier launch (or an earlier scenario) would keep polling the
+  # server with its own settings and muddy the server's log; there is only ever one under test.
+  pkill -f "Hardwood[.]app/Contents/MacOS/Hardwood" 2>/dev/null && sleep 1
   touch "$marker"
   if [ "${LAUNCH_WITH:-open}" = "exec" ]; then
     "$BIN" >"$log" 2>&1 &
@@ -147,7 +153,7 @@ open_on() {
       return 1
     fi
     for waited in $(seq 1 20); do
-      pid="$(pgrep -n -f "$BIN" || true)"
+      pid="$(pgrep -n -f "$PROCESS_PATTERN" || true)"
       [ -n "$pid" ] && break
       sleep 0.5
     done

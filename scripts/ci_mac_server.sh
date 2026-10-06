@@ -6,6 +6,8 @@
 #   ci_mac_server.sh start       start the API on 127.0.0.1:8000 (EuroLeague store: $EL_STORE.db)
 #   ci_mac_server.sh stop        stop it
 #   ci_mac_server.sh ingest-el   run the EuroLeague live jobs once each, as the worker would
+#   ci_mac_server.sh mark        remember where the API log ends now
+#   ci_mac_server.sh refusals    fail if the API refused a request (401) since the mark
 #
 # It sets the server up the way install.sh leaves a Mac: an API key in the installer's settings
 # file (~/Library/Application Support/Hardwood/hardwood.env), which the app reads on launch, and the
@@ -74,6 +76,22 @@ case "${1:-}" in
     ;;
   stop)
     stop_api
+    ;;
+  mark)
+    touch "$STATE/api.log"
+    wc -l < "$STATE/api.log" | tr -d ' ' > "$STATE/api.mark"
+    ;;
+  refusals)
+    # Every request the app makes carries the installer's key, from the first one on. A 401 means
+    # one went out without it (or with a stale one), which a person sees as "key rejected".
+    from=$(( $(cat "$STATE/api.mark" 2>/dev/null || echo 0) + 1 ))
+    refused="$(tail -n "+$from" "$STATE/api.log" | grep ' 401 ' || true)"
+    if [ -n "$refused" ]; then
+      say "the server refused requests from the app (401):"
+      printf '%s\n' "$refused" | sed -E 's/^.*"(GET|POST|PUT|PATCH|DELETE) ([^ ]+).*$/\1 \2/' | sort | uniq -c
+      exit 1
+    fi
+    say "no request from the app was refused."
     ;;
   ingest-el)
     # The order the worker's own dependencies imply: the calendar and clubs, the squads, the

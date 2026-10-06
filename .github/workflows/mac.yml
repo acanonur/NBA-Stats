@@ -141,9 +141,11 @@ jobs:
           HARDWOOD_EL_LIVE: "0"
         run: |
           scripts/ci_mac_server.sh start
+          scripts/ci_mac_server.sh mark
           defaults delete com.hardwood.nbastats >/dev/null 2>&1 || true
           scripts/check_mac_launch.sh dist/Hardwood.dmg server 12
           scripts/ci_mac_server.sh stop
+          scripts/ci_mac_server.sh refusals
 
       # What a Mac running install.sh actually serves: the EuroLeague's current season fetched live
       # by the worker's own jobs, and real headlines. Invented data is tidy in ways a real season is
@@ -161,10 +163,12 @@ jobs:
           scripts/ci_mac_server.sh ingest-el
           scripts/ci_mac_server.sh stop
           scripts/ci_mac_server.sh start
+          scripts/ci_mac_server.sh mark
           defaults delete com.hardwood.nbastats >/dev/null 2>&1 || true
           defaults write com.hardwood.nbastats AppleLocale en_DE
           scripts/check_mac_launch.sh dist/Hardwood.dmg live-en_DE 15
           scripts/ci_mac_server.sh stop
+          scripts/ci_mac_server.sh refusals
 
       - name: Server log
         if: ${{ failure() }}

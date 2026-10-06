@@ -22,6 +22,10 @@ struct HardwoodApp: App {
     #endif
 
     init() {
+        #if os(macOS)
+        // Before the environment exists, so its clients are built with the installer's key.
+        MacHardwoodEnv.adoptInstallerKeyIfNeeded()
+        #endif
         let environment = AppEnvironment.live()
         _environment = StateObject(wrappedValue: environment)
         #if os(macOS)
