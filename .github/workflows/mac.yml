@@ -16,6 +16,7 @@ on:
       - "contracts/**"
       - "scripts/make_dmg.sh"
       - "scripts/check_mac_launch.sh"
+      - "scripts/ci_mac_server.sh"
       - ".github/workflows/mac.yml"
   workflow_dispatch:
 
@@ -126,32 +127,45 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Start a seeded server with an API key
+      - name: Install the server
         if: ${{ success() || failure() }}
-        run: |
-          set -euo pipefail
-          python -m pip install --quiet -e "backend[serve]"
-          DATA="$HOME/Library/Application Support/Hardwood"
-          mkdir -p "$DATA" "$RUNNER_TEMP/hardwood"
-          echo "HARDWOOD_API_KEY=ci-launch-check-key" > "$DATA/hardwood.env"
-          DB="sqlite:///$RUNNER_TEMP/hardwood/hardwood.db"
-          (cd backend && python -m nbastats.seed --db "$DB" --games-per-team 24 --quiet)
-          (cd backend && DATABASE_URL="$DB" HARDWOOD_API_KEY=ci-launch-check-key \
-             HARDWOOD_DATA_DIR="$RUNNER_TEMP/hardwood" \
-             nohup python -m uvicorn nbastats.api.app:app --host 127.0.0.1 --port 8000 \
-             > "$RUNNER_TEMP/hardwood/api.log" 2>&1 &)
-          for i in $(seq 1 60); do
-            curl -sf http://127.0.0.1:8000/v1/health >/dev/null && break
-            sleep 1
-          done
-          curl -sf http://127.0.0.1:8000/v1/health
+        run: scripts/ci_mac_server.sh install
 
+      # The invented NBA league and the invented EuroLeague (HARDWOOD_EL_DEMO), so every
+      # EuroLeague screen has a league to draw, not just an empty store.
       - name: Seeded server
         if: ${{ success() || failure() }}
+        env:
+          EL_STORE: el-demo
+          HARDWOOD_EL_DEMO: "1"
+          HARDWOOD_EL_LIVE: "0"
         run: |
+          scripts/ci_mac_server.sh start
           defaults delete com.hardwood.nbastats >/dev/null 2>&1 || true
           scripts/check_mac_launch.sh dist/Hardwood.dmg server 12
+          scripts/ci_mac_server.sh stop
+
+      # What a Mac running install.sh actually serves: the EuroLeague's current season fetched live
+      # by the worker's own jobs, and real headlines. Invented data is tidy in ways a real season is
+      # not. The app runs with a European region (decimal commas, day-first dates), as on the Mac
+      # the first disk image crashed on.
+      - name: Live EuroLeague data, European region
+        # One runner is enough to ask the EuroLeague's service for a season; the newer macOS.
+        if: ${{ (success() || failure()) && matrix.runner == 'macos-26' }}
+        env:
+          EL_STORE: el-live
+          HARDWOOD_EL_DEMO: "0"
+          HARDWOOD_EL_LIVE: "1"
+        run: |
+          scripts/ci_mac_server.sh start
+          scripts/ci_mac_server.sh ingest-el
+          scripts/ci_mac_server.sh stop
+          scripts/ci_mac_server.sh start
+          defaults delete com.hardwood.nbastats >/dev/null 2>&1 || true
+          defaults write com.hardwood.nbastats AppleLocale en_DE
+          scripts/check_mac_launch.sh dist/Hardwood.dmg live-en_DE 15
+          scripts/ci_mac_server.sh stop
 
       - name: Server log
         if: ${{ failure() }}
-        run: tail -n 120 "$RUNNER_TEMP/hardwood/api.log" || true
+        run: tail -n 150 "$RUNNER_TEMP/hardwood/api.log" || true
