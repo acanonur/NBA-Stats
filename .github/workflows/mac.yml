@@ -15,6 +15,7 @@ on:
       - "ios/**"
       - "contracts/**"
       - "scripts/make_dmg.sh"
+      - "scripts/check_mac_launch.sh"
       - ".github/workflows/mac.yml"
   workflow_dispatch:
 
@@ -81,3 +82,76 @@ jobs:
               grep -E '(error|fatal error): |: error -|Test Case .* failed' ../build/mac-test.log | sort -u | head -100
               exit 1
             }
+
+  # Opens the app from the uploaded disk image -- the exact bytes a person downloads -- on every
+  # sidebar screen in both leagues, and fails with macOS's crash report if it quits. The first disk
+  # image passed every unit test above and still quit unexpectedly on a real Mac: the tests host a
+  # Debug build and draw almost none of the screens, so they cannot see a Release app falling over.
+  #
+  # Three scenarios, because a person meets three: the app opened before the server is installed,
+  # demo mode (bundled fixtures), and a running server with a league in it and an API key in the
+  # installer's settings file, which the app reads on launch. Two macOS versions, because the
+  # runners' macOS 15 is not what a Mac bought or updated this year runs.
+  launch-check:
+    needs: build-dmg
+    if: ${{ !cancelled() && needs.build-dmg.result != 'skipped' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-26]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: Hardwood-mac
+          path: dist
+
+      - name: No server yet
+        run: |
+          defaults delete com.hardwood.nbastats >/dev/null 2>&1 || true
+          scripts/check_mac_launch.sh dist/Hardwood.dmg no-server 6
+
+      - name: Demo mode
+        if: ${{ success() || failure() }}
+        run: |
+          defaults delete com.hardwood.nbastats >/dev/null 2>&1 || true
+          defaults write com.hardwood.nbastats hardwood.demoMode -bool true
+          scripts/check_mac_launch.sh dist/Hardwood.dmg demo 10
+
+      - uses: actions/setup-python@v5
+        if: ${{ success() || failure() }}
+        with:
+          python-version: "3.12"
+
+      - name: Start a seeded server with an API key
+        if: ${{ success() || failure() }}
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet -e "backend[serve]"
+          DATA="$HOME/Library/Application Support/Hardwood"
+          mkdir -p "$DATA" "$RUNNER_TEMP/hardwood"
+          echo "HARDWOOD_API_KEY=ci-launch-check-key" > "$DATA/hardwood.env"
+          DB="sqlite:///$RUNNER_TEMP/hardwood/hardwood.db"
+          (cd backend && python -m nbastats.seed --db "$DB" --games-per-team 24 --quiet)
+          (cd backend && DATABASE_URL="$DB" HARDWOOD_API_KEY=ci-launch-check-key \
+             HARDWOOD_DATA_DIR="$RUNNER_TEMP/hardwood" \
+             nohup python -m uvicorn nbastats.api.app:app --host 127.0.0.1 --port 8000 \
+             > "$RUNNER_TEMP/hardwood/api.log" 2>&1 &)
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:8000/v1/health >/dev/null && break
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:8000/v1/health
+
+      - name: Seeded server
+        if: ${{ success() || failure() }}
+        run: |
+          defaults delete com.hardwood.nbastats >/dev/null 2>&1 || true
+          scripts/check_mac_launch.sh dist/Hardwood.dmg server 12
+
+      - name: Server log
+        if: ${{ failure() }}
+        run: tail -n 120 "$RUNNER_TEMP/hardwood/api.log" || true
