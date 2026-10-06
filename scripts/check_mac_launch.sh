@@ -124,26 +124,57 @@ PY
 }
 
 # Opens the app on one screen and keeps it open for PER_SCREEN seconds. Fails if it quits first.
+#
+# By default the app is opened through Launch Services (`open`), as a double-click opens it: the app
+# is brought to the front, so the code that runs on becoming active runs too. Started as a plain
+# child process the app may never become active, and a first version of this check that started it
+# that way passed 140 launches while the same disk image quit on a real Mac. LAUNCH_WITH=exec starts
+# it as a child instead (its exit status is then known).
 open_on() {
-  local league="$1" screen="$2" log marker pid status alive=1 second
+  local league="$1" screen="$2" log marker pid="" status="unknown" alive=1 second=0 waited
   defaults write "$DOMAIN" hardwood.mac.league -string "$league"
   defaults write "$DOMAIN" hardwood.mac.selection -string "screen:$screen"
   log="$WORK/$league-$screen.log"
   marker="$WORK/$league-$screen.marker"
   touch "$marker"
-  "$BIN" >"$log" 2>&1 &
-  pid=$!
-  for second in $(seq 1 "$PER_SCREEN"); do
-    sleep 1
-    if ! kill -0 "$pid" 2>/dev/null; then alive=0; break; fi
-  done
+  if [ "${LAUNCH_WITH:-open}" = "exec" ]; then
+    "$BIN" >"$log" 2>&1 &
+    pid=$!
+  else
+    : >"$log"
+    if ! open -n --stdout "$log" --stderr "$log" "$APP"; then
+      say "FAILED: Launch Services refused to open $APP."
+      return 1
+    fi
+    for waited in $(seq 1 20); do
+      pid="$(pgrep -n -f "$BIN" || true)"
+      [ -n "$pid" ] && break
+      sleep 0.5
+    done
+    if [ -z "$pid" ]; then
+      alive=0
+    fi
+  fi
+  if [ "$alive" -eq 1 ]; then
+    for second in $(seq 1 "$PER_SCREEN"); do
+      sleep 1
+      if ! kill -0 "$pid" 2>/dev/null; then alive=0; break; fi
+    done
+  fi
   if [ "$alive" -eq 1 ]; then
     kill "$pid" 2>/dev/null
-    wait "$pid" 2>/dev/null
+    for waited in $(seq 1 20); do
+      kill -0 "$pid" 2>/dev/null || break
+      sleep 0.5
+    done
+    kill -9 "$pid" 2>/dev/null
+    if [ "${LAUNCH_WITH:-open}" = "exec" ]; then wait "$pid" 2>/dev/null; fi
     return 0
   fi
-  wait "$pid" 2>/dev/null
-  status=$?
+  if [ "${LAUNCH_WITH:-open}" = "exec" ]; then
+    wait "$pid" 2>/dev/null
+    status=$?
+  fi
   say "FAILED: Hardwood quit after ${second}s on $league / $screen (exit status $status)."
   say "what it printed:"
   tail -n 80 "$log" | sed 's/^/  | /'
