@@ -1,4 +1,4 @@
-# Hardwood — an editable NBA advanced-stats dashboard for iOS and the browser
+# Hardwood — an editable NBA advanced-stats dashboard for iOS, the Mac and the browser
 
 A SwiftUI app whose home screen you build yourself: pick from nine ready-made dashboards or
 assemble your own out of twelve widget types, each configurable down to the metric. Behind it
@@ -55,35 +55,112 @@ boundaries as vertical rules, because that is exactly where comparing 1962 to 20
 
 ## Quick start
 
+The backend needs Python 3.11 or newer. On a Mac that is not the `python3` Apple ships, which is
+3.9: install a newer one (for example `brew install python@3.12`) and name it in the second line
+below. From the repository root, this makes a virtual environment in `backend/.venv` (the same one
+`web.sh setup` makes), installs the backend into it, and serves a deterministic synthetic league —
+no network, no NBA data needed — on port 8000:
+
 ```bash
-# 1. Backend with a deterministic synthetic league — no network, no NBA data needed
 cd backend
-pip install -e .
+python3.12 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -e '.[test,serve,web]'
 python3 -m nbastats.seed --db sqlite:///./hardwood.db
 uvicorn nbastats.api.app:app --reload --port 8000
-
-# 2. App
-open ios/NBAStats.xcodeproj      # Xcode 16+, run on any iOS 17+ simulator
 ```
 
-The app points at `http://localhost:8000/v1` by default. **With no server running at all it
-still works** — it falls back to golden fixtures bundled in the app, so every screen, every
-widget and every preset is browsable offline.
+The server keeps that window busy until you stop it with Control-C. For the iOS app, go to the
+repository root in a second Terminal window and open the project; it needs Xcode 16 or newer and
+runs on any iOS 17+ simulator:
+
+```bash
+open ios/NBAStats.xcodeproj
+```
+
+A fresh iOS install starts in demo mode on golden fixtures bundled in the app, so **with no
+server running at all it still works** — every screen, every widget and every preset is
+browsable offline. To see the server you just started instead, turn **Use bundled demo data** off
+in **Settings › Data source**; the app then reads `http://localhost:8000/v1`. The Mac app starts
+on live data rather than demo data, and is meant for an installed, always-on server: see
+[Hardwood for Mac](#hardwood-for-mac).
 
 Real data, licensing, the residential-IP requirement and the nightly cron line are all in
 [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
 
 ---
 
+## Hardwood for Mac
+
+The same Xcode target builds a native Mac app — a sidebar, tables, an inspector, menus, a
+Settings window — for the NBA and the EuroLeague: matchups, points allowed by opponent position,
+injuries and news with their sources. It reads everything from a Hardwood server installed on the
+same Mac, which runs in the background under launchd and answers at `http://127.0.0.1:8000/v1`.
+[`docs/MAC.md`](docs/MAC.md) is its manual: the right code, building, first launch, what each
+screen shows, and what to send back when something goes wrong.
+
+**You need commit `fd30608` or later.** GitHub's default branch did not have it when this was
+written, so a plain clone or `git pull` of that branch can give you older code that does not
+compile for macOS. In Terminal, inside the repository, this prints the OK line when you have it:
+
+```bash
+git merge-base --is-ancestor fd3060889e54442eedbae04c59da4e9b30da4ecf HEAD && echo "OK: you have the latest Mac app code"
+```
+
+If it prints nothing, or "Not a valid commit name", quit Xcode and take the Mac work from its own
+branch, where it lives until it is merged into the default branch. Xcode rewrites the tracked
+`project.pbxproj` just by opening the project, so the first line below puts those edits aside
+with a copy (`git stash list` shows it; "No local changes to save" means there was nothing).
+Do not `git stash pop` it onto the new branch, which leaves conflict markers in the project file,
+and do not use `git checkout -- <file>`, `git reset --hard` or `git clean`, which throw edits
+away for good:
+
+```bash
+git stash push -m "before update"
+git fetch origin
+git switch claude/modest-hypatia-024y5m
+git merge --ff-only origin/claude/modest-hypatia-024y5m
+```
+
+Then, from the repository root, install the server and open the project. The installer needs
+Python 3.11 or newer and a free port 8000, so stop a Quick start server with Control-C first; it
+also refuses to run from a folder in Documents, Desktop, Downloads or iCloud Drive
+([`docs/RUNBOOK.md`](docs/RUNBOOK.md) §1c says why):
+
+```bash
+backend/scripts/macos/install.sh
+open ios/NBAStats.xcodeproj
+```
+
+In Xcode, choose **My Mac** as the run destination and press Run (⌘R). No development team or
+Apple ID is needed, because Mac builds are signed to run locally; if ⌘R still stops asking for a
+team, [`docs/MAC.md`](docs/MAC.md) §3 says what to set. If Xcode offers **Update to recommended
+settings**, leave it: **Perform Changes** rewrites the tracked project file. Run `install.sh`
+again, without `--skip-pip`, after every update: launchd keeps the old server code running until
+you do. A fresh install has no past NBA games yet; RUNBOOK §1c, *What you get on day one*, says
+how to load the last week. To keep a copy of the app outside Xcode, `scripts/make_dmg.sh --open`
+builds `dist/Hardwood.dmg` ([`docs/MAC.md`](docs/MAC.md) §2).
+
+---
+
 ## Hardwood Web
 
 The same dashboards in a browser, served by the same FastAPI process — SPA at `/`, API
-unchanged at `/v1`, one origin, no second server to deploy.
+unchanged at `/v1`, one origin, no second server to deploy. From the repository root, `setup`
+makes a virtualenv, pip-installs the backend, runs `npm ci` and builds the web app; `dev` then
+serves it at http://127.0.0.1:8000 until you stop it with Control-C:
 
 ```bash
-./scripts/web.sh setup     # venv, pip install, npm ci, npm run build
-./scripts/web.sh dev       # http://127.0.0.1:8000
-cd backend && .venv/bin/python3 -m nbastats.accounts.admin invite --note "me"
+./scripts/web.sh setup
+./scripts/web.sh dev
+```
+
+To let yourself in, open a second Terminal window at the repository root; the last line prints
+an invite code:
+
+```bash
+cd backend
+.venv/bin/python3 -m nbastats.accounts.admin invite --note "me"
 ```
 
 Accounts are email-and-password out of the box, with Google and Apple sign-in when you
@@ -107,12 +184,12 @@ belonging to whoever signs in. [`docs/LEGAL.md`](docs/LEGAL.md) §2b and §2c.
 | Path | What lives there |
 | --- | --- |
 | `contracts/` | **Start here.** `CONTRACT.md` is the API and payload spec; `metrics.json`, `widgets.json` and `presets.json` are consumed by *both* sides; `fixtures/` holds golden payloads both sides test against |
-| `backend/` | Ingest pipeline, advanced-stat formulas, schema, FastAPI service, tests |
-| `ios/` | The SwiftUI app. `ios/ARCHITECTURE.md` is its binding Swift type surface |
+| `backend/` | Ingest pipeline, advanced-stat formulas, schema, FastAPI service, tests; `scripts/macos/install.sh` installs the server on a Mac |
+| `ios/` | The SwiftUI app, one target for iOS and the Mac. `ios/ARCHITECTURE.md` is its binding Swift type surface |
 | `web/` | The React SPA the backend serves at `/`. See [`web/README.md`](web/README.md) |
-| `docs/` | [Architecture](docs/ARCHITECTURE.md) · [Web](docs/WEB.md) · [Data sources](docs/DATA_SOURCES.md) · [Projection](docs/PROJECTION.md) · [Broadsheet](docs/BROADSHEET.md) · [Fantasy](docs/FANTASY.md) · [Legal](docs/LEGAL.md) · [Runbook](docs/RUNBOOK.md) |
+| `docs/` | [Mac](docs/MAC.md) · [Architecture](docs/ARCHITECTURE.md) · [Web](docs/WEB.md) · [Data sources](docs/DATA_SOURCES.md) · [EuroLeague](docs/EUROLEAGUE.md) · [Projection](docs/PROJECTION.md) · [Broadsheet](docs/BROADSHEET.md) · [Fantasy](docs/FANTASY.md) · [Legal](docs/LEGAL.md) · [Runbook](docs/RUNBOOK.md) |
 | `sql/` | The original BigQuery-flavoured queries this project grew out of |
-| `scripts/` | `check_contracts.py` (CI drift guard), `sync_contracts.sh` |
+| `scripts/` | `check_contracts.py` (CI drift guard), `sync_contracts.sh`, `web.sh` (Hardwood Web), `make_dmg.sh` (the Mac disk image), `check_swift_portability.py` (a local Swift lint, not a compiler), `check_mac_launch.sh` and `ci_mac_server.sh` (CI's Mac launch check) |
 
 ### Why `contracts/` is a top-level directory
 
@@ -153,15 +230,39 @@ account system collects from your own users.
 
 ## Testing
 
+Each block starts and ends at the repository root. The backend suite (more than 3,800 tests:
+metrics, schema, ingest, API, accounts, every widget resolver), then the contract checker (13
+checks: catalogs, presets, registry, bundled and generated copies agree). The suite needs the
+`test` and `web` extras Quick start installs, so it runs in that virtual environment (the second
+line switches to it in a new Terminal window); without `web`, the sign-in tests cannot import
+PyJWT and pytest stops before running anything:
+
 ```bash
-cd backend && python3 -m pytest -q     # 888 tests: metrics, schema, ingest, API, accounts, every widget resolver
-python3 scripts/check_contracts.py     # 12 checks: catalogs, presets, registry, bundled and generated copies agree
+cd backend
+source .venv/bin/activate
+python3 -m pytest -q
+cd ..
+python3 scripts/check_contracts.py
+```
 
-cd web && npm test                     # 502 tests: design system, widgets, dashboard editor, auth flows
-npm run build                          # and CI then fails on any diff in the committed web/dist
+The web suite (526 tests: design system, widgets, dashboard editor, auth flows), then the build,
+after which CI fails on any diff in the committed `web/dist`:
 
-cd ios && xcodebuild test -scheme Hardwood \
-    -destination 'platform=iOS Simulator,name=iPhone 16'
+```bash
+cd web
+npm test
+npm run build
+cd ..
+```
+
+The app's unit tests on an iPhone simulator, then on the Mac. If your Xcode has no iPhone 16
+simulator, use the name of one that `xcrun simctl list devices available` lists:
+
+```bash
+cd ios
+xcodebuild test -scheme Hardwood -destination 'platform=iOS Simulator,name=iPhone 16'
+xcodebuild test -scheme Hardwood -destination 'platform=macOS'
+cd ..
 ```
 
 The backend suite includes hand-computed worked examples for every advanced formula, a
@@ -172,10 +273,9 @@ every shipped preset**.
 ### One honesty note
 
 This repository was developed on Linux, where **no Swift toolchain exists**. The backend is
-verified by actually running its 416 tests. The iOS app is not — it has never been through a
-Swift compiler here.
+verified by actually running its tests. The Swift app was written without a compiler.
 
-What it did get instead: a locked type surface (`ios/ARCHITECTURE.md`) that every file was
+What it got instead: a locked type surface (`ios/ARCHITECTURE.md`) that every file was
 written against, a mechanical sweep checking argument labels against all 241 initializers plus
 switch exhaustiveness over nine enums, and then an adversarial review pass by independent
 reviewers told to treat that clean sweep as a hypothesis to falsify. They found **no compile
@@ -183,8 +283,22 @@ errors** and 43 semantic defects, 33 of which are fixed — including a path tha
 user's saved layouts on any read failure, and a comparison chart that could rank players
 backwards.
 
-That is real evidence, but it is not a compiler. `.github/workflows/ios.yml` builds and tests
-the app on a macOS runner, which is the first place the compiler genuinely sees it. Expect to
-fix a few things on the first real build. The known risks are listed in `ios/README.md`; the
-largest is that `@MainActor` inference from SwiftUI's protocol conformances requires the
-iOS 18 SDK, so Xcode 16+ is a hard requirement rather than a preference.
+That was real evidence, but it was not a compiler, and the first real builds still found what
+the review could not: bundle resources and property-list settings that stopped the app building
+or installing, one expression the macOS compiler gave up on, and, the first time the unit tests
+ran in CI, seven failures, one of them a real bug.
+
+A compiler now sees every change. On every push that touches the app, GitHub's macOS runners
+build it with the newest Xcode they have. `.github/workflows/ios.yml` builds the iPhone-simulator
+destination and runs the unit tests there. `.github/workflows/mac.yml` builds the Mac app into
+`Hardwood.dmg` with `scripts/make_dmg.sh` (kept as the run's **Hardwood-mac** download for 30
+days), runs the unit tests on macOS, and then opens the app from that disk image on every sidebar
+screen in both leagues, the dashboards apart, on macOS 15 and macOS 26: with no server, in demo
+mode, against a seeded server holding the installer's API key, and, on macOS 26, against live
+EuroLeague data with the Mac set to a European region.
+
+What CI cannot check is anything that needs eyes: how the screens look, and whether the toolbar,
+the inspector and the menus behave. Nor has it reproduced the crash a real Mac hit with the first
+downloaded disk image, whose cause is still unknown. Those are listed under *Known risks* in
+`ios/README.md`, with the reason Xcode 16+ is a hard requirement rather than a preference:
+`@MainActor` inference from SwiftUI's protocol conformances needs the iOS 18 / macOS 15 SDK.

@@ -10,9 +10,12 @@ serve a full dashboard offline.
 
 ## Install
 
+Run this from the repository root. For the nba_api ingest path, add `live` to the extras, as in
+`".[test,serve,live]"`:
+
 ```bash
 cd backend
-python3 -m pip install -e ".[test,serve]"     # add ".[live]" for the nba_api ingest path
+python3 -m pip install -e ".[test,serve]"
 ```
 
 | Extra | Brings | Needed for |
@@ -32,9 +35,18 @@ understand.
 
 ## Seed, run, test
 
+The first command seeds a demo league and serves it on :8000, and keeps that Terminal window
+until you stop it with Control-C:
+
 ```bash
-./scripts/serve_dev.sh --fresh          # seed a demo league and serve it on :8000
-python3 -m pytest -q                    # the whole suite, no network
+./scripts/serve_dev.sh --fresh
+```
+
+The second runs the whole suite, with no network. Run it from `backend/` in a second Terminal
+window, or after you have stopped the server:
+
+```bash
+python3 -m pytest -q
 ```
 
 `serve_dev.sh` prints the curl commands for `/v1/health`, `/v1/meta` and a
@@ -44,6 +56,12 @@ python3 -m pytest -q                    # the whole suite, no network
 python3 -m nbastats.seed --db sqlite:///./hardwood.db
 export DATABASE_URL=sqlite:///./hardwood.db
 python3 -m uvicorn nbastats.api.app:app --reload --port 8000
+```
+
+The server keeps that Terminal window until you stop it with Control-C, so check it from a second
+one:
+
+```bash
 curl -s localhost:8000/v1/health | python3 -m json.tool
 ```
 
@@ -82,19 +100,42 @@ them — pass `--seasons` with consecutive seasons if you want a dense `career_a
 ### Running it on a Mac, always on
 
 On a Mac, do not start the pieces by hand. One script installs the server, the NBA ingest loop, the
-nightly correction pass and the background worker as launch agents that start when you log in:
+nightly correction pass and the background worker as launch agents that start when you log in.
+Run it from the repository root; `--help` lists its options:
 
 ```bash
-backend/scripts/macos/install.sh          # safe to run again; --help lists the options
-backend/scripts/macos/uninstall.sh        # stop and remove them; your data is kept
+backend/scripts/macos/install.sh
 ```
 
 It needs Python 3.11 or newer (the one that ships with macOS is too old, and the installer says
-how to get one), refuses a checkout inside Documents, Desktop, Downloads or iCloud Drive (macOS
-hides those from background programs), and puts everything under
-`~/Library/Application Support/Hardwood`. `scripts/macos/hardwood.env.example` is the settings
-file it copies there. The whole story, written for someone who has never used a command line, is in
-[`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c.
+how to get one; `--python PATH` lets you name one), refuses a checkout inside Documents, Desktop,
+Downloads or iCloud Drive (macOS hides those from background programs), and puts everything under
+`~/Library/Application Support/Hardwood`, including its own virtual environment (it does not use
+`backend/.venv`). `scripts/macos/hardwood.env.example` is the settings file it copies there. It
+also refuses while another program holds port 8000: stop a `serve_dev.sh` or `uvicorn` you started
+yourself with Control-C rather than picking another port, because the Mac app looks for the server
+at `http://127.0.0.1:8000/v1`.
+
+It is safe to run again, and you should, after every update and without `--skip-pip`. The server
+is an editable install that launchd runs without `--reload`, so it keeps the old code until the
+installer restarts it, and the installer is also what adds any package the new code needs.
+
+To stop the launch agents and remove them (your data is kept):
+
+```bash
+backend/scripts/macos/uninstall.sh
+```
+
+A fresh install has no NBA games: the ingest loop adds only today's games, and the nightly pass
+re-checks the last three days. To load the last week now:
+
+```bash
+~/Library/"Application Support"/Hardwood/hardwood-python -m nbastats.ingest.runner --nightly --days 7
+```
+
+The EuroLeague fills itself from live ingest (`HARDWOOD_EL_LIVE`, on by default) with no
+workbook; a workbook adds starting ratings and sourced statuses. The whole story, written for
+someone who has never used a command line, is in [`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c.
 
 ### Tests
 
@@ -163,8 +204,12 @@ Stats arrive **as each game finishes**, not overnight (`CONTRACT.md` §8):
 
 ```bash
 ./scripts/ingest_daily.sh --days 3
-# cron, 04:15 local:
-# 15 4 * * * cd /srv/hardwood/backend && ./scripts/ingest_daily.sh >> /var/log/hardwood/ingest.log 2>&1
+```
+
+To run it from cron at 04:15 local time, this is the crontab line (add it with `crontab -e`):
+
+```text
+15 4 * * * cd /srv/hardwood/backend && ./scripts/ingest_daily.sh >> /var/log/hardwood/ingest.log 2>&1
 ```
 
 Set `HARDWOOD_INGEST_FIXTURES` to a directory of recorded payloads and the same script runs
@@ -178,13 +223,18 @@ against files instead of the network — which is exactly how the pipeline is te
 
 **History is never pulled from the API.** ~64,000 games and 1.3-1.7M player-game rows at one
 request per second is tens of thousands of requests and days of runtime, and it would be rude
-besides. The open bulk datasets already hold that history in a handful of files:
+besides. The open bulk datasets already hold that history in a handful of files.
+
+`backfill.sh` takes the path to Wyatt Walsh's NBA Database (a SQLite file) and, optionally, a
+folder of Basketball-Reference season dumps (CSV), loads them in that order and then rebuilds
+`id_crosswalk`. The hoopR / shufinskiy release files, and a rebuild of `id_crosswalk` on its own,
+go through the runner directly. Each line below is a separate job; run the one you need from
+`backend/`:
 
 ```bash
-./scripts/backfill.sh --kaggle nba.sqlite        # Wyatt Walsh's NBA Database (SQLite)
-./scripts/backfill.sh --bbref ./bbref-csv        # Basketball-Reference season dumps (CSV)
-./scripts/backfill.sh --parquet ./hoopr          # hoopR / shufinskiy release files
-./scripts/backfill.sh --reconcile                # rebuild id_crosswalk only
+./scripts/backfill.sh nba.sqlite ./bbref-csv
+python3 -m nbastats.ingest.runner --backfill-parquet ./hoopr
+python3 -m nbastats.ingest.runner --reconcile-ids
 ```
 
 Every loader is chunked (a 64,000-game file never lands in memory), resumable (each finished
@@ -204,12 +254,24 @@ headline and projection work adds, for both leagues. It owns the clock and nothi
 live in the packages that own the data, and are reached by string name so that one that is not
 installed is recorded as `notInstalled` instead of stopping the others.
 
+`--list` shows every job, whether it will run, why not and when it last ran; `--once` runs
+whatever is due, then exits; `--run` runs one job now (switches and refusals still apply); with no
+option it runs until stopped, which is what launchd runs:
+
 ```bash
-python3 -m nbastats.worker --list         # every job, whether it will run, why not, when it last ran
-                                          # (on a Mac install, run these through hardwood-python)
-python3 -m nbastats.worker --once         # run whatever is due, then exit
-python3 -m nbastats.worker --run nba.news # run one job now (switches and refusals still apply)
-python3 -m nbastats.worker                # run until stopped (what launchd runs)
+python3 -m nbastats.worker --list
+python3 -m nbastats.worker --once
+python3 -m nbastats.worker --run nba.news
+python3 -m nbastats.worker
+```
+
+On a Mac install, run these through `hardwood-python` in the data folder instead of `python3`. It
+runs the Python the installer set up, with the settings and databases the launch agents use; a
+plain `python3` typed into Terminal may not have Hardwood's packages at all, and can open the
+wrong database:
+
+```bash
+~/Library/"Application Support"/Hardwood/hardwood-python -m nbastats.worker --list
 ```
 
 | Job | When |

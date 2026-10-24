@@ -6,12 +6,20 @@ Everything below assumes a checkout of this repository and Python 3.11+.
 
 ## 1. Five-minute local start (no network, no NBA data)
 
+From the repository root: install the backend together with `uvicorn`, the server it runs under
+(the `serve` extra; or install the minimum by hand with
+`pip install fastapi 'pydantic>=2' 'sqlalchemy>=2' uvicorn httpx`), seed a deterministic synthetic
+league, and serve it:
+
 ```bash
 cd backend
-pip install -e .                      # or: pip install fastapi 'pydantic>=2' 'sqlalchemy>=2' uvicorn httpx
-python3 -m nbastats.seed --db sqlite:///./hardwood.db     # deterministic synthetic league
+pip install -e ".[serve]"
+python3 -m nbastats.seed --db sqlite:///./hardwood.db
 HARDWOOD_DEMO_MODE=1 uvicorn nbastats.api.app:app --reload --port 8000
 ```
+
+The server keeps that Terminal window; stop it with Control-C. Run the checks below in a second
+window.
 
 ```bash
 curl -s localhost:8000/v1/health | python3 -m json.tool
@@ -31,15 +39,27 @@ and is still fully browsable.
 live data at `http://127.0.0.1:8000/v1` (`ios/Info-macOS.plist`) and covers both leagues. This
 five-minute server is enough to *read* with it; for the installed, always-on server and the API key
 the app needs in order to *change* anything, use §1c. [MAC.md](MAC.md) is the Mac app's manual.
+The Mac app needs commit `fd30608` or later of this repository; "Updating Hardwood" in §1c shows
+how to check and how to get it.
 
 ---
 
 ## 1b. The web app
 
+From the repository root, `setup` makes the venv and runs `pip install -e "backend[serve,web]"`,
+`npm ci` and `npm run build`; `dev` then serves `http://127.0.0.1:8000`, the SPA at `/` and the
+API unchanged at `/v1`, and keeps that Terminal window until you press Control-C:
+
 ```bash
-./scripts/web.sh setup      # venv, pip install -e "backend[serve,web]", npm ci, npm run build
-./scripts/web.sh dev        # http://127.0.0.1:8000 — SPA at /, API unchanged at /v1
-./scripts/web.sh doctor     # what is configured, what is not, and why each provider is off
+./scripts/web.sh setup
+./scripts/web.sh dev
+```
+
+In a second Terminal window, from the repository root, `doctor` says what is configured, what is
+not, and why each provider is off, and the last line makes your first invite:
+
+```bash
+./scripts/web.sh doctor
 cd backend && .venv/bin/python3 -m nbastats.accounts.admin invite --note "me"
 ```
 
@@ -103,10 +123,10 @@ installer finds it.
 **Documents, Desktop, Downloads and iCloud Drive**. A Hardwood folder in any of them looks fine
 and then fails with "Operation not permitted" in the background, with no obvious reason. The
 installer checks for this and stops with instructions. Keep the folder directly in your home
-folder:
+folder. If yours is in one of them, move it; for a folder in Downloads that is:
 
 ```bash
-mv ~/Downloads/NBA-Stats ~/NBA-Stats     # only if it is somewhere macOS protects
+mv ~/Downloads/NBA-Stats ~/NBA-Stats
 ```
 
 Leave it there afterwards. The installed programs run the code in that folder, which is also how
@@ -128,10 +148,20 @@ The first run takes a few minutes, mostly downloading Python packages. It:
 4. writes the four launch agents to `~/Library/LaunchAgents`, starts them, and checks the server
    answers.
 
-It is safe to run again whenever you like, for example after an update. `install.sh --help`
-lists the options. The ones you might want: `--port 8123` if something else on your Mac already
-uses port 8000, `--dry-run` to see what it would do without changing anything, and `--no-api-key`
-if you do not want a key made (see below for what that costs).
+While it runs, macOS shows "Background Items Added" notifications that name Python. Those are
+Hardwood's programs: leave them allowed.
+
+It is safe to run again whenever you like, and you should run it again after every update
+("Updating Hardwood" below says why). `install.sh --help` lists the options. The ones you might
+want: `--dry-run` to see what it would do without changing anything, `--python PATH` to use a
+particular Python 3.11 or newer, and `--no-api-key` if you do not want a key made (see below for
+what that costs).
+
+If it stops because port 8000 is already in use, look for a server you started by hand, such as
+the five-minute server from §1 or `web.sh dev`: press Control-C in its Terminal window and run
+the installer again. `--port 8123` exists, but keep 8000 if you can: the Mac app looks for the
+server at `http://127.0.0.1:8000/v1`, so on another port you would also have to change the
+server address in the app's Settings.
 
 ### The API key
 
@@ -155,21 +185,27 @@ How the installer treats the key, each one a test: it makes one **only when ther
 **never replaces** a key already in the file (your own, or the one it made last time), and a key
 you chose survives every re-install; an empty `HARDWOOD_API_KEY=` line counts as "no key" and is
 filled in; it never prints the key, only whether it made one; and `hardwood.env` ends up readable
-by you alone (mode 600). To rotate the key, delete the `HARDWOOD_API_KEY` line, run `install.sh`
-again, and restart the app. To use your own, put it on that line.
+by you alone (mode 600). To rotate the key, delete the `HARDWOOD_API_KEY` line and run
+`install.sh` again; then, in the app, use **Read Key from hardwood.env** on its banner (or
+Settings ▸ Leagues ▸ Read API key from hardwood.env). Restarting the app is not enough: it keeps
+the key it already has. To use your own, put it on that line and do the same.
 
 With a key set, the server also asks for it on **reads** (except `/v1/health`), or for a signed-in
 web session, which is what keeps a web page from reading your local statistics. The consequence to
 know about: opening `http://127.0.0.1:8000` in a browser without signing in no longer shows
-statistics. The Mac app reads the key from `hardwood.env` and sends it with every request.
+statistics. The Mac app reads the key from `hardwood.env` when it starts and has no key stored
+(so a key you typed into its Settings is never overwritten), and sends it with every request.
 `install.sh --no-api-key` leaves the file without one, and then **every change from the Mac app
 is refused** (there is no keyless way to write); reads stay open to anything on your Mac.
 
 ### Check that it is working
 
+The first command should print a line of JSON, the second four rows (see below), and the third
+lists the background jobs:
+
 ```bash
-curl -s http://127.0.0.1:8000/v1/health            # should print a line of JSON
-launchctl list | grep hardwood                     # four rows (see below)
+curl -s http://127.0.0.1:8000/v1/health
+launchctl list | grep hardwood
 ~/Library/"Application Support"/Hardwood/hardwood-python -m nbastats.worker --list
 ```
 
@@ -197,12 +233,14 @@ for a part of Hardwood that is not on this machine yet.
 
 ### The Mac app
 
-The server above is what the native Mac app talks to. To build and run it, open
+The server above is what the native Mac app talks to. It needs commit `fd30608` or later of this
+repository, which GitHub's default branch does not have until the Mac work is merged into it:
+"Updating Hardwood" below shows how to check and how to get it. To build and run it, open
 `ios/NBAStats.xcodeproj` in Xcode 16 or later, choose **My Mac** as the run destination and press
 Run (⌘R). The app starts on live data at `http://127.0.0.1:8000/v1`, reads the API key from
-`hardwood.env` itself (it never shows or rewrites it), and, when the server is not answering, shows
-a banner with **Try Again**, **Use Demo Data**, **Copy Restart Command** (the `launchctl kickstart`
-line below) and **Open Logs Folder**.
+`hardwood.env` itself (it never shows or rewrites it), and, when the server is not answering,
+shows a banner with **Try Again**, **Use Demo Data**, **Copy Restart Command** (the
+`launchctl kickstart` line below) and **Open Logs Folder**.
 
 [MAC.md](MAC.md) is its manual: the run story, what to do if Xcode asks about signing, first launch
 with live or demo data, what each screen shows today and what is not shown yet, and how to paste
@@ -224,7 +262,7 @@ from "The API key" above.
 | Raw downloaded files, kept for diagnosis and never shown | `raw/`, `el-raw/` |
 | Recordings made by the probe commands (never committed anywhere) | `recordings/` |
 | Python environment, and the `hardwood-python` shortcut that runs it with Hardwood's settings | `venv/`, `hardwood-python` |
-| Logs | `~/Library/Logs/Hardwood/` (`api.log`, `worker.log`, `nba-watch.log`, `nba-nightly.log`) |
+| Logs | `~/Library/Logs/Hardwood/` (`api.log`, `worker.log`, `worker.stderr.log`, `nba-watch.log`, `nba-nightly.log`). `worker.stderr.log` holds whatever the worker prints outside `worker.log`, such as an error that stops it starting |
 | **The Mac app's dashboards** | `~/Library/Application Support/com.hardwood.nbastats/Layouts.json`. Deliberately *not* in the data folder above, so `uninstall.sh --purge-data` leaves them alone |
 | The Mac app's widget cache (safe to delete) | `~/Library/Caches/Hardwood/Widgets` |
 
@@ -234,10 +272,21 @@ the EuroLeague, and real and invented data can never be mixed in one file.
 ### What you get on day one — said plainly
 
 **NBA matchups, defence by position and team projections** work from the NBA store as soon as it
-has games in it. A brand-new install starts empty: `nba-watch` fills it game by game as the
-season runs, and §2b above loads a past season in one command if you want history now. (To
-explore with invented data and no network, `backend/scripts/serve_dev.sh --fresh` serves the
-demo league instead; do not point the installed Hardwood at a demo database, see §2b.)
+has games in it. A brand-new install has no NBA games at all, and nothing older arrives by
+itself: `nba-watch` adds only today's games, each as it finishes during its 11:00–04:00 (US
+Eastern) window, and the 06:10 correction pass covers only the last 3 days. To load the last week
+of games now:
+
+```bash
+~/Library/"Application Support"/Hardwood/hardwood-python -m nbastats.ingest.runner --nightly --days 7
+```
+
+It fetches slowly on purpose, a second or more between requests, and is safe to stop and run
+again. A larger `--days` (with `--date` for the last day) reaches further back; §2b below explains
+the walk, but on this Mac run it through `hardwood-python` as above and skip §2b's `DATABASE_URL`
+lines, which point at a file the installed server never reads. (To explore with invented data and no
+network, `backend/scripts/serve_dev.sh --fresh` serves the demo league instead; do not point the
+installed Hardwood at a demo database, see §2b.)
 
 **NBA injuries** are read automatically from the NBA's own injury report. The 2026-27 season
 has no reports before about **19 October**, so until then the injury screens say there is no
@@ -246,10 +295,13 @@ but **has not yet been confirmed against a real report**; `/v1/sources` says so 
 parsed one successfully on your Mac. If the NBA changes the layout, you see "unreadable", never a
 wrong status.
 
-**The EuroLeague** needs your workbook. Copy the `.xlsx` into the `inbox/` folder and within a
-minute Hardwood imports Rounds 1 and 2 (results and box scores), the Round 3 fixtures and the 56
-sourced availability statuses. **Round 3 was played on 1–2 October, so it shows as "result
-pending", not as upcoming**, until fresher data arrives. Fresh data comes from either:
+**The EuroLeague** fills by itself from live ingest, which is on by default; it does not need
+your workbook. The workbook adds what live ingest does not give: the clubs' starting ratings,
+which the EuroLeague projections start from, and the 56 sourced availability statuses. Copy the
+`.xlsx` into the `inbox/` folder and within a minute Hardwood imports Rounds 1 and 2 (results and
+box scores), the Round 3 fixtures and those statuses. **Round 3 was played on 1–2 October, so
+from the workbook alone it shows as "result pending", not as upcoming**, until fresher data
+arrives. Fresh data comes from either:
 
 * live ingest, which is on by default and fetches from the EuroLeague's own data service (a
   polite trickle, about 90 requests a week); or
@@ -366,12 +418,14 @@ what you are shown is known to be right rather than hoped to be.
 
 **1. The Round 3 replay.** Your workbook computed ten Round 3 projections. This check
 recomputes all ten from the workbook's own inputs and compares them to the workbook's own cells
-to nine decimal places. It reads your real workbook, so it lives in a folder that git ignores:
+to nine decimal places. It reads your real workbook, so it lives in a folder that git ignores.
+The third line adds the test runner (pytest) to Hardwood's Python environment and is needed only
+the first time:
 
 ```bash
 cd ~/NBA-Stats/backend
 HW=~/Library/"Application Support"/Hardwood/hardwood-python
-"$HW" -m pip install -e ".[test]"        # first time only: adds the test runner (pytest)
+"$HW" -m pip install -e ".[test]"
 HARDWOOD_WORKBOOK_PATH=~/Downloads/EuroLeague_2026-27_Toolkit.xlsx \
   "$HW" -m pytest tests/local/test_workbook_round3_replay.py -q
 ```
@@ -408,20 +462,68 @@ setting.
 
 ### Updating Hardwood
 
+Your data and your `hardwood.env` are never touched by an update. What can be lost is a local
+edit in the code folder, and you may have some without knowing: Xcode rewrites the tracked
+project file, `ios/NBAStats.xcodeproj/project.pbxproj` (and the shared scheme), just by opening
+the project, and that file also holds any Team or Bundle Identifier you set. So first quit Xcode,
+then put your edits aside:
+
 ```bash
 cd ~/NBA-Stats
-git pull
-backend/scripts/macos/install.sh --skip-pip      # reload the programs; add nothing
+git stash push -m "before update"
 ```
 
-Drop `--skip-pip` if the update says it changed the requirements. Your data and your
-`hardwood.env` are never touched.
+It prints "No local changes to save" when there is nothing to keep. `git stash list` shows what it
+saved. Never clear local changes with `git checkout -- <file>`, `git reset --hard` or
+`git clean`, which throw them away with no copy, and do not `git stash pop` them onto the updated
+code either: that leaves conflict markers in the project file. A My Mac build needs no Team; if
+⌘R ever stops and asks for one, [MAC.md](MAC.md) §3 says what to choose.
+
+**The Mac app needs commit `fd30608` or later.** Until the Mac work is merged into GitHub's
+default branch, that branch does not have it, so a plain `git clone` or `git pull` there gets older
+code that does not compile for the Mac. Until then, get it, and any later update to it, from its
+own branch:
+
+```bash
+git fetch origin
+git switch claude/modest-hypatia-024y5m
+git merge --ff-only origin/claude/modest-hypatia-024y5m
+```
+
+Then check that you have it. This prints the OK line only when you do, and prints nothing (or
+"Not a valid commit name") when you do not:
+
+```bash
+git merge-base --is-ancestor fd3060889e54442eedbae04c59da4e9b30da4ecf HEAD && echo "OK: you have the latest Mac app code"
+```
+
+Now run the installer again, every time, and without `--skip-pip`. The background programs run
+the code in this folder, but the server keeps the old code in memory until the installer restarts
+it, and the installer also adds any package the new code needs; you cannot tell from the outside
+when an update needs one:
+
+```bash
+cd ~/NBA-Stats
+backend/scripts/macos/install.sh
+```
+
+Finally build the app again, with ⌘R in Xcode or `scripts/make_dmg.sh` for a disk image
+([MAC.md](MAC.md) §2); quit Hardwood before you replace the copy in Applications.
 
 ### Stopping and removing it
 
+To stop and remove the four programs and keep all your data:
+
 ```bash
-backend/scripts/macos/uninstall.sh                  # stop and remove the four programs; keep all data
-backend/scripts/macos/uninstall.sh --remove-venv    # also remove the Python environment
+cd ~/NBA-Stats
+backend/scripts/macos/uninstall.sh
+```
+
+To remove the Python environment as well, run it with `--remove-venv` instead:
+
+```bash
+cd ~/NBA-Stats
+backend/scripts/macos/uninstall.sh --remove-venv
 ```
 
 Your data stays in the data folder, and installing again picks up exactly where you left off.
@@ -449,21 +551,22 @@ or synced folder). The Mac app's own dashboards are one file, `Layouts.json` in
 
 ## 2. Loading real historical data
 
-Download the bulk files first — do **not** point the API backfill at stats.nba.com.
+Download the bulk files first — do **not** point the API backfill at stats.nba.com. The first is
+Wyatt Walsh's NBA Database on Kaggle (games, box scores and play-by-play from 1946); the second is
+Sumitro Datta's Basketball-Reference season dumps, the only pre-1997 advanced source:
 
 ```bash
-# Wyatt Walsh's NBA Database (Kaggle): games, box scores, play-by-play from 1946
 kaggle datasets download -d wyattowalsh/basketball -p /data/nba --unzip
-
-# Sumitro Datta's Basketball-Reference season dumps: the only pre-1997 advanced source
 kaggle datasets download -d sumitrodatta/nba-aba-baa-stats -p /data/bbref --unzip
 ```
+
+Then load them; the last line builds the id crosswalk:
 
 ```bash
 cd backend
 python3 -m nbastats.ingest.runner --backfill-kaggle /data/nba/nba.sqlite
 python3 -m nbastats.ingest.runner --backfill-bbref  /data/bbref
-python3 -m nbastats.ingest.runner --reconcile-ids            # build the id crosswalk
+python3 -m nbastats.ingest.runner --reconcile-ids
 ```
 
 Loaders are chunked, resumable and idempotent; each run is recorded in `ingest_log`. Re-running
@@ -481,18 +584,26 @@ The bulk files above are the right answer for deep history. For *one recent seas
 search a real roster, see real numbers and run the projection engine on them — the live client
 can walk the schedule itself, with no downloads.
 
+> **On a Mac with the installed Hardwood ([§1c](#1c-hardwood-on-your-mac--installed-always-on)),**
+> run every command in this section through `~/Library/"Application Support"/Hardwood/hardwood-python`
+> in place of `python3`, from any folder, and skip the three lines under "First, a fresh
+> database": they point the commands at a new file in `backend/` that the installed server never
+> reads. The installer does not seed the demo league into the installed store, so that store is
+> already the fresh database the next step asks for.
+
 ### First, a fresh database. This part is not optional.
 
 `seed.py` mints game ids in the **real NBA format**: `00` + a season-type digit + the two-digit
 year + a five-digit sequence, so a seeded 2025-26 league occupies `0022500001`…`0022501230` —
 exactly the id space real 2025-26 regular-season games live in. Ingesting real data into a
 seeded database therefore *upserts real box scores onto synthetic ones*, leaving `player_season`
-a blend of measured and invented numbers with nothing to tell them apart.
+a blend of measured and invented numbers with nothing to tell them apart. So point the commands
+at a **new** file, and make sure nothing seeds the demo league into it:
 
 ```bash
 cd backend
-export DATABASE_URL="sqlite:///./hardwood-live.db"   # a NEW file
-unset HARDWOOD_DEMO_MODE                             # do not seed into it
+export DATABASE_URL="sqlite:///./hardwood-live.db"
+unset HARDWOOD_DEMO_MODE
 ```
 
 ### Then walk the season
@@ -579,9 +690,12 @@ were found and none could be fetched, **5** refused, **130** interrupted.
 > the worker for everything else. What follows is the same thing done manually, which is what you
 > want on a Linux box or a Raspberry Pi.
 
+`nba_api` is an optional dependency, needed only for the live path. Install it, then start the
+watcher, either as below or through its wrapper, `backend/scripts/ingest_watch.sh`:
+
 ```bash
-pip install nba_api          # optional dependency, only needed for the live path
-python3 -m nbastats.ingest.runner --watch     # or: backend/scripts/ingest_watch.sh
+pip install nba_api
+python3 -m nbastats.ingest.runner --watch
 ```
 
 `--watch` polls the scoreboard every `INGEST_POLL_SECONDS` during the game window, ingests each
@@ -642,9 +756,13 @@ Bulk file downloads from Kaggle and GitHub work fine from anywhere.
 
 ## 5. Operating checks
 
+The health check reports `databaseReady`, `syncVersion` and `dataThrough`; `/v1/sync?since=0`
+says what changed and which widget kinds to invalidate; the two `sqlite3` lines read the sync
+state and the last ten ingest runs straight from the database:
+
 ```bash
-curl -s localhost:8000/v1/health          # databaseReady, syncVersion, dataThrough
-curl -s 'localhost:8000/v1/sync?since=0'  # what changed, and which widget kinds to invalidate
+curl -s localhost:8000/v1/health
+curl -s 'localhost:8000/v1/sync?since=0'
 sqlite3 hardwood.db 'select * from sync_state;'
 sqlite3 hardwood.db 'select job, status, started_at, games_written, error from ingest_log order by id desc limit 10;'
 ```
@@ -654,10 +772,11 @@ sqlite3 hardwood.db 'select job, status, started_at, games_written, error from i
 WAL journaling is on for every SQLite engine this project creates, so `hardwood.db` alone is an
 incomplete copy: committed transactions can still be sitting in `hardwood.db-wal`. Since the web
 release that is not an abstract risk — the missing tail is the most recent sign-ups and the
-dashboard somebody just saved, and unlike the stats it cannot be re-ingested.
+dashboard somebody just saved, and unlike the stats it cannot be re-ingested. This makes a
+consistent copy, online, in one file:
 
 ```bash
-sqlite3 backend/hardwood.db ".backup '/backups/hardwood-$(date +%F).db'"   # consistent, online, one file
+sqlite3 backend/hardwood.db ".backup '/backups/hardwood-$(date +%F).db'"
 ```
 
 If you would rather copy files, stop the service and copy all three (`.db`, `.db-wal`,
@@ -684,15 +803,15 @@ and `doctor` is how you find out rather than how you find out from a traceback.
 | A widget tile shows an error but the rest render | Per-widget failure isolation | Read `requestId` in the result and grep the server log |
 | Numbers changed for a game played two days ago | League stat correction | Expected — the three-day re-pull window exists for this |
 | Games started (`gs`) is 0 for everyone, or starters are missing after a season walk | `--nightly` never records starters, and the old ingest bug flattened any that were recorded | `--refetch-games --days N --date D` over the same range (§2b); a nightly re-run cannot fix it |
-| The Mac app says "Your server needs its API key for changes" | `hardwood.env` has no `HARDWOOD_API_KEY` (installed with `--no-api-key`, or the line was removed), or the app is reading a different file | Run `install.sh` again (it adds one and never replaces yours), then restart the server: `launchctl kickstart -k gui/$(id -u)/com.hardwood.api` |
+| The Mac app says "Your server needs its API key for changes" | `hardwood.env` has no `HARDWOOD_API_KEY` (installed with `--no-api-key`, or the line was removed), or the app is reading a different file | Run `install.sh` again (it adds one and never replaces yours), then restart the server: `launchctl kickstart -k gui/$(id -u)/com.hardwood.api`. Then in the app: Settings ▸ Leagues ▸ Read API key from hardwood.env |
 | A browser at `http://127.0.0.1:8000` shows no statistics after an update | A key is set, so reads need it or a signed-in session (a web page must not be able to read your store) | Sign in on the web page; the Mac app is unaffected |
 | The Mac app's banner says "Hardwood's server isn't answering at http://127.0.0.1:8000" | The `com.hardwood.api` agent is stopped or crashed | `launchctl list \| grep hardwood`; use the banner's **Copy Restart Command** and paste it into Terminal; read `tail ~/Library/Logs/Hardwood/api.log`. **Use Demo Data** browses invented data meanwhile |
 | The Mac app's banner says the server refused the API key | The key the app stored is not the one in `hardwood.env` now (rotated, or the file changed) | In the app: the banner's **Read Key from hardwood.env**, or Settings ▸ Leagues ▸ Read API key from hardwood.env |
-| Every league screen in the Mac app is empty, with no banner | The server answers but its store has no games yet | NBA: load a season (§2b). EuroLeague: drop your workbook into `inbox/` (§1c). [MAC.md](MAC.md) §8 says what each screen looks like on day one |
+| Every league screen in the Mac app is empty, with no banner | The server answers but its store has no games yet | NBA: a fresh install has none until you load them; the `hardwood-python ... --nightly --days 7` line in "What you get on day one" (§1c) loads the last week. EuroLeague: live ingest fills it by itself; your workbook in `inbox/` adds ratings and sourced statuses (§1c). [MAC.md](MAC.md) §8 says what each screen looks like on day one |
 | `check_contracts.py` fails after editing a catalog | Generated files not regenerated, or the app's bundled copies drifted | Re-run the `contracts/tools/gen_*.py` generator, then `scripts/sync_contracts.sh` |
-| `git pull` aborts with "local changes to ios/NBAStats.xcodeproj/project.pbxproj" | Xcode rewrites the project file on its own — opening the project is enough | Quit Xcode, then `git checkout -- ios/NBAStats.xcodeproj/project.pbxproj` and pull again. That edit is Xcode's bookkeeping, not your work. **Check `git log --oneline -1` before concluding a fix did not work**: a silently aborted pull looks exactly like a failed fix. |
+| `git pull`, `git switch` or `git merge` aborts: "Your local changes to the following files would be overwritten", naming `ios/NBAStats.xcodeproj/project.pbxproj` | Xcode rewrites the project file on its own — opening the project is enough — and the same file holds any Team or Bundle Identifier you set | Quit Xcode, `cd ~/NBA-Stats`, `git stash push -m "before update"`, then update again as in "Updating Hardwood" (§1c). `git stash list` shows what was saved. Do not `git stash pop` it onto the new code (conflict markers in the project file), and do not use `git checkout -- <file>`, `git reset --hard` or `git clean`, which throw the edits away with no copy. **Check `git log --oneline -1` before concluding a fix did not work**: a silently aborted update looks exactly like a failed fix. |
 | Search finds no current players (Doncic, LeBron, Jokic) | The app is in demo mode, whose search index is harvested from the bundled widget fixtures — the couple of dozen players on the sample dashboard, not a roster. The seeded demo *database* does contain them; demo mode just never opens it | Start the service (`§1`), then Settings → Data source → turn off "Use bundled demo data". The seeded league has 600+ real identities including Doncic, on synthetic teams with generated numbers |
-| Xcode still reports a build error a fix was supposed to clear | The pull may not have landed, or DerivedData is stale | `git log --oneline -1` first, then `rm -rf ~/Library/Developer/Xcode/DerivedData/NBAStats-*` and Clean Build Folder |
+| Xcode still reports a build error a fix was supposed to clear | The update may not have landed (an aborted pull, or a checkout of GitHub's default branch, which lacks the Mac fixes until they are merged into it), or DerivedData is stale | `git log --oneline -1` and the `merge-base` check in "Updating Hardwood" (§1c) first, then `rm -rf ~/Library/Developer/Xcode/DerivedData/NBAStats-*` and Clean Build Folder |
 | `/` returns 404 but `/v1/health` is fine | `web/dist/index.html` is missing, so `mount_web` mounted nothing and logged a warning | `./scripts/web.sh build`. If Node is missing it says so in a sentence |
 | `web.sh doctor` shows a provider as enabled, the site shows no button | `doctor` reads `backend/.env`; the server does not | `set -a; . backend/.env; set +a` before starting, then re-check `GET /v1/auth/methods` |
 | The server exits immediately with a `RuntimeError` naming a `HARDWOOD_*` variable | A startup refusal — cleartext cookies off loopback, open signup with no backstop, a group-readable Apple `.p8`, or a cleartext `smtp://` URL | The message names the variable and the fix. [WEB.md](WEB.md) §3 |
@@ -700,11 +819,11 @@ and `doctor` is how you find out rather than how you find out from a traceback.
 | Everyone shares one rate-limit bucket behind a proxy | `HARDWOOD_TRUSTED_PROXY_CIDRS` is empty, so `X-Forwarded-For` is stripped from every request | Set it and `HARDWOOD_TRUSTED_PROXY_HOPS`. `/v1/health.authWarnings` warns about exactly this |
 | An agent fails with "Operation not permitted", or logs nothing at all | The Hardwood folder is in Documents, Desktop, Downloads or iCloud Drive, which macOS hides from background programs | Move the whole folder into your home folder (`mv ... ~/NBA-Stats`) and run `install.sh` again. The installer refuses these folders for exactly this reason |
 | `install.sh` stops: "launchd would not load" | You are not logged in at the Mac's own screen (for example, connected over SSH), or an old copy of the agent is half-loaded | Run it in Terminal on the Mac. If it still fails, `uninstall.sh` and then `install.sh` again |
-| `install.sh` stops: "Port 8000 is already in use" | Another program uses it | `install.sh --port 8123`, or stop that program |
+| `install.sh` stops: "Port 8000 is already in use" | Another program uses it, for example the five-minute server from §1 or `web.sh dev` still running in a Terminal window | Stop that program (Control-C in its window) and run `install.sh` again. Keep port 8000 if you can: the Mac app looks for `http://127.0.0.1:8000/v1`, so with `--port` you would also have to change the server address in its Settings |
 | `worker --list` shows a EuroLeague job as `off`: "The EuroLeague store does not exist yet" | The API creates the EuroLeague store when it first starts, and has not yet | Wait a few seconds after install and run `--list` again. If it persists, the API is not running: `tail ~/Library/Logs/Hardwood/api.log` |
 | A job is `off` with a reason that names a `HARDWOOD_...` setting | You (or a typo) switched it off in `hardwood.env` | Delete or correct the line; the worker picks it up within 30 seconds |
 | Jobs are `off`: "HARDWOOD_PUBLIC_BASE_URL ... is not a loopback address" | The server address was set to something other than this Mac | Set it back to `http://127.0.0.1:8000` or remove the line. See "The one refusal" in §1c |
-| A job is `not installed` | The part of Hardwood that job lives in is not on this machine: an older checkout, or the install step that adds the PDF reader was skipped | `git pull` and run `install.sh` (without `--skip-pip`) |
+| A job is `not installed` | The part of Hardwood that job lives in is not on this machine: an older checkout, or the install step that adds the PDF reader was skipped | Update as in "Updating Hardwood" (§1c), which ends by running `install.sh` without `--skip-pip` |
 | A job shows an `error` in `--list` | Read the message next to it, then `tail ~/Library/Logs/Hardwood/worker.log`. A source being down is normal and retried | Nothing to do for a transient error: failed daily and weekly jobs retry after 15 minutes, then 30, up to 6 hours |
 | Injuries or headlines show "unreadable" or the source shows `blocked` | The NBA changed its report layout (the parser refuses to guess), or a source returned 401, 403 or a rate-limit block, which pauses that source for 6 hours | Nothing wrong is shown in the meantime. `/v1/sources` gives the reason and the time it will retry |
 | Everything looks a day stale after a trip or a long sleep | The Mac was asleep; Hardwood fetches only while awake | Wake the Mac. The worker catches up within a minute, and the nightly pass runs once on wake |
@@ -714,11 +833,15 @@ and `doctor` is how you find out rather than how you find out from a traceback.
 
 ## 6. Tests
 
+From the repository root, in order: the backend suite (it opens no network connection), the
+contract drift guard (every check must pass), the web suite and build (CI then fails on any diff
+in `web/dist`), and the fixture export followed by the copy into the app:
+
 ```bash
-cd backend && python3 -m pytest -q          # the backend suite; it opens no network connection
-python3 scripts/check_contracts.py          # contract drift guard, every check must pass (from the repo root)
-cd web && npm test && npm run build         # the web suite; CI then fails on any diff in web/dist
-python3 -m nbastats.fixtures_export --out ../contracts/fixtures && ./scripts/sync_contracts.sh
+(cd backend && python3 -m pytest -q)
+python3 scripts/check_contracts.py
+(cd web && npm test && npm run build)
+(cd backend && python3 -m nbastats.fixtures_export --out ../contracts/fixtures) && ./scripts/sync_contracts.sh
 ```
 
 The Swift app, on a Mac with Xcode 16+ (one target, both platforms; [MAC.md](MAC.md) §15):
@@ -728,6 +851,13 @@ cd ios
 xcodebuild test -scheme Hardwood -destination 'platform=iOS Simulator,name=iPhone 16'
 xcodebuild test -scheme Hardwood -destination 'platform=macOS'
 ```
+
+CI does both on every push that touches the app: the **iOS** workflow builds and tests the
+iPhone-simulator destination, and the **Mac app** workflow builds the Mac app and `Hardwood.dmg`
+with `scripts/make_dmg.sh` on the newest Xcode on the runner, runs the unit tests on macOS, and
+opens the built app on every sidebar screen in both leagues. What CI cannot check is how the
+screens look, or how the toolbar, inspector and menus behave when you use them; [MAC.md](MAC.md)
+§15 says what was and was not checked.
 
 On any machine, from the repository root, the Swift lint (not a compiler; it catches a Mac-only API
 in the iOS build, a table that will not compile, a payload that cannot decode the fixtures the

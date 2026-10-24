@@ -37,15 +37,44 @@ open ios/NBAStats.xcodeproj
   `Info-macOS.plist` (selected by `INFOPLIST_FILE[sdk=macosx*]`). Both live in `ios/`, outside the
   synchronized `NBAStats/` folder: a plist inside that folder is copied into the bundle as a
   resource while the build also produces it, and the build stops with "Multiple commands produce".
+* If Xcode offers **Update to recommended settings**, leave it: **Perform Changes** rewrites the
+  project file, which git tracks, and the project builds as it is.
 
 **To run on an iPhone simulator,** select the **Hardwood** scheme and an iPhone simulator, and press
 Run. Nothing else is needed — the app launches with no backend (see *Demo mode* below).
 
-**To run on the Mac,** install the server once (`backend/scripts/macos/install.sh`; it runs under
-launchd, see [`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c), choose **My Mac** as the run
-destination, and press Run. The Mac build starts on live data at `http://127.0.0.1:8000/v1`. The
-whole story — first launch, demo or live, signing, what each screen shows, how to paste Xcode errors
-back — is in [`docs/MAC.md`](../docs/MAC.md).
+**To run on the Mac,** you need commit `fd30608` or later. Older code either does not compile for
+macOS or, on a first launch, sends its first requests before it has read the installer's API key,
+and the server refuses them. At the time of writing, a plain clone of GitHub's default branch
+gives you older code. In Terminal, inside the repository, this prints the OK line when you have it:
+
+```bash
+git merge-base --is-ancestor fd3060889e54442eedbae04c59da4e9b30da4ecf HEAD && echo "OK: you have the latest Mac app code"
+```
+
+If it prints nothing, or "Not a valid commit name", quit Xcode and take the Mac work from its own
+branch, where it lives until it is merged into the default branch:
+
+```bash
+git stash push -m "before update"
+git fetch origin
+git switch claude/modest-hypatia-024y5m
+git merge --ff-only origin/claude/modest-hypatia-024y5m
+```
+
+Xcode rewrites the tracked `project.pbxproj` just by opening the project, and that file also holds
+any Team or Bundle Identifier you set. `git stash` puts those edits aside with a copy
+(`git stash list` shows it; "No local changes to save" means there was nothing), where
+`git checkout -- <file>`, `git reset --hard` and `git clean` throw them away for good. Do not
+`git stash pop` it onto the new branch: that leaves conflict markers in the project file.
+
+Then install the server (`backend/scripts/macos/install.sh`; it runs under launchd, see
+[`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c), choose **My Mac** as the run destination, and press
+Run. Run `install.sh` again, without `--skip-pip`, after every update: launchd keeps the old server
+code running until it does. No development team or Apple ID is needed, because Mac builds are
+signed to run locally. The Mac build starts on live data at `http://127.0.0.1:8000/v1`. The whole
+story — the right code, first launch, demo or live, signing, what each screen shows, how to paste
+Xcode errors back — is in [`docs/MAC.md`](../docs/MAC.md).
 
 ---
 
@@ -67,17 +96,24 @@ The Mac uses `127.0.0.1` because the installed server listens on IPv4 loopback o
 runs the API, the NBA watcher and a worker under launchd, with a private API key in
 `~/Library/Application Support/Hardwood/hardwood.env`
 ([`docs/RUNBOOK.md`](../docs/RUNBOOK.md) §1c). The Mac app reads that key from the file itself at
-launch (only when none is stored, and it never shows or rewrites it), so nothing needs copying by
-hand. With a key set, the server asks for it on every read except `/v1/health`, and a change made
+launch, before its first request (only when none is stored, and it never shows or rewrites it), so
+nothing needs copying by hand. If a reinstall changed the key, **Read Key from hardwood.env** on the
+server banner (or **Read API key from hardwood.env** in **Settings › Leagues**) picks up the new
+one. With a key set, the server asks for it on every read except `/v1/health`, and a change made
 from the app (recording an injury status, pasting a headline link) is accepted only with it.
 
-To run against the demo service in this repository instead (any platform):
+To run against the demo service in this repository instead (any platform), start from the
+repository root. The backend needs Python 3.11 or newer; on a Mac that is not Apple's own
+`python3` (3.9), so name a newer one (for example Homebrew's `python3.12`) in the second line. The
+virtual environment it makes is the one `serve_dev.sh` then runs in, and the last line seeds a demo
+league and serves it on port 8000:
 
 ```bash
-# from the repository root
 cd backend
+python3.12 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install -e '.[test,serve]'
-./scripts/serve_dev.sh --fresh          # seeds a demo league and serves it on :8000
+./scripts/serve_dev.sh --fresh
 ```
 
 `serve_dev.sh` is a wrapper; by hand it is
@@ -199,6 +235,8 @@ named there exists with exactly that shape.
 
 ## Running the tests
 
+From `ios/`, where `xcodebuild` finds the project:
+
 ```bash
 xcodebuild test -scheme Hardwood -destination "platform=iOS Simulator,name=iPhone 16"
 xcodebuild test -scheme Hardwood -destination 'platform=macOS'
@@ -237,11 +275,11 @@ If the destination is rejected, list what is installed with
 ### Keeping the contracts in sync
 
 `NBAStats/Resources/Contracts/` and `NBAStatsTests/Fixtures/` are copies of `contracts/` and
-`contracts/fixtures/` at the repository root. After regenerating either, re-copy them and re-run
-the drift check:
+`contracts/fixtures/` at the repository root. After regenerating either, re-copy them into `ios/`
+with `sync_contracts.sh` and re-run the drift check, both from the repository root:
 
 ```bash
-./scripts/sync_contracts.sh      # copies contracts/ and contracts/fixtures/ into ios/
+./scripts/sync_contracts.sh
 python3 scripts/check_contracts.py
 ```
 
@@ -472,13 +510,23 @@ python3 scripts/check_contracts.py
 ```
 
 Two workflows compile this code on every push that touches it, each with the newest Xcode on
-GitHub's macOS runner:
+GitHub's macOS runner (26.3 at the time of writing):
 
 * `.github/workflows/ios.yml` builds the iOS destination on an iPhone simulator and runs the unit
   tests there.
 * `.github/workflows/mac.yml` runs `scripts/make_dmg.sh` -- a Release build of the Mac app, signed to
-  run locally, packed into `Hardwood.dmg` and attached to the run as a download -- then runs the
-  unit tests on macOS.
+  run locally, packed into `Hardwood.dmg` and attached to the run as a download (**Hardwood-mac**,
+  kept for 30 days) -- then runs the unit tests on macOS. A second job, the launch check
+  (`scripts/check_mac_launch.sh`, with `scripts/ci_mac_server.sh` standing in for the installed
+  server), opens the app from that disk image through Launch Services, once for every sidebar
+  screen in both leagues (it opens no dashboard), on macOS 15 and macOS 26, and fails with macOS's
+  crash report if it quits. It does that in four scenarios: no server; demo mode; a seeded server
+  holding the installer's API key; and, on macOS 26 only, live EuroLeague data with the region set
+  to `en_DE`. With a server, it also fails if the server refused any request with 401.
+
+What CI cannot check is anything that needs eyes: how the screens look, and whether the toolbar,
+the inspector and the menus behave (*Known risks* below). Nor has it reproduced the crash a real
+Mac hit with the first disk image downloaded from it; the cause of that is still unknown.
 
 Until October 2026 the iOS workflow could not fail: it piped xcodebuild into xcpretty without
 `pipefail`, so a step took xcpretty's exit status, and for a while it was building nothing at all
@@ -489,27 +537,43 @@ because the runner had dropped the iOS platform its pinned Xcode needed. Both wo
 
 ## Known risks
 
-Nothing in the repository has been through a Swift compiler. The checks above catch the mechanical
-mistakes; these are what they cannot.
+CI compiles both platforms, runs the tests on both and opens every sidebar screen of the Mac app,
+the dashboards apart, on every push that touches the app (see above). These are what it cannot
+see, or sees only after a push.
 
 * **Xcode 16 is a hard requirement.** `@MainActor` inference from SwiftUI's protocol conformances
   needs the iOS 18 / macOS 15 SDK, so an older Xcode builds wrongly rather than slowly. The code
   itself targets iOS 17 and macOS 14.
-* **The Mac app has never been built or run.** Expect compile errors on the first build, mostly
-  small (a missing label, an optional, a modifier whose availability was misremembered). The
-  expected route is `docs/MAC.md` §2 and §14: build in order, paste the text of the errors back.
-* **Mac behaviours that could not be checked without a Mac,** each isolated to one file:
+* **A crash CI has not reproduced.** The first disk image downloaded from CI passed every unit test
+  and still quit unexpectedly on a real Mac, and the cause is still unknown: the launch check exists
+  because of it and has not reproduced it. If Hardwood quits on you, run it from Xcode, where the
+  debugger stops on the line that crashed, and send what `docs/MAC.md` §14 asks for. To look around
+  on bundled data meanwhile, `defaults write com.hardwood.nbastats hardwood.demoMode -bool true`
+  turns demo mode on from Terminal, and `defaults delete com.hardwood.nbastats hardwood.demoMode`
+  turns it off again. A build error on your Mac is not expected, since CI builds the same code; if
+  you get one, the route is `docs/MAC.md` §2 and §14: build in order, paste the text of the errors
+  back.
+* **Mac behaviours CI cannot judge by eye,** each isolated to one file:
   toolbar merging when the dashboard and Player Search (which have their own navigation stacks) sit
   in the split view's detail column (`Mac/MacDetailRouter.swift`); `.inspector` attached inside that
   detail column; `InspectorCommands` toggling a per-screen inspector; `@ObservedObject` inside
   `Commands` (`Mac/MacCommands.swift`); an `.alert` with a text field in the sidebar
-  (`Mac/MacSidebar.swift`). The fallback for each is written down in `docs/MAC.md` §13.
-* **Signing.** An empty development team relies on "Sign to Run Locally"; `docs/MAC.md` §3 is the
-  fallback if Xcode insists on a team.
-* **Scene environment objects.** A missing injection is a runtime crash, not a build error; lint
-  rule P11 and review are the guard.
-* **Silent iOS regressions** from edits to shared files: build **Any iOS Simulator Device** after
-  the Mac builds.
+  (`Mac/MacSidebar.swift`). The launch check proves the sidebar screens open without the app
+  quitting (it opens no dashboard), not that these look and work right. The fallback for each is
+  written down in `docs/MAC.md` §13.
+* **Signing.** A **My Mac** build needs no team and no Apple ID: the project signs Mac builds to run
+  locally (`CODE_SIGN_IDENTITY[sdk=macosx*] = "-"`, with an empty `DEVELOPMENT_TEAM`). CI overrides
+  that on the command line with `CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=`, so
+  Xcode's Automatic style, which ⌘R uses, is the one path it does not take. Leave the Signing pane
+  alone unless ⌘R stops with 'Signing for "Hardwood" requires a development team'; then untick
+  **Automatically manage signing** on the Hardwood target, and set **Team** to **None** and
+  **Signing Certificate** to **Sign to Run Locally**, which is exactly what CI uses
+  (`docs/MAC.md` §3, with a Personal Team only if that fails).
+* **Scene environment objects.** A missing injection is a runtime crash, not a build error. The
+  launch check opens every sidebar screen, but not the dashboards or the Settings, Box Score or
+  Club windows; there, lint rule P11 and review are the guard.
+* **Silent iOS regressions** from edits to shared files: `ios.yml` catches them only after a push,
+  so build **Any iOS Simulator Device** after the Mac builds.
 * **Payload drift.** The league payloads were written against recorded fixtures of the real
   backend, and all-optional decoding contains a surprise, but a live server can still send a shape
   nobody recorded. A field that cannot decode costs that field, shown as an em dash.

@@ -7,11 +7,14 @@ EuroLeague method it shows is in [EUROLEAGUE.md](EUROLEAGUE.md); the Swift struc
 [`ios/ARCHITECTURE.md`](../ios/ARCHITECTURE.md).
 
 **One thing to know before anything else.** This app was written on a Linux machine that has no
-Swift compiler and no Xcode. It has never been built. A script checks the mechanical mistakes
-(`scripts/check_swift_portability.py`, §15), and it was written to a strict compile-safety rulebook
-and re-read for compile errors, but the first real build, on your Mac, is where the compiler sees it
-for the first time. Expect a few errors. §14 says exactly how to paste them back so they can be
-fixed in one round.
+Swift compiler and no Xcode, so it is checked on GitHub's Mac runners instead: on every push that
+touches the app, they build it with the newest Xcode, pack it into a disk image, run the unit tests
+on macOS, and open the app from that disk image on every sidebar screen in both leagues, on macOS 15
+and macOS 26 (§15). What that cannot see is how the screens look and behave in your hands, and it
+has not reproduced the one crash a real Mac has had, with the first downloaded disk image (its cause
+is still unknown). You need commit `fd30608` or later, which GitHub's default branch did not have
+when this was written; §2 says how to check and how to get it. §14 says exactly what to paste back
+for a build error or a crash.
 
 ---
 
@@ -55,9 +58,40 @@ You need a Mac with **macOS 14 or later** and **Xcode 16 or later** (Xcode 16 it
 recent macOS, Sonoma 14.5 or later at the time of writing). The project file is hand-maintained
 and needs nothing installed beyond Xcode.
 
+### First, the right code
+
+The Mac app needs commit `fd30608` or later. GitHub's default branch did not have it when this was
+written, so a plain `git clone` or `git pull` of that branch can give you older code that does not
+compile for macOS. Check what you have:
+
+```bash
+cd ~/NBA-Stats
+git merge-base --is-ancestor fd3060889e54442eedbae04c59da4e9b30da4ecf HEAD && echo "OK: you have the latest Mac app code"
+```
+
+If it prints the OK line, go on to step 1. If it prints nothing, or "Not a valid commit name", get
+the Mac work from its own branch, which is where it lives until it is merged into the default
+branch. Quit Xcode first. Opening the project is enough for Xcode to rewrite the project file, and
+that file also holds any Team or Bundle Identifier you set (§3); `git stash` puts those edits aside
+with a copy you can see in `git stash list`, where `git checkout -- <file>` would throw them away
+for good. The `git stash` line prints "No local changes to save" when there is nothing to put
+aside.
+
+```bash
+cd ~/NBA-Stats
+git stash push -m "before update"
+git fetch origin
+git switch claude/modest-hypatia-024y5m
+git merge --ff-only origin/claude/modest-hypatia-024y5m
+```
+
+Run the check again; it should now print the OK line. Do not run `git stash pop` afterwards: it
+would put the old project file back on top of the new one and leave conflict markers in it. And do
+not use `git reset --hard` or `git clean`, which delete without keeping a copy.
+
 ### Step by step
 
-1. **Install the server, once.** From the project folder in your home folder (the one `git clone` made, `NBA-Stats`):
+1. **Install the server.** From the project folder in your home folder (the one `git clone` made, `NBA-Stats`):
 
    ```bash
    cd ~/NBA-Stats
@@ -66,11 +100,16 @@ and needs nothing installed beyond Xcode.
 
    [RUNBOOK.md](RUNBOOK.md) §1c has everything about this step (Python 3.11 or newer, why the
    folder must not be in Documents, Desktop, Downloads or iCloud Drive, the API key the installer
-   makes). Check that it is answering:
+   makes). It is safe to run again, and after an update you should ("After an update" below).
+   While it runs, macOS shows "Background Items Added" notifications naming Python: those are the
+   server's background programs, so leave them allowed.
+
+   Check that it is answering. The first command prints a line of JSON; the second prints four
+   rows, one for each background program:
 
    ```bash
-   curl -s http://127.0.0.1:8000/v1/health          # prints a line of JSON
-   launchctl list | grep hardwood                   # four rows
+   curl -s http://127.0.0.1:8000/v1/health
+   launchctl list | grep hardwood
    ```
 
    If you have the EuroLeague workbook, copy it into
@@ -88,6 +127,9 @@ and needs nothing installed beyond Xcode.
    open ~/NBA-Stats/ios/NBAStats.xcodeproj
    ```
 
+   If Xcode offers **Update to recommended settings**, leave it: **Perform Changes** rewrites the
+   project file, which git tracks, and the project builds as it is.
+
 3. **Choose the destination.** In the Xcode toolbar the scheme should read **Hardwood**, and the
    run-destination menu next to it should read **My Mac**. (If it offers "My Mac (Designed for
    iPad)" or "Mac Catalyst", do not choose that one; the project turns both off, so you should
@@ -101,8 +143,9 @@ If you would rather see errors without launching, press **Build** (⌘B) first.
 
 ### The first session in Xcode, in order
 
-The project has never been built, so go in this order and paste errors from each step (§14)
-before moving to the next:
+Each of these passes on GitHub's runners on every push (§15), so each should pass on your Mac too.
+Go in this order anyway, and if a step fails, paste what it printed (§14) before moving to the
+next: a failure that shows up only on your Mac is exactly what CI cannot see.
 
 | Step | Do | What it proves |
 | --- | --- | --- |
@@ -118,26 +161,75 @@ Folder in Finder**, open `Products/Debug`, and drag `Hardwood.app` into Applicat
 only to run on the Mac that built it, which is all this app is for (§3). Building again in Xcode
 does not update the copy in Applications.
 
+### After an update
+
+Updating is the routine from "First, the right code" plus one line. Quit Hardwood and Xcode, then
+in Terminal:
+
+```bash
+cd ~/NBA-Stats
+git stash push -m "before update"
+git fetch origin
+git switch claude/modest-hypatia-024y5m
+git merge --ff-only origin/claude/modest-hypatia-024y5m
+backend/scripts/macos/install.sh
+```
+
+The branch lines apply until the Mac work is merged into GitHub's default branch; the check in
+"First, the right code" stays the way to tell whether what you have is new enough. The last line
+matters every time, and without `--skip-pip`: the server runs the code in your project folder, but
+launchd keeps the old code running until `install.sh` reloads it, and only a full run installs a
+changed requirement. Your data and your `hardwood.env` are kept. Then build the app again (⌘R, or
+the disk image below), because a copy in Applications does not update itself. If you had changed
+signing in §3, set it again: the old edit is kept in `git stash list`, but do not `git stash pop`
+it onto the new project file.
+
 ---
 
 ### A disk image instead of Xcode
 
-Once the server is installed (step 1), you never have to open Xcode to get the app. In Terminal:
+Once the server is installed (step 1), you never have to open Xcode to get the app. If an older
+Hardwood disk image is still mounted, eject it first, or the new one mounts as "Hardwood 1":
+
+```bash
+hdiutil detach /Volumes/Hardwood
+```
+
+Then, in Terminal:
 
 ```bash
 cd ~/NBA-Stats
 scripts/make_dmg.sh --open
 ```
 
-It builds the app and opens `dist/Hardwood.dmg`: drag **Hardwood** onto **Applications** and open
-it from there. A disk image built on your own Mac opens with a plain double-click.
+It prints one "building" line and then nothing for a few minutes while it builds a Release app
+for both Apple silicon and Intel, signed to run locally. Then it writes `dist/Hardwood.dmg` and,
+with `--open`, shows it in Finder: quit Hardwood if an earlier copy is open, drag **Hardwood** onto
+**Applications** and open it from there. A disk image built on your own Mac is not quarantined, so
+it opens with a plain double-click and there is no Open Anyway step. If the build fails, the script
+prints the errors once each and the whole log is in `build/mac/xcodebuild.log`; paste either
+(§14). Git ignores `dist/` and `build/`.
+
+If the script says `xcodebuild` is pointing at the Command Line Tools, the cause can also be an
+Xcode licence that has not been accepted yet. Run `xcodebuild -version` to see which: if it talks
+about the licence, accept it and let Xcode finish its first launch (`sudo` asks for your password):
+
+```bash
+sudo xcodebuild -license accept
+sudo xcodebuild -runFirstLaunch
+```
+
+Otherwise run the `xcode-select` line the script prints.
 
 Or skip building altogether: every push that touches the app runs the **Mac app** workflow on
-GitHub, and its run page has a **Hardwood-mac** download under *Artifacts* (GitHub zips it; unzip
-to get `Hardwood.dmg`). A downloaded copy is quarantined, so the first time macOS says it cannot
-verify the developer: click **Done**, then **System Settings ▸ Privacy & Security ▸ Open Anyway**
-(or run `xattr -dr com.apple.quarantine /Applications/Hardwood.app`). The app is signed to run
-locally, not by a registered Apple developer; removing that step would take a paid Developer ID and
+GitHub, and its run page has a **Hardwood-mac** download under *Artifacts*, kept for 30 days
+(GitHub zips it; unzip to get `Hardwood.dmg`). The first disk image downloaded this way quit on a
+real Mac for a reason nobody has found yet; if yours does, build it yourself from Xcode, where the
+debugger stops on the line that crashed, and send what §14 asks for. A downloaded copy is
+quarantined, so the first time macOS says it cannot verify the developer: click **Done**, then
+**System Settings ▸ Privacy & Security ▸ Open Anyway** (or run
+`xattr -dr com.apple.quarantine /Applications/Hardwood.app`). The app is signed to run locally, not
+by a registered Apple developer; removing that step would take a paid Developer ID and
 notarization, which only matters if the app were shared — see [LEGAL.md](LEGAL.md) before doing
 that.
 
@@ -146,21 +238,29 @@ The disk image holds the app only. The server still comes from `install.sh`; the
 
 ## 3. If Xcode asks about signing
 
-The project signs Mac builds "to run locally": no Apple developer account, no team
-(`CODE_SIGN_IDENTITY[sdk=macosx*] = "-"`). Most of the time Xcode accepts that and you will not
-see anything. If it still stops with **"Signing for 'Hardwood' requires a development team"**:
+The project signs Mac builds "to run locally": no Apple developer account, no Apple ID, no team
+(`CODE_SIGN_IDENTITY[sdk=macosx*] = "-"`, with the team left empty). A **My Mac** build needs
+nothing from you here, so leave the Signing & Capabilities tab alone unless ⌘R stops with
+**"Signing for 'Hardwood' requires a development team"**. Then:
 
-1. Click the blue **Hardwood** project at the top of the left sidebar, choose the **Hardwood**
-   target (not HardwoodTests), and open the **Signing & Capabilities** tab.
-2. Under **Team**, choose your name, shown as "(Personal Team)". If the list is empty or only
-   says "None", choose **Add an Account…**, sign in with your Apple ID (free; no paid programme is
-   needed), and then choose the Personal Team that appears.
-3. If a **Signing Certificate** menu is shown, choose **Sign to Run Locally**. If it is not
-   offered while "Automatically manage signing" is ticked, untick that box, choose Sign to Run
-   Locally, and run again.
+1. Click the blue **NBAStats** project at the top of the left sidebar, choose the **Hardwood**
+   target (not HardwoodTests), and open the **Signing & Capabilities** tab. If it shows a
+   **macOS** button beside iOS, click **macOS**.
+2. Untick **Automatically manage signing**.
+3. Set **Team** to **None** and **Signing Certificate** to **Sign to Run Locally**.
 4. Press **Run** again.
 
-Two things that can happen next, and what to do:
+That is exactly what GitHub's build uses, and `scripts/make_dmg.sh` passes the same settings
+itself (`CODE_SIGN_STYLE=Manual`, `CODE_SIGN_IDENTITY=-`, an empty `DEVELOPMENT_TEAM`), which is
+why the disk image never asks. The setting is saved in the project file, which git tracks, so an
+update puts it aside with your other local edits and you set it again ("After an update", §2).
+
+Only if that still fails, use a free Personal Team: tick **Automatically manage signing** again,
+and under **Team** choose your name, shown as "(Personal Team)". If the list is empty or only says
+"None", choose **Add an Account…**, sign in with your Apple ID (free; no paid programme is needed),
+and then choose the Personal Team that appears.
+
+Two things that can happen next with a Personal Team, and what to do:
 
 * **"Failed to register bundle identifier"** or "The app identifier cannot be registered":
   someone else's account already uses `com.hardwood.nbastats`. In the same tab change **Bundle
@@ -579,6 +679,14 @@ To have real NBA numbers now, load a past season (RUNBOOK §2b: `--nightly --day
 2026-04-15`, then `--refetch-games` over the same range for who started). The app shows whatever
 the server's store holds and nothing else.
 
+Once the regular season is under way, a fresh install still starts with no NBA games: the watcher
+adds only today's games, between 11:00 and 04:00 US Eastern, and the 06:10 morning pass re-checks
+only the last three days. To load the last week now, in Terminal:
+
+```bash
+~/Library/"Application Support"/Hardwood/hardwood-python -m nbastats.ingest.runner --nightly --days 7
+```
+
 **Without the workbook,** the EuroLeague has no starting ratings and no sourced injury statuses
 ([EUROLEAGUE.md](EUROLEAGUE.md) §3), so projections and the Injury Report stay thin or empty until
 live data supplies what it can. **If the server is in demo mode** (`serve_dev.sh --fresh`, or
@@ -726,6 +834,7 @@ The Mac's own preferences, if you ever need to reset one (`defaults delete com.h
 | `hardwood.mac.welcomeDone` | The Welcome card has been finished or skipped |
 | `hardwood.mac.starterSeeded`, `hardwood.mac.starterLayoutID` | The Matchups & Defence dashboard has been made, and which one it is |
 | `hardwood.api.baseURL`, `hardwood.api.apiKey` | A server address and key set in Settings or read from `hardwood.env` |
+| `hardwood.demoMode` | Demo mode is on (Settings ▸ General ▸ Use bundled demo data) |
 
 ---
 
@@ -736,7 +845,7 @@ The Mac's own preferences, if you ever need to reset one (`defaults delete com.h
 | Banner: "Hardwood's server isn't answering at http://127.0.0.1:8000" | The server is not running | `launchctl list \| grep hardwood`. Click **Copy Restart Command** and paste it into Terminal, or run `install.sh` again. **Open Logs Folder** and read `api.log`. **Use Demo Data** lets you browse meanwhile |
 | Banner with a key: the key was refused | The app holds an old key, or `hardwood.env` changed | **Read Key from hardwood.env** (banner, or Settings ▸ Leagues). If the file has no key, run `install.sh` again, then restart the server |
 | "Your server needs its API key for changes" | A write with no key or the wrong one | The same; §11 |
-| Every screen is empty, no banner | The server answers but the store is empty | RUNBOOK §2b for the NBA; the workbook in `inbox/` for the EuroLeague |
+| Every screen is empty, no banner | The server answers but the store is empty | For the NBA, load the last week (§8) or a past season (RUNBOOK §2b); the EuroLeague fills from live data on its own, and the workbook in `inbox/` adds its ratings and statuses |
 | Yellow "Invented demo league — not real games" | The server is in demo mode, or its store was created in demo mode (a store keeps the kind it was created with and never takes real data) | An installed server should not do this. If yours does, paste the lines of `~/Library/Logs/Hardwood/api.log` that mention the EuroLeague store: they name the file and what to replace. For the NBA, use a fresh database (RUNBOOK §2b) and leave `HARDWOOD_DEMO_MODE` unset |
 | "EuroLeague is turned off on your server" | `HARDWOOD_EL_ENABLED=off` (or the older `HARDWOOD_EL_MODE=off`) in `hardwood.env` | Remove the line, restart the server (RUNBOOK §1c) |
 | "Demo data for this screen isn't bundled yet" | Demo mode, and that screen has no bundled fixture | **Use My Server** |
@@ -744,13 +853,15 @@ The Mac's own preferences, if you ever need to reset one (`defaults delete com.h
 | Defence says "Withheld" | Too few games for that team (6 are needed) | Nothing to do; the message says how many there are. Choose the **Season** window, or last season (NBA) |
 | A tile says "Demo mode has no bundled EuroLeague data for this widget" | Demo mode and the fixture is missing from the app bundle | `scripts/sync_contracts.sh`, rebuild; or **Use My Server** |
 | Xcode: "Signing for 'Hardwood' requires a development team" | §3 | |
+| Hardwood quits as soon as it opens, before its window appears | Not known yet: a real Mac hit this with the first downloaded disk image, and CI has not reproduced it | Send what §14 asks for. To try the app on bundled data meanwhile, turn demo mode on from Terminal with `defaults write com.hardwood.nbastats hardwood.demoMode -bool true`, and off again with `defaults delete com.hardwood.nbastats hardwood.demoMode` |
 | Xcode offers no **My Mac** | The scheme is HardwoodTests, or Xcode is older than 16 | Select the **Hardwood** scheme; check Xcode ▸ About Xcode |
 | The window is gone | You closed it; the app is still running | **Window ▸ Hardwood** |
 
 ### The first things to suspect on a first run
 
-These macOS behaviours could not be checked without a Mac, and each is isolated to one file. If one
-misbehaves, say which, and the fallback is already worked out:
+CI's launch check proves that every screen opens without the app quitting; it cannot see whether
+these macOS behaviours look and work right, which needs someone at the Mac. Each is isolated to one
+file. If one misbehaves, say which, and the fallback is already worked out:
 
 | If this misbehaves | Look at | Fallback |
 | --- | --- | --- |
@@ -785,18 +896,39 @@ For the iOS check, use `-destination 'generic/platform=iOS Simulator'`. To get p
 complaint and see the compile errors behind it, put `CODE_SIGNING_ALLOWED=NO` after `-quiet`. For
 tests, replace `build` with `test` (§15). If an error line says "see note", also run the command
 without the `grep` and paste the lines around it. `xcodebuild` needs Xcode selected as the active
-developer directory (`xcode-select -p` should print a path inside Xcode.app).
+developer directory (`xcode-select -p` should print a path inside Xcode.app) and its licence
+accepted (§2, "A disk image instead of Xcode").
+
+**If it crashes.** When you run it from Xcode, the debugger stops on the line that crashed: take a
+screenshot of the editor with the red line, then click in the debug console (⇧⌘Y shows it), type
+`bt`, press Return, and copy all of the console's text. A copy opened from Applications or a disk
+image leaves a crash report instead. This lists the newest ones:
+
+```bash
+ls -t ~/Library/Logs/DiagnosticReports | grep -i hardwood | head -3
+```
+
+Open the first file it lists (in Terminal, type `open ~/Library/Logs/DiagnosticReports/`, paste
+the name, press Return; it opens in Console) and copy the **Exception Type** and **Termination
+Reason** lines and the whole block of the thread marked **Crashed**.
 
 **Also say:**
-* which destination (My Mac, or an iOS simulator) and which step of §2 you were on;
-* your Xcode version (Xcode ▸ About Xcode) and macOS version;
-* for a launch or runtime problem rather than a build error: what you did, what you expected, and
-  the text from Xcode's debug console (⇧⌘Y shows it). A crash also leaves a report in
-  Console.app ▸ Crash Reports.
+* which code you built, which this prints:
 
-**What to expect.** A first build may show dozens of errors. Many are one mistake repeated, or
-follow from one earlier error, so paste all of them once, in the order Xcode lists them, and do not
-fix by hand in between. Errors from the Mac build first, then the iOS build, then tests.
+  ```bash
+  cd ~/NBA-Stats
+  git log --oneline -1
+  ```
+
+* which destination (My Mac, or an iOS simulator) and which step of §2 you were on;
+* your Xcode version (Xcode ▸ About Xcode), your macOS version and chip (Apple menu ▸ About This
+  Mac), and your region and language (System Settings ▸ General ▸ Language & Region);
+* for a launch or runtime problem: what you did and what you expected.
+
+**What to expect.** CI builds this code on every push (§15), so a build error on your Mac is not
+expected and is worth reporting. If you get several, many may be one mistake repeated, or follow
+from one earlier error, so paste all of them once, in the order Xcode lists them, and do not fix
+by hand in between. Errors from the Mac build first, then the iOS build, then tests.
 
 ---
 
@@ -828,12 +960,28 @@ compiles. What they do catch, in seconds:
 * betting vocabulary in a string the app displays; a scene root missing an environment object;
   the Mac plist and project settings drifting.
 
-**What CI checks now:** the Mac app compiles, links, signs and packs into `Hardwood.dmg`, and the
-unit tests pass on macOS (`.github/workflows/mac.yml`); the iOS destination builds and its tests pass
-on an iPhone simulator (`.github/workflows/ios.yml`). Both use the newest Xcode on GitHub's runners.
+**What CI checks now,** on every push that touches the app, with the newest Xcode on GitHub's
+runners (26.3 when this was written):
 
-**What nothing here could check:** that every screen draws as intended, and anything about the live
-EuroLeague service (RUNBOOK §1c and [EUROLEAGUE.md](EUROLEAGUE.md) §8 say what is unconfirmed).
+* the Mac app compiles, links, signs and packs into `Hardwood.dmg` through `scripts/make_dmg.sh`,
+  the same script you run, and the run keeps that disk image for 30 days as its **Hardwood-mac**
+  artifact (`.github/workflows/mac.yml`);
+* the unit tests pass on macOS;
+* a launch check (`scripts/check_mac_launch.sh`, with `scripts/ci_mac_server.sh` running the
+  server) opens the app from that disk image through Launch Services, as a double-click does, on
+  every sidebar screen in both leagues, on macOS 15 and macOS 26, and fails with macOS's crash
+  report if the app quits. It does that four ways: with no server, in demo mode, against a seeded
+  server holding the installer's API key (which also fails if the server refused any of the app's
+  requests with 401), and, on macOS 26 only, against live EuroLeague data with the Mac set to a
+  European region (`en_DE`: decimal commas, day-first dates);
+* the iOS destination builds and its tests pass on an iPhone simulator (`.github/workflows/ios.yml`).
+
+**What nothing here could check:** how every screen looks, the toolbar, inspector and menu
+behaviours by eye (§13 lists the ones to watch), and the crash a real Mac hit with the first
+downloaded disk image, whose cause is unknown and which CI has not reproduced (§14 says what to
+send if Hardwood quits on yours). Nor what RUNBOOK §1c and [EUROLEAGUE.md](EUROLEAGUE.md) §8 list
+as unconfirmed about the live EuroLeague service: the live launch check shows only that the app
+draws what the service returned that day.
 
 ---
 
